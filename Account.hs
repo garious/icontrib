@@ -12,7 +12,6 @@ import Monad                                 ( liftM )
 import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
 import Control.Applicative                   ( (<$>) )
-import System.Environment                    ( getArgs )
 import Data.Maybe                            ( isJust, fromJust, isNothing )
 import Data.Acid.Memory                      ( openMemoryState )
 import qualified Data.Map                    as Map
