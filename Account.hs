@@ -7,6 +7,8 @@ module Account( addUser
               )  where
 
 import Data.Word                             ( Word8 )
+import Char                                  ( ord )
+import Monad                                 ( liftM )
 import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
 import Control.Applicative                   ( (<$>) )
@@ -18,7 +20,7 @@ import qualified Crypto.Hash.SHA512          as SHA512
 import qualified Data.ByteString             as B
 import Data.Acid
 import Data.SafeCopy
-import Random(randomIO)
+import Random(randomIO, Random, random, randomR)
 
 type UserID    = B.ByteString
 type Password  = B.ByteString
@@ -49,9 +51,8 @@ addUserU uid phash = do
 
 cookieToUserQ :: Cookie -> Query Database (Maybe UserID)
 cookieToUserQ cookie = do
-   db <- get
+   db <- ask
    return $ Map.lookup cookie (cookies db)
-        
 
 addUserCookieU :: UserID -> Cookie -> Update Database ()
 addUserCookieU uid cookie = do
@@ -60,7 +61,7 @@ addUserCookieU uid cookie = do
 
 checkPasswordQ :: UserID -> Password -> Query Database Bool
 checkPasswordQ uid pwd = do
-   db <- get
+   db <- ask
    let checkPass Nothing = False
        checkPass (Just (UserInfo (PasswordHash hash salt))) = hash == hashPassword salt pwd 
    return $ checkPass (Map.lookup uid (users db))
@@ -72,12 +73,12 @@ hashPassword salt pwd = (iterate step pwd) !! iterationCount
 
 $(makeAcidic ''Database ['addUserU, 'checkPasswordQ, 'addUserCookieU, 'cookieToUserQ])
 
-addUser :: Database -> UserID -> Password -> IO ()
+addUser :: AcidState Database -> UserID -> Password -> IO ()
 addUser db uid pwd = do
    salt <- newSalt
    update db (AddUserU uid (PasswordHash salt (hashPassword salt pwd)))
 
-loginToCookie :: Database -> UserID -> Password -> IO (Maybe Cookie) 
+loginToCookie :: AcidState Database -> UserID -> Password -> IO (Maybe Cookie) 
 loginToCookie db uid pwd = do
    check <- query db (CheckPasswordQ uid pwd) 
    case(check) of
@@ -85,38 +86,48 @@ loginToCookie db uid pwd = do
       True -> do
          cookie <- newCookie
          update db (AddUserCookieU uid cookie)
+         return $ Just cookie
 
-cookieToUser :: Database -> Cookie -> IO (Maybe UserID)
+cookieToUser :: AcidState Database -> Cookie -> IO (Maybe UserID)
 cookieToUser db cookie = query db (CookieToUserQ cookie)
 
-newSalt :: IO [Word8]
-newSalt = sequence $ take 32 $ repeat randomIO
+instance Random Word8 where
+    randomR (lo, hi) rng = let (val, rng') = randomR (fromIntegral lo, fromIntegral hi) rng
+                               val :: Int
+                           in  (fromIntegral val, rng')
+    random rng = randomR (minBound, maxBound) rng
+ 
+newSalt :: IO B.ByteString
+newSalt = liftM B.pack $ sequence $ take 32 $ repeat randomIO
 
-newCookie :: IO [Word8]
+newCookie :: IO B.ByteString
 newCookie = newSalt
 
 test :: IO ()
 test = do
    let assert msg False = error msg
        assert _ True = return $ ()
+       toB :: String -> B.ByteString
+       toB ss = B.pack $ map (fromIntegral . ord) ss
 
-   db <- openMemoryState True empty
+   db <- openMemoryState empty
 
-   rv <- loginToCookie db "hello" "world" 
+   rv <- loginToCookie db (toB "hello") (toB "world")
    assert "login empty" (isNothing rv)
 
-   rv <- cookieToUser db "randomnonsense" 
+   rv <- cookieToUser db (toB "randomnonsense")
    assert "cookieToUser empty" (isNothing rv)
 
-   addUser db "hello" "world"
-   rv <- loginToCookie db "hello" "badpassword" 
+   addUser db (toB "hello") (toB "world")
+   rv <- loginToCookie db (toB "hello") (toB "badpassword")
    assert "login bad password" (isNothing rv)
 
-   rv <- loginToCookie db "hello" "world" 
+   rv <- loginToCookie db (toB "hello") (toB "world")
+   print $ rv
    assert "loginToCookie good password" (isJust rv)
 
-   rv <- cookieToUser db "randomnonsense" 
+   rv <- cookieToUser db (toB "randomnonsense") 
    assert "cookieToUser bad cookie" (isNothing rv)
 
    rv <- cookieToUser db (fromJust rv)
-   assert "cookieToUser good cookie" (rv == (Just "hello"))
+   assert "cookieToUser good cookie" (rv == (Just (toB "hello")))
