@@ -124,7 +124,6 @@ test = do
    assert "cookieToUser empty" (isNothing badcookie)
 
    addUser db (toB "hello") (toB "world")
-   users <- query db (ListUsersQ)
 
    badpass <- loginToCookie db (toB "hello") (toB "badpassword")
    assert "login bad password" (isNothing badpass)
