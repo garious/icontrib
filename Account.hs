@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeFamilies, DeriveDataTypeable, TemplateHaskell #-}
+{-# OPTIONS_GHC -fspec-constr-count=2 -fno-warn-orphans #-}
 module Account( addUser
               , loginToCookie 
               , cookieToUser
@@ -11,7 +12,6 @@ import Char                                  ( ord )
 import Monad                                 ( liftM )
 import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
-import Control.Applicative                   ( (<$>) )
 import Data.Maybe                            ( isJust, fromJust, isNothing )
 import Data.Acid.Memory                      ( openMemoryState )
 import qualified Data.Map                    as Map
@@ -84,7 +84,7 @@ loginToCookie db uid pwd = do
       False -> return Nothing
       True -> do
          cookie <- newCookie
-         update db (AddUserCookieU uid cookie)
+         _ <- update db (AddUserCookieU uid cookie)
          return $ Just cookie
 
 cookieToUser :: AcidState Database -> Cookie -> IO (Maybe UserID)
@@ -111,22 +111,22 @@ test = do
 
    db <- openMemoryState empty
 
-   rv <- loginToCookie db (toB "hello") (toB "world")
-   assert "login empty" (isNothing rv)
+   badlogin <- loginToCookie db (toB "hello") (toB "world")
+   assert "login empty" (isNothing badlogin)
 
-   rv <- cookieToUser db (toB "randomnonsense")
-   assert "cookieToUser empty" (isNothing rv)
+   badcookie <- cookieToUser db (toB "randomnonsense")
+   assert "cookieToUser empty" (isNothing badcookie)
 
    addUser db (toB "hello") (toB "world")
-   rv <- loginToCookie db (toB "hello") (toB "badpassword")
-   assert "login bad password" (isNothing rv)
+   badpass <- loginToCookie db (toB "hello") (toB "badpassword")
+   assert "login bad password" (isNothing badpass)
 
-   rv <- loginToCookie db (toB "hello") (toB "world")
-   print $ rv
-   assert "loginToCookie good password" (isJust rv)
+   goodpass <- loginToCookie db (toB "hello") (toB "world")
+   print $ goodpass
+   assert "loginToCookie good password" (isJust goodpass)
 
-   rv <- cookieToUser db (toB "randomnonsense") 
-   assert "cookieToUser bad cookie" (isNothing rv)
+   badcookie2 <- cookieToUser db (toB "randomnonsense") 
+   assert "cookieToUser bad cookie" (isNothing badcookie2)
 
-   rv <- cookieToUser db (fromJust rv)
-   assert "cookieToUser good cookie" (rv == (Just (toB "hello")))
+   goodcookie <- cookieToUser db (fromJust goodpass)
+   assert "cookieToUser good cookie" (goodcookie == (Just (toB "hello")))
