@@ -53,6 +53,12 @@ cookieToUserQ cookie = do
    db <- ask
    return $ Map.lookup cookie (cookies db)
 
+listUsersQ :: Query Database [UserID]
+listUsersQ = do
+   db <- ask
+   return $ map fst $ Map.toList (users db)
+
+
 addUserCookieU :: UserID -> Cookie -> Update Database ()
 addUserCookieU uid cookie = do
    db <- get
@@ -70,12 +76,12 @@ hashPassword salt pwd = (iterate step pwd) !! iterationCount
     where iterationCount = 100
           step chain = SHA512.hash (chain `B.append` salt)
 
-$(makeAcidic ''Database ['addUserU, 'checkPasswordQ, 'addUserCookieU, 'cookieToUserQ])
+$(makeAcidic ''Database ['addUserU, 'checkPasswordQ, 'addUserCookieU, 'cookieToUserQ, 'listUsersQ])
 
 addUser :: AcidState Database -> UserID -> Password -> IO ()
 addUser db uid pwd = do
    salt <- newSalt
-   update db (AddUserU uid (PasswordHash salt (hashPassword salt pwd)))
+   update db (AddUserU uid (PasswordHash (hashPassword salt pwd) salt))
 
 loginToCookie :: AcidState Database -> UserID -> Password -> IO (Maybe Cookie) 
 loginToCookie db uid pwd = do
@@ -118,11 +124,12 @@ test = do
    assert "cookieToUser empty" (isNothing badcookie)
 
    addUser db (toB "hello") (toB "world")
+   users <- query db (ListUsersQ)
+
    badpass <- loginToCookie db (toB "hello") (toB "badpassword")
    assert "login bad password" (isNothing badpass)
 
    goodpass <- loginToCookie db (toB "hello") (toB "world")
-   print $ goodpass
    assert "loginToCookie good password" (isJust goodpass)
 
    badcookie2 <- cookieToUser db (toB "randomnonsense") 
