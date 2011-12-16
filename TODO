@@ -1,0 +1,5 @@
+* expire cookies
+* userUpdatePassword :: Cookie -> Password -> IO ()
+* userSetCookieExpiration :: Cookie -> TimeDiff -> IO ()
+* rename cookies to Credential
+* rename account module to Auth

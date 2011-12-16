@@ -1,6 +1,7 @@
 {-# LANGUAGE TypeFamilies, DeriveDataTypeable, TemplateHaskell #-}
 {-# OPTIONS_GHC -fspec-constr-count=2 -fno-warn-orphans #-}
 module Account( addUser
+              , listUsers
               , loginToCookie 
               , cookieToUser
               , clearUserCookie 
@@ -105,6 +106,10 @@ hashPassword salt pwd = (iterate step pwd) !! iterationCount
 
 $(makeAcidic ''Database ['addUserU, 'checkPasswordQ, 'addUserCookieU, 'cookieToUserQ, 'listUsersQ, 'clearUserCookieU ])
 
+listUsers :: AcidState Database ->  IO [UserID]
+listUsers db = query db ListUsersQ
+
+
 addUser :: AcidState Database -> UserID -> Password -> IO (Either AccountError ())
 addUser db uid pwd = do
    salt <- newSalt
@@ -153,6 +158,9 @@ test = do
 
    db <- openMemoryState empty
 
+   _rv <- listUsers db
+   assert "listUsers" (null _rv)
+
    _rv <- loginToCookie db (toB "hello") (toB "world")
    assert "login empty" ((Left UserDoesntExist) == _rv)
 
@@ -161,6 +169,9 @@ test = do
 
    _rv <- addUser db (toB "hello") (toB "world")
    assert "added user" (_rv == (Right ()))
+
+   _rv <- listUsers db
+   assert "listUsers2" ([toB "hello"] == _rv)
 
    _rv <- addUser db (toB "hello") (toB "again")
    assert "added user" (_rv == (Left UserAlreadyExists))
