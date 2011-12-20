@@ -8,3 +8,6 @@
   partial permissions are tied to cookies that expire in 1 year 
   so cookietouser should return a Partial UID or Full UID as the authentication type
   store cookies in a salted hash
+* figure out how to use authenticate/oAuth
+* hook up rest of junk to the db
+* setup unit tests for server side stuff, post to running server and expect an ok or failure
