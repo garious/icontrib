@@ -1,9 +1,10 @@
 module AccountQ where
 
 import Account
+import ServerError
 import Char                                  ( ord )
 import Data.Acid.Memory                      ( openMemoryState )
-import qualified Data.ByteString             as B
+import qualified Data.ByteString.Lazy             as B
 
 toB :: String -> B.ByteString
 toB ss = B.pack $ map (fromIntegral . ord) ss
