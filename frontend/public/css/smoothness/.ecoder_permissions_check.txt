@@ -1,0 +1,1 @@
+this file was created on Wed. 05th October 2011 at 07:17:53, after ecoder checked the permissions of the folder /srv/http/css/smoothness/.
