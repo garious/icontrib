@@ -1,19 +1,18 @@
-module ServerMain where
+module ServerQ where
 
-import Server
-import qualified Account as Account
-import qualified Data.ByteString.Lazy        as BL
-import Data.Acid.Memory                      ( openMemoryState )
+--import Server
+--import qualified Account as Account
+--import Data.Acid.Memory                      ( openMemoryState )
 import Happstack.Lite
 
-main :: IO ()
-main = do
-   db <- openMemoryState Account.empty
-   index <- BL.readFile "index.html"
+test :: IO ()
+test = do
+   --db <- openMemoryState Account.empty
    let 
          homePage :: ServerPart Response
-         homePage = ok $ toResponse index
-   serve Nothing ( msum [ dir "addUser" (addUser db)
-                        , homePage
+         homePage = serveDirectory DisableBrowsing ["index.html"] "frontend/public"
+         
+   serve Nothing ( msum [ -- dir "addUser" (addUser db)
+                        homePage
                         ])
 
