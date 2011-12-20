@@ -10,7 +10,6 @@ import Control.Monad.Error ( runErrorT )
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Account as Account
-import Data.Acid.Memory                      ( openMemoryState )
 import Data.Acid                             ( AcidState )
 import qualified Data.ByteString             as BS
 import qualified Data.ByteString.Lazy        as BL
@@ -55,7 +54,3 @@ template title body = toResponse $
       body
       p $ a ! href "/" $ "back home"
 
-test :: IO ()
-test = do
-   db <- openMemoryState Account.empty
-   serve Nothing (addUser db)
