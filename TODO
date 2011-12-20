@@ -3,3 +3,8 @@
 * userSetCookieExpiration :: Cookie -> TimeDiff -> IO ()
 * rename cookies to Credential
 * rename account module to Auth
+* split out the cookie management into a different module
+* keep track of different sets of permissions, full access tied to session cookie
+  partial permissions are tied to cookies that expire in 1 year 
+  so cookietouser should return a Partial UID or Full UID as the authentication type
+  store cookies in a salted hash

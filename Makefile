@@ -12,3 +12,4 @@ deps:
 	cabal install acid-state
 	cabal install crypto
 	cabal install cryptohash
+	cabal install happstack-lite

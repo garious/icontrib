@@ -5,7 +5,10 @@ module Account( addUser
               , loginToCookie 
               , cookieToUser
               , clearUserCookie 
+              , AccountError( UserAlreadyExists )
               , empty
+              , rethrowIO
+              , Database
               , test
               )  where
 import Control.Monad.IO.Class                ( MonadIO )
@@ -147,12 +150,13 @@ newSalt = liftM B.pack $ sequence $ take 32 $ repeat randomIO
 newCookie :: IO B.ByteString
 newCookie = newSalt
 
+toB :: String -> B.ByteString
+toB ss = B.pack $ map (fromIntegral . ord) ss
+
 test :: IO ()
 test = do
    let assert msg False = error msg
        assert _ True = return $ ()
-       toB :: String -> B.ByteString
-       toB ss = B.pack $ map (fromIntegral . ord) ss
        isRight (Right _)   = True
        isRight _           = False
 
