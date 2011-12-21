@@ -1,7 +1,7 @@
 
 out/%Q:%Q.hs %.hs
 	@mkdir -p out
-	ghc -hide-package mtl -Wall -Werror -O2 -optl"-Wl,-read_only_relocs,suppress" -outputdir out -main-is $*Q.test -o $@ --make $^
+	ghc -Wall -Werror -O2 -optl"-Wl,-read_only_relocs,suppress" -outputdir out -main-is $*Q.test -o $@ --make $^
 
 out/%Q.hs.ok:out/%Q
 	$^ && touch $@
