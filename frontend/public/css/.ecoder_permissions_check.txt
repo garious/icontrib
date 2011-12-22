@@ -1,1 +1,0 @@
-this file was created on Fri. 30th September 2011 at 17:32:56, after ecoder checked the permissions of the folder /srv/http/css/.

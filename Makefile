@@ -1,12 +1,23 @@
+o = out
 
-out/%Q:%Q.hs %.hs
-	@mkdir -p out
-	ghc -Wall -Werror -O2 -optl"-Wl,-read_only_relocs,suppress" -outputdir out -main-is $*Q.test -o $@ --make $^
+all: test $o/icontrib
 
-out/%Q.hs.ok:out/%Q
-	$^ && touch $@
+test: $(patsubst %,$o/%.passed,$(wildcard *Test.hs))
 
-test:$(addsuffix .ok,$(addprefix out/,$(wildcard *Q.hs)))
+$o/%Test: %Test.hs %.hs
+
+$o/icontrib: Server.hs
+	@mkdir -p $(@D)
+	ghc -Wall -Werror -outputdir $(@D) -o $@ --make $<
+
+$o/%.passed: %
+	@mkdir -p $(@D)
+	@echo Testing: $<
+	@runghc -Wall -Werror $<
+	@touch $@
+
+clean:
+	rm -rf $o
 
 deps:
 	cabal install acid-state
