@@ -5,8 +5,8 @@
   <title>IContrib - Improve the world today.</title>
 </head>
 <body>
-   <div id="nav-body"></div>
-   <div id="main-body"></div>
+  <div id="nav-body"></div>
+  <div id="main-body"></div>
 
   <link rel="stylesheet" type="text/css" media="all" href="css/reset.css" />
   <link rel="stylesheet" type="text/css" media="all" href="css/960.css" />
@@ -14,12 +14,29 @@
   <link type="text/css" href="css/smoothness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
   <script type="text/javascript" src="jquery/jquery-1.6.2.min.js"></script>
   <script type="text/javascript" src="jquery/jquery-ui-1.8.16.custom.min.js"></script>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
   <script type="text/javascript">
-$(document).ready(function() {
-    $('#nav-body').load('widgets/nav.html');
-    $('#main-body').load('widgets/donorbody.html');
-});
+    google.load('visualization', '1.0', {'packages':['corechart']});
+    $(document).ready(function() {
+        $('#nav-body').load('widgets/nav.html');
+        $('#main-body').load('widgets/donorbody.html', function() {
+            var chart = new google.visualization.PieChart($('#chart_div')[0]);
+            var data = new google.visualization.DataTable();
+            var options = {title: "Greg's Distribution", width: 400, height: 300, backgroundColor: { fill:'transparent' }};
+            data.addColumn('string', 'Charity');
+            data.addColumn('number', 'Percentage');
+            data.addRows([
+              ['UNICEF', 35],
+              ['American Red Cross', 10],
+              ['La Jolla Playhouse', 10],
+              ['San Diego Foundation', 10], 
+              ['USA UWH', 80],
+              ['LACC', 20],
+            ]);
+            chart.draw(data, options);
+        });
+    });
   </script>
 </body>
 </html>
