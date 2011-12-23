@@ -1,0 +1,1 @@
+GHC_FLAGS+=-optl"-Wl,-read_only_relocs,suppress"

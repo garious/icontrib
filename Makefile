@@ -1,3 +1,9 @@
+UNAME:=$(shell uname)
+
+-include $(UNAME).min
+
+GHC_FLAGS+=-Wall -Werror
+
 o = out
 
 all: test $o/icontrib
@@ -6,9 +12,10 @@ test: $(patsubst %,$o/%.passed,$(wildcard *Test.hs))
 
 $o/%Test: %Test.hs %.hs
 
+
 $o/icontrib: Server.hs
 	@mkdir -p $(@D)
-	ghc -Wall -Werror -optl"-Wl,-read_only_relocs,suppress" -outputdir $(@D) -o $@ --make $<
+	ghc $(GHC_FLAGS) -outputdir $(@D) -o $@ --make $<
 
 $o/%.passed: %
 	@mkdir -p $(@D)
