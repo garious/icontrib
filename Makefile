@@ -8,7 +8,7 @@ $o/%Test: %Test.hs %.hs
 
 $o/icontrib: Server.hs
 	@mkdir -p $(@D)
-	ghc -Wall -Werror -outputdir $(@D) -o $@ --make $<
+	ghc -Wall -Werror -optl"-Wl,-read_only_relocs,suppress" -outputdir $(@D) -o $@ --make $<
 
 $o/%.passed: %
 	@mkdir -p $(@D)
