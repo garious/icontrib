@@ -13,7 +13,7 @@ test: $(patsubst %,$o/%.passed,$(wildcard *Test.hs))
 $o/%Test: %Test.hs %.hs
 
 
-$o/icontrib: Server.hs
+$o/icontrib: Server.hs Site.hs
 	@mkdir -p $(@D)
 	ghc $(GHC_FLAGS) -outputdir $(@D) -o $@ --make $<
 
@@ -27,6 +27,8 @@ clean:
 	rm -rf $o
 
 deps:
+	cabal install dataenc
+	cabal install json
 	cabal install acid-state
 	cabal install crypto
 	cabal install cryptohash

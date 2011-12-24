@@ -10,7 +10,7 @@ main = do
          homePage :: ServerPart Response
          homePage = serveDirectory DisableBrowsing ["index.html"] "public"
          
-   serve Nothing ( msum [ dir "addUser" (addUser db)
+   serve Nothing ( msum [ dir "get_user" (getUser db)
                         , homePage
                         ])
 
