@@ -11,6 +11,7 @@ data ServerError = UserAlreadyExists
                  | BadPassword
                  | BadCookie
                  | PasswordsDontMatch
+                 | CookieDecode
                  deriving (Data, Typeable, Eq, Show)
 
 $(deriveSafeCopy 0 'base ''ServerError)

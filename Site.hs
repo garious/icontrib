@@ -5,7 +5,8 @@ module Site where
 import Control.Monad.Trans                   ( liftIO, lift )
 import Data.Acid                             ( AcidState )
 import Char                                  ( chr )
-import Control.Monad.Error                   ( runErrorT )
+import Control.Monad.Error                   ( runErrorT, throwError )
+import Control.Monad                         ( liftM )
 
 import qualified Data.ByteString.Lazy        as B
 import qualified Account                     as A
@@ -17,12 +18,17 @@ import ServerError
 checkUser ::  AcidState A.Database -> ServerPart Response
 checkUser db = do 
    method GET
-   cookie <- A.rethrowIO $ lookCookieValue "token"
-   let token = B.pack $ Url.decode cookie
-   _ <- A.rethrowIO $ A.cookieToUser db token
-   let msg = "Thanks for comming back " ++ (toS uid)
-   liftIO $ putStrLn msg 
-   return $ JS.encode $ JS.toJSString msg
+   rv <- runErrorT $ do 
+      cookie <- lift $ lookCookieValue "token"
+      let
+            checkMaybe Nothing = throwError CookieDecode
+            checkMaybe (Just aa) = return aa
+      token <- checkMaybe $ liftM B.pack $ Url.decode cookie
+      uid <- A.rethrowIO $ A.cookieToUser db token
+      let msg = "Thanks for comming back " ++ (toS uid)
+      liftIO $ putStrLn msg 
+      return $ JS.encode $ JS.toJSString msg
+   rsp $ rv
 
 getUser ::  AcidState A.Database -> ServerPart Response
 getUser db = do 
