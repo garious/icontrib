@@ -17,6 +17,7 @@ import ServerError
 
 checkUser ::  AcidState A.Database -> ServerPart Response
 checkUser db = do 
+   liftIO $ putStrLn "checkUser" 
    method GET
    rv <- runErrorT $ do 
       cookie <- lift $ lookCookieValue "token"

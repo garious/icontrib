@@ -13,18 +13,6 @@
          </form>
          <script type="text/javascript">
             $(function(){
-               
-               //try to authenticate ourselves
-               $.ajax({
-                  type: "GET",
-                  url: "check_user",
-                  data: dataString,
-                  dataType: "json",
-                  success: function(data) {
-                     $("#get_user").html(data);
-                  }
-               });
-
                $("#get_user").submit(function(e){
                     e.preventDefault();
                     dataString = $("#get_user").serialize();
@@ -36,10 +24,20 @@
                        success: function(data) {
                           $("#get_user").html(data);
                        }
-                       statusCode: function(data) {
-                          $("#get_user_error").html(data);
-                       }
                     });
+               });
+            });
+         </script>
+         <script type="text/javascript">
+            //try to authenticate ourselves
+            $(function(){
+               $.ajax({
+                  type: "GET",
+                  url: "check_user",
+                  dataType: "json",
+                  success: function(data) {
+                     $("#get_user").html(data);
+                  }
                });
             });
          </script>

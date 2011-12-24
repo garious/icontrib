@@ -6,7 +6,10 @@ GHC_FLAGS+=-Wall -Werror
 
 o = out
 
-all: test $o/icontrib
+all: test $o/icontrib run
+
+run: $o/icontrib
+	$o/icontrib
 
 test: $(patsubst %,$o/%.passed,$(wildcard *Test.hs))
 
