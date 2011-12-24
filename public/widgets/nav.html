@@ -9,22 +9,38 @@
             Email <input type="text" name="email" size="10" />
             Password <input type="password" name="password" size="10" />
             <input type="submit" value="Log in or Sign up" />
+            <div id="get_user_error"></div>
          </form>
          <script type="text/javascript">
             $(function(){
-                $("#get_user").submit(function(e){
-                     e.preventDefault();
-                     dataString = $("#get_user").serialize();
-                     $.ajax({
-                        type: "POST",
-                        url: "get_user",
-                        data: dataString,
-                        dataType: "json",
-                        success: function(data) {
-                           $("#get_user").html(data);
-                        }
-                     });
-                });
+               
+               //try to authenticate ourselves
+               $.ajax({
+                  type: "GET",
+                  url: "check_user",
+                  data: dataString,
+                  dataType: "json",
+                  success: function(data) {
+                     $("#get_user").html(data);
+                  }
+               });
+
+               $("#get_user").submit(function(e){
+                    e.preventDefault();
+                    dataString = $("#get_user").serialize();
+                    $.ajax({
+                       type: "POST",
+                       url: "get_user",
+                       data: dataString,
+                       dataType: "json",
+                       success: function(data) {
+                          $("#get_user").html(data);
+                       }
+                       statusCode: function(data) {
+                          $("#get_user_error").html(data);
+                       }
+                    });
+               });
             });
          </script>
       </div>

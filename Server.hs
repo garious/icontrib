@@ -11,6 +11,7 @@ main = do
          homePage = serveDirectory DisableBrowsing ["index.html"] "public"
          
    serve Nothing ( msum [ dir "get_user" (getUser db)
+                        , dir "check_user" (checkUser db)
                         , homePage
                         ])
 

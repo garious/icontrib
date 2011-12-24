@@ -11,3 +11,10 @@
 * figure out how to use authenticate/oAuth
 * hook up rest of junk to the db
 * setup unit tests for server side stuff, post to running server and expect an ok or failure
+
+
+
+* cleanup above todo list 
+* single signin/login widget
+* figure out how to check if a user's cookie is present and then have them appear as logged in when they open the page
+* have two cookie types, session and forever, have the session cookie be the auth token for important stuff 

@@ -14,6 +14,16 @@ import qualified Text.JSON                   as JS
 import Happstack.Lite
 import ServerError
 
+checkUser ::  AcidState A.Database -> ServerPart Response
+checkUser db = do 
+   method GET
+   cookie <- A.rethrowIO $ lookCookieValue "token"
+   let token = B.pack $ Url.decode cookie
+   _ <- A.rethrowIO $ A.cookieToUser db token
+   let msg = "Thanks for comming back " ++ (toS uid)
+   liftIO $ putStrLn msg 
+   return $ JS.encode $ JS.toJSString msg
+
 getUser ::  AcidState A.Database -> ServerPart Response
 getUser db = do 
    method POST
