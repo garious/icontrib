@@ -6,17 +6,17 @@ GHC_FLAGS+=-Wall -Werror
 
 o = out
 
-all: test $o/icontrib run
+all: test $o/icontrib
 
-run: $o/icontrib
-	$o/icontrib
+serve: $o/icontrib
+	$<
 
 test: $(patsubst %,$o/%.passed,$(wildcard *Test.hs))
 
 $o/%Test: %Test.hs %.hs
 
 
-$o/icontrib: Server.hs Site.hs
+$o/icontrib: Server.hs Site.hs test
 	@mkdir -p $(@D)
 	ghc $(GHC_FLAGS) -outputdir $(@D) -o $@ --make $<
 
