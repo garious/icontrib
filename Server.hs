@@ -1,17 +1,19 @@
-import Site
-import qualified Account as Account
+import Account                               ( empty )
+import Site                                  ( site )
+import Happstack.Lite                        ( serve )
 import Data.Acid.Memory                      ( openMemoryState )
-import Happstack.Lite
+import Control.Concurrent                    ( forkIO, killThread )
 
 main :: IO ()
 main = do
-   db <- openMemoryState Account.empty
-   let 
-         homePage :: ServerPart Response
-         homePage = serveDirectory DisableBrowsing ["index.html"] "public"
-         
-   serve Nothing ( msum [ dir "get_user" (getUser db)
-                        , dir "check_user" (checkUser db)
-                        , homePage
-                        ])
+    tid <- forkIO webThread
+    putStrLn "Web server running. Press <enter> to exit."
+    _ <- getLine
+    killThread tid
+
+webThread :: IO ()
+webThread = do
+    db <- openMemoryState empty
+    serve Nothing (site db)
+
 
