@@ -15,6 +15,16 @@ import qualified Text.JSON                   as JS
 import qualified ServerError                 as SE
 import Happstack.Lite
 
+site :: AcidState A.Database -> ServerPart Response
+site db = msum [ 
+      dir "get_user" (getUser db)
+    , dir "check_user" (checkUser db)
+    , homePage
+    ]
+
+homePage :: ServerPart Response
+homePage = serveDirectory DisableBrowsing ["index.html"] "public"
+
 checkUser ::  AcidState A.Database -> ServerPart Response
 checkUser db = do 
    liftIO $ putStrLn "checkUser" 
