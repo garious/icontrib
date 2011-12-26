@@ -7,7 +7,7 @@ import Data.Word                             ( Word8 )
 import Monad                                 ( liftM )
 import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
-import Control.Monad.Error                   ( runErrorT, throwError, MonadError, liftIO)
+import Control.Monad.Error                   ( runErrorT, throwError, MonadError, liftIO, ErrorT)
 import Data.Typeable                         ()
 import qualified Data.Map                    as Map
 import qualified Crypto.Hash.SHA512          as SHA512
@@ -98,28 +98,30 @@ $(makeAcidic ''Database ['addUserU, 'checkPasswordQ, 'addUserCookieU, 'cookieToU
 listUsers :: AcidState Database ->  IO [UserID]
 listUsers db = query db ListUsersQ
 
-
-addUser :: AcidState Database -> UserID -> Password -> IO (Either ServerError ())
+addUser :: MonadIO m => AcidState Database -> UserID -> Password -> ErrorT ServerError m ()
 addUser db uid pwd = do
-   salt <- newSalt
-   update db (AddUserU uid (PasswordHash (hashPassword salt pwd) salt))
+   salt <- liftIO $ newSalt
+   rethrow $ update db (AddUserU uid (PasswordHash (hashPassword salt pwd) salt))
 
-rethrowIO :: (MonadError e m, MonadIO m) => IO (Either e b) -> m b
-rethrowIO aa = do
+rethrow :: (MonadError e m, MonadIO m) => IO (Either e b) -> m b
+rethrow aa = do
    err <- liftIO aa
    case(err) of
       (Left ee)   -> throwError ee
       (Right val) -> return val
-   
-loginToCookie :: AcidState Database -> UserID -> Password -> IO (Either ServerError Cookie) 
-loginToCookie db uid pwd = runErrorT $ do
-   _ <- rethrowIO $ query db (CheckPasswordQ uid pwd)
+
+checkPassword :: MonadIO m => AcidState Database -> UserID -> Password -> ErrorT ServerError m ()
+checkPassword db uid pwd = rethrow $ query db (CheckPasswordQ uid pwd)
+  
+loginToCookie :: MonadIO m => AcidState Database -> UserID -> Password -> ErrorT ServerError m Cookie
+loginToCookie db uid pwd = do
+   checkPassword db uid pwd
    cookie <- liftIO $ newCookie
    _ <- liftIO $ update db (AddUserCookieU uid cookie)
    return cookie
 
-cookieToUser :: AcidState Database -> Cookie -> IO (Either ServerError UserID)
-cookieToUser db cookie = query db (CookieToUserQ cookie)
+cookieToUser :: MonadIO m => AcidState Database -> Cookie -> ErrorT ServerError m UserID
+cookieToUser db cookie = rethrow $ query db (CookieToUserQ cookie)
 
 clearUserCookie :: AcidState Database -> UserID -> IO ()
 clearUserCookie db uid = update db (ClearUserCookieU uid)
@@ -135,6 +137,4 @@ newSalt = liftM BS.pack $ sequence $ take 32 $ repeat randomIO
 
 newCookie :: IO BL.ByteString
 newCookie = liftM BL.pack $ sequence $ take 32 $ repeat randomIO
-
-
 
