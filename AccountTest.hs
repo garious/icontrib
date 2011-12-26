@@ -1,57 +1,71 @@
 module Main where
 
-import Account
-import ServerError
+import ServerError                           ( ServerError(..) )
 import Char                                  ( ord )
 import Data.Acid.Memory                      ( openMemoryState )
-import qualified Data.ByteString.Lazy             as B
-import Control.Monad.Error                   ( runErrorT)
-
-toB :: String -> B.ByteString
-toB ss = B.pack $ map (fromIntegral . ord) ss
+import Control.Monad.Error                   ( runErrorT, ErrorT )
+import Data.Acid                             ( AcidState )
+import qualified Account                     as A
+import qualified Data.ByteString.Lazy        as B
 
 main :: IO ()
 main = do
-   let assert msg False = error msg
-       assert _ True = return $ ()
-       
-       isRight (Right _) = True
-       isRight (Left _)  = False
+    db <- openMemoryState A.empty
+    addUserTests db
+    cookieTests db
 
-   db <- openMemoryState empty
+addUserTests :: AcidState A.Database -> IO ()
+addUserTests db = do
+    assertEqM      "listUsers"    (A.listUsers db)                                   []                       -- No users
+    assertEqErrorT "login empty"  (A.loginToCookie db (toB "hello") (toB "world"))   (Left UserDoesntExist)   -- User doesn't exist
+    assertEqErrorT "added user"   (A.addUser db (toB "hello") (toB "world"))         (Right ())               -- Add user named 'hello'
+    assertEqM      "listUsers2"   (A.listUsers db)                                   [toB "hello"]            -- User in DB 
+    assertEqErrorT "added user"   (A.addUser db (toB "hello") (toB "again"))         (Left UserAlreadyExists) -- User 'hello' already exists
 
-   _rv <- listUsers db
-   assert "listUsers" (null _rv)
+cookieTests :: AcidState A.Database -> IO ()
+cookieTests db = do
+    assertEqErrorT "login bad password" (A.loginToCookie db (toB "hello") (toB "badpassword")) (Left BadPassword)   -- Bad password for existing user
 
-   _rv <- runErrorT (loginToCookie db (toB "hello") (toB "world"))
-   assert "login empty" ((Left UserDoesntExist) == _rv)
+    goodcookie <- assertRightErrorT "loginToCookie good password" (A.loginToCookie db (toB "hello") (toB "world"))  -- Good password for existing user
 
-   _rv <- runErrorT (cookieToUser db (toB "randomnonsense"))
-   assert "cookieToUser empty" ((Left BadCookie) == _rv)
+    assertEqErrorT "cookieToUser bad cookie"  (A.cookieToUser db (toB "randomnonsense")) (Left BadCookie)           -- User lookup with bad cookie
+    assertEqErrorT "cookieToUser good cookie" (A.cookieToUser db goodcookie)             (Right (toB "hello"))      -- User lookup with good cookie
 
-   _rv <- runErrorT (addUser db (toB "hello") (toB "world"))
-   assert "added user" (_rv == (Right ()))
+    A.clearUserCookie db (toB "hello")                                                                              -- Remove cookie
+    assertEqErrorT "cookieToUser good cookie" (A.cookieToUser db goodcookie)             (Left BadCookie)           -- User lookup after cookie removed
 
-   _rv <- listUsers db
-   assert "listUsers2" ([toB "hello"] == _rv)
+-- String to ByteString
+toB :: String -> B.ByteString
+toB = B.pack . map (fromIntegral . ord)
 
-   _rv <- runErrorT (addUser db (toB "hello") (toB "again"))
-   assert "added user" (_rv == (Left UserAlreadyExists))
+-- Assert an ErrorT action returns the expected value
+assertEqErrorT :: (Eq e, Eq a) => String -> ErrorT e IO a -> Either e a -> IO ()
+assertEqErrorT msg transaction expected = assertEqM msg (runErrorT transaction) expected
 
-   _rv <- runErrorT (loginToCookie db (toB "hello") (toB "badpassword"))
-   assert "login bad password" (_rv == (Left BadPassword))
 
-   _rv <- runErrorT (loginToCookie db (toB "hello") (toB "world"))
-   assert "loginToCookie good password" (isRight _rv)
+-- Assert an ErrorT action returns any value that is Right.  
+-- Return the value inside the Right constructor
+assertRightErrorT :: String -> ErrorT e IO a -> IO a
+assertRightErrorT msg transaction = do
+    actual <- runErrorT transaction
+    assert msg (isRight actual)
+    let (Right x) = actual
+    return x
 
-   let (Right goodcookie) = _rv
+-- Return True if Right
+isRight :: Either a b -> Bool
+isRight (Right _) = True
+isRight (Left _)  = False
 
-   _rv <- runErrorT (cookieToUser db (toB "randomnonsense"))
-   assert "cookieToUser bad cookie" (_rv == (Left BadCookie))
 
-   _rv <- runErrorT (cookieToUser db goodcookie)
-   assert "cookieToUser good cookie" (_rv == (Right (toB "hello")))
+-- Assert a monadic returns the expected value
+assertEqM :: (Eq a) => String -> IO a -> a -> IO ()
+assertEqM msg actualM expected = do
+    actual <- actualM
+    assert msg (actual == expected)
 
-   clearUserCookie db (toB "hello")
-   _rv <- runErrorT (cookieToUser db goodcookie)
-   assert "cookieToUser good cookie" (_rv == (Left BadCookie))
+-- Assert the argument is true or bail out with the given error message
+assert :: String -> Bool -> IO ()
+assert msg False = error msg
+assert _   True  = return ()
+
