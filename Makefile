@@ -13,8 +13,6 @@ serve: $o/icontrib
 
 test: $(patsubst %,$o/%.passed,$(wildcard *Test.hs))
 
-$o/%Test: %Test.hs %.hs
-
 
 $o/icontrib: Server.hs Site.hs test
 	@mkdir -p $(@D)
@@ -25,6 +23,8 @@ $o/%.passed: %
 	@echo Testing: $<
 	@runghc -Wall -Werror $<
 	@touch $@
+
+%Test.hs: %.hs
 
 clean:
 	rm -rf $o
