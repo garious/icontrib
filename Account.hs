@@ -44,14 +44,10 @@ addUserU uid phash = runErrorT $ do
       Nothing -> put $ db { users = (Map.insert uid phash (users db)) }
       (Just _) -> throwError UserAlreadyExists
 
-maybeE :: MonadError e m => e -> Maybe a -> m a
-maybeE _ (Just a) = return a
-maybeE ee _       = throwError ee
-
 cookieToUserQ :: Cookie -> Query Database (Either ServerError UserID)
 cookieToUserQ cookie = runErrorT $ do
    db <- ask
-   maybeE BadCookie (Map.lookup cookie (cookies db))
+   checkMaybe BadCookie (Map.lookup cookie (cookies db))
 
 listUsersQ :: Query Database [UserID]
 listUsersQ = do

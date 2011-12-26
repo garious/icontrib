@@ -40,12 +40,12 @@ getUser db = do
                         let cookie = mkCookie "token" (Url.encode (B.unpack token))
                         lift $ addCookies [(Session, cookie)]
                         return $ JS.encode $ JS.toJSString msg
-              `ore` do token <- A.loginToCookie db (uid) (pwd)
-                       let msg = "Welcome Back " ++ (toS uid)
-                       liftIO $ putStrLn msg 
-                       let cookie = mkCookie "token" (Url.encode (B.unpack token))
-                       lift $ addCookies [(Session, cookie)]
-                       return $ JS.encode $ JS.toJSString msg
+               `ore` do token <- A.loginToCookie db (uid) (pwd)
+                        let msg = "Welcome Back " ++ (toS uid)
+                        liftIO $ putStrLn msg 
+                        let cookie = mkCookie "token" (Url.encode (B.unpack token))
+                        lift $ addCookies [(Session, cookie)]
+                        return $ JS.encode $ JS.toJSString msg
 
    rsp $ rv
 
