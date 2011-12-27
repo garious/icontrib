@@ -22,36 +22,46 @@
 // yoink, a simple module loader.  XMLHttpRequest is the only dependency.
 //
 
-function yoink(url) {
+function yoink(url, interpreter) {
 
     // If not already loaded
-    if (!yoink.loaded[url]) {
+    if (yoink.loaded[url] === undefined) {
+        var f = interpreter || yoink.javascript;
         
-        // Fetch the module
+        // Fetch the resource
         var req = new XMLHttpRequest;
         req.open('GET', url, false);
         req.send();
 
-        // Find the directory the file is in.
-        var base = url.substring(0, url.lastIndexOf('/'));
-
-        // Provide loaded module with a version of yoink() that pulls modules 
-        // relative to the directory of the url we are currently loading.
-        var relYoink = function (url) { 
-            if (url[0] != '/' && url.indexOf('://') == -1) {
-               url = base + '/' + url;
-            }
-            return yoink(url);
-        };
-
-        // Load the module and cache it.
-        // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-        var f = eval('(function (yoink) {' + req.responseText + '})');
-        yoink.loaded[url] = f(relYoink);
+        // Interpret and cache the result
+        yoink.loaded[url] = f(req.responseText, url);
     }
     
     return yoink.loaded[url];
 }
+
+yoink.text = function(text, url) {
+    return text;
+};
+
+yoink.javascript = function(text, url) {
+    // Find the directory the file is in.
+    var base = url.substring(0, url.lastIndexOf('/'));
+
+    // Provide loaded module with a version of yoink() that pulls modules 
+    // relative to the directory of the url we are currently loading.
+    var relYoink = function (url) { 
+        if (url[0] !== '/' && url.indexOf('://') === -1) {
+           url = base + '/' + url;
+        }
+        return yoink(url);
+    };
+
+    // Load the module and cache it.
+    // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
+    var fun = eval('(function (yoink) {' + text + '})');
+    return fun(relYoink);
+};
 
 yoink.loaded = {};
 
