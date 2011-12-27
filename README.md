@@ -8,20 +8,22 @@ yoink.js is yet another module loader for JavaScript.
 
 * Yoink modules are simple.  Here is the "Hello World" of Yoink modules:
 
-    return "Hello world!";
+~~~javascript
+return "Hello world!";
+~~~
 
 * HTML is minimal.  Add Yoink, load a module, and add its return value to the DOM.
 
 ~~~html
-    <html>
-        <body>
-            <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
-            <script type="text/javascript">
-                var msg = yoink('helloworld.js');
-                document.body.appendChild( document.createTextNode(msg) );
-            </script>
-        </body>
-    </html>
+<html>
+    <body>
+        <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
+        <script type="text/javascript">
+            var msg = yoink('helloworld.js');
+            document.body.appendChild( document.createTextNode(msg) );
+        </script>
+    </body>
+</html>
 ~~~
 
 * Yoink modules are scalable.  Yoink loads sub-modules in the context of the
