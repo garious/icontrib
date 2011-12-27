@@ -5,9 +5,6 @@
   <title>IContrib - Improve the world today.</title>
 </head>
 <body>
-  <div id="nav-body"></div>
-  <div id="main-body"></div>
-
   <link rel="stylesheet" type="text/css" media="all" href="css/reset.css" />
   <link rel="stylesheet" type="text/css" media="all" href="css/960.css" />
   <link rel="stylesheet" type="text/css" media="all" href="css/main.css" />
@@ -16,27 +13,34 @@
   <script type="text/javascript" src="jquery/jquery-ui-1.8.16.custom.min.js"></script>
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
+  <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
   <script type="text/javascript">
+    function mkDiv(txt) {
+        var div = document.createElement('div');
+        div.innerHTML = txt;
+        return div;
+    }
+    document.body.appendChild( yoink('widgets/nav.html', mkDiv) );
+    document.body.appendChild( yoink('widgets/donorbody.html', mkDiv) );
+
+    var drawChart = function() {
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        var data = new google.visualization.DataTable();
+        var options = {title: "Greg's Distribution", width: 400, height: 300, backgroundColor: { fill:'transparent' }};
+        data.addColumn('string', 'Charity');
+        data.addColumn('number', 'Percentage');
+        data.addRows([
+            ['UNICEF', 35],
+            ['American Red Cross', 10],
+            ['La Jolla Playhouse', 10],
+            ['San Diego Foundation', 10], 
+            ['USA UWH', 80],
+            ['LACC', 20],
+        ]);
+        chart.draw(data, options);
+    };
     google.load('visualization', '1.0', {'packages':['corechart']});
-    $(document).ready(function() {
-        $('#nav-body').load('widgets/nav.html');
-        $('#main-body').load('widgets/donorbody.html', function() {
-            var chart = new google.visualization.PieChart($('#chart_div')[0]);
-            var data = new google.visualization.DataTable();
-            var options = {title: "Greg's Distribution", width: 400, height: 300, backgroundColor: { fill:'transparent' }};
-            data.addColumn('string', 'Charity');
-            data.addColumn('number', 'Percentage');
-            data.addRows([
-              ['UNICEF', 35],
-              ['American Red Cross', 10],
-              ['La Jolla Playhouse', 10],
-              ['San Diego Foundation', 10], 
-              ['USA UWH', 80],
-              ['LACC', 20],
-            ]);
-            chart.draw(data, options);
-        });
-    });
+    google.setOnLoadCallback(drawChart);
   </script>
 </body>
 </html>

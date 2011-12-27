@@ -5,26 +5,25 @@
   <title>IContrib - Improve the world today.</title>
 </head>
 <body>
-   <div id="nav-body"></div>
-   <div id="main-body"></div>
-
-  <link rel="stylesheet" type="text/css" media="all" href="css/reset.css" />
   <link rel="stylesheet" type="text/css" media="all" href="css/960.css" />
   <link rel="stylesheet" type="text/css" media="all" href="css/main.css" />
-  <link type="text/css" href="css/smoothness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
   <script type="text/javascript" src="jquery/jquery-1.6.2.min.js"></script>
-  <script type="text/javascript" src="jquery/jquery-ui-1.8.16.custom.min.js"></script>
 
   <!-- include Cycle plugin -->
   <script type="text/javascript" src="http://cloud.github.com/downloads/malsup/cycle/jquery.cycle.all.latest.js"></script>
 
+  <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
   <script type="text/javascript">
-$(document).ready(function() {
-    $('#nav-body').load('widgets/nav.html');
-    $('#main-body').load('widgets/indexbody.html', function() {
-       $(".image_reel").cycle('fade');
-    });
-});
+    function mkDiv(txt) {
+        var div = document.createElement('div');
+        div.innerHTML = txt;
+        return div;
+    }
+    document.body.appendChild( yoink('widgets/nav.html', mkDiv) );
+    document.body.appendChild( yoink('widgets/indexbody.html', mkDiv) );
+    $(".image_reel").cycle('fade');
   </script>
+
+
 </body>
 </html>
