@@ -12,6 +12,7 @@ yoink.js is yet another module loader for JavaScript.
 
 * HTML is minimal.  Add Yoink, load a module, and add its return value to the DOM.
 
+~~~html
     <html>
         <body>
             <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
@@ -21,6 +22,7 @@ yoink.js is yet another module loader for JavaScript.
             </script>
         </body>
     </html>
+~~~
 
 * Yoink modules are scalable.  Yoink loads sub-modules in the context of the
   module directory, not the caller's directory.
