@@ -12,6 +12,7 @@ Testing
 -------
 
    brew install node
+
    brew install spidermonkey
 
    make test
