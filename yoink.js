@@ -22,15 +22,7 @@
 // yoink, a simple module loader.  XMLHttpRequest is the only dependency.
 //
 
-function yoink(name, base) {
-
-    // Strip trailing slash
-    if(base && base.substr(-1) == '/') {
-        base = base.substr(0, base.length - 1);
-    }
-
-    // Prepend base URL, if one is provided
-    var url = base ? base + '/' + name : name;
+function yoink(url) {
 
     // If not already loaded
     if (!yoink.loaded[url]) {
@@ -41,13 +33,15 @@ function yoink(name, base) {
         req.send();
 
         // Find the directory the file is in.
-        var basedir = url.substring(0, url.lastIndexOf('/'));
+        var base = url.substring(0, url.lastIndexOf('/'));
 
         // Provide loaded module with a version of yoink() that pulls modules 
         // relative to the directory of the url we are currently loading.
-        var relYoink = function (name, base) { 
-            base = base || basedir;
-            return yoink(name, base);
+        var relYoink = function (url) { 
+            if (url[0] != '/' && url.indexOf('://') == -1) {
+               url = base + '/' + url;
+            }
+            return yoink(url);
         };
 
         // Load the module and cache it.
@@ -59,5 +53,5 @@ function yoink(name, base) {
     return yoink.loaded[url];
 }
 
-yoink.loaded = [];
+yoink.loaded = {};
 

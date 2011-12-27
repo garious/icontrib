@@ -1,7 +1,7 @@
-var a = yoink('assert.js', 'test');
+var a = yoink('test/assert.js');
 var assert = a.assert;
 
-var good = yoink('goodModule.js', 'test');
+var good = yoink('test/goodModule.js');
 assert(good === 'it worked');
 
 assert(1   == '1');
@@ -9,7 +9,7 @@ assert(1  !== '1');
 assert(''  == false);
 assert('' !== false);
 
-yoink('nested/nested.js', 'test');
+yoink('test/nested/nested.js');
 
 print('passed!');
 
