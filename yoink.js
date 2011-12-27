@@ -22,27 +22,26 @@
 // yoink, a simple module loader.  XMLHttpRequest is the only dependency.
 //
 
-function yoink(url, interpreter) {
+function yoink(url, f) {
 
     // If not already loaded
     if (yoink.loaded[url] === undefined) {
-        var f = interpreter || yoink.javascript;
-        
+
         // Fetch the resource
         var req = new XMLHttpRequest;
         req.open('GET', url, false);
         req.send();
 
         // Interpret and cache the result
-        yoink.loaded[url] = f(req.responseText, url);
+        if (!f) {
+            var ext = url.substring(url.lastIndexOf('.') + 1, url.length).toLowerCase();
+            f = yoink.interpreters[ext];
+        }
+        yoink.loaded[url] = f ? f(req.responseText, url) : req.responseText;
     }
     
     return yoink.loaded[url];
 }
-
-yoink.text = function(text, url) {
-    return text;
-};
 
 yoink.json = function(text, url) {
     return JSON.parse(text);
@@ -63,8 +62,13 @@ yoink.javascript = function(text, url) {
 
     // Load the module and cache it.
     // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-    var fun = eval('(function (yoink) {' + text + '})');
-    return fun(relYoink);
+    var f = eval('(function (yoink) {' + text + '})');
+    return f(relYoink);
+};
+
+yoink.interpreters = {
+    js:   yoink.javascript,
+    json: yoink.json,
 };
 
 yoink.loaded = {};
