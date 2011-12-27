@@ -44,6 +44,10 @@ yoink.text = function(text, url) {
     return text;
 };
 
+yoink.json = function(text, url) {
+    return JSON.parse(text);
+};
+
 yoink.javascript = function(text, url) {
     // Find the directory the file is in.
     var base = url.substring(0, url.lastIndexOf('/'));
