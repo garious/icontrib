@@ -1,3 +1,20 @@
+
+Yoink.js
+========
+
+yoink.js is yet another module loader for JavaScript.
+
+* Yoink is small, simple and readable.  Minified version is just 384 bytes!
+
+* Yoink modules are simple.  Here is the "Hello World" of Yoink modules:
+
+      return "Hello world!";
+
+* Yoink modules are scalable.  Yoink loads sub-modules in the context of the
+  module directory, not the caller's directory.
+
+
+
 Contributing
 ============
 
