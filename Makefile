@@ -1,8 +1,10 @@
 o = tmp
 
-all: test yoink-min.js
+all: test compress
 
 test: $o/node.passed $o/spidermonkey.passed
+
+compress: yoink-min.js
 
 $o/spidermonkey.passed: test/goodScript.js yoink_spidermonkey.js yoink.js
 	@mkdir -p $(@D)
