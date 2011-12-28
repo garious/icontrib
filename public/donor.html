@@ -20,8 +20,8 @@
         div.innerHTML = txt;
         return div;
     }
-    document.body.appendChild( yoink('widgets/nav.html', mkDiv) );
-    document.body.appendChild( yoink('widgets/donorbody.html', mkDiv) );
+    document.body.appendChild( mkDiv( yoink('widgets/nav.html') ) );
+    document.body.appendChild( mkDiv( yoink('widgets/donorbody.html') ) );
 
     var drawChart = function() {
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));

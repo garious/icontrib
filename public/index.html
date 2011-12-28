@@ -19,11 +19,9 @@
         div.innerHTML = txt;
         return div;
     }
-    document.body.appendChild( yoink('widgets/nav.html', mkDiv) );
-    document.body.appendChild( yoink('widgets/indexbody.html', mkDiv) );
+    document.body.appendChild( mkDiv( yoink('widgets/nav.html') ) );
+    document.body.appendChild( mkDiv( yoink('widgets/indexbody.html') ) );
     $(".image_reel").cycle('fade');
   </script>
-
-
 </body>
 </html>
