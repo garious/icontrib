@@ -21,18 +21,19 @@ $o/icontrib: Server.hs Site.hs test
 $o/%.passed: %
 	@mkdir -p $(@D)
 	@echo Testing: $<
-	@runghc -Wall -Werror $<
+	@runghc $(GHC_FLAGS) $<
 	@touch $@
 
 %Test.hs: %.hs
 
 clean:
 	rm -rf $o
+	rm -rf dist
+
+dist:
+	cabal configure
+	cabal build
 
 deps:
-	cabal install dataenc
-	cabal install json
-	cabal install acid-state
-	cabal install crypto
-	cabal install cryptohash
-	cabal install happstack-lite
+	cabal update
+	cabal install --only-dependencies
