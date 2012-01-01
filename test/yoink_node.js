@@ -9,13 +9,26 @@ global.print = console.log;
 // yoink.js requires XMLHttpRequest
 if (typeof XMLHttpRequest == 'undefined') {
     global.XMLHttpRequest = function() {
-       this.open = function(method, url, b) { this.responseText = fs.readFileSync(url, 'utf8'); };
+       this.open = function(method, url, async) {
+           if (async) {
+               var me = this; // Ensure timer callback executes in the context of this 'this'
+               setTimeout(function() {
+                   me.responseText = fs.readFileSync(url, 'utf8');
+                   if (me.onreadystatechange) {
+                      me.readyState = 4;
+                      me.onreadystatechange();
+                   }
+               }, 0);
+           } else {
+               this.responseText = fs.readFileSync(url, 'utf8');
+           }
+       };
        this.send = function(){};
     };
 }
 
 // Preload yoink so that we can add the function as a global variable
-var cnts = fs.readFileSync('yoink.js', 'utf8');
+var cnts = fs.readFileSync('../yoink.js', 'utf8');
 eval(cnts);
 global.yoink = yoink;
 

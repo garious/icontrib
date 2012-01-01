@@ -1,7 +1,7 @@
-var a = yoink('test/assert.js');
+var a = yoink('assert.js');
 var assert = a.assert;
 
-var good = yoink('test/goodModule.js');
+var good = yoink('goodModule.js');
 assert(good === 'it worked');
 
 assert(1   == '1');
@@ -9,7 +9,7 @@ assert(1  !== '1');
 assert(''  == false);
 assert('' !== false);
 
-yoink('test/nested/nested.js');
+yoink('nested/nested.js');
 
 
 //
@@ -18,7 +18,7 @@ yoink('test/nested/nested.js');
 var commonjs = function(text, url) {
     return yoink.javascript('var define = function(x) {return x;}; return ' + text, url);
 }
-var obj = yoink('test/requirejsModule.js', commonjs);
+var obj = yoink('requirejsModule.js', commonjs);
 assert(obj.hello === 'world');
 
 
@@ -30,10 +30,10 @@ var commonjs2 = function(text, url) {
 yoink.loaded = [];
 yoink.interpreters.js = commonjs2;
 
-var good = yoink('test/goodModule.js');
+var good = yoink('goodModule.js');
 assert(good === 'it worked');
 
-var obj = yoink('test/requirejsModule.js');
+var obj = yoink('requirejsModule.js');
 assert(obj.hello === 'world');
 
 // cleanup

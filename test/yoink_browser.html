@@ -1,0 +1,37 @@
+<html>
+    <body>
+        <p>Did it work?</p>
+        <script type="text/javascript" src="../yoink.js"></script>
+        <script type="text/javascript">
+            var elements = {
+                br: function() { return document.createElement('br'); },
+                p:  function() { return document.createElement('p'); },
+            };
+
+            var body = document.body;
+
+            //
+            // sync
+            //
+            var loader = YOINK.createResourceLoader();
+            var StaticText = loader.sync('goodWidget.js');
+            body.appendChild( new StaticText("Yes.") );
+
+            body.appendChild( elements.br() );
+            body.appendChild( elements.br() );
+
+
+            //
+            // async
+            //
+            var p = elements.p();
+            p.appendChild( document.createTextNode("Async too?") );
+            body.appendChild(p);
+
+            loader.async('goodWidget.js', null, function(StaticText) {
+                document.body.appendChild( new StaticText("Yes.") );
+            });
+        </script>
+    </body>
+</html>
+
