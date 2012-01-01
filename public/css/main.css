@@ -25,8 +25,21 @@
 body {
 	font: 15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
 	color: #333;
-	background-image: url('../images/background.jpg');
+	background: #00006c url('../images/back5.jpg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	margin:0;
+	padding:100 0 100 0;
+ 
 }
+
+ * html body{
+  overflow:hidden;
+ } 
+ * html div#content{
+  height:100%;
+  overflow:auto;
+ }
 
 pre,
 code {
@@ -137,6 +150,13 @@ a:hover, a:active {
 /* -----------------------Main Template-----------------------------*/
 
 #header {
+	position: fixed; 
+	top:0;
+	left:0;
+	width:100%;
+	height:100px;
+	background-color: #000044;
+	z-index: 10;
 }
 
 #content {
@@ -147,8 +167,13 @@ a:hover, a:active {
 }
 
 #footer {
-    padding: 20px 0;
-    color: #ccc;
+	position: fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:100px;
+	background-color: #000044;
+    color: #eee;
 }
 
 #sidebar {
@@ -168,10 +193,11 @@ a:hover, a:active {
 }
 
 #tagline {
-    float: right;
-    font-size: 1.75em;
-    color: #ccc;
-    padding-top: 50px;
+	font-size: 1.75em;
+	color: #EEE;
+	position: absolute;
+	left: 125px;
+	top: 25px;
 }
 
 .clear {
@@ -283,9 +309,12 @@ a:hover, a:active {
 
 /*--------------------NAVIGATION---------------------------------*/
 #nav {
-    float: right;
-    height: 129px;
-    position: relative;
+	background-color: #EEE;
+	border: solid 1px silver;
+	padding: 5px;
+	position: absolute;
+	right: 25px;
+	top: 25px;
 }
 	
 #nav ul {
@@ -300,7 +329,7 @@ a:hover, a:active {
 
 #nav ul a {
 	display: block;
-        margin: 0;
+    margin: 0;
 	padding: 0 10px;
 	text-decoration: none;
 	font-family: Georgia, serif;
@@ -312,7 +341,7 @@ a:hover, a:active {
 #nav ul a:hover {
 	display: block;
 	text-decoration: underline;
-        margin: 0;
+    margin: 0;
 	text-decoration: none;
 	color: #0051a1;
 	border-left: 3px solid #0051a1;
@@ -346,14 +375,14 @@ a:hover, a:active {
 }
 
 .influential-box .company {
-    color: #ccc;
+    color: #eee;
 }
 
 .influential-box .photo {
     width: 100px;
     height: 125px;
     float: left;
-    background-color: #ccc;
+    background-color: #eee;
     margin: 0 20px 10px 0;
 }
 
