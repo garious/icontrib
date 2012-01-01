@@ -13,7 +13,7 @@
 @lightCompColor: #CDB05C;
 
 @headerHeight: 100px;
-@footerHeight: 100px;
+@footerHeight: 0px;
 
 @accentColor: #eeeeee;
 @primaryText: #333333;
@@ -48,8 +48,9 @@
 body {
 	font: 15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
 	color: @primaryText;
-	background: @primaryColor url('../images/back5.jpg');
-	background-repeat: no-repeat;
+	background: @primaryColor url('../images/back6.jpg');
+	//TODO: fix this line of css
+	//background-repeat: vertical;
 	background-attachment: fixed;
 	margin:0;
 	padding: @headerHeight 0px @footerHeight 0px;
@@ -141,7 +142,6 @@ a:hover, a:active {
     text-decoration: underline;
 }
 
-
 /* -----------------------Main Template-----------------------------*/
 
 #header {
@@ -152,6 +152,8 @@ a:hover, a:active {
 	height: @headerHeight;
 	background-color: @darkColor;
 	z-index: 10;
+	
+	img { background-color: @darkColor; }
 }
 
 #content {
@@ -172,8 +174,8 @@ a:hover, a:active {
 	font-size: 1.75em;
 	color: @accentColor;
 	position: absolute;
-	left: 125px;
-	top: 25px;
+	left: 135px;
+	top: 5px;
 }
 
 .clear {
@@ -243,11 +245,15 @@ a:hover, a:active {
 #nav {
 	background-color: #EEE;
 	border: solid 1px silver;
-	padding: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	width: 450px;
 	position: absolute;
-	right: 25px;
-	top: 25px;
+	top: 5px;
+	right: 5px;
 	
+	form { margin: 0px; }
+
 	ul {
 		margin: 0px;
 		padding: 0px;
