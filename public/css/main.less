@@ -37,6 +37,8 @@
 
 .widget {
 	background-color: @lightClearColor;
+	
+	.widgetContent { margin: 20px; }
 }
 
 /*--------------------------------END Mixins-------------------------------------*/
@@ -239,7 +241,7 @@ a:hover, a:active {
 
 #call-to-action {
     font-size: 1.5em;
-    padding: 20px;
+    padding: 0px;
     margin: 10px 0;
 	.widget;
 	
@@ -257,15 +259,16 @@ a:hover, a:active {
 			.box-shadow; 
 		}
 	}
+	
 }
 
 .separator {
     margin-top: 25px;
 	div {
-		border-right: 1px solid @accentColor;
-		padding: 10px 0;
+		// border-right: 1px solid @accentColor;
+		// padding: 10px 0;
 		min-height: 90px;
-		max-height: 150px;
+		// max-height: 150px;
 	}
 	.omega { border: 0; }
 	.alpha { }

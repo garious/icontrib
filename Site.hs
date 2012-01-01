@@ -32,7 +32,7 @@ checkUser db = do
    rv <- runErrorT $ do cookie <- lift $ liftM Url.decode $ lookCookieValue "token"
                         token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
                         uid <- A.cookieToUser db token
-                        let msg = "Thanks for comming back " ++ (toS uid)
+                        let msg = "Thanks for coming back " ++ (toS uid)
                         liftIO $ putStrLn msg 
                         return $ JS.encode $ JS.toJSString msg
    rsp $ rv
