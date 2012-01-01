@@ -18,6 +18,7 @@ addUserTests :: AcidState A.Database -> IO ()
 addUserTests db = do
     assertEqM      "listUsers"    (A.listUsers db)                                   []                       -- No users
     assertEqErrorT "login empty"  (A.loginToCookie db (toB "hello") (toB "world"))   (Left UserDoesntExist)   -- User doesn't exist
+    assertEqErrorT "add bad user" (A.addUser db (toB "") (toB ""))                   (Left BadUsername)       -- Bad user name
     assertEqErrorT "added user"   (A.addUser db (toB "hello") (toB "world"))         (Right ())               -- Add user named 'hello'
     assertEqM      "listUsers2"   (A.listUsers db)                                   [toB "hello"]            -- User in DB 
     assertEqErrorT "added user"   (A.addUser db (toB "hello") (toB "again"))         (Left UserAlreadyExists) -- User 'hello' already exists

@@ -4,7 +4,7 @@ module Account where
 
 import Control.Monad.IO.Class                ( MonadIO )
 import Data.Word                             ( Word8 )
-import Monad                                 ( liftM )
+import Control.Monad                         ( liftM, when )
 import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
 import Control.Monad.Error                   ( runErrorT, throwError, MonadError, liftIO, ErrorT)
@@ -39,6 +39,7 @@ empty = Database Map.empty Map.empty Map.empty
 
 addUserU :: UserID -> PasswordHash -> Update Database (Either ServerError ())
 addUserU uid phash = runErrorT $ do
+   when (BL.null uid) (throwError BadUsername)
    db <- get
    case(Map.lookup uid (users db)) of
       Nothing -> put $ db { users = (Map.insert uid phash (users db)) }
