@@ -16,6 +16,12 @@
 
   <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
   <script type="text/javascript">
+  
+	var $body = $('body');
+	$body.append($("<div>").load('widgets/nav.html'));
+	$body.append($("<div>").load('widgets/donorbody.html'));
+  
+	/*
     function mkDiv(txt) {
         var div = document.createElement('div');
         div.innerHTML = txt;
@@ -23,6 +29,7 @@
     }
     document.body.appendChild( mkDiv( yoink('widgets/nav.html') ) );
     document.body.appendChild( mkDiv( yoink('widgets/donorbody.html') ) );
+	*/
 
     var drawChart = function() {
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));

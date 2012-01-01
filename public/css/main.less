@@ -4,7 +4,7 @@
 @darkColor: #000046;
 @midDarkColor: #141451;
 
-@lightClearColor: fadeout(@lightColor, 25%); 
+@lightClearColor: fadeout(#ffffff, 25%); 
 
 @primaryCompColor: #9A7400;	
 @midDarkCompColor: #745E1D;
@@ -67,13 +67,6 @@ body {
 pre,
 code {
   font-family: 'DejaVu Sans Mono', Monaco, Consolas, monospace;
-}
-
-hr {
-  border: 0 @accentColor solid;
-  border-top-width: 1px;
-  clear: both;
-  height: 0;
 }
 
 /*---------------------TRANSITIONING------------------------*/
@@ -165,9 +158,6 @@ a:hover, a:active {
   margin: 0 auto;
 }
 
-#logo {
-}
-
 #footer {
 	position: fixed;
 	bottom:0;
@@ -176,22 +166,6 @@ a:hover, a:active {
 	height: @footerHeight;
 	background-color: @darkColor;
 	color: @accentColor;
-}
-
-#sidebar {
-	.widget;
-}
-
-#sidebar-right {
-	width: 200px;
-	float: right;
-}
-
-#sidebar-left {
-	width: 220px;
-	float: left;
-	padding-right: 20px;
-	margin: 0;
 }
 
 #tagline {
@@ -206,37 +180,14 @@ a:hover, a:active {
 	clear: both;
 }
 
-.grey-box {
-	padding: 20px;
-	.widget;
-}
-
 .align {
 	text-align: center;
 	margin: 0 auto;
 	width: 200px;
 }
 
-.align_amt {
-	padding: 1px 5px;
-	background-color: @accentColor;
-	height: 20px;
-	float: left;
-	margin: 0 5px 5px 0;
-	clear: both;
-	font-size: 12px;
-}
-
-.align_amt_big {
-	padding: 5px;
-	background-color: @accentColor;
-	height: 20px;
-	float: left;
-	margin: 5px 37px;
-	clear: both;
-	font-size: 16px;
-	width: 115px;
-	text-align: center;
+.break {
+    margin: 10px 0;
 }
 
 #call-to-action {
@@ -269,9 +220,7 @@ a:hover, a:active {
 		// padding: 10px 0;
 		min-height: 90px;
 		// max-height: 150px;
-	}
-	.omega { border: 0; }
-	.alpha { }
+	} 
 }
 
 .button {

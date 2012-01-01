@@ -17,15 +17,20 @@
 	<div id="content">
 	</div>
   <script type="text/javascript">
+  /*
     function mkDiv(txt) {
         var div = document.createElement('div');
         div.innerHTML = txt;
         return div;
     }
+	*/
 	
 	var container = $("body");
-    container.append( mkDiv( yoink('widgets/nav.html') ) );
-    $("#content").append( mkDiv( yoink('widgets/indexbody.html') ) );
+    container.append( $('<div>').load('widgets/nav.html')  );
+    container.find("#content").append( $('<div>').load('widgets/indexbody.html') );
+   
+   // container.append( mkDiv( yoink('widgets/nav.html') ) );
+   // container.find("#content").append( mkDiv( yoink('widgets/indexbody.html') ) );
     $(".image_reel").cycle('fade');
   </script>
 </body>
