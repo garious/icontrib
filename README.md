@@ -2,33 +2,61 @@
 Yoink.js
 ========
 
-yoink.js is yet another module loader for JavaScript.
-
-* Yoink is small, simple and readable.  Minified version is under two kilobytes.
+yoink.js is a small and simple module loader for JavaScript.
 
 * Yoink modules are simple.  Here is the "Hello World" of Yoink modules:
 
   ~~~javascript
-  return "Hello world!";
+  return document.createTextNode("Hello world!");
   ~~~
 
-* HTML is minimal.  Add Yoink, load a module, and add its return value to the DOM.
+* HTML is minimal.  Add Yoink, load a module, and use it to construct the DOM.
 
   ~~~html
   <html>
       <body>
           <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
           <script type="text/javascript">
-              var loader = YOINK.createResourceLoader();
-              var msg = loader.sync('helloworld.js');
-              document.body.appendChild( document.createTextNode(msg) );
+              var loader = YOINK.resourceLoader();
+              loader.getResource('helloworld.js', function(hello) {
+                  document.body.appendChild(hello);
+              });
           </script>
       </body>
   </html>
   ~~~
 
-* Yoink modules are scalable.  Yoink loads sub-modules in the context of the
-  module directory, not the caller's directory.
+
+* Easy to unit-test modules.  Use *Sync methods and enjoy no dependencies on 'document' or 'window'.
+
+  ~~~javascript
+              var loader = YOINK.resourceLoader();
+              loader.getResourceSync('helloworld.js', function(hello) {
+                  document.body.appendChild(hello);
+              });
+  ~~~
+
+
+* Resources loaded in parallel.
+
+  ~~~javascript
+              var loader = YOINK.resourceLoader();
+              loader.getResources(['helloworld.js', 'goodbye.js'], function(hello, goodbye) {
+                  document.body.appendChild(hello);
+                  document.body.appendChild(goodbye);
+              });
+  ~~~
+
+* Yoink modules are scalable.  When you return the 'module' object, Yoink will first
+  download its dependencies.
+
+  ~~~javascript
+  return YOINK.module(['fileNextToHello.js'], function(neighbor) {
+      return document.createTextNode(neighbor.message);
+  });
+  ~~~
+
+
 
 
 

@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2011 Greg Fitzgerald, IContrib.org
+// Copyright (c) 2011-2012 Greg Fitzgerald, IContrib.org
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this 
 // software and associated documentation files (the "Software"), to deal in the Software
@@ -23,112 +23,180 @@
 //
 
 var YOINK = (function() {
+    var Module = function(deps, f) {
+        this.deps = deps;
+        this.func = f;
+    };
+
     var defaultInterpreters = {
         json: function(text) {
             return JSON.parse(text);
         },
-        js: function(text, loader) {
+        js: function(text, loader, callback) {
             // Load the module
             // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-            var f = eval('(function (yoink, loader) {' + text + '})');
-            return f(mkYoink(loader), loader);
+            var f = eval('(function () {' + text + '})');
+            var x = f();
+            if (x && x.constructor === Module) {
+                if (callback) {
+                    loader.getResources(x.deps, function() {
+                        callback(x.func.apply(null, arguments));
+                    });
+                } else {
+                    return x.func.apply(null, loader.getResourcesSync(x.deps) );
+                }
+            } else {
+                if (callback) {
+                    callback(x);
+                } else {
+                    return x;
+                }
+            }
         },
-    }
+    };
     
-    function ResourceLoader(base, cache, interpreters) {
+    var ResourceLoader = function(base, cache, interpreters) {
         this.base = base;
         this.cache = cache || {};
         this.interpreters = interpreters || defaultInterpreters;
         return this;
     };
 
-    ResourceLoader.prototype.interpret = function(rsc, url, f) {
-        // Look up an interpreter for the URL's file extension
-        if (!f) {
-            var ext = url.substring(url.lastIndexOf('.') + 1, url.length).toLowerCase();
-            f = this.interpreters[ext];
-        }
-
-        // Interpret the resource
-        if (f) {
-            if (f.length == 1) {
-                rsc = f(rsc);
-            } else {
-                // Provide loaded module with a version of loader that pulls modules 
-                // relative to the directory of the url we are currently loading.
-                var base = url.substring(0, url.lastIndexOf('/'));
-                var subloader = new ResourceLoader(base, this.cache, this.interpreters);
-                rsc = f(rsc, subloader);
+    ResourceLoader.prototype = {
+        interpret: function(rsc, url, f, callback) {
+            // Look up an interpreter for the URL's file extension
+            if (!f) {
+                var ext = url.substring(url.lastIndexOf('.') + 1, url.length).toLowerCase();
+                f = this.interpreters[ext];
             }
-        }
 
-        return rsc;
-    };
-
-    ResourceLoader.prototype.resolve = function(url) {
-        if (this.base !== undefined && url[0] !== '/' && url.indexOf('://') === -1) {
-           url = this.base + '/' + url;
-        }
-        return url;
-    };
-
-    ResourceLoader.prototype.sync = function(url, f) {
-        url = this.resolve(url);
-        var rsc = this.cache[url];
-
-        // If not already cached
-        if (rsc === undefined) {
-    
-            // Fetch the resource
-            var req = new XMLHttpRequest();
-            req.open('GET', url, false);
-            req.send();
-
-            rsc = this.interpret(req.responseText, url, f);
-    
-            // Cache the result
-            this.cache[url] = rsc;
-        }
-        
-        return rsc;
-    };
-
-    ResourceLoader.prototype.async = function(url, f, callback) {
-        url = this.resolve(url);
-        var rsc = this.cache[url];
-
-        // If not already cached
-        if (rsc === undefined) {
-    
-            // Fetch the resource
-            var req = new XMLHttpRequest();
-            var loader = this;
-            req.onreadystatechange = function() {
-                if (req.readyState === 4) {
-                    rsc = loader.interpret(req.responseText, url, f);
-
-                    // Cache the result
-                    loader.cache[url] = rsc;
-
-                    callback(rsc);
+            // Interpret the resource
+            if (f) {
+                if (f.length == 1) {
+                    rsc = f(rsc);
+                } else {
+                    // Provide loaded module with a version of loader that pulls modules 
+                    // relative to the directory of the url we are currently loading.
+                    var base = url.substring(0, url.lastIndexOf('/'));
+                    var subloader = new ResourceLoader(base, this.cache, this.interpreters);
+                    if (callback) {
+                        return f(rsc, subloader, callback);
+                    } else {
+                        rsc = f(rsc, subloader);
+                    }
                 }
+            }
+
+            if (callback) {
+                callback(rsc);
+            } else {
+               return rsc;
+            }
+        },
+
+        resolve: function(url) {
+            var p = url.path || url;
+            var f = url.interpreter || null;
+            if (this.base !== undefined && p[0] !== '/' && p.indexOf('://') === -1) {
+               p = this.base + '/' + p;
+            }
+            return {path: p, interpreter: f};
+        },
+
+        // Download a resource synchronously
+        getResourceSync: function(url) {
+            url = this.resolve(url);
+            var rsc = this.cache[url.path];
+
+            // If not already cached
+            if (rsc === undefined) {
+    
+                // Fetch the resource
+                var req = new XMLHttpRequest();
+                req.open('GET', url.path, false);
+                req.send();
+
+                rsc = this.interpret(req.responseText, url.path, url.interpreter);
+    
+                // Cache the result
+                this.cache[url.path] = rsc;
+            }
+            
+            return rsc;
+        },
+
+        getResourcesSync: function(urls) {
+            var rscs = [];
+            var len = urls.length;
+            for (var i = 0; i < len; i++) {
+                rscs[i] = this.getResourceSync(urls[i]);
+            }
+            return rscs;
+        },
+
+        // Download a resource asynchronously
+        getResource: function(url, callback) {
+            url = this.resolve(url);
+            var rsc = this.cache[url.path];
+
+            // If not already cached
+            if (rsc === undefined) {
+
+                // Fetch the resource
+                var req = new XMLHttpRequest();
+                var loader = this;
+                req.onreadystatechange = function() {
+                    if (req.readyState === 4) {
+                        loader.interpret(req.responseText, url.path, url.interpreter, function(rsc) {
+                            // Cache the result
+                            loader.cache[url.path] = rsc;
+                            callback(rsc);
+                        });
+                    }
+                };
+                req.open('GET', url.path, true);
+                req.send();
+            } else {
+                // Push the callback to the event queue.
+                setTimeout(function(){callback(rsc);}, 0);
+            }
+        },
+
+        // Download resources in parallel asynchronously
+        getResources: function(urls, callback) {
+            var rscs = [];
+            var cnt = 0;
+            var len = urls.length;
+            var mkHandler = function(i) {
+                return function(rsc) {
+                     rscs[i] = rsc;
+                     cnt++;
+                     
+                     // If all of the URLs have been loaded
+                     if (cnt === len) {
+                         callback.apply(null, rscs);
+                     }
+                };
             };
-            req.open('GET', url, true);
-            req.send();
-        } else {
-            // Push the callback to the event queue.
-            setTimeout(function(){callback(rsc);}, 0);
-        };
+            for (var i = 0; i < len; i++) {
+                this.getResource(urls[i], mkHandler(i));
+            }
+        },
     };
 
     // Constructor without exposing 'new' keyword
-    function createResourceLoader(base, cache, interpreters) {
+    function resourceLoader(base, cache, interpreters) {
        return new ResourceLoader(base, cache, interpreters);
     };
 
+    // Constructor without exposing 'new' keyword
+    function module(deps, f) {
+       return new Module(deps, f);
+    };
+
     // For backward compatibility
-    function mkYoink(loader) {
-        var yoink          = function(url, f) { return loader.sync(url, f); };
+    var mkYoink = function(loader) {
+        var yoink          = function(url, f) { return loader.getResourceSync({path: url, interpreter: f}); };
         yoink.loaded       = loader.cache;
         yoink.interpreters = loader.interpreters;
         yoink.json         = defaultInterpreters.json;
@@ -137,9 +205,10 @@ var YOINK = (function() {
     };
 
     return {
-       createResourceLoader: createResourceLoader,
+       resourceLoader: resourceLoader,
+       module: module,
        interpreters: defaultInterpreters,
-       yoink: mkYoink(createResourceLoader()),  // For backward compatibility
+       yoink: mkYoink(resourceLoader()),  // For backward compatibility
     };
 })();
 

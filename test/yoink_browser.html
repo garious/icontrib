@@ -13,9 +13,9 @@
             //
             // sync
             //
-            var loader = YOINK.createResourceLoader();
-            var StaticText = loader.sync('goodWidget.js');
-            body.appendChild( new StaticText("Yes.") );
+            var loader = YOINK.resourceLoader();
+            var text = loader.getResourceSync('goodWidget.js');
+            body.appendChild( text("Yes.") );
 
             body.appendChild( elements.br() );
             body.appendChild( elements.br() );
@@ -24,12 +24,13 @@
             //
             // async
             //
+            loader.cache = {};
             var p = elements.p();
             p.appendChild( document.createTextNode("Async too?") );
             body.appendChild(p);
 
-            loader.async('goodWidget.js', null, function(StaticText) {
-                document.body.appendChild( new StaticText("Yes.") );
+            loader.getResource('goodWidget.js', function(text) {
+                document.body.appendChild( text("Yes.") );
             });
         </script>
     </body>

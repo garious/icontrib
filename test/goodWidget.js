@@ -1,7 +1,7 @@
 
-var StaticText = function(msg) {
-   return document.createTextNode(msg)
+var text = function(msg) {
+    return document.createTextNode(msg);
 };
 
-return StaticText
+return text;
 

@@ -1,5 +1,7 @@
-var a = yoink('../assert.js');
-var msg = yoink('neighbor.js');
-a.assert(msg == 'hello neighbor');
+return YOINK.module(['../assert.js', 'neighbor.js'], function(a, msg) {
+
+    a.assert(msg == 'hello neighbor');
+
+});
 
 
