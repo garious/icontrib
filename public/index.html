@@ -10,16 +10,13 @@
   <!-- include Cycle plugin -->
   <script type="text/javascript" src="jquery/jquery-1.7.1.min.js"></script>
   <script type="text/javascript" src="js/less-1.1.5.min.js"></script>
-  <!-- <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script> -->
 </head>
 <body>
-	<div id="content">
-	</div>
   <script type="text/javascript">
 	
 	var container = $("body");
     container.append( $('<div>').load('widgets/nav.html')  );
-    container.find("#content").append( $('<div>').load('widgets/indexbody.html') );
+    container.append( $("<div id='body'>").load('widgets/indexbody.html') );
     container.append( $('<div>').load('widgets/footer.html')  );
    
     /*

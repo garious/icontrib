@@ -2,11 +2,11 @@
 
 <div id="footer"> 
 	<div id="navBar" >
-	  <a href="/"><img src="images/home.png" alt="Home" title="Home" /></a>  
-	  <a href="/donor.html"><img src="images/history.png" alt="Your Portfolio" title="Your Portfolio" /></a>
-	  <a href="/org.html"><img src="images/portfolio.png" alt="Businesses" title="Employers" /></a> 
-	  <a href="/charity.html"><img src="images/link.png" alt="Charities" title="Charities" /></a> 
-	  <a href="/contact.html"><img src="images/rss.png" alt="rss" title="Keep Informed" /></a> 
+	  <a href="/widgets/indexbody.html"><img src="images/home.png" alt="Home" title="Home" /></a>  
+	  <a href="/widgets/donorbody.html"><img src="images/history.png" alt="Your Portfolio" title="Your Portfolio" /></a>
+	  <a href="/widgets/orgbody.html"><img src="images/portfolio.png" alt="Businesses" title="Employers" /></a> 
+	  <a href="/widgets/charitybody.html"><img src="images/link.png" alt="Charities" title="Charities" /></a> 
+	  <a href="/widgets/contactbody.html"><img src="images/rss.png" alt="rss" title="Keep Informed" /></a> 
 	</div>
 </div>
 
@@ -14,5 +14,14 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#navBar').jqDock( { align: 'bottom', labels: 'tl', duration: 150, step: 25, distance: 90, fadein: 300 } );
+		
+		var $body = $('#body')
+		$("#navBar a").click(function() {
+			var $link = $(this);
+			if($body.length === 1) { 
+				$body.load($link.prop("href"));
+				return false;
+			}
+		});
 	});
 </script>

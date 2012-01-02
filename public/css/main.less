@@ -42,6 +42,17 @@
 	.widgetContent { margin: 20px; }
 }
 
+.buttonize(@corners: 5px) {
+		display: block;
+		background-color: @middleColor; 
+		color: #fff;
+		.rounded-corners( @corners);
+		&:hover { 
+			background-color: @lightColor;
+			text-decoration: none;
+			.box-shadow; 
+		}
+}
 /*--------------------------------END Mixins-------------------------------------*/
 
 /*--------------------------------Basic HTML-------------------------------------*/
@@ -50,11 +61,10 @@ body {
 	font: 15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
 	color: @primaryText;
 	background: @primaryColor url('../images/back6.jpg');
-	//TODO: fix this line of css
-	//background-repeat: vertical;
+	background-repeat: repeat-y;
 	background-attachment: fixed;
 	margin:0;
-	padding: @headerHeight 0px @footerHeight 0px;
+	padding: @headerHeight 0px (@footerHeight + 20px) 0px;
 }
 
  * html body{
@@ -265,46 +275,29 @@ form {
 	.widget;
 	
 	a {
-		display: block;
 		padding: 10px;
 		margin: 10px 20px 0 20px;
-		background-color: @middleColor;
 		float: right;
-		color: #fff;
-		.rounded-corners( 5px);
-		&:hover { 
-			background-color: @lightColor;
-			text-decoration: none;
-			.box-shadow; 
-		}
+		
+		.buttonize; 
 	}
 	
 }
 
 .separator {
     margin-top: 25px;
-	div {
-		// border-right: 1px solid @accentColor;
-		// padding: 10px 0;
+	div { 
 		min-height: 90px;
 		// max-height: 150px;
 	} 
 }
 
-.button {
-    display: block;
+.button { 
     padding: 5px 10px;
     margin: 5px 5px 5px 0;
     font-size: 20px;
     text-align: center;
-    background-color: @middleColor;
-    color: #fff;
-    .rounded-corners( 10px);
-	&:hover {
-		background-color: @lightColor;
-		text-decoration: none;
-		.box-shadow;	
-	}
+	.buttonize; 
 }
 
 /*--------------------NAVIGATION---------------------------------*/
@@ -319,45 +312,6 @@ form {
 	right: 5px;
 	
 	form { margin: 0px; }
-
-	ul {
-		margin: 0px;
-		padding: 0px;
-		list-style: none;
-		float: right;
-		position: absolute;
-		bottom: 50px;
-		right: 0;
-		
-		a {
-			display: block;
-			margin: 0;
-			padding: 0 10px;
-			text-decoration: none;
-			font-family: Georgia, serif;
-			font-size: 16px;
-			color: @primaryText;
-			border-left: 3px solid transparent;
-			
-			&:hover { 
-				text-decoration: underline;
-				margin: 0;
-				text-decoration: none;
-				color: @middleColor;
-				border-left: 3px solid @middleColor;
-			}
-		}
-	}
-	
-	li {
-		float: left;
-		margin: 0px;
-		padding: 0px;
-		
-		 li {
-			display: none;
-		}
-	}
 	
 	.login {
 		float: right;
@@ -371,8 +325,7 @@ form {
 .influential-box {
 	margin-top: 10px;
 	
-	.name {
-		font: normal 1em 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+	.name { 
 		margin: 0;
 		padding: 0;
 	}

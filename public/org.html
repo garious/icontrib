@@ -5,15 +5,15 @@
 	  <title>IContrib - Improve the world today.</title>
 	  <link rel="stylesheet" type="text/css" media="all" href="css/960.css" />
 	  <link rel="stylesheet" type="text/less" media="all" href="css/main.less" />
+	  
 	  <script type="text/javascript" src="jquery/jquery-1.7.1.min.js"></script>
 	  <script type="text/javascript" src="js/less-1.1.5.min.js"></script>
-	  <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
 	</head>
 	<body>
 	  <script type="text/javascript">
 		var $body = $('body');
 		$body.append($("<div>").load('widgets/nav.html'));
-		$body.append($("<div>").load('widgets/orgbody.html'));
+		$body.append($("<div id='body'>").load('widgets/orgbody.html'));
 		$body.append( $('<div>').load('widgets/footer.html'));
 	  
 	  /*
