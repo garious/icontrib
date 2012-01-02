@@ -6,7 +6,7 @@
   <link rel="stylesheet" type="text/css" media="all" href="css/960.css" />
   <link rel="stylesheet" type="text/less" media="all" href="css/main.less" />
   <!-- <link rel="stylesheet" href="css/formalize.css" /> -->
-  <script type="text/javascript" src="jquery/jquery-1.6.2.min.js"></script>
+  <script type="text/javascript" src="jquery/jquery-1.7.1.min.js"></script>
   <script type="text/javascript" src="js/less-1.1.5.min.js"></script>
   <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
   <!-- <script type="text/javascript" src="js/jquery.formalize.min.js"></script> -->
@@ -17,6 +17,7 @@
 	var $body = $('body');
 	$body.append($("<div>").load('widgets/nav.html'));
 	$body.append($("<div>").load('widgets/charityBody.html'));
+    $body.append( $('<div>').load('widgets/footer.html')  );
   
   /*
     function mkDiv(txt) {
@@ -26,6 +27,7 @@
     }
     document.body.appendChild( mkDiv( yoink('widgets/nav.html') ) );
     document.body.appendChild( mkDiv( yoink('widgets/orgbody.html') ) );
+	document.body.appendChild( mkDiv( yoink('widgets/footer.html')));
 	*/
   </script>
 </body>

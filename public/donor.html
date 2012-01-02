@@ -7,19 +7,18 @@
   <link rel="stylesheet" type="text/css" media="all" href="css/smoothness/jquery-ui-1.8.16.custom.css" />
   <link rel="stylesheet" type="text/less" media="all" href="css/main.less" />
   
-  <script type="text/javascript" src="jquery/jquery-1.6.2.min.js"></script>
+  <script type="text/javascript" src="jquery/jquery-1.7.1.min.js"></script>
   <script type="text/javascript" src="jquery/jquery-ui-1.8.16.custom.min.js"></script>
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   <script type="text/javascript" src="js/less-1.1.5.min.js"></script>
 </head>
 <body>
-
-  <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
   <script type="text/javascript">
   
 	var $body = $('body');
 	$body.append($("<div>").load('widgets/nav.html'));
 	$body.append($("<div>").load('widgets/donorbody.html'));
+    $body.append( $('<div>').load('widgets/footer.html')  );
   
 	/*
     function mkDiv(txt) {
@@ -29,6 +28,7 @@
     }
     document.body.appendChild( mkDiv( yoink('widgets/nav.html') ) );
     document.body.appendChild( mkDiv( yoink('widgets/donorbody.html') ) );
+	document.body.appendChild( mkDiv( yoink('widgets/footer.html')));
 	*/
 
     var drawChart = function() {
