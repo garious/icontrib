@@ -1,4 +1,5 @@
-var a = yoink('assert.js');
+var loader = YOINK.resourceLoader();
+var A = loader.getResourceSync('assert.js');
 
 var isSet = false;
 
@@ -8,12 +9,12 @@ var f1 = function() {
 
 // A timer that is already expired is not run synchronously, but scheduled to execute immediately.
 setTimeout(f1, 0);
-a.assert(isSet === false);
+A.assert(isSet === false);
 
 
 // Queue the test
 var f2 = function() {
-    a.assert(isSet === true);
+    A.assert(isSet === true);
     print("passed!");
 };
 

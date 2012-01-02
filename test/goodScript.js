@@ -1,7 +1,9 @@
-var a = yoink('assert.js');
-var assert = a.assert;
-
-var good = yoink('goodModule.js');
+//
+// Synchronous loading
+//
+var loader = YOINK.resourceLoader();
+var assert = loader.getResourceSync('assert.js').assert;
+var good = loader.getResourceSync('goodModule.js');
 assert(good === 'it worked');
 
 assert(1   == '1');
@@ -9,36 +11,34 @@ assert(1  !== '1');
 assert(''  == false);
 assert('' !== false);
 
-yoink('nested/nested.js');
+loader.getResourceSync('nested/nested.js');
 
 
 //
-// CommonJS and RequireJS assume a 'define' function.
+// RequireJS assumes a 'define' function.
 //
-var commonjs = function(text, url) {
-    return yoink.javascript('var define = function(x) {return x;}; return ' + text, url);
+var rjs = function(text, yoink, callback) {
+    YOINK.interpreters.js('var define = function(x) {return x;}; return ' + text, yoink, callback);
 }
-var obj = yoink('requirejsModule.js', commonjs);
+var obj = loader.getResourceSync({path: 'requirejsModule.js', interpreter: rjs});
 assert(obj.hello === 'world');
 
 
+//
 // Alternative implementation, a little more complex but works for both yoink and requireJS modules.
-var commonjs2 = function(text, url) {
+//
+var rjsLoader = YOINK.resourceLoader();
+var rjs2 = function(text, yoink, callback) {
     var s = 'var _r1; var define = function(x) {_r1 = x;}; var _r2 = (function(){' + text + '})(); return _r2 === undefined ? _r1 : _r2';
-    return yoink.javascript(s, url);
+    return YOINK.interpreters.js(s, yoink, callback);
 }
-yoink.loaded = [];
-yoink.interpreters.js = commonjs2;
+rjsLoader.interpreters.js = rjs2;
 
-var good = yoink('goodModule.js');
+var good = rjsLoader.getResourceSync('goodModule.js');
 assert(good === 'it worked');
 
-var obj = yoink('requirejsModule.js');
+var obj = rjsLoader.getResourceSync('requirejsModule.js');
 assert(obj.hello === 'world');
-
-// cleanup
-yoink.loaded = [];
-yoink.interpreters.js = yoink.js;
 
 print('passed!');
 
