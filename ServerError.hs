@@ -8,6 +8,7 @@ import Data.Data
 
 data ServerError = UserAlreadyExists
                  | UserDoesntExist
+                 | BadUsername
                  | BadPassword
                  | BadCookie
                  | PasswordsDontMatch
