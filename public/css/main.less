@@ -54,7 +54,6 @@ body {
 	background-attachment: fixed;
 	margin:0;
 	padding: @headerHeight 0px @footerHeight 0px;
- 
 }
 
  * html body{
@@ -191,6 +190,51 @@ a:hover, a:active {
 .break {
     margin: 10px 0;
 }
+
+form {
+	counter-reset: fieldsets;
+	
+	fieldset {
+		border: none;
+		margin-bottom: 10px;
+		&:last-of-type {
+			margin-bottom: 0;
+		}
+		legend {
+			color: @darkColor;
+			font-size: 16px;
+			font-weight: bold;
+			padding-bottom: 10px;
+			text-shadow: 0 1px 1px @midDarkColor;
+			&:before {
+				content: "Step " counter(fieldsets) ": ";
+				counter-increment: fieldsets;
+			}
+		}
+		
+		.formElement {
+
+			background-color: #ffffff;
+			background-color: fadeout(#ffffff, 25%);
+			border-color: @lightColor;
+			border-color: fadeout(@lightColor, 60%);
+			border-style: solid;
+			border-width: 2px;
+			.rounded-corners(5px); 
+			list-style: none;
+			padding: 5px 10px;
+			margin-bottom: 2px;
+			font-size: 90%;
+
+			div.label { width: 150px; float: left; text-align: right; margin-right: 5px; }
+			div.field   { 	
+				input { .rounded-corners(2px); }
+			}
+		}
+	}
+
+}
+
 
 #call-to-action {
     font-size: 1.5em;
