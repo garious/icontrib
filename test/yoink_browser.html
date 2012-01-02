@@ -3,35 +3,13 @@
         <p>Did it work?</p>
         <script type="text/javascript" src="../yoink.js"></script>
         <script type="text/javascript">
-            var elements = {
-                br: function() { return document.createElement('br'); },
-                p:  function() { return document.createElement('p'); },
-            };
+ 
+            YOINK.resourceLoader().getResource('tag.js', function(TAG) {
 
-            var body = document.body;
+                document.body.appendChild( TAG.text("Yes.") );
 
-            //
-            // sync
-            //
-            var loader = YOINK.resourceLoader();
-            var text = loader.getResourceSync('goodWidget.js');
-            body.appendChild( text("Yes.") );
-
-            body.appendChild( elements.br() );
-            body.appendChild( elements.br() );
-
-
-            //
-            // async
-            //
-            loader.cache = {};
-            var p = elements.p();
-            p.appendChild( document.createTextNode("Async too?") );
-            body.appendChild(p);
-
-            loader.getResource('goodWidget.js', function(text) {
-                document.body.appendChild( text("Yes.") );
             });
+
         </script>
     </body>
 </html>
