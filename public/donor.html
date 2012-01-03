@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC>
 <html lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -7,42 +7,32 @@
   <link rel="stylesheet" type="text/css" media="all" href="css/smoothness/jquery-ui-1.8.16.custom.css" />
   <link rel="stylesheet" type="text/less" media="all" href="css/main.less" />
   
-  <script type="text/javascript" src="jquery/jquery-1.6.2.min.js"></script>
+  <script type="text/javascript" src="jquery/jquery-1.7.1.min.js"></script>
   <script type="text/javascript" src="jquery/jquery-ui-1.8.16.custom.min.js"></script>
-  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-  <script type="text/javascript" src="js/less-1.1.5.min.js"></script>
+  <script type="text/javascript" src="js/less-1.1.5.min.js"></script> 
+  <script type="text/javascript" src="js/drawChart.js"></script>
 </head>
 <body>
-
-  <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
   <script type="text/javascript">
+  
+    var $body = $('body');
+    $body.append($("<div>").load('widgets/nav.html'));
+    $body.append($("<div id='body'>").load('widgets/donorbody.html'));
+    $body.append($('<div>').load('widgets/footer.html'));
+  
+	/*
     function mkDiv(txt) {
         var div = document.createElement('div');
         div.innerHTML = txt;
         return div;
     }
-    var loader = YOINK.createResourceLoader();
-    document.body.appendChild( mkDiv( loader.sync('widgets/nav.html') ) );
-    document.body.appendChild( mkDiv( loader.sync('widgets/donorbody.html') ) );
+    document.body.appendChild( mkDiv( yoink('widgets/nav.html') ) );
+    document.body.appendChild( mkDiv( yoink('widgets/donorbody.html') ) );
+    document.body.appendChild( mkDiv( yoink('widgets/footer.html')));
+	*/
 
-    var drawChart = function() {
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-        var data = new google.visualization.DataTable();
-        var options = {title: "Greg's Distribution", width: 400, height: 300, backgroundColor: { fill:'transparent' }};
-        data.addColumn('string', 'Charity');
-        data.addColumn('number', 'Percentage');
-        data.addRows([
-            ['UNICEF', 35],
-            ['American Red Cross', 10],
-            ['La Jolla Playhouse', 10],
-            ['San Diego Foundation', 10], 
-            ['USA UWH', 80],
-            ['LACC', 20],
-        ]);
-        chart.draw(data, options);
-    };
-    google.load('visualization', '1.0', {'packages':['corechart']});
-    google.setOnLoadCallback(drawChart);
+	//$('document').ready(function() {
+	//});
   </script>
 </body>
 </html>

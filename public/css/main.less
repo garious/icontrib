@@ -4,7 +4,7 @@
 @darkColor: #000046;
 @midDarkColor: #141451;
 
-@lightClearColor: fadeout(@lightColor, 25%); 
+@lightClearColor: fadeout(#ffffff, 15%); 
 
 @primaryCompColor: #9A7400;	
 @midDarkCompColor: #745E1D;
@@ -13,7 +13,7 @@
 @lightCompColor: #CDB05C;
 
 @headerHeight: 100px;
-@footerHeight: 100px;
+@footerHeight: 50px;
 
 @accentColor: #eeeeee;
 @primaryText: #333333;
@@ -37,10 +37,22 @@
 
 .widget {
 	background-color: @lightClearColor;
+	.rounded-corners(5px); 
 	
-	.widgetContent { margin: 20px; }
+	.widgetContent { margin: 0px 15px 15px 15px; }
 }
 
+.buttonize(@corners: 5px) {
+		display: block;
+		background-color: @middleColor; 
+		color: #fff;
+		.rounded-corners( @corners);
+		&:hover { 
+			background-color: @lightColor;
+			text-decoration: none;
+			.box-shadow; 
+		}
+}
 /*--------------------------------END Mixins-------------------------------------*/
 
 /*--------------------------------Basic HTML-------------------------------------*/
@@ -48,12 +60,11 @@
 body {
 	font: 15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
 	color: @primaryText;
-	background: @primaryColor url('../images/back5.jpg');
-	background-repeat: no-repeat;
+	background: @primaryColor url('../images/back6.jpg');
+	background-repeat: repeat-y;
 	background-attachment: fixed;
 	margin:0;
-	padding: @headerHeight 0px @footerHeight 0px;
- 
+	padding: @headerHeight 0px (@footerHeight + 20px) 0px;
 }
 
  * html body{
@@ -67,13 +78,6 @@ body {
 pre,
 code {
   font-family: 'DejaVu Sans Mono', Monaco, Consolas, monospace;
-}
-
-hr {
-  border: 0 @accentColor solid;
-  border-top-width: 1px;
-  clear: both;
-  height: 0;
 }
 
 /*---------------------TRANSITIONING------------------------*/
@@ -148,24 +152,40 @@ a:hover, a:active {
     text-decoration: underline;
 }
 
-
 /* -----------------------Main Template-----------------------------*/
 
 #header {
-	position: fixed; 
+	position: absolute; 
 	top:0;
 	left:0;
 	width:100%;
-	height: @headerHeight;
 	background-color: @darkColor;
+	height: @headerHeight;
 	z-index: 10;
+	
+	img { background-color: @darkColor; }
+}
+
+#navBar {
+	text-align: center;
+	height: 50px;
+	position: relative;
+	
+	a {
+		width: 50px;
+		text-align: center;   
+		float: left; 
+		color: @lightCompColor;
+		
+		img { display: none; }
+	}
+	
+	div.jqDockLabel { color: @lightCompColor; background-color: @darkCompColor; border: 1px solid @primaryCompColor; } 
+	div.jqDockWrap  { margin:0 auto; }
 }
 
 #content {
   margin: 0 auto;
-}
-
-#logo {
 }
 
 #footer {
@@ -173,42 +193,22 @@ a:hover, a:active {
 	bottom:0;
 	left:0;
 	width:100%;
-	height: @footerHeight;
 	background-color: @darkColor;
+	height: @footerHeight;
 	color: @accentColor;
-}
-
-#sidebar {
-	.widget;
-}
-
-#sidebar-right {
-	width: 200px;
-	float: right;
-}
-
-#sidebar-left {
-	width: 220px;
-	float: left;
-	padding-right: 20px;
-	margin: 0;
+	z-index: 10;
 }
 
 #tagline {
 	font-size: 1.75em;
 	color: @accentColor;
 	position: absolute;
-	left: 125px;
-	top: 25px;
+	left: 135px;
+	top: 5px;
 }
 
 .clear {
 	clear: both;
-}
-
-.grey-box {
-	padding: 20px;
-	.widget;
 }
 
 .align {
@@ -217,27 +217,53 @@ a:hover, a:active {
 	width: 200px;
 }
 
-.align_amt {
-	padding: 1px 5px;
-	background-color: @accentColor;
-	height: 20px;
-	float: left;
-	margin: 0 5px 5px 0;
-	clear: both;
-	font-size: 12px;
+.break {
+    margin: 10px 0;
 }
 
-.align_amt_big {
-	padding: 5px;
-	background-color: @accentColor;
-	height: 20px;
-	float: left;
-	margin: 5px 37px;
-	clear: both;
-	font-size: 16px;
-	width: 115px;
-	text-align: center;
+form {
+	counter-reset: fieldsets;
+	
+	fieldset {
+		border: none;
+		margin-bottom: 10px;
+		&:last-of-type {
+			margin-bottom: 0;
+		}
+		legend {
+			color: @darkColor;
+			font-size: 16px;
+			font-weight: bold;
+			padding-top: 10px;
+			text-shadow: 0 1px 1px @midDarkColor;
+			&:before {
+				content: "Step " counter(fieldsets) ": ";
+				counter-increment: fieldsets;
+			}
+		}
+		
+		.formElement {
+
+			background-color: #ffffff;
+			background-color: fadeout(#ffffff, 25%);
+			border-color: @lightColor;
+			border-color: fadeout(@lightColor, 60%);
+			border-style: solid;
+			border-width: 2px;
+			.rounded-corners(5px); 
+			list-style: none;
+			padding: 5px 10px;
+			margin-bottom: 2px;
+			font-size: 90%;
+
+			div.label { width: 150px; float: left; text-align: right; margin-right: 5px; }
+			div.field   { 	
+				input { .rounded-corners(2px); }
+			}
+		}
+	}
 }
+
 
 #call-to-action {
     font-size: 1.5em;
@@ -246,97 +272,43 @@ a:hover, a:active {
 	.widget;
 	
 	a {
-		display: block;
 		padding: 10px;
 		margin: 10px 20px 0 20px;
-		background-color: @middleColor;
 		float: right;
-		color: #fff;
-		.rounded-corners( 5px);
-		&:hover { 
-			background-color: @lightColor;
-			text-decoration: none;
-			.box-shadow; 
-		}
+		
+		.buttonize; 
 	}
 	
 }
 
 .separator {
     margin-top: 25px;
-	div {
-		// border-right: 1px solid @accentColor;
-		// padding: 10px 0;
+	div { 
 		min-height: 90px;
 		// max-height: 150px;
-	}
-	.omega { border: 0; }
-	.alpha { }
+	} 
 }
 
-.button {
-    display: block;
+.button { 
     padding: 5px 10px;
     margin: 5px 5px 5px 0;
     font-size: 20px;
     text-align: center;
-    background-color: @middleColor;
-    color: #fff;
-    .rounded-corners( 10px);
-	&:hover {
-		background-color: @lightColor;
-		text-decoration: none;
-		.box-shadow;	
-	}
+	.buttonize; 
 }
 
 /*--------------------NAVIGATION---------------------------------*/
 #nav {
 	background-color: #EEE;
 	border: solid 1px silver;
-	padding: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	width: 450px;
 	position: absolute;
-	right: 25px;
-	top: 25px;
+	top: 5px;
+	right: 5px;
 	
-	ul {
-		margin: 0px;
-		padding: 0px;
-		list-style: none;
-		float: right;
-		position: absolute;
-		bottom: 50px;
-		right: 0;
-		
-		a {
-			display: block;
-			margin: 0;
-			padding: 0 10px;
-			text-decoration: none;
-			font-family: Georgia, serif;
-			font-size: 16px;
-			color: @primaryText;
-			border-left: 3px solid transparent;
-			
-			&:hover { 
-				text-decoration: underline;
-				margin: 0;
-				text-decoration: none;
-				color: @middleColor;
-				border-left: 3px solid @middleColor;
-			}
-		}
-	}
-	
-	li {
-		float: left;
-		margin: 0px;
-		padding: 0px;
-		
-		 li {
-			display: none;
-		}
-	}
+	form { margin: 0px; }
 	
 	.login {
 		float: right;
@@ -350,8 +322,7 @@ a:hover, a:active {
 .influential-box {
 	margin-top: 10px;
 	
-	.name {
-		font: normal 1em 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+	.name { 
 		margin: 0;
 		padding: 0;
 	}
@@ -492,20 +463,11 @@ input {
 		border: 1px solid @lightColor;
 	}
 }
-
-.text-blue {
-    color: @middleColor;
-}
-
-.text-light-blue {
-    color: @lightColor;
-}
-
-.text-grey {
-    color: @accentColor;
-}
-
-.green-box {
-	background-color: RGBA(154,235,150,0.5) !important;
-	padding: 20px;
+    
+#divBrowseCharities {
+	a { width: 175px; 
+		float: left;
+		//&:nth-child(even) { display: inline; }
+		//&:nth-child(odd) { display: block; width: 100px; }
+	}
 }
