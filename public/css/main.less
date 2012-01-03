@@ -39,7 +39,7 @@
 	background-color: @lightClearColor;
 	.rounded-corners(5px); 
 	
-	.widgetContent { margin: 20px; }
+	.widgetContent { margin: 0px 15px 15px 15px; }
 }
 
 .buttonize(@corners: 5px) {
@@ -264,7 +264,6 @@ form {
 			}
 		}
 	}
-
 }
 
 
@@ -466,20 +465,11 @@ input {
 		border: 1px solid @lightColor;
 	}
 }
-
-.text-blue {
-    color: @middleColor;
-}
-
-.text-light-blue {
-    color: @lightColor;
-}
-
-.text-grey {
-    color: @accentColor;
-}
-
-.green-box {
-	background-color: RGBA(154,235,150,0.5) !important;
-	padding: 20px;
+    
+#divBrowseCharities {
+	a { width: 175px; 
+		float: left;
+		//&:nth-child(even) { display: inline; }
+		//&:nth-child(odd) { display: block; width: 100px; }
+	}
 }

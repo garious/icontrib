@@ -1,83 +1,39 @@
-<div id="content" class="container_12">
-  <div id="call-to-action" class="grid_12">
-	<div class="widgetContent">Enable your organization to recieve regular contributions today!</div>
-  </div> 
-  <div class="grid_12 alpha omega widget">
-	<div class="widgetContent">
-		<form counter-reset="fieldsets" >
-			
-			<fieldset>
-				<legend>Organization Information</legend>
-				<div class="formElement">
-					<div class="label">
-						<label for="name">Organization Name</label>
-					</div>
-					<div class="field">
-						<input type="text" id="name" name="name" placeholder="Red Cross, SPCA, etc" autofocus="autofocus" required>
-					</div>
-				</div>
-				<div class="formElement">
-					<div class="label">
-						<label for="url">Company Website</label>
-					</div>
-					<div class="field">
-						<input type="url" id="url" name="url" value="http://" placeholder="http://" >
-					</div>
-				</div>
-			</fieldset>
-			
-			<fieldset>
-				<legend>Point of Contact</legend>
-				
-				<div class="formElement">
-					<div class="label">
-						<label for="firstName">First (Given) Name</label>
-					</div>
-					<div class="field">
-						<input type="text" id="firstName" name="firstName" placeholder="First Name" required >
-					</div>
-				</div>
-				<div class="formElement">
-					<div class="label">
-						<label for="lastName">Last Name</label>
-					</div>
-					<div class="field">
-						<input type="text" id="lastName" name="lastName" placeholder="Last Name" required >
-					</div>
-				</div>
-				<div class="formElement">
-					<div class="label">
-						<label for="phoneNumber">Phone Number</label>
-					</div>
-					<div class="field">
-						<input type="tel" id="phoneNumber" name="phoneNumber" placeholder="(xxx)xxx-xxxx" >
-					</div>
-				</div>
-				<div class="formElement">
-					<div class="label">
-						<label for="email">E-mail</label>
-					</div>
-					<div class="field">
-						<input type="email" id="email" name="email" placeholder="abc@charity.org" >
-					</div>
-				</div>
-			</fieldset>
-			
-			<fieldset>
-				<legend>Terms of Agreement</legend>
-				<div id="toa" class="formElement" style="height: 200px; overflow: auto;">
-					<!-- Terms of Agreement injected here -->
-				</div>
-			</fieldset>
-				
-            <input type="submit" value="Sign up" />	
-				
-		</form>
+<div id="content" class="container_12"> 
+	<div id="call-to-action" class="grid_12">
+	
+	</div> 
+    <div class="grid_6 alpha">
+		<div class="widget">
+			<div class="widgetContent"> 
+				<form>
+					<input id="txtSearch" type="text" placeholder="Search Charities" />
+					<button id="btnSearch" type="submit">Search</button>
+				</form>
+			</div>
+		</div>
+		<div class="widget">
+			<div id="divBrowseCharities" class="widgetContent"> 
+				<a href="#">Browse By Category</a>
+				<a href="#">Browse By Location</a>
+				<a href="#">Browse By Size</a>
+				<a href="#">Browse By Revenue</a>
+				<div class="clear"/>
+			</div>
+		</div>
+    </div>
+    <div class="grid_3 widget"> 
+		<div class="widgetContent"> 
+			<h1><a href="/charitySignUp.html">Charity Sign Up</a></h1>
+		</div> 
+    </div>
+	<div class="grid_3 widget omega">
+		<div class="widgetContent"> 
+			<h4>Your Recent Charities</h4>
+			<a href="/org.html">Red Cross</a>
+		</div>
 	</div>
-  </div>
 </div>
 
-
-  <script type="text/javascript"> 
-	$("#toa").append($("<div>").load('widgets/toa.html'));
-  </script>
+<script type="text/javascript">
+	$("#btnSearch").button({icons: {primary:'ui-icon-search'}});
+</script>
