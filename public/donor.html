@@ -21,8 +21,9 @@
         div.innerHTML = txt;
         return div;
     }
-    document.body.appendChild( mkDiv( yoink('widgets/nav.html') ) );
-    document.body.appendChild( mkDiv( yoink('widgets/donorbody.html') ) );
+    var loader = YOINK.createResourceLoader();
+    document.body.appendChild( mkDiv( loader.sync('widgets/nav.html') ) );
+    document.body.appendChild( mkDiv( loader.sync('widgets/donorbody.html') ) );
 
     var drawChart = function() {
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));

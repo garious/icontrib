@@ -10,23 +10,23 @@
   <!-- include Cycle plugin -->
   <script type="text/javascript" src="jquery/jquery-1.6.2.min.js"></script>
   <script type="text/javascript" src="js/less-1.1.5.min.js"></script>
-  <script type="text/javascript" src="http://cloud.github.com/downloads/malsup/cycle/jquery.cycle.all.latest.js"></script>
-  <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
+  <!--<script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script> -->
+
+  <script type="text/javascript" src="yoink/yoink.js"></script>
 </head>
 <body>
-	<div id="content">
-	</div>
   <script type="text/javascript">
-    function mkDiv(txt) {
-        var div = document.createElement('div');
-        div.innerHTML = txt;
-        return div;
-    }
+    var loader = YOINK.resourceLoader();
+
+    loader.getResources(['tag/tag.js', 'widgets/nav.js', 'widgets/indexbody.html'], function(E, NAV, bodyHtml) {
+        var nav = NAV.nav();
+
+        var content = E.div();
+        content.innerHTML = bodyHtml;
+
+        document.body.appendChild( E.div([nav, content]) );
+    });
 	
-	var container = $("body");
-    container.append( mkDiv( yoink('widgets/nav.html') ) );
-    $("#content").append( mkDiv( yoink('widgets/indexbody.html') ) );
-    $(".image_reel").cycle('fade');
   </script>
 </body>
 </html>
