@@ -56,7 +56,7 @@ var YOINK = (function() {
     };
     
     var ResourceLoader = function(base, cache, interpreters) {
-        this.base = base;
+        this.base = base || '';
         this.cache = cache || {};
         this.interpreters = interpreters || clone(defaultInterpreters);
         return this;
@@ -86,7 +86,7 @@ var YOINK = (function() {
         resolve: function(url) {
             var p = url.path || url;
             var f = url.interpreter || null;
-            if (this.base !== undefined && p[0] !== '/' && p.indexOf('://') === -1) {
+            if (this.base !== '' && p[0] !== '/' && p.indexOf('://') === -1) {
                p = this.base + '/' + p;
             }
             return {path: p, interpreter: f};
@@ -140,7 +140,10 @@ var YOINK = (function() {
                 var loader = this;
                 req.onreadystatechange = function() {
                     if (req.readyState === 4) {
-                        loader.interpret(req.responseText, url.path, url.interpreter, this.getResources, function(rsc) {
+                        var getResources = function(urls, callback) {
+                           this.getResources(urls, callback);
+                        };
+                        loader.interpret(req.responseText, url.path, url.interpreter, getResources, function(rsc) {
                             // Cache the result
                             loader.cache[url.path] = rsc;
                             callback(rsc);
