@@ -32,8 +32,7 @@
         var content = E.div();
         content.innerHTML = bodyHtml;
 
-        var footer = E.div();
-        footer.innerHTML = footerHtml;
+        var footer = NAV.dock({content: content});
 
         document.body.appendChild( E.div([nav, content, footer]) );
     });

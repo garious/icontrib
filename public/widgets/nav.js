@@ -1,10 +1,11 @@
 return YOINK.module([
 
     '../tag/tag.js', 
-    '../jquery/jquery.js',     // TODO: purge jquery
     '../js/less-1.1.5.min.js', // TODO: purge less
+    '../jquery/jquery-1.7.1.min.js',     // TODO: purge jquery
+    '../jquery/jquery.jqDock.min.js',
 
-], function(E, JQUERY, LESS) { 
+], function(E, JQUERY, LESS, DOCK) { 
 
     var nav = function(root, palette) {
         root = root || './'
@@ -89,8 +90,28 @@ return YOINK.module([
         ]));
     };
 
+
+    var dock = function(attrs) {
+        var item = function(href, imgSrc, title) {
+            return E.a({href: href}, [ E.img({src: imgSrc, alt: title, title: title}) ]);
+        };
+
+        var navDiv = E.div({id: 'navBar'}, [
+            item('/widgets/indexbody.html', 'images/home.png', "Home"),
+            item('/widgets/donorbody.html', 'images/portfolio.png', "Your Portfolio"),
+            item('/widgets/charitybody.html', 'images/link.png', "Charities"),
+            item('/widgets/contactbody.html', 'images/rss.png', "Keep Informed"),
+        ]);
+
+        // TODO: There's a race condition here.  Looks like jqDock requires the DOM to be ready before it can be created.
+        $(navDiv).jqDock( { align: 'bottom', labels: 'tl', duration: 150, step: 25, distance: 90, fadein: 300 } );
+   
+        return E.div({id: 'footer'}, [navDiv]);
+    };
+
    return {
        nav: nav,
+       dock: dock,
    };
 
 });
