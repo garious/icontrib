@@ -9,8 +9,8 @@
   
   <script type="text/javascript" src="jquery/jquery-1.7.1.min.js"></script>
   <script type="text/javascript" src="jquery/jquery-ui-1.8.16.custom.min.js"></script>
-  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-  <script type="text/javascript" src="js/less-1.1.5.min.js"></script>
+  <script type="text/javascript" src="js/less-1.1.5.min.js"></script> 
+  <script type="text/javascript" src="js/drawChart.js"></script>
 </head>
 <body>
   <script type="text/javascript">
@@ -32,24 +32,6 @@
 	*/
 
 	//$('document').ready(function() {
-		var drawChart = function() {
-			var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-			var data = new google.visualization.DataTable();
-			var options = {title: "Greg's Distribution", width: 400, height: 300, backgroundColor: { fill:'transparent' }};
-			data.addColumn('string', 'Charity');
-			data.addColumn('number', 'Percentage');
-			data.addRows([
-				['UNICEF', 35],
-				['American Red Cross', 10],
-				['La Jolla Playhouse', 10],
-				['San Diego Foundation', 10], 
-				['USA UWH', 80],
-				['LACC', 20],
-			]);
-			chart.draw(data, options);
-		};
-		google.load('visualization', '1.0', {'packages':['corechart']});
-		google.setOnLoadCallback(drawChart);
 	//});
   </script>
 </body>
