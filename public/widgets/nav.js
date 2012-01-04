@@ -3,7 +3,6 @@ return YOINK.module([
     '../tag/tag.js', 
     '../js/less-1.1.5.min.js', // TODO: purge less
     '../jquery/jquery-1.7.1.min.js',     // TODO: purge jquery
-    '../jquery/jquery.jqDock.min.js',
 
 ], function(E, JQUERY, LESS, DOCK) { 
 
@@ -90,28 +89,27 @@ return YOINK.module([
         ]));
     };
 
+    var dockItem = function(as) {
+        var e = E.a({href: 'javascript: void(0);'}, [ E.img({src: as.src, alt: as.title, title: as.title}) ]);
+        e.addEventListener('click', as.onclick, false);
+        return e;
+    };
 
-    var dock = function(attrs) {
-        var item = function(href, imgSrc, title) {
-            return E.a({href: href}, [ E.img({src: imgSrc, alt: title, title: title}) ]);
-        };
+    var dock = function(as, xs) {
+        if (as.constructor === Array) {
+            xs = as;
+            as = null;
+        }
 
-        var navDiv = E.div({id: 'navBar'}, [
-            item('/widgets/indexbody.html', 'images/home.png', "Home"),
-            item('/widgets/donorbody.html', 'images/portfolio.png', "Your Portfolio"),
-            item('/widgets/charitybody.html', 'images/link.png', "Charities"),
-            item('/widgets/contactbody.html', 'images/rss.png', "Keep Informed"),
-        ]);
+        var e = E.div({align: 'center'}, xs);
 
-        // TODO: There's a race condition here.  Looks like jqDock requires the DOM to be ready before it can be created.
-        $(navDiv).jqDock( { align: 'bottom', labels: 'tl', duration: 150, step: 25, distance: 90, fadein: 300 } );
-   
-        return E.div({id: 'footer'}, [navDiv]);
+        return e;
     };
 
    return {
        nav: nav,
        dock: dock,
+       dockItem: dockItem,
    };
 
 });
