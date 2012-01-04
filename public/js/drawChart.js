@@ -2,10 +2,8 @@ if (!window.iContrib ) {
     iContrib = {};
 }
 
-iContrib.chartID = 'userChart';
-
 iContrib.draw = function() {
-	var chart = new google.visualization.PieChart(document.getElementById(iContrib.chartID));
+	var chart = new google.visualization.PieChart(iContrib.chartNode);
 	var data = new google.visualization.DataTable();
 	var options = {title: "Greg's Distribution", width: 400, height: 300, backgroundColor: { fill:'transparent' }};
 	data.addColumn('string', 'Charity');
@@ -31,7 +29,8 @@ iContrib.drawChart = function(chartID) {
 	iContrib.initLoader();
 }
 
-iContrib.initLoader = function() {
+iContrib.initLoader = function(chartNode) {
+        iContrib.chartNode = chartNode || document.getElementById('userChart');
 	var googleCharts = document.getElementById("googleCharts");
 
 	if(googleCharts) {

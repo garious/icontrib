@@ -47,7 +47,7 @@ var TAG = {
     stylize:    stylize,
 };
 
-var tags = ['br', 'p', 'div', 'link', 'a', 'img', 'form', 'input'];
+var tags = ['br', 'p', 'div', 'link', 'a', 'img', 'form', 'input', 'h1', 'h2', 'h3'];
 
 tags.forEach(function(nm) {
     TAG[nm] = mkTag(nm);
