@@ -1,10 +1,10 @@
 return YOINK.module([
 
     '../tag/tag.js', 
-    '../jquery/jquery.js',     // TODO: purge jquery
     '../js/less-1.1.5.min.js', // TODO: purge less
+    '../jquery/jquery-1.7.1.min.js',     // TODO: purge jquery
 
-], function(E, JQUERY, LESS) { 
+], function(E, JQUERY, LESS, DOCK) { 
 
     var nav = function(root, palette) {
         root = root || './'
@@ -89,8 +89,27 @@ return YOINK.module([
         ]));
     };
 
+    var dockItem = function(as) {
+        var e = E.a({href: 'javascript: void(0);'}, [ E.img({src: as.src, alt: as.title, title: as.title}) ]);
+        e.addEventListener('click', as.onclick, false);
+        return e;
+    };
+
+    var dock = function(as, xs) {
+        if (as.constructor === Array) {
+            xs = as;
+            as = null;
+        }
+
+        var e = E.div({align: 'center'}, xs);
+
+        return e;
+    };
+
    return {
        nav: nav,
+       dock: dock,
+       dockItem: dockItem,
    };
 
 });

@@ -18,17 +18,18 @@
 	$body.append($("<div>").load('widgets/nav.html'));
 	$body.append($("<div id='body'>").load('widgets/charitySignUpBody.html'));
     $body.append( $('<div>').load('widgets/footer.html')  );
+
+/*
+      var loader = YOINK.resourceLoader();
+
+      loader.getResources([
+          'tag/tag.js',
+          'widgets/nav.js'
+          'widgets/charitySignUpBody.js'
+      ], function(E, NAV, SIGNUP) {
+      });
+*/
   
-  /*
-    function mkDiv(txt) {
-        var div = document.createElement('div');
-        div.innerHTML = txt;
-        return div;
-    }
-    document.body.appendChild( mkDiv( yoink('widgets/nav.html') ) );
-    document.body.appendChild( mkDiv( yoink('widgets/charitySignUpBody.html') ) );
-	document.body.appendChild( mkDiv( yoink('widgets/footer.html')));
-	*/
   </script>
 </body>
 </html>
