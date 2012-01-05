@@ -20,6 +20,7 @@ site :: AcidState A.Database -> ServerPart Response
 site db = msum [ 
       dir "get_user" (getUser db)
     , dir "check_user" (checkUser db)
+    , dir "mirror" $ dir "google" $ dir "jsapi" (seeOther ("https://www.google.com/jsapi"::String) (toResponse ()))
     , homePage
     , JSW.widget "public" ""
     ]
