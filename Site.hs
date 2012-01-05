@@ -4,12 +4,13 @@ module Site where
 
 import Control.Monad.Trans                   ( liftIO, lift )
 import Data.Acid                             ( AcidState )
+import Control.Monad                         ( liftM )
 import Char                                  ( chr )
 import Control.Monad.Error                   ( runErrorT )
-import Control.Monad                         ( liftM )
 
 import qualified Data.ByteString.Lazy        as B
 import qualified Account                     as A
+import qualified JsWidget                    as JSW
 import qualified Codec.Binary.Url            as Url
 import qualified Text.JSON                   as JS
 import qualified ServerError                 as SE
@@ -20,6 +21,7 @@ site db = msum [
       dir "get_user" (getUser db)
     , dir "check_user" (checkUser db)
     , homePage
+    , JSW.widget "public" ""
     ]
 
 homePage :: ServerPart Response
