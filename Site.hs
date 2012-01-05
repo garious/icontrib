@@ -14,16 +14,28 @@ import qualified JsWidget                    as JSW
 import qualified Codec.Binary.Url            as Url
 import qualified Text.JSON                   as JS
 import qualified ServerError                 as SE
+import qualified Network.HTTP                as HTTP
 import Happstack.Lite
 
 site :: AcidState A.Database -> ServerPart Response
 site db = msum [ 
       dir "get_user" (getUser db)
     , dir "check_user" (checkUser db)
-    , dir "mirror" $ dir "google" $ dir "jsapi" (seeOther ("https://www.google.com/jsapi"::String) (toResponse ()))
+    , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "https://www.google.com/jsapi"))
     , homePage
     , JSW.widget "public" ""
     ]
+
+redirect ::  HTTP.Request_String -> ServerPart Response
+redirect req = do
+   hrsp <- liftIO $ liftM check $ (HTTP.simpleHTTP req)
+   setResponseCode $ fromCode $ HTTP.rspCode hrsp
+   mapM_ (\ (HTTP.Header name val) -> setHeaderM (show name) val) $ HTTP.rspHeaders hrsp 
+   return $ toResponse $ HTTP.rspBody hrsp
+   where
+      fromCode (x,y,z) = x * 100 + y * 10 + z
+      check (Left err)  = error (show err) 
+      check (Right rr)  = rr
 
 homePage :: ServerPart Response
 homePage = serveDirectory DisableBrowsing ["index.html"] "public"
