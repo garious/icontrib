@@ -12,8 +12,8 @@
 @middleCompColor: #CDA633;
 @lightCompColor: #CDB05C;
 
-@headerHeight: 100px;
-@footerHeight: 50px;
+@headerHeight: 75px;
+@footerHeight: 75px;
 
 @accentColor: #eeeeee;
 @primaryText: #333333;
@@ -188,7 +188,7 @@ a:hover, a:active {
   margin: 0 auto;
 }
 
-#footer {
+.footer { 
 	position: fixed;
 	bottom:0;
 	left:0;
@@ -197,6 +197,15 @@ a:hover, a:active {
 	height: @footerHeight;
 	color: @accentColor;
 	z-index: 10;
+	
+	.navBar {
+		margin: 0 auto;
+		width: 400px;
+		a { 
+			height: @footerHeight; 
+			img { height: 100%; }
+		}
+	}
 }
 
 #tagline {

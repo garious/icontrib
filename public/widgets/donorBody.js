@@ -29,7 +29,7 @@ return YOINK.module([
         user = user || defaultUser;
 
         return E.div({id: 'content', class: 'container_12'}, [
-            E.div({id: 'call-to-action', class: 'gid_12'}, [
+            E.div({id: 'call-to-action', class: 'grid_12'}, [
                 E.div({class: 'widgetContent'}, [
                     'Align with me to support underwater hockey and to make San Diego more awesome!'
                 ]),

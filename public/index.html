@@ -9,7 +9,7 @@
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
   <!-- TODO: Replace this with a javascript library -->
-  <link rel="stylesheet" type="text/less" media="all" href="css/main.less" />
+  <link rel="stylesheet" type="text/less" media="all" href="css/main.less" /> 
 
   <script type="text/javascript" src="yoink/yoink.js"></script>
   <script type="text/javascript">
@@ -41,7 +41,7 @@
             NAV.dockItem({onclick: mkHandler('widgets/donorbody.js'), src: 'images/portfolio.png', title: "Your Portfolio"}),
             NAV.dockItem({onclick: mkHandler('widgets/charitybody.js'), src: 'images/link.png', title: "Charities"}),
             NAV.dockItem({onclick: mkHandler('widgets/contactbody.js'), src: 'images/rss.png', title: "Keep Informed"}),
-        ]);
+        ]); 
 
         mainHandler();
         document.body.appendChild( E.div([nav, content, dock]) );
