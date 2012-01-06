@@ -14,6 +14,7 @@
 
 @headerHeight: 75px;
 @footerHeight: 75px;
+@otherFooter: 25px;
 
 @accentColor: #eeeeee;
 @primaryText: #333333;
@@ -39,7 +40,11 @@
 	background-color: @lightClearColor;
 	.rounded-corners(5px); 
 	
-	.widgetContent { margin: 0px 15px 15px 15px; }
+	h1, h1, h3, h4, h5, h6, h7 {
+		-webkit-margin-before: 0px;
+	}
+	
+	.widgetContent { margin: 15px 15px 15px 15px; }
 }
 
 .buttonize(@corners: 5px) {
@@ -64,7 +69,7 @@ body {
 	background-repeat: repeat-y;
 	background-attachment: fixed;
 	margin:0;
-	padding: @headerHeight 0px (@footerHeight + 20px) 0px;
+	padding: @headerHeight 0px (@footerHeight + @otherFooter + 20px) 0px;
 }
 
  * html body{
@@ -183,11 +188,7 @@ a:hover, a:active {
 	div.jqDockLabel { color: @lightCompColor; background-color: @darkCompColor; border: 1px solid @primaryCompColor; } 
 	div.jqDockWrap  { margin:0 auto; }
 }
-
-#content {
-  margin: 0 auto;
-}
-
+ 
 .footer { 
 	position: fixed;
 	bottom:0;
@@ -200,10 +201,31 @@ a:hover, a:active {
 	
 	.navBar {
 		margin: 0 auto;
-		width: 400px;
+		width: 300px;
 		a { 
 			height: @footerHeight; 
 			img { height: 100%; }
+		}
+	}
+}
+
+.linkFooter{
+	position: fixed;
+	bottom: @footerHeight;
+	left: 0;
+	width: 100%;
+	background: @midDarkColor;
+	height: @otherFooter;
+	color: @accentColor;
+	z-index: 10;
+	
+
+	div { 
+		text-align: center;
+		width: 400px;
+		margin: 0 auto;
+		a {
+			padding-right: 10px;
 		}
 	}
 }
@@ -276,8 +298,9 @@ form {
 
 #call-to-action {
     font-size: 1.5em;
-    padding: 0px;
-    margin: 10px 0;
+    padding: 0px; 
+	margin-top: 10px;
+	margin-bottom: 0px;
 	.widget;
 	
 	a {
@@ -287,7 +310,6 @@ form {
 		
 		.buttonize; 
 	}
-	
 }
 
 .separator {
@@ -336,14 +358,16 @@ form {
 		padding: 0;
 	}
 	.company {
-		color: @accentColor;
+		color: @darkColor;
 	}
 	.photo {
 		width: 100px;
 		height: 125px;
 		float: left;
-		background-color: @accentColor;
+		background-color: @darkColor;
 		margin: 0 20px 10px 0;
+		
+		img { width: 100px; }
 	}
 	.donation-amount {
 		font-size: 1em;
@@ -354,6 +378,14 @@ form {
 	.desc {
 		font-size: .8em;
 		color: #777;
+	}
+	
+	a {
+		padding: 10px;
+		margin: 10px 20px 10px 20px;
+		float: left;
+		
+		.buttonize; 
 	}
 }
 

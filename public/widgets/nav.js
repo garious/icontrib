@@ -1,9 +1,7 @@
 return YOINK.module([
-
     '../tag/tag.js', 
     '../js/less-1.1.5.min.js', // TODO: purge less
-    '../jquery/jquery-mod.js',
-
+    '../jquery/jquery-mod.js'
 ], function(E, LESS, $) { 
 
     var nav = function(root, palette) {
