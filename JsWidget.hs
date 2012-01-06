@@ -10,8 +10,8 @@ import Control.Monad                         ( guard )
 import Control.Monad.Trans                   ( liftIO )
 import Control.Applicative                   ( optional )
 import           Text.Blaze ((!))
-import qualified Text.Blaze.Html4.Strict as H
-import qualified Text.Blaze.Html4.Strict.Attributes as A
+import qualified Text.Blaze.Html5 as H
+import qualified Text.Blaze.Html5.Attributes as A
 import qualified Data.Text.Lazy as T
 
 -- Is this a javascript file or directory within a widgets directory?
@@ -33,6 +33,7 @@ jsMod root baseUrl = do
 
 htmlForJsMod :: FilePath -> Maybe String -> H.Html
 htmlForJsMod fp maybeNm = appTemplate $ do
+      H.base ! A.href (H.toValue fp) $ ""
       H.link ! A.rel "stylesheet" ! A.type_ "text/less" ! A.media "all" ! A.href "/css/main.less"
       H.script ! A.src "/yoink/yoink.js" ! A.type_ "text/javascript" $ ""
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
