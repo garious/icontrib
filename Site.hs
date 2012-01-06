@@ -22,9 +22,11 @@ site db = msum [
       dir "get_user" (getUser db)
     , dir "check_user" (checkUser db)
     , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "https://www.google.com/jsapi"))
-    , homePage
-    , JSW.widget "public" ""
+    , JSW.widget root ""
+    , fileServer root
     ]
+  where
+    root = "public"
 
 redirect ::  HTTP.Request_String -> ServerPart Response
 redirect req = do
@@ -37,8 +39,8 @@ redirect req = do
       check (Left err)  = error (show err) 
       check (Right rr)  = rr
 
-homePage :: ServerPart Response
-homePage = serveDirectory DisableBrowsing ["index.html"] "public"
+fileServer :: FilePath -> ServerPart Response
+fileServer = serveDirectory DisableBrowsing []
 
 checkUser ::  AcidState A.Database -> ServerPart Response
 checkUser db = do 

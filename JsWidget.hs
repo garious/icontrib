@@ -17,19 +17,19 @@ import qualified Data.Text.Lazy as T
 -- Is this a javascript file or directory within a widgets directory?
 widget :: FilePath -> FilePath -> ServerPart Response
 widget root baseUrl = msum [
-      path (jsMod root baseUrl)
+      nullDir >> jsMod root baseUrl
     , path (jsModDir root baseUrl)
     ]
 
 -- Is this a javascript file within a widgets directory?
-jsMod :: FilePath -> FilePath -> String -> ServerPart Response
-jsMod root baseUrl nm = do
+jsMod :: FilePath -> FilePath -> ServerPart Response
+jsMod root baseUrl = do
       b <- liftIO (doesFileExist (root </> fp))
       guard b
       maybeNm <- optional (lookText "main")
       ok (toResponse (htmlForJsMod fp (fmap T.unpack maybeNm)))
   where
-      fp = baseUrl </> nm <.> "js"
+      fp = baseUrl </> "index.js"
 
 htmlForJsMod :: FilePath -> Maybe String -> H.Html
 htmlForJsMod fp maybeNm = appTemplate $ do
