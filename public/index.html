@@ -5,9 +5,6 @@
   <title>IContrib - Improve the world today.</title>
 </head>
 <body>
-  <!-- TODO: Use YOINK to load this.  See https://github.com/garious/icontrib/issues/16 -->
-  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
   <!-- TODO: Replace this with a javascript library -->
   <link rel="stylesheet" type="text/less" media="all" href="css/main.less" /> 
 
@@ -15,36 +12,8 @@
   <script type="text/javascript">
     var loader = YOINK.resourceLoader();
 
-    loader.getResources([
-
-        'tag/tag.js',
-        'widgets/nav.js', 
-
-    ], function(E, NAV) {
-
-        var nav = NAV.nav();
-        var content = E.div();
-
-        var mkHandler = function(url) {
-            return function() {
-                loader.getResource(url, function(MOD) {
-                    content.innerHTML = '';
-                    content.appendChild(MOD.body());
-                });
-            };
-        };
-
-        var mainHandler = mkHandler('widgets/indexbody.js');
-
-        var dock = NAV.dock( /*{align: 'bottom', labels: 'tl', duration: 150, step: 25, distance: 90, fadein: 300},*/ [
-            NAV.dockItem({onclick: mainHandler, src: 'images/home.png', title: "Home"}),
-            NAV.dockItem({onclick: mkHandler('widgets/donorbody.js'), src: 'images/portfolio.png', title: "Your Portfolio"}),
-            NAV.dockItem({onclick: mkHandler('widgets/charitybody.js'), src: 'images/link.png', title: "Charities"}),
-            NAV.dockItem({onclick: mkHandler('widgets/contactbody.js'), src: 'images/rss.png', title: "Keep Informed"}),
-        ]); 
-
-        mainHandler();
-        document.body.appendChild( E.div([nav, content, dock]) );
+    loader.getResource('index.js', function( IDX ) {
+        document.body.appendChild( IDX.main() );
     });
   </script>
   
