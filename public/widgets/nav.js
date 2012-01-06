@@ -2,9 +2,9 @@ return YOINK.module([
 
     '../tag/tag.js', 
     '../js/less-1.1.5.min.js', // TODO: purge less
-    '../jquery/jquery-1.7.1.min.js',     // TODO: purge jquery
+    '../jquery/jquery-mod.js',
 
-], function(E, JQUERY, LESS, DOCK) { 
+], function(E, LESS, $) { 
 
     var nav = function(root, palette) {
         root = root || './'
