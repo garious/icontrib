@@ -41,5 +41,8 @@ function callback(E, NAV) {
     };
 };
 
-return YOINK.module(deps, callback);
+return {
+    deps: deps,
+    callback: callback,
+};
 
