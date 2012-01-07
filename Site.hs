@@ -22,7 +22,7 @@ site db = msum [
       dir "get_user" (getUser db)
     , dir "check_user" (checkUser db)
     , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "https://www.google.com/jsapi"))
-    , JSW.widget root ""
+    , JSW.widget root []
     , fileServer root
     ]
   where
