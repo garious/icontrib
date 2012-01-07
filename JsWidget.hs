@@ -29,7 +29,9 @@ jsMod root baseUrl = do
       maybeNm <- optional (lookText "main")
       ok (toResponse (htmlForJsMod fp (fmap T.unpack maybeNm)))
   where
-      fp = baseUrl </> "index.js"
+      -- Don't use </> here.  Breaks URLs on Windows!
+      fp | null baseUrl = "index.js"
+         | otherwise    = baseUrl ++ "/index.js"
 
 htmlForJsMod :: FilePath -> Maybe String -> H.Html
 htmlForJsMod fp maybeNm = appTemplate $ do
@@ -64,5 +66,7 @@ jsModDir root baseUrl nm = do
       guard b
       widget root fp
   where
-      fp = baseUrl </> nm
+      -- Don't use </> here.  Breaks URLs on Windows!
+      fp | null baseUrl = nm
+         | otherwise    = baseUrl ++ "/" ++ nm
 
