@@ -7,10 +7,9 @@ return {
     ],
     callback: function(E, LESS, $) { 
 
-        var nav = function(root, palette) {
-            root = root || './'
-            palette = palette || {};
-            palette.accentColor = palette.accentColor || '#eeeeee';
+        var nav = function(as) {
+            as = as || {};
+            as.accentColor = as.accentColor || '#eeeeee';
     
             var headerStyle = {
                 position: 'fixed',
@@ -24,7 +23,7 @@ return {
             
             var taglineStyle = {
                 fontSize: '1.75em',
-                color: palette.accentColor,
+                color: as.accentColor,
                 position: 'absolute',
                 left: '125px',
                 top: '15px'
@@ -53,7 +52,7 @@ return {
                 var dataString = loginForm.serialize();
                 $.ajax({
                     type: "POST",
-                    url: root + "get_user",
+                    url: "/get_user",
                     data: dataString,
                     dataType: "json",
                     success: function(data) {
@@ -64,7 +63,7 @@ return {
     
             $.ajax({
                 type: "GET",
-                url: root + "check_user",
+                url: "/check_user",
                 dataType: "json",
                 success: function(data) {
                    loginForm.innerHTML = data;
@@ -73,14 +72,14 @@ return {
     
             return E.stylize(headerStyle, E.div({class: 'container_12'}, [
                 // TODO: purge stylesheets
-                E.link({type: "text/css", href: root + "css/960.css", rel: "stylesheet"}),
+                E.link({type: "text/css", href: "../css/960.css", rel: "stylesheet"}),
     
                 E.div({class: "grid_6"}, [
                     E.stylize(taglineStyle, E.div([
                         'Improve the world today.'
                     ])),
-                    E.a({href: root}, [
-                        E.img({src: root + "images/logo4.png", alt: "IContrib Home", height: "100%", border: "0"}),
+                    E.a({href: '../'}, [
+                        E.img({src: "../images/logo4.png", alt: "IContrib Home", height: "100%", border: "0"}),
                     ]),
                 ]),
     
@@ -91,27 +90,46 @@ return {
         };
     
         var dockItem = function(as) {
-            var e = E.a({href: 'javascript: void(0);'}, [ E.img({src: as.src, alt: as.title, title: as.title}) ]);
-            e.addEventListener('click', as.onclick, false);
+            as = as || {};
+            var e = E.a({href: as.href}, [ E.img({src: as.src, alt: as.title, title: as.title}) ]);
             return e;
         };
     
         var dock = function(as, xs) {
-            if (as.constructor === Array) {
+            if (as && as.constructor === Array) {
                 xs = as;
                 as = null;
             }
+            return E.div({class: 'footer'}, [E.div({class: 'navBar'}, xs)]);
+        };
+
+        var frame = function(as, xs) {
+            if (as && as.constructor === Array) {
+                xs = as;
+                as = null;
+            }
+            xs = xs || [];
+            as = as || {};
+            as.base = as.base || '';
+            
+            var navbar = nav();
     
-            //var e = E.div({class: 'footer'}, [E.stylize({margin: "0 auto", width: '400px'}, E.div(xs))]);
-    		var e = E.div({class: 'footer'}, [E.div({class: 'navBar'}, xs)]);
-            return e;
+            var doc = dock( /*{align: 'bottom', labels: 'tl', duration: 150, step: 25, distance: 90, fadein: 300},*/ [
+                dockItem({href: '../',         src: '../images/home.png', title: "Home"}),
+                dockItem({href: '../donor/',   src: '../images/portfolio.png', title: "Your Portfolio"}),
+                dockItem({href: '../charity/', src: '../images/link.png', title: "Charities"}),
+                dockItem({href: '../contact/', src: '../images/rss.png', title: "Keep Informed"}),
+            ]);
+    
+            return E.base({href: as.base}, [navbar].concat(xs, [doc]));
         };
     
-       return {
-           nav: nav,
-           dock: dock,
-           dockItem: dockItem
-       };
+        return {
+            nav: nav,
+            dock: dock,
+            dockItem: dockItem,
+            frame: frame,
+        };
     
     },
 };
