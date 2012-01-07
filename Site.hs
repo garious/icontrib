@@ -1,22 +1,23 @@
 {-# LANGUAGE FlexibleContexts, OverloadedStrings, ScopedTypeVariables #-}
 module Site where
+
 import Control.Monad.Trans                   ( liftIO, lift )
 import Data.Acid                             ( AcidState )
+import Control.Monad                         ( liftM )
 import Char                                  ( chr )
 import Control.Monad.Error                   ( runErrorT, ErrorT )
-import Control.Monad                         ( liftM )
-
-
+import Happstack.Server.Monads               ( ServerPartT )
 import qualified Data.ByteString.Lazy        as B
 import qualified Codec.Binary.Url            as Url
 import qualified Text.JSON                   as JS
 import qualified ServerError                 as SE
-
 import qualified Account                     as A
 import qualified CharityInfo                 as C
+import qualified JsWidget                    as JSW
+import qualified Network.HTTP                as HTTP
 
-import Happstack.Server.Monads
 import Happstack.Lite
+
 
 data Site = Site { userAccounts ::  AcidState A.Database
                  , charityAccounts ::  AcidState A.Database
@@ -31,8 +32,23 @@ site st = msum [
     , dir "check_charity"       (get     (checkUser (charityAccounts st)))
     , dir "get_charity_info"    (get     (getInfo (charityAccounts st) (charityInfo st)))
     , dir "update_charity_info" (post    (postInfo (charityAccounts st) (charityInfo st)))
-    , homePage
+    , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "https://www.google.com/jsapi"))
+    , JSW.widget root []
+    , fileServer root
     ]
+  where
+    root = "public"
+
+redirect ::  HTTP.Request_String -> ServerPart Response
+redirect req = do
+   hrsp <- liftIO $ liftM check $ (HTTP.simpleHTTP req)
+   setResponseCode $ fromCode $ HTTP.rspCode hrsp
+   mapM_ (\ (HTTP.Header name val) -> setHeaderM (show name) val) $ HTTP.rspHeaders hrsp 
+   return $ toResponse $ HTTP.rspBody hrsp
+   where
+      fromCode (x,y,z) = x * 100 + y * 10 + z
+      check (Left err)  = error (show err) 
+      check (Right rr)  = rr
 
 get :: (JS.JSON e, JS.JSON a) => ErrorT e (ServerPartT IO) a -> ServerPartT IO Response
 get page = do 
@@ -48,6 +64,9 @@ post page = do
 
 homePage :: ServerPart Response
 homePage = serveDirectory DisableBrowsing ["index.html"] "public"
+
+fileServer :: FilePath -> ServerPart Response
+fileServer = serveDirectory DisableBrowsing []
 
 getInfo :: AcidState A.Database -> AcidState C.Database -> ErrorT SE.ServerError (ServerPartT IO) C.CharityInfo
 getInfo userdb infodb = do 

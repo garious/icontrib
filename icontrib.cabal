@@ -17,6 +17,7 @@ Executable icontrib
                      Crypto >= 4.2.4 && < 4.3,
                      cryptohash >= 0.7.4 && < 0.8,
                      happstack-lite >= 6.0.2 && < 7.0,
+                     HTTP >= 4000.1.1,
                      safecopy >= 0.6.1 && < 0.7,
                      mtl >= 2.0.1.0 && < 2.1,
                      haskell98 >= 1.1.0.1 && < 1.2,

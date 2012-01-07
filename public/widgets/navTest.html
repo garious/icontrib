@@ -5,9 +5,11 @@
 
         <script src="../yoink/yoink.js"></script>
         <script>
+        (function() {
             var loader = YOINK.resourceLoader();
             var NAV = loader.getResourceSync('nav.js');
             document.body.appendChild( NAV.nav('../') );
+        })();
         </script>
     </body>
 </html>

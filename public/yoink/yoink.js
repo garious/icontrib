@@ -23,10 +23,6 @@
 //
 
 var YOINK = (function() {
-    var Module = function(deps, f) {
-        this.deps = deps;
-        this.func = f;
-    };
 
     var defaultInterpreters = {
         json: function(text) {
@@ -37,9 +33,9 @@ var YOINK = (function() {
             // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
             var f = eval('(function () {' + text + '})');
             var mod = f();
-            if (mod && mod.constructor === Module) {
+            if (mod && mod.deps && mod.callback) {
                 yoink(mod.deps, function() {
-                    callback(mod.func.apply(null, arguments));
+                    callback(mod.callback.apply(null, arguments));
                 });
             } else {
                 callback(mod);
@@ -127,6 +123,18 @@ var YOINK = (function() {
             return rscs;
         },
 
+        // Download a text file asynchronously
+        getFile: function(path, callback) {
+            var req = new XMLHttpRequest();
+            req.onreadystatechange = function() {
+                if (req.readyState === 4) {
+                    callback(req.responseText);
+                }
+            };
+            req.open('GET', path, true);
+            req.send();
+        },
+
         // Download a resource asynchronously
         getResource: function(url, callback) {
             url = this.resolve(url);
@@ -134,24 +142,17 @@ var YOINK = (function() {
 
             // If not already cached
             if (rsc === undefined) {
-
-                // Fetch the resource
-                var req = new XMLHttpRequest();
                 var loader = this;
-                req.onreadystatechange = function() {
-                    if (req.readyState === 4) {
-                        var getResources = function(urls, callback) {
-                           this.getResources(urls, callback);
-                        };
-                        loader.interpret(req.responseText, url.path, url.interpreter, getResources, function(rsc) {
-                            // Cache the result
-                            loader.cache[url.path] = rsc;
-                            callback(rsc);
-                        });
-                    }
-                };
-                req.open('GET', url.path, true);
-                req.send();
+                this.getFile(url.path, function(text) {
+                    var getResources = function(urls, f) {
+                       this.getResources(urls, f);  // Important: use 'this', not 'loader' so that we can overwrite 'this' later
+                    };
+                    loader.interpret(text, url.path, url.interpreter, getResources, function(rsc) {
+                        // Cache the result
+                        loader.cache[url.path] = rsc;
+                        callback(rsc);
+                    });
+                });
             } else {
                 // Push the callback to the event queue.
                 setTimeout(function(){callback(rsc);}, 0);
@@ -163,19 +164,40 @@ var YOINK = (function() {
             var rscs = [];
             var cnt = 0;
             var len = urls.length;
+            var loader = this;
+            var getResources = function(us, f) {
+               this.getResources(us, f);  // Important: use 'this', not 'loader' so that we can overwrite 'this' later
+            };
+            var interpretRsc = function(i) {
+                var u = urls[i];
+                loader.interpret(rscs[i], u.path, u.interpreter, getResources, function(rsc) {
+                     // Cache the result
+                     loader.cache[u.path] = rsc;
+                     rscs[i] = rsc;
+                     i++;
+                     if (i === len) {
+                         callback.apply(null, rscs);
+                     } else {
+                         interpretRsc(i);
+                     };
+                });
+            };
             var mkHandler = function(i) {
                 return function(rsc) {
                      rscs[i] = rsc;
                      cnt++;
                      
-                     // If all of the URLs have been loaded
+                     // After all files have been downloaded, interpret each in order.
                      if (cnt === len) {
-                         callback.apply(null, rscs);
+                         if (len > 0) {
+                           interpretRsc(0);
+                         }
                      }
                 };
             };
             for (var i = 0; i < len; i++) {
-                this.getResource(urls[i], mkHandler(i));
+                urls[i] = this.resolve(urls[i]);
+                this.getFile(urls[i].path, mkHandler(i));
             }
         },
     };
@@ -185,9 +207,9 @@ var YOINK = (function() {
        return new ResourceLoader(base, cache, interpreters);
     };
 
-    // Constructor without exposing 'new' keyword
+    // convenience function for creating a yoink module
     function module(deps, f) {
-       return new Module(deps, f);
+       return {deps: deps, callback: f};
     };
 
     return {
