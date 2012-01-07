@@ -12,6 +12,7 @@ Executable icontrib
   Build-Depends:     base >= 4 && < 5,
                      dataenc >= 0.14.0.3 && < 0.15,
                      json >= 0.5 && < 0.6,
+                     derive >= 2.5.5,
                      acid-state >= 0.6.2 && < 0.7,
                      Crypto >= 4.2.4 && < 4.3,
                      cryptohash >= 0.7.4 && < 0.8,
