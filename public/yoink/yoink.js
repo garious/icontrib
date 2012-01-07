@@ -145,7 +145,7 @@ var YOINK = (function() {
                 var loader = this;
                 this.getFile(url.path, function(text) {
                     var getResources = function(urls, f) {
-                       loader.getResources(urls, f);
+                       this.getResources(urls, f);  // Important: use 'this', not 'loader' so that we can overwrite 'this' later
                     };
                     loader.interpret(text, url.path, url.interpreter, getResources, function(rsc) {
                         // Cache the result
@@ -163,7 +163,24 @@ var YOINK = (function() {
         getResources: function(urls, callback) {
             var rscs = [];
             var cnt = 0;
+            var cnt2 = 0;
             var len = urls.length;
+            var loader = this;
+            var getResources = function(us, f) {
+               this.getResources(us, f);  // Important: use 'this', not 'loader' so that we can overwrite 'this' later
+            };
+            var interpretRsc = function(i) {
+                var u = urls[i];
+                loader.interpret(rscs[i], u.path, u.interpreter, getResources, function(rsc) {
+                     // Cache the result
+                     loader.cache[u.path] = rsc;
+                     rscs[i] = rsc;
+                     cnt2++;
+                     if (cnt2 === len) {
+                         callback.apply(null, rscs);
+                     };
+                });
+            };
             var mkHandler = function(i) {
                 return function(rsc) {
                      rscs[i] = rsc;
@@ -171,19 +188,15 @@ var YOINK = (function() {
                      
                      // After all files have been downloaded, interpret each in order.
                      if (cnt === len) {
-                         for (var i = 0; i < len; i++) {
-                             var u = urls[i];
-                             var r = u.interpreter(rscs[i]);
-                             this.cache[u.path] = r;
-                             rscs[i] = r;
+                         for (var j = 0; j < len; j++) {
+                           interpretRsc(j);
                          };
-                         callback.apply(null, rscs);
                      }
                 };
             };
             for (var i = 0; i < len; i++) {
                 urls[i] = this.resolve(urls[i]);
-                this.getFile(url.path, mkHandler(i));
+                this.getFile(urls[i].path, mkHandler(i));
             }
         },
     };

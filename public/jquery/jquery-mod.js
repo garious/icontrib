@@ -1,14 +1,18 @@
 //
-// This file will always expose the latest jQuery as a Yoink module
+// This file will always expose the latest jQuery as a module
 //
 
-return YOINK.module( ['jquery-1.7.1.min.js'], function(){
-    var jq = jQuery;
+return {
+    deps: ['jquery-1.7.1.min.js'],
 
-    // undefine globals
-    window.jQuery = undefined;
-    window.$ = undefined;
+    callback: function() {
+        var jq = jQuery;
 
-    return jq;
-});
+        // undefine globals
+        window.jQuery = undefined;
+        window.$ = undefined;
+
+        return jq;
+    },
+};
 
