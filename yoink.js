@@ -163,7 +163,6 @@ var YOINK = (function() {
         getResources: function(urls, callback) {
             var rscs = [];
             var cnt = 0;
-            var cnt2 = 0;
             var len = urls.length;
             var loader = this;
             var getResources = function(us, f) {
@@ -175,9 +174,11 @@ var YOINK = (function() {
                      // Cache the result
                      loader.cache[u.path] = rsc;
                      rscs[i] = rsc;
-                     cnt2++;
-                     if (cnt2 === len) {
+                     i++;
+                     if (i === len) {
                          callback.apply(null, rscs);
+                     } else {
+                         interpretRsc(i);
                      };
                 });
             };
@@ -188,9 +189,9 @@ var YOINK = (function() {
                      
                      // After all files have been downloaded, interpret each in order.
                      if (cnt === len) {
-                         for (var j = 0; j < len; j++) {
-                           interpretRsc(j);
-                         };
+                         if (len > 0) {
+                           interpretRsc(0);
+                         }
                      }
                 };
             };
