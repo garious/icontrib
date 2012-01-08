@@ -34,11 +34,11 @@ jsMod root baseUrl = do
 
 htmlForJsMod :: [String] -> FilePath -> Maybe String -> H.Html
 htmlForJsMod baseUrl fp maybeNm = appTemplate $ do
-      H.link ! A.rel "stylesheet" ! A.type_ "text/less" ! A.media "all" ! A.href lessAttr
+      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.media "all" ! A.href lessAttr
       H.script ! A.src yoinkAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
   where
-      lessAttr = H.toValue (mkPath (mkRelUrl baseUrl ["css", "main.less"]))
+      lessAttr = H.toValue (mkPath (mkRelUrl baseUrl ["css", "main.css"]))
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
 
       yoink = "\nYOINK.resourceLoader().getResource('/"
