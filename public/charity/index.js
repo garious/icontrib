@@ -1,7 +1,7 @@
 var deps = [
-    'tag/tag.js', 
-    'nav/index.js', 
-    'indexBody.html',
+    '../tag/tag.js', 
+    '../nav/index.js', 
+    'body.html',
 ];
 
 function onReady(E, NAV, html) {
