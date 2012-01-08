@@ -56,7 +56,7 @@ function onReady(E, NAV, google) {
                 ]),
             ]),
             
-            E.div({class: 'grid_3 alpha'}, [
+            E.div({class: 'grid_3'}, [
                 E.div({class: 'widget'}, [
                     E.div({class: 'widgetContent'}, [
                         E.h3([user.firstName + ' ' + user.lastName]),
@@ -69,10 +69,12 @@ function onReady(E, NAV, google) {
                 ]),
             ]),
         
-            E.div({class: 'grid_6 widget'}, [
-                E.div({class: 'widgetContent'}, [
-                    userChart,
-                ]),
+            E.div({class: 'grid_6'}, [
+				E.div({class: 'widget'}, [
+					E.div({class: 'widgetContent'}, [
+						userChart,
+					])
+				])
             ]),
         
             E.div({class: 'grid_3 omega'}, [
