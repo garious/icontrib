@@ -110,7 +110,6 @@ return {
             }
             xs = xs || [];
             as = as || {};
-            as.base = as.base || '';
             
             var navbar = nav();
     
@@ -121,7 +120,7 @@ return {
                 dockItem({href: '../contact/', src: '../images/rss.png', title: "Keep Informed"}),
             ]);
     
-            return E.base({href: as.base}, [navbar].concat(xs, [doc]));
+            return E.div([navbar].concat(xs, [doc]));
         };
     
         return {

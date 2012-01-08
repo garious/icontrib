@@ -1,13 +1,22 @@
 var deps = [
+    'tag/tag.js', 
     'nav/index.js', 
-    'widgets/indexbody.js',
+    'widgets/indexbody.html',
 ];
 
-function onReady(NAV, IDX) {
+function onReady(E, NAV, html) {
+    
+    function body() {
+        var div = E.div();
+        div.innerHTML = html;
+        return div;
+    };
+
     return {
         title: "IContrib - Improve the world today.",
-        main: NAV.frame({base: 'nav/'}, [
-            IDX.body()
+        body: body,
+        main: NAV.frame([
+            body(),
         ]),
     };
 };

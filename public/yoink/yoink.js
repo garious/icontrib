@@ -31,8 +31,8 @@ var YOINK = (function() {
         js: function(text, yoink, callback) {
             // Load the module
             // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-            var f = eval('(function () {' + text + '})');
-            var mod = f();
+            var f = eval('(function (baseUrl) {' + text + '})');
+            var mod = f(yoink.base);
             if (mod && mod.deps && mod.callback) {
                 yoink(mod.deps, function() {
                     callback(mod.callback.apply(null, arguments));
@@ -75,6 +75,7 @@ var YOINK = (function() {
                 var base = url.substring(0, url.lastIndexOf('/'));
                 var subloader = new ResourceLoader(base, this.cache, this.interpreters);
                 var yoink = function(urls, f) {return getResources.call(subloader, urls, f);};
+                yoink.base = base;
                 interpreter(rsc, yoink, callback);
             }
         },
