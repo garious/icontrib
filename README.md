@@ -47,17 +47,35 @@ yoink.js is a small and simple module loader for JavaScript.
               });
   ~~~
 
+* Intuitive semantics.  
+  
+  * Resources are downloaded in parallel.
+  * Resources are interpreted in order.
+  * Cached resources are never reinterpreted.
+
 * Yoink modules are scalable.  When you return the 'module' object, Yoink will first
   download its dependencies.
 
   ~~~javascript
-  return YOINK.module(['fileNextToHello.js'], function(neighbor) {
+  var deps = ['fileNextToHello.js'];
+
+  function onReady(neighbor) {
       return document.createTextNode(neighbor.message);
-  });
+  }
+
+  return {deps: deps, callback: onReady};
   ~~~
 
+* Modules know where they are.  Modules are loaded with a local variable 'baseUrl'
+  that tells module authors where the module is with respect to the root directory.  Module
+  authors can use this value to reference external resources, such as an image file inside
+  the module directory.
 
-
+  ~~~javascript
+  var e = document.createElement('img');
+  e.src = baseUrl + '/favicon.png'; 
+  return e;
+  ~~~
 
 
 Contributing
