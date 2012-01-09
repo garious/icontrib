@@ -25,30 +25,39 @@ widget root baseUrl = msum [
 -- Is this a javascript file within a widgets directory?
 jsMod :: FilePath -> [String] -> ServerPart Response
 jsMod root baseUrl = do
+      maybeFile <- optional (lookText "filename")
+      let filename = maybe "index.js" T.unpack maybeFile
+          url = baseUrl ++ [filename]
       b <- liftIO (doesFileExist (joinPath (root : url)))
       guard b
       maybeNm <- optional (lookText "main")
-      ok (toResponse (htmlForJsMod baseUrl (mkPath url) (fmap T.unpack maybeNm)))
-  where
-      url = baseUrl ++ ["index.js"]
+      ok (toResponse (htmlForJsMod baseUrl filename (fmap T.unpack maybeNm)))
 
-htmlForJsMod :: [String] -> FilePath -> Maybe String -> H.Html
-htmlForJsMod baseUrl fp maybeNm = appTemplate $ do
+htmlForJsMod :: [String] -> String -> Maybe String -> H.Html
+htmlForJsMod baseUrl filename maybeNm = appTemplate $ do
       H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.media "all" ! A.href nineAttr
-      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.media "all" ! A.href lessAttr
       H.script ! A.src yoinkAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
   where
       nineAttr = H.toValue (mkPath (mkRelUrl baseUrl ["css", "960.css"]))
-      lessAttr = H.toValue (mkPath (mkRelUrl baseUrl ["css", "main.css"]))
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
 
-      yoink = "\nYOINK.resourceLoader().getResource('/"
-           ++ fp
-           ++ "', function(M) {\n    "
+      yoink = "\n(function(){\n"
+           ++ "function recurse(ldr, node, callback) {\n"
+           ++ "    if (node && node.deps && node.callback) {\n"
+           ++ "        ldr.getResources(node.deps, function(nd) {recurse(ldr, node.callback(nd), callback);})\n"
+           ++ "    } else {\n"
+           ++ "        callback(node);\n"
+           ++ "    }\n"
+           ++ "}\n"
+           ++ "var loader = YOINK.resourceLoader();\n"
+           ++ "loader.getResources(['" ++ filename ++ "'], function(M) {\n    "
            ++ setTitle
            ++ reassign
-           ++ "document.body.appendChild(typeof M === 'function' ? M() : M);\n});\n"
+           ++ "var node = typeof M === 'function' ? M() : M;\n"
+           ++ "recurse(loader, node, function(nd) {document.body.appendChild(nd)});\n"
+           ++ "});\n"
+           ++ "})()\n"
 
       setTitle = "if (M.title) { document.title = M.title; };\n    "
 

@@ -2,10 +2,9 @@ return {
 
     deps: [
         '../tag/tag.js', 
-        '../js/less-1.1.5.min.js', // TODO: purge less
         '../jquery/jquery-mod.js'
     ],
-    callback: function(E, LESS, $) { 
+    callback: function(E, $) { 
 
         var nav = function(as) {
             as = as || {};
@@ -71,6 +70,7 @@ return {
             });
     
             return E.stylize(headerStyle, E.div({class: 'container_12'}, [ 
+                E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
     
                 E.div({class: "grid_6"}, [
                     E.stylize(taglineStyle, E.div([
@@ -81,9 +81,9 @@ return {
                     ]),
                 ]),
     
-                E.stylize(navStyle, E.div({class: "grid_6"}, [
-                    loginForm,
-                ]))
+                //E.stylize(navStyle, E.div({class: "grid_6"}, [
+                //    loginForm,
+                //]))
             ]));
         };
     
@@ -118,7 +118,7 @@ return {
                 dockItem({href: '../contact/', src: '../images/rss.png', title: "Keep Informed"}),
             ]);
     
-            return E.div([navbar].concat(xs, [doc]));
+            return E.div([navbar].concat(xs/*, [doc]*/));
         };
     
         return {

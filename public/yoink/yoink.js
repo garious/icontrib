@@ -19,7 +19,7 @@
 //
 
 //
-// yoink, a simple resource loader.  XMLHttpRequest is the only dependency.
+// yoink, a simple resource loader.  XMLHttpRequest, console.log() and setTimeout() are the only dependencies.
 //
 
 //Debugging methods - log information to console (if available)
@@ -34,6 +34,17 @@ console.info = console.info || function() { };
 
 var YOINK = (function() {
 
+    var yoinkMod = function(mod, yoink, callback) {
+        if (mod && mod.deps && mod.callback) {
+            yoink(mod.deps, function() {
+                var m = mod.callback.apply(null, arguments);
+                yoinkMod(m, yoink, callback);
+            });
+        } else {
+            callback(mod);
+        }
+    };
+
     var defaultInterpreters = {
         json: function(text) {
             return JSON.parse(text);
@@ -45,14 +56,8 @@ var YOINK = (function() {
 				var f = eval('(function (baseUrl) {' + text + '})');
 					
 				var mod = f(yoink.base);
-				if (mod && mod.deps && mod.callback) {
-					yoink(mod.deps, function() {
-						callback(mod.callback.apply(null, arguments));
-					});
-				} else {
-					callback(mod);
-				}
-            } 
+                                yoinkMod(mod, yoink, callback);
+                        } 
 			catch(err) {
 				console.error("Error loading the following code");
 				console.error(text);
@@ -105,42 +110,10 @@ var YOINK = (function() {
             if (this.base !== '' && p[0] !== '/' && p.indexOf('://') === -1) {
                p = this.base + '/' + p;
             }
+
+            // Normalize the path
+            p = p.replace(/[^/]+[/]\.\.[/]/g,'');  // Remove redundant '%s/..' items.
             return {path: p, interpreter: f};
-        },
-
-        // Download a resource synchronously
-        getResourceSync: function(url) {
-            url = this.resolve(url);
-            var rsc = this.cache[url.path];
-
-            // If not already cached
-            if (rsc === undefined) {
-    
-                // Fetch the resource
-                var req = new XMLHttpRequest();
-                req.open('GET', url.path, false);
-                req.send();
-
-                var getResources = function(urls, callback) {
-                   var rscs = this.getResourcesSync(urls);
-                   callback.apply(null, rscs);
-                };
-                this.interpret(req.responseText, url.path, url.interpreter, getResources, function(r){rsc = r;});
-    
-                // Cache the result
-                this.cache[url.path] = rsc;
-            }
-            
-            return rsc;
-        },
-
-        getResourcesSync: function(urls) {
-            var rscs = [];
-            var len = urls.length;
-            for (var i = 0; i < len; i++) {
-                rscs[i] = this.getResourceSync(urls[i]);
-            }
-            return rscs;
         },
 
         // Download a text file asynchronously
@@ -155,69 +128,74 @@ var YOINK = (function() {
             req.send();
         },
 
-        // Download a resource asynchronously
-        getResource: function(url, callback) {
-            url = this.resolve(url);
-            var rsc = this.cache[url.path];
-
-            // If not already cached
-            if (rsc === undefined) {
-                var loader = this;
-                this.getFile(url.path, function(text) {
-                    var getResources = function(urls, f) {
-                       this.getResources(urls, f);  // Important: use 'this', not 'loader' so that we can overwrite 'this' later
-                    };
-                    loader.interpret(text, url.path, url.interpreter, getResources, function(rsc) {
-                        // Cache the result
-                        loader.cache[url.path] = rsc;
-                        callback(rsc);
-                    });
-                });
-            } else {
-                // Push the callback to the event queue.
-                setTimeout(function(){callback(rsc);}, 0);
-            }
-        },
-
         // Download resources in parallel asynchronously
         getResources: function(urls, callback) {
-            var rscs = [];
-            var cnt = 0;
-            var len = urls.length;
-            var loader = this;
+            var rscs = [];         // For the results of interpreting files
+            var cnt = 0;           // For counting what we've downloaded
+            var len = urls.length; // How many things we need to interpret
             var getResources = function(us, f) {
-               this.getResources(us, f);  // Important: use 'this', not 'loader' so that we can overwrite 'this' later
+                this.getResources(us, f);  // Important: use 'this', not 'loader' so that we can overwrite 'this' later
             };
-            var interpretRsc = function(i) {
-                var u = urls[i];
-                loader.interpret(rscs[i], u.path, u.interpreter, getResources, function(rsc) {
-                     // Cache the result
-                     loader.cache[u.path] = rsc;
-                     rscs[i] = rsc;
+            var loader = this;
+            var onInterpreted = function(i, files) {
+                 i++;  // Index of the next item to interpret
+
+                 // Skip cached resources
+                 while (i < len && files[i] === null) {
                      i++;
-                     if (i === len) {
-                         callback.apply(null, rscs);
-                     } else {
-                         interpretRsc(i);
-                     };
-                });
+                 }
+
+                 if (i === len) {
+                     callback.apply(null, rscs);
+                 } else {
+                     interpretFile(i, files);
+                 }
+            }
+            var mkOnInterpreted = function(p, i, files) {
+                 return function(rsc) {
+                    // If resource does not return a result, force it to 'null' so that we have something to cache.
+                    if (rsc === undefined) {
+                       rsc = null;
+                    }
+                    rscs[i] = rsc;
+                    loader.cache[p] = rsc; // Cache the result
+                    onInterpreted(i, files);
+                 }
             };
-            var mkHandler = function(i) {
-                return function(rsc) {
-                     rscs[i] = rsc;
-                     cnt++;
-                     
-                     // After all files have been downloaded, interpret each in order.
-                     if (cnt === len) {
-                         if (len > 0) {
-                           interpretRsc(0);
-                         }
-                     }
+            var interpretFile = function(i, files) {
+                var u = urls[i];
+	        console.log("yoink: interpreting '" + urls[i].path + "'");
+                loader.interpret(files[i], u.path, u.interpreter, getResources, mkOnInterpreted(u.path, i, files));
+            };
+            var onDownloaded = function(files) {
+                 cnt++;
+                 
+                 // After all files have been downloaded, interpret each in order.
+                 if (cnt === len) {
+                     onInterpreted(-1, files);
+                 }
+            };
+            var mkOnDownloaded = function(i, files) {
+                return function(str) {
+                     files[i] = str;
+                     onDownloaded(files);
                 };
             };
+            var download = function(i, files) {
+                urls[i] = loader.resolve(urls[i]);
+                var p = urls[i].path;
+                var rsc = loader.cache[p];
+                if (rsc === undefined) {
+                    loader.getFile(p, mkOnDownloaded(i, files));
+                } else {
+                    files[i] = null;
+                    rscs[i] = rsc;
+                    onDownloaded(files);  // Skip downloading
+                }
+            };
+            var files = [];        // For downloaded files
             for (var i = 0; i < len; i++) {
-                urls[i] = this.resolve(urls[i]);
-                this.getFile(urls[i].path, mkHandler(i));
+                download(i, files);
             }
         },
     };
@@ -227,14 +205,8 @@ var YOINK = (function() {
        return new ResourceLoader(base, cache, interpreters);
     };
 
-    // convenience function for creating a yoink module
-    function module(deps, f) {
-       return {deps: deps, callback: f};
-    };
-
     return {
        resourceLoader: resourceLoader,
-       module: module,
        interpreters: defaultInterpreters,
     };
 })();
