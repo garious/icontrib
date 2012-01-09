@@ -24,6 +24,17 @@
 
 var YOINK = (function() {
 
+    var yoinkMod = function(mod, yoink, callback) {
+        if (mod && mod.deps && mod.callback) {
+            yoink(mod.deps, function() {
+                var m = mod.callback.apply(null, arguments);
+                yoinkMod(m, yoink, callback);
+            });
+        } else {
+            callback(mod);
+        }
+    };
+
     var defaultInterpreters = {
         json: function(text) {
             return JSON.parse(text);
@@ -33,13 +44,7 @@ var YOINK = (function() {
             // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
             var f = eval('(function (baseUrl) {' + text + '})');
             var mod = f(yoink.base);
-            if (mod && mod.deps && mod.callback) {
-                yoink(mod.deps, function() {
-                    callback(mod.callback.apply(null, arguments));
-                });
-            } else {
-                callback(mod);
-            }
+            yoinkMod(mod, yoink, callback);
         },
     };
 
@@ -92,41 +97,6 @@ var YOINK = (function() {
             return {path: p, interpreter: f};
         },
 
-        // Download a resource synchronously
-        getResourceSync: function(url) {
-            url = this.resolve(url);
-            var rsc = this.cache[url.path];
-
-            // If not already cached
-            if (rsc === undefined) {
-    
-                // Fetch the resource
-                var req = new XMLHttpRequest();
-                req.open('GET', url.path, false);
-                req.send();
-
-                var getResources = function(urls, callback) {
-                   var rscs = this.getResourcesSync(urls);
-                   callback.apply(null, rscs);
-                };
-                this.interpret(req.responseText, url.path, url.interpreter, getResources, function(r){rsc = r;});
-    
-                // Cache the result
-                this.cache[url.path] = rsc;
-            }
-            
-            return rsc;
-        },
-
-        getResourcesSync: function(urls) {
-            var rscs = [];
-            var len = urls.length;
-            for (var i = 0; i < len; i++) {
-                rscs[i] = this.getResourceSync(urls[i]);
-            }
-            return rscs;
-        },
-
         // Download a text file asynchronously
         getFile: function(path, callback) {
             var req = new XMLHttpRequest();
@@ -137,30 +107,6 @@ var YOINK = (function() {
             };
             req.open('GET', path, true);
             req.send();
-        },
-
-        // Download a resource asynchronously
-        getResource: function(url, callback) {
-            url = this.resolve(url);
-            var rsc = this.cache[url.path];
-
-            // If not already cached
-            if (rsc === undefined) {
-                var loader = this;
-                this.getFile(url.path, function(text) {
-                    var getResources = function(urls, f) {
-                       this.getResources(urls, f);  // Important: use 'this', not 'loader' so that we can overwrite 'this' later
-                    };
-                    loader.interpret(text, url.path, url.interpreter, getResources, function(rsc) {
-                        // Cache the result
-                        loader.cache[url.path] = rsc;
-                        callback(rsc);
-                    });
-                });
-            } else {
-                // Push the callback to the event queue.
-                setTimeout(function(){callback(rsc);}, 0);
-            }
         },
 
         // Download resources in parallel asynchronously
