@@ -1,7 +1,7 @@
 {
    "firstName": "Tom",
    "lastName": "Brown",
-   "imageUrl": "../images/eric.jpg",
+   "imageUrl": "/donor/tombrown.jpg",
    "dollarsDonated": 55,
    "alignedDonated": 65,
    "distribution": [
