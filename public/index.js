@@ -1,24 +1,16 @@
 var deps = [
     'tag/tag.js', 
     'nav/index.js', 
-    'donor/eric.js',
+    'donor/index.js',
+    'donor/tom.json',
 ];
 
-function onReady(E, NAV, DONOR) {
+function onReady(E, NAV, DONOR, donordata) {
     
     function body() {
         return E.div([
-            E.div({class: 'container_12'}, [
-                E.div({id: 'call-to-action', class: 'grid_12'}, [
-                    E.div({class: 'widgetContent'}, [
-                        E.a({href: 'signup/'}, ['Get started!']),
-                        'Please excuse our mess.  icontrib.org is under construction.  The people, the organizations, everything - not real.'
-                    ]),
-                ]),
-            ]),
-
             E.div({class: 'container_12 separator'}, [
-                DONOR.body(),
+                DONOR.summary({user: donordata, title: 'Most Influential Donor'}),
                 E.div({class: 'grid_4 widget'}, [
                     E.div({class: 'widgetContent'}, [
                         E.h2(['Most Popular Charities']),
@@ -31,7 +23,7 @@ function onReady(E, NAV, DONOR) {
             ]),
 
             E.div({class: 'linkFooter'}, [
-                E.a({href: 'charitySignUp'}, ['Charity Sign Up'])
+                E.a({href: 'charitySignUp/'}, ['Charity Registration'])
             ]),
         ]);
     };

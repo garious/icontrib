@@ -83,9 +83,9 @@ return {
                     ]),
                 ]),
     
-                E.stylize(navStyle, E.div({class: "grid_6"}, [
-                    loginForm,
-                ]))
+                //E.stylize(navStyle, E.div({class: "grid_6"}, [
+                //    loginForm,
+                //]))
             ]));
         };
     
@@ -120,7 +120,7 @@ return {
                 dockItem({href: '../contact/', src: '../images/rss.png', title: "Keep Informed"}),
             ]);
     
-            return E.div([navbar].concat(xs, [doc]));
+            return E.div([navbar].concat(xs/*, [doc]*/));
         };
     
         return {

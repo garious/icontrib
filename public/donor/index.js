@@ -7,14 +7,16 @@ var deps = [
     '../tag/tag.js', 
     '../nav/index.js', 
     {path: '/mirror/google/jsapi', interpreter: exportGoogle},
+    'tom.json',
 ];
 
 var defaultUser = {
    firstName: 'Greg',
    lastName: 'Fitzgerald',
+   description: 'Align with me to support underwater hockey in the United States!',
    imageUrl: '../images/gregf.jpg',
-   dollarsDonated: '$2,456',
-   alignedDonated: '$12,456',
+   dollarsDonated: 2456,
+   alignedDonated: 12456,
    alignedImageUrl: '../images/friends.png',
    distribution: [
        ['UNICEF', 35],
@@ -26,11 +28,12 @@ var defaultUser = {
    ],
 };
 
-function onReady(E, NAV, google) { 
+function onReady(E, NAV, google, tom) { 
 
-    function body(user) {
+    function body(as) {
+        as = as || {};
    
-        user = user || defaultUser;
+        var user = as.user || defaultUser;
    
         var userChart = E.div({id: 'userChart'}, [
             E.div({id: 'chartPlaceHolder', style: 'width: 400px; height: 300px;'}, [
@@ -50,10 +53,10 @@ function onReady(E, NAV, google) {
         google.load('visualization', '1.0', {packages:['corechart'], callback: cookPie});
    
         return E.div({id: 'content', class: 'container_12'}, [
+            E.link({type: "text/css", href: "../css/960.css", rel: "stylesheet"}),
+            E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
             E.div({id: 'call-to-action', class: 'grid_12'}, [
-                E.div({class: 'widgetContent'}, [
-                    'Align with me to support underwater hockey and to make San Diego more awesome!'
-                ]),
+                E.div({class: 'widgetContent'}, [user.description || defaultUser.description]),
             ]),
             
             E.div({class: 'grid_3 alpha'}, [
@@ -64,14 +67,16 @@ function onReady(E, NAV, google) {
                     ]),
         
                     E.div({class: 'widgetContent'}, [
-                        E.h3([user.firstName + "'s donated " + user.dollarsDonated]),
+                        E.h3([user.firstName + " has donated $" + user.dollarsDonated]),
                     ]),
                 ]),
             ]),
         
-            E.div({class: 'grid_6 widget'}, [
-                E.div({class: 'widgetContent'}, [
-                    userChart,
+            E.div({class: 'grid_6 alpha'}, [
+                E.div({class: 'widget'}, [
+                    E.div({class: 'widgetContent'}, [
+                        userChart,
+                    ]),
                 ]),
             ]),
         
@@ -79,11 +84,11 @@ function onReady(E, NAV, google) {
                 E.div({class: 'widget'}, [
                     E.div({class: 'widgetContent'}, [
                         E.h3(['Aligned with ' + user.firstName]),
-                        E.img({src: user.alignedImageUrl, height: '170px', width: '170px'}),
+                        E.img({src: user.alignedImageUrl || defaultUser.alignedImageUrl, height: '170px', width: '170px'}),
                     ]),
         
                     E.div({class: 'widgetContent'}, [
-                        E.h3([user.firstName + "'s friends have raised " + user.alignedDonated]),
+                        E.h3([user.firstName + "'s friends have raised $" + user.alignedDonated]),
                     ]),
                 ]),
             ]),
@@ -92,9 +97,41 @@ function onReady(E, NAV, google) {
         ]);
     };
 
-    function main() {
+    function summary(as) {
+        var as = as || {};
+        var user = as.user || defaultUser;
+        return E.div([
+            E.link({type: "text/css", href: "../css/960.css", rel: "stylesheet"}),
+            E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
+            E.div({class: 'grid_8 widget'}, [
+                E.div({class: 'widgetContent'}, [
+                    E.h2([as.title || '']),
+                    E.div({class: 'influential-box'}, [
+                        E.a({href: baseUrl + '/?main='+ user.firstName + user.lastName}, [
+                            E.div({class: 'photo'}, [
+                                E.img({src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
+                            ]),
+                        ]),
+                        E.h3({class: 'name'}, [user.firstName + ' ' + user.lastName]),
+                        E.h4(['Helped raise $' + user.alignedDonated]),
+                        E.div({class: 'desc'}, [user.description || '']),
+                        E.div([
+                            E.a({href: '#'}, ['Align With Me']),
+                            E.a({href: '#'}, ['See Other Influential Donors']),
+                        ]),
+                    ]),
+                ]),
+            ]),
+        ]);
+    }
+
+    function TomBrown() {
+        return main({user: tom});
+    }
+
+    function main(as) {
         return NAV.frame([
-            body()
+            body(as)
         ]);
     }
    
@@ -102,6 +139,8 @@ function onReady(E, NAV, google) {
         title: "IContrib - Improve the world today.",
         main: main,
         body: body,
+        summary: summary,
+        TomBrown: TomBrown,
     };
 };
 
