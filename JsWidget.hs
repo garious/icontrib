@@ -41,9 +41,9 @@ htmlForJsMod baseUrl fp maybeNm = appTemplate $ do
       lessAttr = H.toValue (mkPath (mkRelUrl baseUrl ["css", "main.css"]))
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
 
-      yoink = "\nYOINK.resourceLoader().getResource('/"
+      yoink = "\nYOINK.resourceLoader().getResources(['/"
            ++ fp
-           ++ "', function(M) {\n    "
+           ++ "'], function(M) {\n    "
            ++ setTitle
            ++ reassign
            ++ "document.body.appendChild(typeof M === 'function' ? M() : M);\n});\n"
