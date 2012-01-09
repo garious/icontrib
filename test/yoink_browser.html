@@ -4,7 +4,7 @@
         <script type="text/javascript" src="../yoink.js"></script>
         <script type="text/javascript">
  
-            YOINK.resourceLoader().getResource('tag.js', function(TAG) {
+            YOINK.resourceLoader().getResources(['tag.js'], function(TAG) {
 
                 document.body.appendChild( TAG.text("Yes.") );
 

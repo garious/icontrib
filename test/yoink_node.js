@@ -28,7 +28,7 @@ if (typeof XMLHttpRequest == 'undefined') {
 }
 
 // Preload yoink so that we can add the function as a global variable
-var cnts = fs.readFileSync('../yoink.js', 'utf8');
+var cnts = fs.readFileSync('../yoinkSync.js', 'utf8');
 eval(cnts);
 
 // Assume any arguments are scripts that should be executed

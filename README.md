@@ -18,7 +18,7 @@ yoink.js is a small and simple module loader for JavaScript.
           <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
           <script type="text/javascript">
               var loader = YOINK.resourceLoader();
-              loader.getResource('helloworld.js', function(hello) {
+              loader.getResources(['helloworld.js'], function(hello) {
                   document.body.appendChild(hello);
               });
           </script>
@@ -27,24 +27,14 @@ yoink.js is a small and simple module loader for JavaScript.
   ~~~
 
 
-* Easy to unit-test modules.  Use *Sync methods and enjoy no dependencies on 'document' or 'window'.
-
-  ~~~javascript
-              var loader = YOINK.resourceLoader();
-              loader.getResourceSync('helloworld.js', function(hello) {
-                  document.body.appendChild(hello);
-              });
-  ~~~
-
-
 * Resources loaded in parallel.
 
   ~~~javascript
-              var loader = YOINK.resourceLoader();
-              loader.getResources(['helloworld.js', 'goodbye.js'], function(hello, goodbye) {
-                  document.body.appendChild(hello);
-                  document.body.appendChild(goodbye);
-              });
+  var loader = YOINK.resourceLoader();
+  loader.getResources(['helloworld.js', 'goodbye.js'], function(hello, goodbye) {
+      document.body.appendChild(hello);
+      document.body.appendChild(goodbye);
+  });
   ~~~
 
 * Intuitive semantics.  
@@ -64,6 +54,24 @@ yoink.js is a small and simple module loader for JavaScript.
   }
 
   return {deps: deps, callback: onReady};
+  ~~~
+
+  And if your module returns a module that returns a module, Yoink will recursively
+  download those dependencies too.  This can be useful if you need to first download
+  a module to figure out what other modules need to be downloaded.
+
+  ~~~javascript
+  return {
+      deps: ['a.js'], 
+      callback: function(A) {
+          return {
+              deps: A.deps,
+              callback: function(B) {
+                  return document.createTextNode(A.message + B.message);
+              }
+          }
+      }
+  };
   ~~~
 
 * Modules know where they are.  Modules are loaded with a local variable 'baseUrl'

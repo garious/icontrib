@@ -5,5 +5,5 @@ if (typeof XMLHttpRequest == 'undefined') {
     };
 }
 
-eval( snarf('../yoink.js') );
+eval( snarf('../yoinkSync.js') );
 
