@@ -26,21 +26,22 @@ widget root baseUrl = msum [
 jsMod :: FilePath -> [String] -> ServerPart Response
 jsMod root baseUrl = do
       maybeFile <- optional (lookText "filename")
-      let url = baseUrl ++ [maybe "index.js" T.unpack maybeFile]
+      let filename = maybe "index.js" T.unpack maybeFile
+          url = baseUrl ++ [filename]
       b <- liftIO (doesFileExist (joinPath (root : url)))
       guard b
       maybeNm <- optional (lookText "main")
-      ok (toResponse (htmlForJsMod baseUrl (mkPath url) (fmap T.unpack maybeNm)))
+      ok (toResponse (htmlForJsMod baseUrl filename (fmap T.unpack maybeNm)))
 
-htmlForJsMod :: [String] -> FilePath -> Maybe String -> H.Html
-htmlForJsMod baseUrl fp maybeNm = appTemplate $ do
+htmlForJsMod :: [String] -> String -> Maybe String -> H.Html
+htmlForJsMod baseUrl filename maybeNm = appTemplate $ do
       H.script ! A.src yoinkAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
   where
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
 
-      yoink = "\nYOINK.resourceLoader().getResources(['/"
-           ++ fp
+      yoink = "\nYOINK.resourceLoader().getResources(['"
+           ++ filename
            ++ "'], function(M) {\n    "
            ++ setTitle
            ++ reassign
