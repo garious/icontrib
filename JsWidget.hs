@@ -40,12 +40,22 @@ htmlForJsMod baseUrl filename maybeNm = appTemplate $ do
   where
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
 
-      yoink = "\nYOINK.resourceLoader().getResources(['"
-           ++ filename
-           ++ "'], function(M) {\n    "
+      yoink = "\n(function(){\n"
+           ++ "function recurse(ldr, node, callback) {\n"
+           ++ "    if (node && node.deps && node.callback) {\n"
+           ++ "        ldr.getResources(node.deps, function(nd) {recurse(ldr, node.callback(nd), callback);})\n"
+           ++ "    } else {\n"
+           ++ "        callback(node);\n"
+           ++ "    }\n"
+           ++ "}\n"
+           ++ "var loader = YOINK.resourceLoader();\n"
+           ++ "loader.getResources(['" ++ filename ++ "'], function(M) {\n    "
            ++ setTitle
            ++ reassign
-           ++ "document.body.appendChild(typeof M === 'function' ? M() : M);\n});\n"
+           ++ "var node = typeof M === 'function' ? M() : M;\n"
+           ++ "recurse(loader, node, function(nd) {document.body.appendChild(nd)});\n"
+           ++ "});\n"
+           ++ "})()\n"
 
       setTitle = "if (M.title) { document.title = M.title; };\n    "
 

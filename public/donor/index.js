@@ -7,7 +7,6 @@ var deps = [
     '../tag/tag.js', 
     '../nav/index.js', 
     {path: '/mirror/google/jsapi', interpreter: exportGoogle},
-    'tom.json',
 ];
 
 var defaultUser = {
@@ -28,7 +27,7 @@ var defaultUser = {
    ],
 };
 
-function onReady(E, NAV, google, tom) { 
+function onReady(E, NAV, google) { 
 
     function body(as) {
         as = as || {};
@@ -126,7 +125,10 @@ function onReady(E, NAV, google, tom) {
     }
 
     function TomBrown() {
-        return main({user: tom});
+        function tomReady(tom) {
+            return main({user: tom});
+        }
+        return {deps: ['tom.json'], callback: tomReady};
     }
 
     function main(as) {
