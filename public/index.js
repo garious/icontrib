@@ -2,7 +2,7 @@ var deps = [
     'tag/tag.js', 
     'nav/index.js', 
     'donor/index.js',
-    'donor/tom.json',
+    'donor/tom.json'
 ];
 
 function onReady(E, NAV, DONOR, donordata) {

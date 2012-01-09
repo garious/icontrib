@@ -2,10 +2,10 @@
 Depends on jQuery, log.debug, log.error 
 TODO: Rewrite to be more testable
 */
-function waitScreen(){
+function waitScreen(log, $){
     /* Private Variables */
     var Me = this; 
-	
+    	
 	var oProgressBar = $("<div>").attr("id", "progressBar");
 	
 	var htmlDialog = $("<div>")
@@ -104,6 +104,6 @@ function waitScreen(){
 return { 
 	deps: [ "/widgets/logger.js", "/jquery/jquery-mod.js" ],
 	callback: function(log, $) {
-		return new waitScreen();
+		return new waitScreen(log, $);
 	}
 };

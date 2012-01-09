@@ -6,7 +6,7 @@ function exportGoogle(text, yoink, callback) {
 var deps = [
     '../tag/tag.js', 
     '../nav/index.js', 
-    {path: '/mirror/google/jsapi', interpreter: exportGoogle}
+    {path: '/mirror/google/jsapi', interpreter: exportGoogle} 
 ];
 
 var defaultUser = {
@@ -27,7 +27,7 @@ var defaultUser = {
    ]
 };
 
-function onReady(E, NAV, google) { 
+function onReady(E, NAV, google, wait) { 
 
     function body(as) {
         as = as || {};
@@ -99,9 +99,15 @@ function onReady(E, NAV, google) {
     function summary(as) {
         var as = as || {};
         var user = as.user || defaultUser;
+        var alignLink = E.a({href: '#'}, ['Align With Me']);
+        alignLink.onclick = function(e) { 
+            //TODO: On click, show alignment dialog 
+            //wait.load();
+        };
         return E.div([
-            E.link({type: "text/css", href: "../css/960.css", rel: "stylesheet"}),
-            E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
+            E.link({type: "text/css", href: "/css/960.css", rel: "stylesheet"}),
+            E.link({type: "text/css", href: "/css/main.css", rel: "stylesheet"}),
+            E.link({type: "text/css", href: "/css/smoothness/jquery-ui-1.8.16.custom.css", rel: "stylesheet"}),
             E.div({class: 'grid_8 widget'}, [
                 E.div({class: 'widgetContent'}, [
                     E.h2([as.title || '']),
@@ -115,7 +121,7 @@ function onReady(E, NAV, google) {
                         E.h4(['Helped raise $' + user.alignedDonated]),
                         E.div({class: 'desc'}, [user.description || '']),
                         E.div([
-                            E.a({href: '#'}, ['Align With Me']),
+                            alignLink,
                             E.a({href: '#'}, ['See Other Influential Donors']),
                         ]),
                     ]),
@@ -142,12 +148,12 @@ function onReady(E, NAV, google) {
         main: main,
         body: body,
         summary: summary,
-        TomBrown: TomBrown,
+        TomBrown: TomBrown
     };
 };
 
 return {
     deps: deps,
-    callback: onReady,
+    callback: onReady
 };
 
