@@ -22,6 +22,16 @@
 // yoink, a simple resource loader.  XMLHttpRequest is the only dependency.
 //
 
+//Debugging methods - log information to console (if available)
+if (!window.console) {
+    console = {};
+}
+
+console.log = console.log || function () { };
+console.warn = console.warn || function () { };
+console.error = console.error || function () { };
+console.info = console.info || function() { };
+
 var YOINK = (function() {
 
     var defaultInterpreters = {
@@ -31,16 +41,25 @@ var YOINK = (function() {
         js: function(text, yoink, callback) {
             // Load the module
             // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-            var f = eval('(function (baseUrl) {' + text + '})');
-            var mod = f(yoink.base);
-            if (mod && mod.deps && mod.callback) {
-                yoink(mod.deps, function() {
-                    callback(mod.callback.apply(null, arguments));
-                });
-            } else {
-                callback(mod);
-            }
-        },
+			try {
+				var f = eval('(function (baseUrl) {' + text + '})');
+					
+				var mod = f(yoink.base);
+				if (mod && mod.deps && mod.callback) {
+					yoink(mod.deps, function() {
+						callback(mod.callback.apply(null, arguments));
+					});
+				} else {
+					callback(mod);
+				}
+            } 
+			catch(err) {
+				console.error("Error loading the following code");
+				console.error(text);
+				console.error(err);
+				throw err;
+			}
+        }
     };
 
     var clone = function(o1) {

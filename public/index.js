@@ -1,14 +1,14 @@
 var deps = [
     'tag/tag.js', 
     'nav/index.js', 
-    'indexBody.html',
+    'indexBody.html' 
 ];
 
 function onReady(E, NAV, html) {
     
     function body() {
         var div = E.div();
-        div.innerHTML = html;
+        div.innerHTML = html; 
         return div;
     };
 
@@ -17,12 +17,12 @@ function onReady(E, NAV, html) {
         body: body,
         main: NAV.frame([
             body(),
-        ]),
+        ])
     };
 };
 
 return {
     deps: deps,
-    callback: onReady,
+    callback: onReady
 };
 

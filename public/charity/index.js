@@ -1,7 +1,7 @@
 var deps = [
     '../tag/tag.js', 
     '../nav/index.js', 
-    'body.html',
+    'body.html'
 ];
 
 function onReady(E, NAV, html) {
@@ -16,13 +16,13 @@ function onReady(E, NAV, html) {
         title: "IContrib - Improve the world today.",
         body: body,
         main: NAV.frame([
-            body(),
-        ]),
+            body()
+        ])
     };
 };
 
 return {
     deps: deps,
-    callback: onReady,
+    callback: onReady
 };
 
