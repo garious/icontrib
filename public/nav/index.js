@@ -17,7 +17,7 @@ return {
                 left: 0,
                 width: '100%',
                 height: '75px',
-                backgroundColor: '#000044',
+                backgroundColor: '#000044', //2A2A8E
                 zIndex: 10
             };
             
@@ -70,9 +70,7 @@ return {
                 }
             });
     
-            return E.stylize(headerStyle, E.div({class: 'container_12'}, [
-                // TODO: purge stylesheets
-                E.link({type: "text/css", href: "../css/960.css", rel: "stylesheet"}),
+            return E.stylize(headerStyle, E.div({class: 'container_12'}, [ 
     
                 E.div({class: "grid_6"}, [
                     E.stylize(taglineStyle, E.div([
