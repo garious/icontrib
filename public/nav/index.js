@@ -2,10 +2,9 @@ return {
 
     deps: [
         '../tag/tag.js', 
-        '../js/less-1.1.5.min.js', // TODO: purge less
         '../jquery/jquery-mod.js'
     ],
-    callback: function(E, LESS, $) { 
+    callback: function(E, $) { 
 
         var nav = function(as) {
             as = as || {};
@@ -73,6 +72,7 @@ return {
             return E.stylize(headerStyle, E.div({class: 'container_12'}, [
                 // TODO: purge stylesheets
                 E.link({type: "text/css", href: "../css/960.css", rel: "stylesheet"}),
+                E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
     
                 E.div({class: "grid_6"}, [
                     E.stylize(taglineStyle, E.div([

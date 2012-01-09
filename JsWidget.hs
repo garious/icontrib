@@ -25,20 +25,18 @@ widget root baseUrl = msum [
 -- Is this a javascript file within a widgets directory?
 jsMod :: FilePath -> [String] -> ServerPart Response
 jsMod root baseUrl = do
+      maybeFile <- optional (lookText "filename")
+      let url = baseUrl ++ [maybe "index.js" T.unpack maybeFile]
       b <- liftIO (doesFileExist (joinPath (root : url)))
       guard b
       maybeNm <- optional (lookText "main")
       ok (toResponse (htmlForJsMod baseUrl (mkPath url) (fmap T.unpack maybeNm)))
-  where
-      url = baseUrl ++ ["index.js"]
 
 htmlForJsMod :: [String] -> FilePath -> Maybe String -> H.Html
 htmlForJsMod baseUrl fp maybeNm = appTemplate $ do
-      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.media "all" ! A.href lessAttr
       H.script ! A.src yoinkAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
   where
-      lessAttr = H.toValue (mkPath (mkRelUrl baseUrl ["css", "main.css"]))
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
 
       yoink = "\nYOINK.resourceLoader().getResources(['/"
