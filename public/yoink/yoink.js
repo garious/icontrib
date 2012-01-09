@@ -52,18 +52,10 @@ var YOINK = (function() {
         js: function(text, yoink, callback) {
             // Load the module
             // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-			try {
-				var f = eval('(function (baseUrl) {' + text + '})');
-					
-				var mod = f(yoink.base);
-                                yoinkMod(mod, yoink, callback);
-                        } 
-			catch(err) {
-				console.error("Error loading the following code");
-				console.error(text);
-				console.error(err);
-				throw err;
-			}
+			var f = eval('(function (baseUrl) {' + text + '})');
+				
+			var mod = f(yoink.base);
+			yoinkMod(mod, yoink, callback);
         }
     };
 
@@ -164,7 +156,7 @@ var YOINK = (function() {
             };
             var interpretFile = function(i, files) {
                 var u = urls[i];
-	        console.log("yoink: interpreting '" + urls[i].path + "'");
+				console.log("yoink: interpreting '" + urls[i].path + "'");
                 loader.interpret(files[i], u.path, u.interpreter, getResources, mkOnInterpreted(u.path, i, files));
             };
             var onDownloaded = function(files) {

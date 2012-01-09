@@ -6,25 +6,25 @@ function exportGoogle(text, yoink, callback) {
 var deps = [
     '../tag/tag.js', 
     '../nav/index.js', 
-    {path: '/mirror/google/jsapi', interpreter: exportGoogle},
+    {path: '/mirror/google/jsapi', interpreter: exportGoogle}
 ];
 
 var defaultUser = {
    firstName: 'Greg',
    lastName: 'Fitzgerald',
    description: 'Align with me to support underwater hockey in the United States!',
-   imageUrl: '../images/gregf.jpg',
+   imageUrl: '/images/gregf.jpg',
    dollarsDonated: 2456,
    alignedDonated: 12456,
-   alignedImageUrl: '../images/friends.png',
+   alignedImageUrl: '/images/friends.png',
    distribution: [
        ['UNICEF', 35],
        ['American Red Cross', 10],
        ['La Jolla Playhouse', 10],
        ['San Diego Foundation', 10], 
        ['USA UWH', 80],
-       ['LACC', 20],
-   ],
+       ['LACC', 20]
+   ]
 };
 
 function onReady(E, NAV, google) { 
@@ -36,7 +36,7 @@ function onReady(E, NAV, google) {
    
         var userChart = E.div({id: 'userChart'}, [
             E.div({id: 'chartPlaceHolder', style: 'width: 400px; height: 300px;'}, [
-                E.img({src: '../images/ajax-loader.gif', alt: 'Loading...', style: 'margine: 0px auto;'}),
+                E.img({src: '/images/ajax-loader.gif', alt: 'Loading...', style: 'margin: 0px auto;'}),
             ]),
         ]);
    
@@ -68,7 +68,7 @@ function onReady(E, NAV, google) {
                     E.div({class: 'widgetContent'}, [
                         E.h3([user.firstName + " has donated $" + user.dollarsDonated]),
                     ]),
-                ]),
+                ])
             ]),
         
             E.div({class: 'grid_6'}, [
@@ -76,8 +76,7 @@ function onReady(E, NAV, google) {
 					E.div({class: 'widgetContent'}, [
 						userChart,
 					])
-				])
-                ]),
+				]) 
             ]),
         
             E.div({class: 'grid_3 omega'}, [
