@@ -7,19 +7,21 @@ function waitScreen(log, $){
     var Me = this; 
     	
 	var oProgressBar = $("<div>").attr("id", "progressBar");
+    
+    var oAjaxImage = $("<img>").attr("style", "float: right;")
+							   .attr("src", "/images/ajax-loader.gif")
+                               .attr("alt", "Page Loading...")
+                               .attr("height", "16px")
+                               .attr("width", "16px");
+                               
+    var oContentText = $("<div>").append("Please Wait...");
 	
 	var htmlDialog = $("<div>")
 						.attr("id", "dialog-progress")
 						.attr("title", "Loading...")
 						.append($("<p>")
-							.append("Please Wait...")
-							.append($("<img>")
-								.attr("style", "float: right;")
-								.attr("src", "/images/ajax-loader.gif")
-								.attr("alt", "Page Loading...")
-								.attr("height", "16px")
-								.attr("width", "16px")
-							)
+							.append(oContentText)
+							.append(oAjaxImage)
 						)
 						.append(oProgressBar);
 					
@@ -43,18 +45,30 @@ function waitScreen(log, $){
         log.debug(sCloseMessage);
     };
 
-    this.load = function(sTitle, nTotalNumber) {
-        if (sTitle) {
-            htmlDialog.attr("title", sTitle);
-        }
+    this.load = function(options) {
+        if(options) {
+            if (options.title) {
+                htmlDialog.attr("title", options.title);
+            }
 
-        if (nTotalNumber) {
-            oProgressBar.show();
-			Me.nTotalNumber = nTotalNumber;
+            if (options.totalNumber) {
+                oProgressBar.show();
+                Me.nTotalNumber = options.totalNumber;
+            } else {
+                oProgressBar.hide();
+            } 
+            
+            if (options.buttons) {
+                oAjaxImage.hide();
+            }
+            if(options.content) {
+                oContentText.empty();
+                oContentText.append(options.content);
+            }
         } else {
-            oProgressBar.hide();
-        } 
-
+            options = {};
+        }
+        
         oProgressBar.progressbar({
             value: 0,
             complete: function(event, ui) {
@@ -64,7 +78,8 @@ function waitScreen(log, $){
 
         htmlDialog.dialog({
             resizable: false,
-            modal: true
+            modal: true,
+            buttons: options.buttons
         });
     };
 

@@ -6,7 +6,8 @@ function exportGoogle(text, yoink, callback) {
 var deps = [
     '../tag/tag.js', 
     '../nav/index.js', 
-    {path: '/mirror/google/jsapi', interpreter: exportGoogle} 
+    {path: '/mirror/google/jsapi', interpreter: exportGoogle} ,
+    '/widgets/waitScreen.js'
 ];
 
 var defaultUser = {
@@ -101,8 +102,15 @@ function onReady(E, NAV, google, wait) {
         var user = as.user || defaultUser;
         var alignLink = E.a({href: '#'}, ['Align With Me']);
         alignLink.onclick = function(e) { 
-            //TODO: On click, show alignment dialog 
-            //wait.load();
+            //TODO: On click, navigate to appropriate pages
+            wait.load({
+                buttons: {
+                    "Sign In" : function(e) { window.location ="/signup/"; },
+                    "Keep Adding Stuff" : function(e) { wait.close(); } 
+                }, 
+                title: "What do you want to do?",
+                content: "From here, you can either sign up to fund your distribution, or continue selecting organizations you would like to support."
+            });
         };
         return E.div([
             E.link({type: "text/css", href: "/css/960.css", rel: "stylesheet"}),
