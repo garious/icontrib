@@ -17,12 +17,13 @@ var tag = function(nm, as, xs) {
         }
     }
     if (xs) {
-        xs.forEach(function(x) {
+        for (var i = 0; i < xs.length; i++) {
+            var x = xs[i];
             if (typeof x === 'string') {
                x = text(x);
             }
             e.appendChild(x);
-        });
+        }
     }
     return e
 };
@@ -49,9 +50,10 @@ var TAG = {
 
 var tags = ['br', 'p', 'div', 'link', 'a', 'img', 'form', 'input', 'h1', 'h2', 'h3', 'h4', 'base', 'ul', 'ol', 'li'];
 
-tags.forEach(function(nm) {
+for (var i = 0; i < tags.length; i++) {
+    var nm = tags[i];
     TAG[nm] = mkTag(nm);
-});
+}
 
 return TAG;
 

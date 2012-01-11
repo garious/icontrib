@@ -69,19 +69,19 @@ return {
                 }
             });
     
-            return E.stylize(headerStyle, E.div({class: 'container_12'}, [ 
+            return E.stylize(headerStyle, E.div({'class': 'container_12'}, [ 
                 E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
     
-                E.div({class: "grid_6"}, [
+                E.div({'class': "grid_6"}, [
                     E.stylize(taglineStyle, E.div([
                         'Improve the world today.'
                     ])),
                     E.a({href: '../'}, [
-                        E.img({src: "../images/logo4.png", alt: "IContrib Home", height: "100%", border: "0"}),
-                    ]),
-                ]),
+                        E.img({src: "../images/logo4.png", alt: "IContrib Home", height: "100%", border: "0"})
+                    ])
+                ])
     
-                //E.stylize(navStyle, E.div({class: "grid_6"}, [
+                //E.stylize(navStyle, E.div({'class': "grid_6"}, [
                 //    loginForm,
                 //]))
             ]));
@@ -98,7 +98,7 @@ return {
                 xs = as;
                 as = null;
             }
-            return E.div({class: 'footer'}, [E.div({class: 'navBar'}, xs)]);
+            return E.div({'class': 'footer'}, [E.div({'class': 'navBar'}, xs)]);
         };
 
         var frame = function(as, xs) {
@@ -115,7 +115,7 @@ return {
                 dockItem({href: '../',         src: '../images/home.png', title: "Home"}),
                 dockItem({href: '../donor/',   src: '../images/portfolio.png', title: "Your Portfolio"}),
                 dockItem({href: '../charity/', src: '../images/link.png', title: "Charities"}),
-                dockItem({href: '../contact/', src: '../images/rss.png', title: "Keep Informed"}),
+                dockItem({href: '../contact/', src: '../images/rss.png', title: "Keep Informed"})
             ]);
     
             return E.div([navbar].concat(xs/*, [doc]*/));
@@ -125,9 +125,9 @@ return {
             nav: nav,
             dock: dock,
             dockItem: dockItem,
-            frame: frame,
+            frame: frame
         };
     
-    },
+    }
 };
  
