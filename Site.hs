@@ -61,10 +61,13 @@ get page = do
    rv <- ((runErrorT page) <|> err)
    rsp $ rv
 
-post :: (Show e, Show a, JS.JSON e, JS.JSON a) => ErrorT e (ServerPartT IO) a -> ServerPartT IO Response
+post :: (Show a, JS.JSON a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPartT IO Response
 post page = do 
    method POST
-   rv <- runErrorT $ page 
+   rq <- askRq
+   liftIO $ print ("post"::String, (rqUri rq))
+   let err = return (Left (SE.InternalError))
+   rv <- ((runErrorT page) <|> err)
    rsp $ rv
 
 homePage :: ServerPart Response
