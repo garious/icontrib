@@ -17,7 +17,7 @@ import qualified CharityInfo                 as C
 import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP
 
-import Happstack.Server(askRq, rqUri, takeRequestBody)
+import Happstack.Server(askRq, rqUri, takeRequestBody, unBody)
 import Happstack.Lite
 
 
@@ -104,12 +104,10 @@ checkUser db = do
    liftIO $ putStrLn msg 
    return $ JS.toJSString msg
 
-data UserLogin = UserLogin { email :: String, password :: String }
-
 newUser :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) JS.JSString
 newUser db = do  
    liftIO $ putStrLn "newUser" 
-   (UserLogin uid pwd) <- getBody
+   (A.UserLogin uid pwd) <- getBody
    A.addUser db (uid) (pwd)
    token <- A.loginToCookie db (uid) (pwd)
    let msg = "Thank you for registering " ++ (toS uid)
@@ -122,7 +120,7 @@ newUser db = do
 loginUser :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) JS.JSString
 loginUser db = do 
    liftIO $ putStrLn "loginUser" 
-   (UserLogin uid pwd) <- getBody
+   (A.UserLogin uid pwd) <- getBody
    token <- A.loginToCookie db (uid) (pwd)
    let msg = "Welcome Back " ++ (toS uid)
    liftIO $ putStrLn msg 
@@ -135,14 +133,16 @@ getUser db = do
    let ore = SE.catchOnly SE.UserDoesntExist
    loginUser db `ore` newUser db
 
+getBody :: JS.JSON a => ErrorT SE.ServerError (ServerPartT IO) a 
 getBody = do   
     let 
             checkResult (JS.Ok a)    = return a
             checkResult (JS.Error _) = throwError SE.JSONDecodeError
             decode Nothing = throwError SE.NoBody
-            decode (Just a) = checkResult $ JS.decode a
-    bd <- takeRequestBody $ askRq
-    decode $ bd
+            decode (Just a) = checkResult $ JS.decode (toS a)
+    rq <- askRq
+    bd <- takeRequestBody $ rq
+    decode $ liftM unBody $ bd
 
 rsp :: (Show a, JS.JSON a) => a -> ServerPart Response
 rsp msg = do

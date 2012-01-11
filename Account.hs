@@ -17,6 +17,10 @@ import Data.Acid
 import Data.SafeCopy
 import Random(randomIO, Random, random, randomR)
 import ServerError
+import Text.JSON
+import Data.Derive.JSON
+import Data.DeriveTH
+
 
 type UserID    = BL.ByteString
 type Password  = BL.ByteString
@@ -24,6 +28,12 @@ type Cookie    = BL.ByteString
 
 type Hash      = BS.ByteString
 type Salt      = BS.ByteString
+
+data UserLogin = UserLogin { email :: UserID
+                           , password :: Password
+                           }
+$(derive makeJSON ''UserLogin)
+
 
 data PasswordHash = PasswordHash Hash Salt
 $(deriveSafeCopy 0 'base ''PasswordHash)
