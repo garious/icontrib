@@ -39,12 +39,12 @@ return {
     
             var errorBox = E.div();
     
-            var loginForm = E.stylize({'margin-bottom': "0px"}, E.form([
+            var loginForm = E.form({style: {'margin-bottom': "0px"}}, [
                 "Email ",    E.input({type: "text", name: "email", size: "10"}),
                 "Password ", E.input({type: "password", name: "password", size: "10"}),
                 E.input({type: 'submit', value: 'Log in or Sign up'}),
                 errorBox
-            ]));
+            ]);
     
             loginForm.onsubmit = function(e){
                 e.preventDefault();
@@ -69,22 +69,22 @@ return {
                 }
             });
     
-            return E.stylize(headerStyle, E.div({'class': 'container_12'}, [ 
+            return E.div({style: headerStyle, 'class': 'container_12'}, [ 
                 E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
     
                 E.div({'class': "grid_6"}, [
-                    E.stylize(taglineStyle, E.div([
+                    E.div({style: taglineStyle}, [
                         'Improve the world today.'
-                    ])),
+                    ]),
                     E.a({href: '../'}, [
                         E.img({src: "../images/logo4.png", alt: "IContrib Home", height: "100%", border: "0"})
                     ])
                 ])
     
-                //E.stylize(navStyle, E.div({'class': "grid_6"}, [
+                //E.div({style: navStyle, 'class': "grid_6"}, [
                 //    loginForm,
-                //]))
-            ]));
+                //])
+            ]);
         };
     
         var dockItem = function(as) {
