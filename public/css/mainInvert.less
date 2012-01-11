@@ -1,8 +1,10 @@
-@primaryColor: #00006C;
-@lightColor: #5252b6;
-@middleColor: #2d2db6;
-@darkColor: #000046;
-@midDarkColor: #141451;
+@primaryColor: #8080DB;
+@lightColor: #B7B7ED;
+@middleColor: #A3A3ED;
+@darkColor: #2A2A8E;
+@midDarkColor: #7171A4;
+
+//8080DB	7171A4	2A2A8E	A3A3ED	B7B7ED
 
 @lightClearColor: fadeout(#ffffff, 15%); 
 
@@ -66,11 +68,14 @@
 
 /*--------------------------------Basic HTML-------------------------------------*/
 
+.grid_1, .grid_2, .grid_3, .grid_4, .grid_5, .grid_6, .grid_7, .grid_8, .grid_9, .grid_10, .grid_11, .grid_12 {
+}
+
 body {
 	font: 15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
 	color: @primaryText;
-	background: @primaryColor url('../images/back6.jpg');
-	//background: #ffffff url('../images/backInvert.jpg');
+	//background: @primaryColor url('../images/back6.jpg');
+	background: #ffffff url('../images/backInvert.jpg');
 	background-repeat: repeat-y;
 	background-attachment: fixed;
 	background-position: center;

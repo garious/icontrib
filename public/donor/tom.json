@@ -1,0 +1,12 @@
+{
+   "firstName": "Tom",
+   "lastName": "Brown",
+   "imageUrl": "/donor/tombrown.jpg",
+   "dollarsDonated": 55,
+   "alignedDonated": 65,
+   "distribution": [
+       ["Global Fund for Women", 50],
+       ["Underwater Society of America", 5]
+   ]
+}
+

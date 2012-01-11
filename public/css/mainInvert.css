@@ -25,10 +25,9 @@
 body {
   font: 15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
   color: #333333;
-  background: #00006c url('../images/back6.jpg');
+  background: #ffffff url('../images/backInvert.jpg');
   background-repeat: repeat-y;
   background-attachment: fixed;
-  background-position: center;
   margin: 0;
   padding: 75px 0px 120px 0px;
 }
@@ -104,11 +103,11 @@ figure {
 }
 /*------------------------LINKING------------------------------------*/
 a:link, a:visited {
-  color: #5252b6;
+  color: #b7b7ed;
   text-decoration: none;
 }
 a:hover, a:active {
-  color: #2d2db6;
+  color: #a3a3ed;
   text-decoration: underline;
 }
 /* -----------------------Main Template-----------------------------*/
@@ -117,13 +116,13 @@ a:hover, a:active {
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #000046;
+  background-color: #2a2a8e;
   height: 75px;
   z-index: 10;
-  border-botom: 2px solid #141451;
+  border-botom: 2px solid #7171a4;
 }
 #header img {
-  background-color: #000046;
+  background-color: #2a2a8e;
 }
 #navBar {
   text-align: center;
@@ -152,7 +151,7 @@ a:hover, a:active {
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #000046;
+  background-color: #2a2a8e;
   height: 75px;
   color: #eeeeee;
   z-index: 10;
@@ -172,7 +171,7 @@ a:hover, a:active {
   bottom: 75px;
   left: 0;
   width: 100%;
-  background: #141451;
+  background: #7171a4;
   height: 25px;
   color: #eeeeee;
   z-index: 10;
@@ -214,11 +213,11 @@ form fieldset:last-of-type {
   margin-bottom: 0;
 }
 form fieldset legend {
-  color: #000046;
+  color: #2a2a8e;
   font-size: 16px;
   font-weight: bold;
   padding-top: 10px;
-  text-shadow: 0 1px 1px #141451;
+  text-shadow: 0 1px 1px #7171a4;
 }
 form fieldset legend:before {
   content: "Step " counter(fieldsets) ": ";
@@ -227,8 +226,8 @@ form fieldset legend:before {
 form fieldset .formElement {
   background-color: #ffffff;
   background-color: rgba(255, 255, 255, 0.75);
-  border-color: #5252b6;
-  border-color: rgba(82, 82, 182, 0.4);
+  border-color: #b7b7ed;
+  border-color: rgba(183, 183, 237, 0.4);
   border-style: solid;
   border-width: 2px;
   border-radius: 5px;
@@ -280,14 +279,14 @@ form fieldset .formElement div.field input {
   margin: 10px 20px 0 20px;
   float: right;
   display: block;
-  background-color: #2d2db6;
+  background-color: #a3a3ed;
   color: #fff;
   border-radius: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
 }
 #call-to-action a:hover {
-  background-color: #5252b6;
+  background-color: #b7b7ed;
   text-decoration: none;
   box-shadow: ;
   -moz-box-shadow: ;
@@ -302,14 +301,14 @@ form fieldset .formElement div.field input {
   font-size: 20px;
   text-align: center;
   display: block;
-  background-color: #2d2db6;
+  background-color: #a3a3ed;
   color: #fff;
   border-radius: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
 }
 .button:hover {
-  background-color: #5252b6;
+  background-color: #b7b7ed;
   text-decoration: none;
   box-shadow: ;
   -moz-box-shadow: ;
@@ -342,13 +341,13 @@ form fieldset .formElement div.field input {
   padding: 0;
 }
 .influential-box .company {
-  color: #000046;
+  color: #2a2a8e;
 }
 .influential-box .photo {
   width: 100px;
   height: 125px;
   float: left;
-  background-color: #000046;
+  background-color: #2a2a8e;
   margin: 0 20px 10px 0;
 }
 .influential-box .photo img {
@@ -357,7 +356,7 @@ form fieldset .formElement div.field input {
 .influential-box .donation-amount {
   font-size: 1em;
   font-weight: normal;
-  color: #5252b6;
+  color: #b7b7ed;
   margin: 0;
 }
 .influential-box .desc {
@@ -369,14 +368,14 @@ form fieldset .formElement div.field input {
   margin: 10px 20px 10px 20px;
   float: left;
   display: block;
-  background-color: #2d2db6;
+  background-color: #a3a3ed;
   color: #fff;
   border-radius: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
 }
 .influential-box a:hover {
-  background-color: #5252b6;
+  background-color: #b7b7ed;
   text-decoration: none;
   box-shadow: ;
   -moz-box-shadow: ;
@@ -474,32 +473,32 @@ form fieldset .formElement div.field input {
   font-size: 16px;
   padding: 5px 12px;
   margin: 10px 37px 0 37px;
-  background-color: #2d2db6;
+  background-color: #a3a3ed;
   border-radius: 2px;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
 }
 #content input[type="submit"]:hover {
-  background-color: #5252b6;
+  background-color: #b7b7ed;
 }
 input[type="submit"] {
   color: #fff;
   padding: 2px 7px;
-  background-color: #2d2db6;
+  background-color: #a3a3ed;
   border: none !important;
   border-radius: 2px;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
 }
 input[type="submit"]:hover {
-  background-color: #5252b6;
+  background-color: #b7b7ed;
 }
 input {
   border: 1px solid #ddd;
   background-color: #eeeeee;
 }
 input:hover, input:focus {
-  border: 1px solid #5252b6;
+  border: 1px solid #b7b7ed;
 }
 #divBrowseCharities a {
   width: 175px;
