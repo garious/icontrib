@@ -18,3 +18,7 @@
 * single signin/login widget
 * figure out how to check if a user's cookie is present and then have them appear as logged in when they open the page
 * have two cookie types, session and forever, have the session cookie be the auth token for important stuff 
+
+
+* compare and exchange for acid map
+  * fix the json record merge to use compare and exchange

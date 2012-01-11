@@ -1,8 +1,9 @@
-import Account                               ( empty )
-import Site                                  ( site )
+import Site                                  ( site, Site(Site) )
 import Happstack.Lite                        ( serve )
 import Data.Acid.Memory                      ( openMemoryState )
 import Control.Concurrent                    ( forkIO, killThread )
+import qualified Account                     as A
+import qualified CharityInfo                 as C
 
 main :: IO ()
 main = do
@@ -13,7 +14,9 @@ main = do
 
 webThread :: IO ()
 webThread = do
-    db <- openMemoryState empty
-    serve Nothing (site db)
+    ua <- openMemoryState A.empty
+    ca <- openMemoryState A.empty
+    ci <- openMemoryState C.empty
+    serve Nothing (site (Site ua ca ci))
 
 

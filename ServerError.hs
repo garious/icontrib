@@ -5,6 +5,9 @@ module ServerError where
 import Control.Monad.Error
 import Data.SafeCopy
 import Data.Data
+import Text.JSON
+import Data.Derive.JSON
+import Data.DeriveTH
 
 data ServerError = UserAlreadyExists
                  | UserDoesntExist
@@ -13,9 +16,14 @@ data ServerError = UserAlreadyExists
                  | BadCookie
                  | PasswordsDontMatch
                  | CookieDecode
+                 | JSONDecodeError
+                 | RecordMergeError
+                 | NoBody
+                 | InternalError
                  deriving (Data, Typeable, Eq, Show)
 
 $(deriveSafeCopy 0 'base ''ServerError)
+$(derive makeJSON ''ServerError)
 
 instance Error ServerError
 
