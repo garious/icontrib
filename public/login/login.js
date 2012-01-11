@@ -44,8 +44,8 @@ return {
                     }
                 };
             var errorBox = E.div();
-            var formType = { UserLogin : { Email : null,
-                                           Password : null,
+            var formType = { UserLogin : { email : null,
+                                           password : null,
                                          }
                            };
             var formInputs = mapObject(formType, formType, {}, toInput);
@@ -74,7 +74,7 @@ return {
                     dataType: "json",
                     success: function(data) {
                         if(data.Left) {
-                            errorBox.innerHTML = JSON.stringify(data.Left);
+                            errorBox.innerHTML = JSON.stringify(data);
                         }
                     }
                 });

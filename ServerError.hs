@@ -18,6 +18,7 @@ data ServerError = UserAlreadyExists
                  | CookieDecode
                  | JSONDecodeError
                  | RecordMergeError
+                 | NoBody
                  | InternalError
                  deriving (Data, Typeable, Eq, Show)
 
