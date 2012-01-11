@@ -29,6 +29,7 @@ data PointOfContact = PointOfContact { firstName :: String
                                      , phone :: String
                                      , email :: String
                                      }
+                    deriving (Show, Typeable)
 
 $(deriveSafeCopy 0 'base ''PointOfContact)
 $(derive makeJSON ''PointOfContact)
@@ -38,7 +39,7 @@ data CharityInfo = CharityInfo { ein :: String
                                , companyWebSite :: String
                                , pointOfContact :: PointOfContact
                                }
-                               deriving Typeable
+                 deriving (Show, Typeable)
 
 $(deriveSafeCopy 0 'base ''CharityInfo)
 $(derive makeJSON ''CharityInfo)

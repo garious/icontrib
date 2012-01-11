@@ -7,6 +7,7 @@ import Control.Monad                         ( liftM )
 import Char                                  ( chr )
 import Control.Monad.Error                   ( runErrorT, ErrorT )
 import Happstack.Server.Monads               ( ServerPartT )
+import Control.Applicative                   ( (<|>) )
 import qualified Data.ByteString.Lazy        as B
 import qualified Codec.Binary.Url            as Url
 import qualified Text.JSON                   as JS
@@ -16,6 +17,7 @@ import qualified CharityInfo                 as C
 import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP
 
+import Happstack.Server(askRq, rqUri)
 import Happstack.Lite
 
 
@@ -26,9 +28,9 @@ data Site = Site { userAccounts ::  AcidState A.Database
 
 site :: Site -> ServerPart Response
 site st = msum [ 
-      dir "get_user"            (post    (getUser (userAccounts st)))
+      dir "login_user"          (post    (getUser (userAccounts st)))
     , dir "check_user"          (get     (checkUser (userAccounts st)))
-    , dir "get_charity"         (post    (getUser (charityAccounts st)))
+    , dir "login_charity"       (post    (getUser (charityAccounts st)))
     , dir "check_charity"       (get     (checkUser (charityAccounts st)))
     , dir "get_charity_info"    (get     (getInfo (charityAccounts st) (charityInfo st)))
     , dir "update_charity_info" (post    (postInfo (charityAccounts st) (charityInfo st)))
@@ -50,13 +52,16 @@ redirect req = do
       check (Left err)  = error (show err) 
       check (Right rr)  = rr
 
-get :: (JS.JSON e, JS.JSON a) => ErrorT e (ServerPartT IO) a -> ServerPartT IO Response
+get :: (Show a, JS.JSON a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPartT IO Response
 get page = do 
    method GET
-   rv <- runErrorT $ page
+   rq <- askRq
+   liftIO $ print ("get"::String, (rqUri rq))
+   let err = return (Left (SE.InternalError))
+   rv <- ((runErrorT page) <|> err)
    rsp $ rv
 
-post :: (JS.JSON e, JS.JSON a) => ErrorT e (ServerPartT IO) a -> ServerPartT IO Response
+post :: (Show e, Show a, JS.JSON e, JS.JSON a) => ErrorT e (ServerPartT IO) a -> ServerPartT IO Response
 post page = do 
    method POST
    rv <- runErrorT $ page 
@@ -89,6 +94,7 @@ checkUser :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) JS.J
 checkUser db = do 
    liftIO $ putStrLn "checkUser" 
    cookie <- lift $ liftM Url.decode $ lookCookieValue "token"
+   liftIO $ print cookie
    token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
    uid <- A.cookieToUser db token
    let msg = "Thanks for coming back " ++ (toS uid)
@@ -125,8 +131,10 @@ getUser db = do
    let ore = SE.catchOnly SE.UserDoesntExist
    loginUser db `ore` newUser db
 
-rsp :: JS.JSON a => a -> ServerPart Response
-rsp msg = ok $ toResponse $ JS.encode msg
+rsp :: (Show a, JS.JSON a) => a -> ServerPart Response
+rsp msg = do
+    liftIO (print msg)
+    ok $ toResponse $ JS.encode msg
 
 toS :: B.ByteString -> String
 toS ss = map (chr . fromIntegral) $ B.unpack ss

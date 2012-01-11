@@ -18,6 +18,7 @@ data ServerError = UserAlreadyExists
                  | CookieDecode
                  | JSONDecodeError
                  | RecordMergeError
+                 | InternalError
                  deriving (Data, Typeable, Eq, Show)
 
 $(deriveSafeCopy 0 'base ''ServerError)

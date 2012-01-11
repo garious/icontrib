@@ -41,3 +41,12 @@ dist:
 deps:
 	cabal update
 	cabal install --only-dependencies
+
+%.js.lint:%.js
+	echo "(function() {" > $<.lint
+	cat $< >> $<.lint
+	echo "});" >> $<.lint
+
+%.js.ok:%.js.lint
+	jsl -output-format $*.js:__LINE__:__ERROR__ -process $<
+	touch $@
