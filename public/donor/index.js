@@ -7,7 +7,8 @@ var deps = [
     '../tag/tag.js', 
     '../nav/index.js', 
     {path: '/mirror/google/jsapi', interpreter: exportGoogle} ,
-    '/widgets/waitScreen.js'
+    '/widgets/waitScreen.js',
+    '../ui/core.js',
 ];
 
 var defaultUser = {
@@ -28,7 +29,7 @@ var defaultUser = {
    ]
 };
 
-function onReady(E, NAV, google, wait) { 
+function onReady(E, NAV, google, wait, CORE, L) { 
 
     function body(as) {
         as = as || {};
@@ -100,7 +101,7 @@ function onReady(E, NAV, google, wait) {
     function summary(as) {
         var as = as || {};
         var user = as.user || defaultUser;
-        var alignLink = E.a({href: '#'}, ['Align With Me']);
+        var alignLink = CORE.button({href: '#'}, ['Align With Me']);
         alignLink.onclick = function(e) { 
             //TODO: On click, navigate to appropriate pages
             wait.load({
@@ -112,6 +113,7 @@ function onReady(E, NAV, google, wait) {
                 content: "From here, you can either sign up to fund your distribution, or continue selecting organizations you would like to support."
             });
         };
+
         return E.div([
             E.link({type: "text/css", href: "/css/960.css", rel: "stylesheet"}),
             E.link({type: "text/css", href: "/css/main.css", rel: "stylesheet"}),
@@ -119,18 +121,17 @@ function onReady(E, NAV, google, wait) {
             E.div({class: 'grid_8 widget'}, [
                 E.div({class: 'widgetContent'}, [
                     E.h2([as.title || '']),
-                    E.div({class: 'influential-box'}, [
+                    E.div([
                         E.a({href: baseUrl + '/?main='+ user.firstName + user.lastName}, [
-                            E.div({class: 'photo'}, [
-                                E.img({src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
-                            ]),
+                            E.img({style: {width: '100px', height: '125px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
+                            E.h3([user.firstName + ' ' + user.lastName])
                         ]),
-                        E.h3({class: 'name'}, [user.firstName + ' ' + user.lastName]),
                         E.h4(['Helped raise $' + user.alignedDonated]),
+                        E.br(),
                         E.div({class: 'desc'}, [user.description || '']),
                         E.div([
                             alignLink,
-                            E.a({href: '#'}, ['See Other Influential Donors']),
+                            CORE.button({href: '#'}, ['See Other Influential Donors']),
                         ]),
                     ]),
                 ]),
