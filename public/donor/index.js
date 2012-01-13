@@ -61,18 +61,18 @@ function onReady(E, NAV, google, wait, CORE, L) {
    
         var userChart = chart(user);
    
-        return E.div({id: 'content', class: 'container_12'}, [
+        return E.div({class: 'container_12'}, [
             E.link({type: "text/css", href: "../css/960.css", rel: "stylesheet"}),
             E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
             E.div({id: 'call-to-action', class: 'grid_12'}, [
                 E.div({class: 'widgetContent'}, [user.description || defaultUser.description]),
             ]),
             
-            E.div({class: 'grid_3'}, [
+            E.div({class: 'grid_3 separator'}, [
                 E.div({class: 'widget'}, [
                     E.div({class: 'widgetContent'}, [
                         E.h3([user.firstName + ' ' + user.lastName]),
-                        E.img({src: user.imageUrl, height: '170px', width: '170px'}),
+                        E.img({src: user.imageUrl, height: '175px', width: '150px'}),
                     ]),
         
                     E.div({class: 'widgetContent'}, [
@@ -81,13 +81,13 @@ function onReady(E, NAV, google, wait, CORE, L) {
                 ])
             ]),
         
-            E.div({class: 'grid_6'}, [
+            E.div({class: 'grid_6 separator'}, [
                 E.div({class: 'widget'}, [
-                    E.div({class: 'widgetContent'}, [userChart]) 
+                    E.div({class: 'widgetContent', style: {textAlign: 'center'}}, [userChart, alignButton(user)]) 
                 ]) 
             ]),
         
-            E.div({class: 'grid_3 omega'}, [
+            E.div({class: 'grid_3 omega separator'}, [
                 E.div({class: 'widget'}, [
                     E.div({class: 'widgetContent'}, [
                         E.h3(['Aligned with ' + user.firstName]),
@@ -104,9 +104,8 @@ function onReady(E, NAV, google, wait, CORE, L) {
         ]);
     };
 
-    function summary(as) {
-        var as = as || {};
-        var user = as.user || defaultUser;
+    function alignButton(user) {
+        var user = user || defaultUser;
         var alignLink = CORE.button({href: '#'}, ['Align with ' + user.firstName]);
         alignLink.onclick = function(e) { 
             //TODO: On click, navigate to appropriate pages
@@ -119,15 +118,24 @@ function onReady(E, NAV, google, wait, CORE, L) {
                 content: "From here, you can either sign up to fund your distribution, or continue selecting organizations you would like to support."
             });
         };
+        var alignDiv = E.div([
+           E.link({type: "text/css", href: "/css/smoothness/jquery-ui-1.8.16.custom.css", rel: "stylesheet"}),
+           alignLink
+        ]);
+        return alignDiv;
+    };
+
+    function summary(as) {
+        var as = as || {};
+        var user = as.user || defaultUser;
         var userChart = E.div({style: {float: 'right', height: '350', textAlign: 'center'}}, [
             chart(user),
-            alignLink
+            alignButton(user),
         ]);
 
         return E.div([
             E.link({type: "text/css", href: "/css/960.css", rel: "stylesheet"}),
             E.link({type: "text/css", href: "/css/main.css", rel: "stylesheet"}),
-            E.link({type: "text/css", href: "/css/smoothness/jquery-ui-1.8.16.custom.css", rel: "stylesheet"}),
             E.div({class: 'grid_8 widget'}, [
                 E.div({class: 'widgetContent'}, [
                     E.h2([as.title || '']),
@@ -165,6 +173,7 @@ function onReady(E, NAV, google, wait, CORE, L) {
         body: body,
         summary: summary,
         chart: chart,
+        alignButton: alignButton,
         TomBrown: TomBrown
     };
 };
