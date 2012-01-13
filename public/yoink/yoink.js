@@ -51,11 +51,17 @@ var YOINK = (function() {
         },
         js: function(text, yoink, callback) {
             // Load the module
-            // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-			var f = eval('(function (baseUrl) {' + text + '})');
-				
-			var mod = f(yoink.base);
-			yoinkMod(mod, yoink, callback);
+            var f_str = '(function (baseUrl) {' + text + '})';
+            if (window && window.execScript) {
+                // Hack for Internet Explorer
+                window.execScript('_iesucks = ' + f_str);
+                var f = _iesucks;
+            } else {
+                // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
+                var f = eval(f_str);
+            }
+            var mod = f(yoink.base);
+            yoinkMod(mod, yoink, callback);
         }
     };
 
@@ -104,7 +110,7 @@ var YOINK = (function() {
             }
 
             // Normalize the path
-            p = p.replace(/[^/]+[/]\.\.[/]/g,'');  // Remove redundant '%s/..' items.
+            p = p.replace(/[^\/]+[\/]\.\.[\/]/g,'');  // Remove redundant '%s/..' items.
             return {path: p, interpreter: f};
         },
 
@@ -142,7 +148,7 @@ var YOINK = (function() {
                  } else {
                      interpretFile(i, files);
                  }
-            }
+            };
             var mkOnInterpreted = function(p, i, files) {
                  return function(rsc) {
                     // If resource does not return a result, force it to 'null' so that we have something to cache.
@@ -152,11 +158,11 @@ var YOINK = (function() {
                     rscs[i] = rsc;
                     loader.cache[p] = rsc; // Cache the result
                     onInterpreted(i, files);
-                 }
+                 };
             };
             var interpretFile = function(i, files) {
                 var u = urls[i];
-				console.log("yoink: interpreting '" + urls[i].path + "'");
+        			console.log("yoink: interpreting '" + urls[i].path + "'");
                 loader.interpret(files[i], u.path, u.interpreter, getResources, mkOnInterpreted(u.path, i, files));
             };
             var onDownloaded = function(files) {
@@ -189,17 +195,17 @@ var YOINK = (function() {
             for (var i = 0; i < len; i++) {
                 download(i, files);
             }
-        },
+         }
     };
 
     // Constructor without exposing 'new' keyword
     function resourceLoader(base, cache, interpreters) {
        return new ResourceLoader(base, cache, interpreters);
-    };
+    }
 
     return {
        resourceLoader: resourceLoader,
-       interpreters: defaultInterpreters,
+       interpreters: defaultInterpreters
     };
 })();
 

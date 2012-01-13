@@ -10,7 +10,7 @@ function onReady(E, NAV, html) {
         var div = E.div();
         div.innerHTML = html;
         return div;
-    };
+    }
 
     return {
         title: "IContrib - Improve the world today.",
@@ -19,7 +19,7 @@ function onReady(E, NAV, html) {
             body()
         ])
     };
-};
+}
 
 return {
     deps: deps,
