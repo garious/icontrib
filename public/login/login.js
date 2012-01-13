@@ -1,7 +1,7 @@
 function mapObject(type, input, output, func) {
     for(var prop in type) {
         if(type.hasOwnProperty(prop)) {
-            if(type[prop] == null) {
+            if(type[prop] === null) {
                 output[prop] = func(prop, input[prop]);
             } else if(typeof(type[prop]) == "object") {
                 output[prop] = mapObject(type[prop], input[prop], {}, func);
@@ -14,7 +14,7 @@ function mapObject(type, input, output, func) {
 function listObject(type, input, output, func) {
     for(var prop in type) {
         if(type.hasOwnProperty(prop)) {
-            if(type[prop] == null) {
+            if(type[prop] === null) {
                 func(prop, input[prop], output);
             } else if(typeof(type[prop]) == "object") {
                 listObject(type[prop], input[prop], output, func);
@@ -33,10 +33,10 @@ return {
     callback: function(E, $) { 
         var loginForm = function(login_url, check_url) {
             var toInput = function (name, val) {
-                    if(name == "Password") {
-                        return E.input({type: "password", name: "password", size: "10"});
+                    if(name == "password") {
+                        return E.input({type: "password", name: name, size: "10"});
                     } else {
-                        if(val == null) {
+                        if(val === null) {
                             return E.input({type: "text", name: name, size: "10"});
                         } else {
                             return E.input({type: "text", name: name, size: "10", value: val});
@@ -45,7 +45,7 @@ return {
                 };
             var errorBox = E.div();
             var formType = { UserLogin : { email : null,
-                                           password : null,
+                                           password : null
                                          }
                            };
             var formInputs = mapObject(formType, formType, {}, toInput);
