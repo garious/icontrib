@@ -31,11 +31,9 @@ var defaultUser = {
 
 function onReady(E, NAV, google, wait, CORE, L) { 
 
-    function body(as) {
-        as = as || {};
-   
-        var user = as.user || defaultUser;
-   
+    function chart(user) {
+        var user = user || defaultUser;
+
         var userChart = E.div({id: 'userChart'}, [
             E.div({id: 'chartPlaceHolder', style: 'width: 400px; height: 300px;'}, [
                 E.img({src: '/images/ajax-loader.gif', alt: 'Loading...', style: 'margin: 0px auto;'}),
@@ -52,6 +50,16 @@ function onReady(E, NAV, google, wait, CORE, L) {
             chart.draw(data, options);
         };
         google.load('visualization', '1.0', {packages:['corechart'], callback: cookPie});
+
+        return userChart;
+    }
+
+    function body(as) {
+        as = as || {};
+   
+        var user = as.user || defaultUser;
+   
+        var userChart = chart(user);
    
         return E.div({id: 'content', class: 'container_12'}, [
             E.link({type: "text/css", href: "../css/960.css", rel: "stylesheet"}),
@@ -74,11 +82,9 @@ function onReady(E, NAV, google, wait, CORE, L) {
             ]),
         
             E.div({class: 'grid_6'}, [
-				E.div({class: 'widget'}, [
-					E.div({class: 'widgetContent'}, [
-						userChart,
-					])
-				]) 
+                E.div({class: 'widget'}, [
+                    E.div({class: 'widgetContent'}, [userChart]) 
+                ]) 
             ]),
         
             E.div({class: 'grid_3 omega'}, [
@@ -101,7 +107,7 @@ function onReady(E, NAV, google, wait, CORE, L) {
     function summary(as) {
         var as = as || {};
         var user = as.user || defaultUser;
-        var alignLink = CORE.button({href: '#'}, ['Align With Me']);
+        var alignLink = CORE.button({href: '#'}, ['Align with ' + user.firstName]);
         alignLink.onclick = function(e) { 
             //TODO: On click, navigate to appropriate pages
             wait.load({
@@ -113,6 +119,10 @@ function onReady(E, NAV, google, wait, CORE, L) {
                 content: "From here, you can either sign up to fund your distribution, or continue selecting organizations you would like to support."
             });
         };
+        var userChart = E.div({style: {float: 'right', height: '350', textAlign: 'center'}}, [
+            chart(user),
+            alignLink
+        ]);
 
         return E.div([
             E.link({type: "text/css", href: "/css/960.css", rel: "stylesheet"}),
@@ -122,17 +132,14 @@ function onReady(E, NAV, google, wait, CORE, L) {
                 E.div({class: 'widgetContent'}, [
                     E.h2([as.title || '']),
                     E.div([
+                        userChart,
+                        E.br(),
+                        E.br(),
                         E.a({href: baseUrl + '/?main='+ user.firstName + user.lastName}, [
-                            E.img({style: {width: '100px', height: '125px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
+                            E.img({style: {width: '175px', height: '225px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
                             E.h3([user.firstName + ' ' + user.lastName])
                         ]),
                         E.h4(['Helped raise $' + user.alignedDonated]),
-                        E.br(),
-                        E.div({class: 'desc'}, [user.description || '']),
-                        E.div([
-                            alignLink,
-                            CORE.button({href: '#'}, ['See Other Influential Donors']),
-                        ]),
                     ]),
                 ]),
             ]),
@@ -157,6 +164,7 @@ function onReady(E, NAV, google, wait, CORE, L) {
         main: main,
         body: body,
         summary: summary,
+        chart: chart,
         TomBrown: TomBrown
     };
 };
