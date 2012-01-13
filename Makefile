@@ -42,10 +42,10 @@ deps:
 	cabal update
 	cabal install --only-dependencies
 
-%.js.lint:%.js
-	echo "(function() {" > $<.lint
-	cat $< >> $<.lint
-	echo "});" >> $<.lint
+%.js.lint:%.js Makefile
+	echo '(function() {' > $<.pre
+	echo '});' > $<.post
+	cat $<.pre $< $<.post > $<.lint
 
 %.js.ok:%.js.lint
 	jsl -output-format $*.js:__LINE__:__ERROR__ -process $<

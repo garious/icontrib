@@ -16,8 +16,7 @@ import qualified Account                     as A
 import qualified CharityInfo                 as C
 import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP
-
-import Happstack.Server(askRq, rqUri, takeRequestBody, unBody)
+import Happstack.Server(askRq, rqUri, lookPairs)
 import Happstack.Lite
 
 
@@ -65,7 +64,7 @@ post :: (Show a, JS.JSON a) => ErrorT SE.ServerError (ServerPartT IO) a -> Serve
 post page = do 
    method POST
    rq <- askRq
-   liftIO $ print ("post"::String, (rqUri rq))
+   liftIO $ print rq
    let err = return (Left (SE.InternalError))
    rv <- ((runErrorT page) <|> err)
    rsp $ rv
@@ -74,7 +73,9 @@ homePage :: ServerPart Response
 homePage = serveDirectory DisableBrowsing ["index.html"] "public"
 
 fileServer :: FilePath -> ServerPart Response
-fileServer = serveDirectory DisableBrowsing []
+fileServer dd = do 
+    addHeaderM "Pragma" "no-cache"
+    serveDirectory DisableBrowsing [] dd
 
 getInfo :: AcidState A.Database -> AcidState C.Database -> ErrorT SE.ServerError (ServerPartT IO) C.CharityInfo
 getInfo userdb infodb = do 
@@ -135,14 +136,19 @@ getUser db = do
 
 getBody :: JS.JSON a => ErrorT SE.ServerError (ServerPartT IO) a 
 getBody = do   
+    liftIO $ putStrLn "getBody"
+    bd <- lift $ lookPairs
     let 
             checkResult (JS.Ok a)    = return a
-            checkResult (JS.Error _) = throwError SE.JSONDecodeError
-            decode Nothing = throwError SE.NoBody
-            decode (Just a) = checkResult $ JS.decode (toS a)
-    rq <- askRq
-    bd <- takeRequestBody $ rq
-    decode $ liftM unBody $ bd
+            checkResult (JS.Error ss) = throwError (SE.JSONDecodeError ss)
+            decode a = checkResult $ JS.decode a 
+            --GIANT FREAKING HACK :)
+            --wtf cant i get the request body
+            from (name, (Right ss)) = name ++ ss
+            from (_, (Left _)) = []
+            bd' = concatMap from bd
+    liftIO $ print ("body"::String, bd')
+    decode $ bd'
 
 rsp :: (Show a, JS.JSON a) => a -> ServerPart Response
 rsp msg = do
