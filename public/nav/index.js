@@ -40,9 +40,9 @@ return {
             var errorBox = E.div();
     
             var loginForm = E.form({style: {'margin-bottom': "0px"}}, [
-                "Email ",    E.input({type: "text", name: "email", size: "10"}),
+                "Email ",    E.input({type: "text", name: "email", size: "20"}),
                 "Password ", E.input({type: "password", name: "password", size: "10"}),
-                E.input({type: 'submit', value: 'Log in or Sign up'}),
+                E.input({type: 'submit', value: 'Log in'}),
                 errorBox
             ]);
     
@@ -60,14 +60,15 @@ return {
                 });
             };
     
-            $.ajax({
-                type: "GET",
-                url: "/check_user",
-                dataType: "json",
-                success: function(data) {
-                   loginForm.innerHTML = data;
-                }
-            });
+            // TODO: this is broken?
+            //$.ajax({
+            //    type: "GET",
+            //    url: "/check_user",
+            //    dataType: "json",
+            //    success: function(data) {
+            //       loginForm.innerHTML = data;
+            //    }
+            //});
     
             return E.div({style: headerStyle, 'class': 'container_12'}, [ 
                 E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
@@ -79,11 +80,9 @@ return {
                     E.a({href: '../'}, [
                         E.img({src: "../images/logo4.png", alt: "IContrib Home", height: "100%", border: "0"})
                     ])
-                ])
+                ]),
     
-                //E.div({style: navStyle, 'class': "grid_6"}, [
-                //    loginForm,
-                //])
+                E.div({style: navStyle, 'class': "grid_5 widget"}, [loginForm])
             ]);
         };
     
