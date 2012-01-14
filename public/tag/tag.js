@@ -5,7 +5,7 @@ function text(s) {
 }
 
 function tag(nm, as, xs) {
-    if (as && as.constructor === Array) {
+    if (typeof as === 'string' || as && as.constructor === Array) {
         xs = as;
         as = null;
     }
@@ -24,12 +24,16 @@ function tag(nm, as, xs) {
         }
     }
     if (xs) {
-        for (var i = 0; i < xs.length; i++) {
-            var x = xs[i];
-            if (typeof x === 'string') {
-               x = text(x);
+        if (typeof xs === 'string') {
+            e.appendChild(text(xs));
+        } else {
+            for (var i = 0; i < xs.length; i++) {
+                var x = xs[i];
+                if (typeof x === 'string') {
+                   x = text(x);
+                }
+                e.appendChild(x);
             }
-            e.appendChild(x);
         }
     }
     return e;
