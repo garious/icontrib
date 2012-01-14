@@ -9,15 +9,19 @@ var deps = [
 
 function onReady(E, L) {
 
+    function testImg() {
+        return E.img({border: 1, src: '/images/logo.png', style: {borderRadius: '5px'}});
+    }
+
+    function hugTest() {
+        return L.hug([E.p('hello'), E.p('world')], 10);
+    }
+
     function test() {
         var pad = 10;
 
         function label(s, e) {
             return L.hug([E.p({style: {width: '70px'}}, s), e], pad);
-        }
-
-        function testImg() {
-            return E.img({border: 1, src: '/images/logo.png', style: {borderRadius: '5px'}});
         }
 
         return L.hug([
@@ -35,7 +39,8 @@ function onReady(E, L) {
     }
 
     return {
-        main: test
+        main: test,
+        hugTest: hugTest
     };
 }
 

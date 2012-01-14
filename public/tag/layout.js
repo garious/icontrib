@@ -29,62 +29,79 @@ function getStyle(elem, name) {
 }
 
 function onReady(E, $) {
-    // Concatenate elements horizonally, adding 'pad' pixels between each element
-    function hug(xs, pad) {
+
+    // Concatenate elements
+    function concat(xs, pad, isVert) {
         pad = pad || 0;
-        var e = E.div(xs);
+        var e = E.div();
+        for (var i = 0; i < xs.length; i++) {
+            var x = xs[i];
+            if (x.constructor !== Pillow) {
+                e.appendChild(x);
+            }
+        }
         $(e).ready(function() { 
             var height = 0;
             var width = 0;
             for (var i = 0; i < xs.length; i++) {
                var x = xs[i];
                var h, w = 0;
-               x.style.position = 'absolute';
-               x.style.left = width + 'px';
-               x.style.top = 0;
-               h = parseInt(getStyle(x, 'height')) || 0;
-               w = parseInt(getStyle(x, 'width')) || 0;
-               width = width + pad + w;
-               height = h > height ? h : height;
+               if (x.constructor === Pillow) {
+                   h = x.height;
+                   w = x.width;
+               } else {
+                   x.style.position = 'absolute';
+                   if (isVert) {
+                       x.style.top = height + 'px';
+                       x.style.left = 0;
+                   } else {
+                       x.style.left = width + 'px';
+                       x.style.top = 0;
+                   }
+                   h = parseInt(getStyle(x, 'height')) || 0;
+                   w = parseInt(getStyle(x, 'width')) || 0;
+               }
+               if (isVert) {
+                   height = height + pad + h;
+                   width = w > width ? w : width;
+               } else {
+                   width = width + pad + w;
+                   height = h > height ? h : height;
+               }
             }
-            width = xs.length > 0 ? width - pad : 0;
-            e.style.height = height;
-            e.style.width = width;
-        });
-        return e;
-    }
-    
-    // Concatenate elements vertically, adding 'pad' pixels between each element
-    function spoon(xs, pad) {
-        pad = pad || 0;
-        var e = E.div(xs);
-        $(e).ready(function() { 
-            var height = 0;
-            var width = 0;
-            for (var i = 0; i < xs.length; i++) {
-               var x = xs[i];
-               var h, w = 0;
-               x.style.position = 'absolute';
-               x.style.left = 0;
-               x.style.top = height + 'px';
-               h = parseInt(getStyle(x, 'height')) || 0;
-               w = parseInt(getStyle(x, 'width')) || 0;
-               height = height + pad + h;
-               width = w > width ? w : width;
+            if (isVert) {
+                height = xs.length > 0 ? height - pad : 0;
+            } else {
+                width = xs.length > 0 ? width - pad : 0;
             }
-            height = xs.length > 0 ? height - pad : 0;
             e.style.height = height;
             e.style.width = width;
         });
         return e;
     }
 
-    // Create an empty div of 'w' pixels wide and 'h' pixels tall
+    // Concatenate elements horizontally, adding 'pad' pixels between each element
+    function hug(xs, pad) {
+        return concat(xs, pad, false);
+    }
+    
+    // Concatenate elements vertically, adding 'pad' pixels between each element
+    function spoon(xs, pad) {
+        return concat(xs, pad, true);
+    }
+
+    function Pillow(w, h) {
+        this.width = w;
+        this.height = h;
+    }
+
+    // Create empty space of 'w' pixels wide and 'h' pixels tall.  Pillow elements 
+    // are not added to the DOM, and are only used for managing space.
     function pillow(w, h) {
         if (h === undefined) {
             h = w;
         }
-        return E.div({style: {height: h + 'px', width: w + 'px'}}, []);
+        return new Pillow(w, h);
     }
 
     return {
