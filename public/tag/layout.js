@@ -14,20 +14,6 @@ var deps = [
     '/jquery/jquery-mod.js'
 ];
 
-// 'getStyle' yoinked from John Resig's "Pro JavaScript Techniques"
-function getStyle(elem, name) {
-    if (elem.style[name]) {
-        return elem.style[name];
-    } else if (elem.currentStyle) {
-        return elem.currentStyle[name];
-    } else if (document.defaultView && document.defaultView.getComputedStyle) {
-        name = name.replace(/([A-Z])/g,'-$1');
-        name = name.toLowerCase();
-        var s = document.defaultView.getComputedStyle(elem, '');
-        return s && s.getPropertyValue(name);
-    }
-}
-
 function onReady(E, $) {
 
     // Concatenate elements
@@ -58,8 +44,8 @@ function onReady(E, $) {
                        x.style.left = width + 'px';
                        x.style.top = 0;
                    }
-                   h = parseInt(getStyle(x, 'height'), 10) || 0;
-                   w = parseInt(getStyle(x, 'width'), 10) || 0;
+                   h = $(x).height();
+                   w = $(x).width();
                }
                if (isVert) {
                    height = height + pad + h;
