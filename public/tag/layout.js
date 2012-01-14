@@ -1,17 +1,13 @@
 //
-// Layout with hugs, kisses, spooning, and lovemaking
+// Layout with hugging and spooning
 //
 
-// All combinators are of type "Array a -> a"
+// All combinators are of type "Array a -> Maybe a -> a"
 //
-// kiss( ['a','b','c']) === 'abc'
-// hug(  ['a','b','c']) === 'a b c'
-// love( ['a','b','c']) === 'a\nb\nc'
-// spoon(['a','b','c']) === 'a\n\nb\n\nc'
-
-// Limitations:
-//    * Must know the size of each element before it is rendered.
-//
+// hug(  ['a','b','c'])       === 'abc'
+// hug(  ['a','b','c'], ' ')  === 'a b c'
+// spoon(['a','b','c'])       === 'a\nb\nc'
+// spoon(['a','b','c'], '\n') === 'a\n\nb\n\nc'
 
 var deps = [
     'tag.js',
@@ -33,13 +29,9 @@ function getStyle(elem, name) {
 }
 
 function onReady(E, $) {
-    var defaultPadding = 10;
-
     // Concatenate elements horizonally, adding 'pad' pixels between each element
     function hug(xs, pad) {
-        if (pad === undefined) {
-            pad = defaultPadding;
-        }
+        pad = pad || 0;
         var e = E.div(xs);
         $(e).ready(function() { 
             var height = 0;
@@ -49,7 +41,7 @@ function onReady(E, $) {
                var h, w = 0;
                x.style.position = 'absolute';
                x.style.left = width + 'px';
-               x.style.top = '0px';
+               x.style.top = 0;
                h = parseInt(getStyle(x, 'height')) || 0;
                w = parseInt(getStyle(x, 'width')) || 0;
                width = width + pad + w;
@@ -61,17 +53,10 @@ function onReady(E, $) {
         });
         return e;
     }
-
-    // Concatenate elements horizonally
-    function kiss(xs) {
-        return hug(xs, 0);
-    }
     
     // Concatenate elements vertically, adding 'pad' pixels between each element
     function spoon(xs, pad) {
-        if (pad === undefined) {
-            pad = defaultPadding;
-        }
+        pad = pad || 0;
         var e = E.div(xs);
         $(e).ready(function() { 
             var height = 0;
@@ -80,7 +65,7 @@ function onReady(E, $) {
                var x = xs[i];
                var h, w = 0;
                x.style.position = 'absolute';
-               x.style.left = '0px';
+               x.style.left = 0;
                x.style.top = height + 'px';
                h = parseInt(getStyle(x, 'height')) || 0;
                w = parseInt(getStyle(x, 'width')) || 0;
@@ -94,48 +79,18 @@ function onReady(E, $) {
         return e;
     }
 
-    // Concatenate elements vertically
-    function love(xs) {
-        return spoon(xs, 0);
-    }
-
-    function space(w, h) {
-        return E.div({style: {height: h, width: w}}, []);
-    };
-
-
-    function label(s, e) {
-        return hug([E.p({style: {width: '70px'}}, s), e]);
-    }
-
-    function testImg() {
-        return E.img({border: 1, src: '/images/logo.png', style: {borderRadius: '5px'}});
-    }
-
-    function test() {
-        return kiss([
-            space(defaultPadding, defaultPadding), 
-            love([
-                space(defaultPadding, defaultPadding), 
-                spoon([
-                    label('hug',   hug(  [testImg(), testImg(), testImg()])),
-                    label('kiss',  kiss( [testImg(), testImg(), testImg()])),
-                    label('spoon', spoon([testImg(), testImg(), testImg()])),
-                    label('love',  love( [testImg(), testImg(), testImg()]))
-                ], 30),
-            ]),
-        ]);
+    // Create an empty div of 'w' pixels wide and 'h' pixels tall
+    function pillow(w, h) {
+        if (h === undefined) {
+            h = w;
+        }
+        return E.div({style: {height: h + 'px', width: w + 'px'}}, []);
     }
 
     return {
-        hug: hug,
-        kiss: kiss,
-        spoon: spoon,
-        love: love,
-        space: space,
-        label: label,
-        testImg: testImg,
-        test: test
+        hug:    hug,
+        spoon:  spoon,
+        pillow: pillow,
     };
 }
 
