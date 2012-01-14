@@ -14,7 +14,8 @@
 //
 
 var deps = [
-    'tag.js'
+    'tag.js',
+    '/jquery/jquery-mod.js'
 ];
 
 // 'getStyle' yoinked from John Resig's "Pro JavaScript Techniques"
@@ -31,55 +32,69 @@ function getStyle(elem, name) {
     }
 }
 
-function onReady(E) {
+function onReady(E, $) {
     var defaultPadding = 10;
 
+    // Concatenate elements horizonally, adding 'pad' pixels between each element
     function hug(xs, pad) {
         if (pad === undefined) {
             pad = defaultPadding;
         }
-        var height = 0;
-        var width = 0;
-        for (var i = 0; i < xs.length; i++) {
-           var x = xs[i];
-           var h, w = 0;
-           x.style.position = 'absolute';
-           x.style.left = width + 'px';
-           x.style.top = '0px';
-           h = parseInt(getStyle(x, 'height')) || 0;
-           w = parseInt(getStyle(x, 'width')) || 0;
-           width = width + pad + w;
-           height = h > height ? h : height;
-        }
-        width = xs.length > 0 ? width - pad : 0;
-        return E.div({style: {height: height, width: width}}, xs);
+        var e = E.div(xs);
+        $(e).ready(function() { 
+            var height = 0;
+            var width = 0;
+            for (var i = 0; i < xs.length; i++) {
+               var x = xs[i];
+               var h, w = 0;
+               x.style.position = 'absolute';
+               x.style.left = width + 'px';
+               x.style.top = '0px';
+               h = parseInt(getStyle(x, 'height')) || 0;
+               w = parseInt(getStyle(x, 'width')) || 0;
+               width = width + pad + w;
+               height = h > height ? h : height;
+            }
+            width = xs.length > 0 ? width - pad : 0;
+            e.style.height = height;
+            e.style.width = width;
+        });
+        return e;
     }
 
+    // Concatenate elements horizonally
     function kiss(xs) {
         return hug(xs, 0);
     }
     
+    // Concatenate elements vertically, adding 'pad' pixels between each element
     function spoon(xs, pad) {
         if (pad === undefined) {
             pad = defaultPadding;
         }
-        var height = 0;
-        var width = 0;
-        for (var i = 0; i < xs.length; i++) {
-           var x = xs[i];
-           var h, w = 0;
-           x.style.position = 'absolute';
-           x.style.left = '0px';
-           x.style.top = height + 'px';
-           h = parseInt(getStyle(x, 'height')) || 0;
-           w = parseInt(getStyle(x, 'width')) || 0;
-           height = height + pad + h;
-           width = w > width ? w : width;
-        }
-        height = xs.length > 0 ? height - pad : 0;
-        return E.div({style: {height: height, width: width}}, xs);
+        var e = E.div(xs);
+        $(e).ready(function() { 
+            var height = 0;
+            var width = 0;
+            for (var i = 0; i < xs.length; i++) {
+               var x = xs[i];
+               var h, w = 0;
+               x.style.position = 'absolute';
+               x.style.left = '0px';
+               x.style.top = height + 'px';
+               h = parseInt(getStyle(x, 'height')) || 0;
+               w = parseInt(getStyle(x, 'width')) || 0;
+               height = height + pad + h;
+               width = w > width ? w : width;
+            }
+            height = xs.length > 0 ? height - pad : 0;
+            e.style.height = height;
+            e.style.width = width;
+        });
+        return e;
     }
 
+    // Concatenate elements vertically
     function love(xs) {
         return spoon(xs, 0);
     }
@@ -90,11 +105,11 @@ function onReady(E) {
 
 
     function label(s, e) {
-        return hug([E.div({style: {height: '20px', width: '70px'}}, [s]), e]);
+        return hug([E.p({style: {width: '70px'}}, s), e]);
     }
 
     function testImg() {
-        return E.img({border: 1, src: '/images/logo.png', style: {height: '90px', width: '100px', borderRadius: '5px'}});
+        return E.img({border: 1, src: '/images/logo.png', style: {borderRadius: '5px'}});
     }
 
     function test() {
