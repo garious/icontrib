@@ -58,8 +58,8 @@ function onReady(E, $) {
                        x.style.left = width + 'px';
                        x.style.top = 0;
                    }
-                   h = parseInt(getStyle(x, 'height')) || 0;
-                   w = parseInt(getStyle(x, 'width')) || 0;
+                   h = parseInt(getStyle(x, 'height'), 10) || 0;
+                   w = parseInt(getStyle(x, 'width'), 10) || 0;
                }
                if (isVert) {
                    height = height + pad + h;
@@ -107,7 +107,7 @@ function onReady(E, $) {
     return {
         hug:    hug,
         spoon:  spoon,
-        pillow: pillow,
+        pillow: pillow
     };
 }
 
