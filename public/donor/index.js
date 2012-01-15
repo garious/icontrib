@@ -1,14 +1,14 @@
 // TODO: Generalize this function and move google's jsapi into a module
 function exportGoogle(text, yoink, callback) {
     YOINK.interpreters.js(text + '\nreturn google;', yoink, callback);
-};
+}
 
 var deps = [
     '../tag/tag.js', 
     '../nav/index.js', 
-    {path: '/mirror/google/jsapi', interpreter: exportGoogle} ,
+    {path: '/mirror/google/jsapi', interpreter: exportGoogle},
     '/widgets/waitScreen.js',
-    '../ui/core.js',
+    '../ui/core.js'
 ];
 
 var defaultUser = {
@@ -32,12 +32,12 @@ var defaultUser = {
 function onReady(E, NAV, google, wait, CORE, L) { 
 
     function chart(user) {
-        var user = user || defaultUser;
+        user = user || defaultUser;
 
         var userChart = E.div({id: 'userChart'}, [
             E.div({id: 'chartPlaceHolder', style: 'width: 400px; height: 300px;'}, [
-                E.img({src: '/images/ajax-loader.gif', alt: 'Loading...', style: 'margin: 0px auto;'}),
-            ]),
+                E.img({src: '/images/ajax-loader.gif', alt: 'Loading...', style: 'margin: 0px auto;'})
+            ])
         ]);
    
         var cookPie = function() {
@@ -61,51 +61,51 @@ function onReady(E, NAV, google, wait, CORE, L) {
    
         var userChart = chart(user);
    
-        return E.div({class: 'container_12'}, [
+        return E.div({'class': 'container_12'}, [
             E.link({type: "text/css", href: "../css/960.css", rel: "stylesheet"}),
             E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
-            E.div({id: 'call-to-action', class: 'grid_12'}, [
-                E.div({class: 'widgetContent'}, [user.description || defaultUser.description]),
+            E.div({id: 'call-to-action', 'class': 'grid_12'}, [
+                E.div({'class': 'widgetContent'}, [user.description || defaultUser.description])
             ]),
             
-            E.div({class: 'grid_3 separator'}, [
-                E.div({class: 'widget'}, [
-                    E.div({class: 'widgetContent'}, [
+            E.div({'class': 'grid_3 separator'}, [
+                E.div({'class': 'widget'}, [
+                    E.div({'class': 'widgetContent'}, [
                         E.h3([user.firstName + ' ' + user.lastName]),
-                        E.img({src: user.imageUrl, height: '175px', width: '150px'}),
+                        E.img({src: user.imageUrl, height: '175px', width: '150px'})
                     ]),
         
-                    E.div({class: 'widgetContent'}, [
-                        E.h3([user.firstName + " has donated $" + user.dollarsDonated]),
-                    ]),
+                    E.div({'class': 'widgetContent'}, [
+                        E.h3([user.firstName + " has donated $" + user.dollarsDonated])
+                    ])
                 ])
             ]),
         
-            E.div({class: 'grid_6 separator'}, [
-                E.div({class: 'widget'}, [
-                    E.div({class: 'widgetContent', style: {textAlign: 'center'}}, [userChart, alignButton(user)]) 
+            E.div({'class': 'grid_6 separator'}, [
+                E.div({'class': 'widget'}, [
+                    E.div({'class': 'widgetContent', style: {textAlign: 'center'}}, [userChart, alignButton(user)]) 
                 ]) 
             ]),
         
-            E.div({class: 'grid_3 omega separator'}, [
-                E.div({class: 'widget'}, [
-                    E.div({class: 'widgetContent'}, [
+            E.div({'class': 'grid_3 omega separator'}, [
+                E.div({'class': 'widget'}, [
+                    E.div({'class': 'widgetContent'}, [
                         E.h3(['Aligned with ' + user.firstName]),
-                        E.img({src: user.alignedImageUrl || defaultUser.alignedImageUrl, height: '170px', width: '170px'}),
+                        E.img({src: user.alignedImageUrl || defaultUser.alignedImageUrl, height: '170px', width: '170px'})
                     ]),
         
-                    E.div({class: 'widgetContent'}, [
-                        E.h3([user.firstName + "'s friends have raised $" + user.alignedDonated]),
-                    ]),
-                ]),
+                    E.div({'class': 'widgetContent'}, [
+                        E.h3([user.firstName + "'s friends have raised $" + user.alignedDonated])
+                    ])
+                ])
             ]),
         
-            E.div({class: 'grid_12 clear bread'}),
+            E.div({'class': 'grid_12 clear bread'})
         ]);
-    };
+    }
 
     function alignButton(user) {
-        var user = user || defaultUser;
+        user = user || defaultUser;
         var alignLink = CORE.button({href: '#'}, ['Align with ' + user.firstName]);
         alignLink.onclick = function(e) { 
             //TODO: On click, navigate to appropriate pages
@@ -123,21 +123,21 @@ function onReady(E, NAV, google, wait, CORE, L) {
            alignLink
         ]);
         return alignDiv;
-    };
+    }
 
     function summary(as) {
-        var as = as || {};
+        as = as || {};
         var user = as.user || defaultUser;
-        var userChart = E.div({style: {float: 'right', height: '350', textAlign: 'center'}}, [
+        var userChart = E.div({style: {'float': 'right', height: '350', textAlign: 'center'}}, [
             chart(user),
-            alignButton(user),
+            alignButton(user)
         ]);
 
         return E.div([
             E.link({type: "text/css", href: "/css/960.css", rel: "stylesheet"}),
             E.link({type: "text/css", href: "/css/main.css", rel: "stylesheet"}),
-            E.div({class: 'grid_8 widget'}, [
-                E.div({class: 'widgetContent'}, [
+            E.div({'class': 'grid_8 widget'}, [
+                E.div({'class': 'widgetContent'}, [
                     E.h2([as.title || '']),
                     E.div([
                         userChart,
@@ -147,10 +147,10 @@ function onReady(E, NAV, google, wait, CORE, L) {
                             E.img({style: {width: '175px', height: '225px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
                             E.h3([user.firstName + ' ' + user.lastName])
                         ]),
-                        E.h4(['Helped raise $' + user.alignedDonated]),
-                    ]),
-                ]),
-            ]),
+                        E.h4(['Helped raise $' + user.alignedDonated])
+                    ])
+                ])
+            ])
         ]);
     }
 
@@ -176,7 +176,7 @@ function onReady(E, NAV, google, wait, CORE, L) {
         alignButton: alignButton,
         TomBrown: TomBrown
     };
-};
+}
 
 return {
     deps: deps,

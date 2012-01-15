@@ -1,7 +1,7 @@
 var deps = [
-    '/tag/tag.js', 
-    '/css/colors.json', 
-    '/jquery/jquery-mod.js'
+    '../tag/tag.js', 
+    '../css/colors.json', 
+    '../jquery/jquery-mod.js'
 ];
 
 function onReady(E, C, $) { 
@@ -127,7 +127,7 @@ function onReady(E, C, $) {
         background: C.midDarkColor,
         height: '25px',
         color: C.accentColor,
-        textAlign: 'right',
+        textAlign: 'right'
     };
 
     function footer(xs) {

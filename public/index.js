@@ -3,7 +3,7 @@ var deps = [
     '/nav/index.js', 
     '/ui/core.js', 
     '/donor/index.js',
-    '/donor/tom.json',
+    '/donor/tom.json'
 ];
 
 function onReady(E, NAV, CORE, DONOR, donordata) {

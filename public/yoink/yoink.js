@@ -47,7 +47,14 @@ var YOINK = (function() {
 
     var defaultInterpreters = {
         json: function(text) {
-            return JSON.parse(text);
+            if (window && window.execScript) {
+                // Hack for Internet Explorer
+                var f_str = '(function () { return ' + text + ';})';
+                window.execScript('_iesucks = ' + f_str);
+                return _iesucks();
+            } else {
+                return JSON.parse(text);
+            }
         },
         js: function(text, yoink, callback) {
             // Load the module
@@ -105,7 +112,7 @@ var YOINK = (function() {
         resolve: function(url) {
             var p = url.path || url;
             var f = url.interpreter || null;
-            if (this.base !== '' && p[0] !== '/' && p.indexOf('://') === -1) {
+            if (this.base !== '' && p.charAt(0) !== '/' && p.indexOf('://') === -1) {
                p = this.base + '/' + p;
             }
 
