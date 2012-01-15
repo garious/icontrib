@@ -58,7 +58,7 @@ var YOINK = (function() {
         },
         js: function(text, yoink, callback) {
             // Load the module
-            var f_str = '(function (baseUrl) {' + text + '})';
+            var f_str = '(function (baseUrl, define) {' + text + '})';
             if (window && window.execScript) {
                 // Hack for Internet Explorer
                 window.execScript('_iesucks = ' + f_str);
@@ -67,8 +67,16 @@ var YOINK = (function() {
                 // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
                 var f = eval(f_str);
             }
-            var mod = f(yoink.base);
-            yoinkMod(mod, yoink, callback);
+            var called = false;
+            function define(deps, f) {
+                called = true;
+                var m = f ? {deps: deps, callback: f} : deps;
+                yoinkMod(m, yoink, callback);
+            }
+            var mod = f(yoink.base, define);
+            if (!called) {
+                yoinkMod(mod, yoink, callback);
+            }
         }
     };
 
