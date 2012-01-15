@@ -1,21 +1,21 @@
 var deps = [
     '../tag/tag.js', 
+    '../tag/layout.js', 
     '../css/colors.json', 
-    '../jquery/jquery-mod.js'
+    '../jquery/jquery-mod.js',
+    '../ui/core.js'
 ];
 
-function onReady(E, C, $) { 
+function onReady(E, L, C, $, CORE) { 
 
     var nav = function() {
         var headerStyle = {
-            position: 'fixed',
             overflow: 'auto', // Required for IE
             top: 0,
             left: 0,
             width: '100%',
             height: '75px',
             backgroundColor: C.midDarkColor,
-            zIndex: 10
         };
         
         var taglineStyle = {
@@ -37,7 +37,7 @@ function onReady(E, C, $) {
 
         var errorBox = E.div();
 
-        var loginForm = E.form({style: {'margin-bottom': "0px"}}, [
+        var loginForm = E.form({style: {marginBottom: 0}}, [
             "Email ",    E.input({type: "text", name: "email", size: "20"}),
             "Password ", E.input({type: "password", name: "password", size: "10"}),
             E.input({type: 'submit', value: 'Log in'}),
@@ -69,15 +69,13 @@ function onReady(E, C, $) {
         //});
 
         return E.div({style: headerStyle}, [ 
-            E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
+            E.a({href: '/'}, [
+                E.img({src: "/images/logo4.png", alt: "IContrib Home", style: {height: "100%"}, border: "0"})
+            ]),
 
-            E.div([
-                E.div({style: taglineStyle}, [
-                    'Improve the world today.'
-                ]),
-                E.a({href: '../'}, [
-                    E.img({src: "../images/logo4.png", alt: "IContrib Home", style: {height: "100%"}, border: "0"})
-                ])
+            E.div({style: taglineStyle}, [
+                //'Improve the world today.'
+                CORE.h2('Improve the world today.')
             ]),
 
             E.div({style: navStyle, 'class': "widget"}, [loginForm])
@@ -109,15 +107,15 @@ function onReady(E, C, $) {
         var navbar = nav();
 
         var doc = dock( /*{align: 'bottom', labels: 'tl', duration: 150, step: 25, distance: 90, fadein: 300},*/ [
-            dockItem({href: '../',         src: '../images/home.png', title: "Home"}),
-            dockItem({href: '../donor/',   src: '../images/portfolio.png', title: "Your Portfolio"}),
-            dockItem({href: '../charity/', src: '../images/link.png', title: "Charities"}),
-            dockItem({href: '../contact/', src: '../images/rss.png', title: "Keep Informed"})
+            dockItem({href: '/',         src: '/images/home.png', title: "Home"}),
+            dockItem({href: '/donor/',   src: '/images/portfolio.png', title: "Your Portfolio"}),
+            dockItem({href: '/charity/', src: '/images/link.png', title: "Charities"}),
+            dockItem({href: '/contact/', src: '/images/rss.png', title: "Keep Informed"})
         ]);
 
         var body = E.div({'class': 'separator'}, xs);
 
-        return E.div([navbar, body/*, doc*/]);
+        return L.spoon([navbar, body/*, doc*/], 20);
     };
 
 
@@ -126,7 +124,7 @@ function onReady(E, C, $) {
         bottom: '0px',
         width: '100%',
         background: C.midDarkColor,
-        height: '25px',
+        height: '23px',
         color: C.accentColor,
         textAlign: 'right'
     };

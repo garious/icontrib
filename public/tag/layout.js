@@ -27,6 +27,7 @@ function onReady(E, $) {
             }
         }
         $(e).ready(function() { 
+        setTimeout(function(){  // Awful workaround to get Safari and Chrome to render after images have been loaded
             var height = 0;
             var width = 0;
             for (var i = 0; i < xs.length; i++) {
@@ -62,6 +63,7 @@ function onReady(E, $) {
             }
             e.style.height = height;
             e.style.width = width;
+        }, 10);
         });
         return e;
     }

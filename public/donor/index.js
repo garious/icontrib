@@ -62,8 +62,6 @@ function onReady(E, NAV, google, wait, CORE, L) {
         var userChart = chart(user);
    
         return E.div({'class': 'container_12'}, [
-            E.link({type: "text/css", href: "../css/960.css", rel: "stylesheet"}),
-            E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
             E.div({id: 'call-to-action', 'class': 'grid_12'}, [
                 E.div({'class': 'widgetContent'}, [user.description || defaultUser.description])
             ]),
@@ -134,8 +132,6 @@ function onReady(E, NAV, google, wait, CORE, L) {
         ]);
 
         return E.div([
-            E.link({type: "text/css", href: "/css/960.css", rel: "stylesheet"}),
-            E.link({type: "text/css", href: "/css/main.css", rel: "stylesheet"}),
             E.div({'class': 'grid_8 widget'}, [
                 E.div({'class': 'widgetContent'}, [
                     E.h2([as.title || '']),
