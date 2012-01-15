@@ -9,6 +9,7 @@ function onReady(E, C, $) {
     var nav = function() {
         var headerStyle = {
             position: 'fixed',
+            overflow: 'auto', // Required for IE
             top: 0,
             left: 0,
             width: '100%',
@@ -67,19 +68,19 @@ function onReady(E, C, $) {
         //    }
         //});
 
-        return E.div({style: headerStyle, 'class': 'container_12'}, [ 
+        return E.div({style: headerStyle}, [ 
             E.link({type: "text/css", href: "../css/main.css", rel: "stylesheet"}),
 
-            E.div({'class': "grid_6"}, [
+            E.div([
                 E.div({style: taglineStyle}, [
                     'Improve the world today.'
                 ]),
                 E.a({href: '../'}, [
-                    E.img({src: "../images/logo4.png", alt: "IContrib Home", height: "100%", border: "0"})
+                    E.img({src: "../images/logo4.png", alt: "IContrib Home", style: {height: "100%"}, border: "0"})
                 ])
             ]),
 
-            E.div({style: navStyle, 'class': "grid_5 widget"}, [loginForm])
+            E.div({style: navStyle, 'class': "widget"}, [loginForm])
         ]);
     };
 
