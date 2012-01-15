@@ -20,8 +20,8 @@ function onReady(E, L, NAV, CORE, DONOR, donordata) {
                     L.spoon([
                         CORE.h2('Most Popular Charities'),
                         E.ol({style: {width: '350px'}}, [
-                            E.li([CORE.a({href: '#'}, 'Global Fund for Women')]),
-                            E.li([CORE.a({href: '#'}, 'Underwater Society of America')])
+                            E.li([CORE.a({href: '/donor/?main=GlobalFundForWomen'}, 'Global Fund for Women')]),
+                            E.li([CORE.a({href: '/donor/?main=Usoa'}, 'Underwater Society of America')])
                         ])
                     ])
                 ])
@@ -33,7 +33,7 @@ function onReady(E, L, NAV, CORE, DONOR, donordata) {
     }
 
     return {
-        title: 'IContrib.org - Improve the world today.',
+        title: 'IContrib.org - Improve the world today',
         body: body,
         main: NAV.frame([ body() ])
     };

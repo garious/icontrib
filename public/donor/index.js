@@ -146,6 +146,53 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         ]);
     }
 
+    function charity(as) {
+        as = as || {};
+        var user = as.user || defaultUser;
+	var box = CORE.box([
+                L.spoon([
+	            CORE.h2(user.firstName),
+                    L.hug([
+                        L.spoon([
+                            E.img({style: {width: '175px', height: '175px', borderRadius: '5px'}, src: user.imageUrl, alt: user.firstName})
+                        ], 20),
+                        L.spoon([
+                            E.p({style: {width: '600'}}, user.mission),
+                            E.br(),
+	                    alignButton(user)
+                        ], 20),
+                    ], 30)
+                ], 20)
+            ]);
+
+        return L.hug([
+            L.pillow(100),
+            box
+       ]);
+    }
+
+    function Usoa() {
+        return {
+            deps: ['usoa.json'], 
+            callback: function(u) {
+                return NAV.frame([
+                    charity({user: u})
+                ]);
+            }
+        };
+    }
+
+    function GlobalFundForWomen() {
+        return {
+            deps: ['gffw.json'], 
+            callback: function(u) {
+                return NAV.frame([
+                    charity({user: u})
+                ]);
+            }
+        };
+    }
+
     function TomBrown() {
         function tomReady(tom) {
             return main({user: tom});
@@ -160,13 +207,16 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
     }
    
     return {
-        title: "IContrib - Improve the world today.",
+        title: "IContrib - Improve the world today",
         main: main,
         body: body,
         summary: summary,
+        charity: charity,
         chart: chart,
         alignButton: alignButton,
-        TomBrown: TomBrown
+        TomBrown: TomBrown,
+        Usoa: Usoa,
+        GlobalFundForWomen: GlobalFundForWomen
     };
 }
 

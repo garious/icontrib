@@ -78,7 +78,7 @@ function onReady(E, L, C, $, CORE) {
             ]),
 
             E.div({style: taglineStyle}, [
-                CORE.h2('Improve the world today.')
+                CORE.h2('Improve the world today')
             ]),
 
             E.div({style: navStyle}, [loginForm])
