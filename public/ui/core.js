@@ -45,13 +45,7 @@ function onReady(E, L, C, $) {
         as.style.borderRadius = '5px';
   
         var space = L.pillow(15);
-        var ys = [space].concat(xs);
-        ys.push(space);
-
-        return E.div(as, [
-            //E.div({style: {margin: '15px 15px 15px 15px'}}, xs)   // Why doesn't L.spoon respect the margin?
-            L.spoon([space, L.hug(ys), space])
-        ]);
+        return L.spoon(as, [space, L.hug([space, E.div(xs), space]), space]);
     }
 
     var font = "15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";

@@ -2,7 +2,7 @@
 // Layout with hugging and spooning
 //
 
-// All combinators are of type "Array a -> Maybe a -> a"
+// All combinators are of type "Maybe attrs -> Array a -> Maybe a -> a"
 //
 // hug(  ['a','b','c'])       === 'abc'
 // hug(  ['a','b','c'], ' ')  === 'a b c'
@@ -17,9 +17,9 @@ var deps = [
 function onReady(E, $) {
 
     // Concatenate elements
-    function concat(xs, pad, isVert) {
+    function concat(as, xs, pad, isVert) {
         pad = pad || 0;
-        var e = E.div();
+        var e = E.div(as);
         for (var i = 0; i < xs.length; i++) {
             var x = xs[i];
             if (x.constructor !== Pillow) {
@@ -69,13 +69,23 @@ function onReady(E, $) {
     }
 
     // Concatenate elements horizontally, adding 'pad' pixels between each element
-    function hug(xs, pad) {
-        return concat(xs, pad, false);
+    function hug(as, xs, pad) {
+        if (as && as.constructor === Array) {
+            pad = xs;
+            xs = as;
+            as = null;
+        }
+        return concat(as, xs, pad, false);
     }
     
     // Concatenate elements vertically, adding 'pad' pixels between each element
-    function spoon(xs, pad) {
-        return concat(xs, pad, true);
+    function spoon(as, xs, pad) {
+        if (as && as.constructor === Array) {
+            pad = xs;
+            xs = as;
+            as = null;
+        }
+        return concat(as, xs, pad, true);
     }
 
     function Pillow(w, h) {
