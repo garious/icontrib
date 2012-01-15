@@ -3,6 +3,7 @@
 module JsWidget where
 
 import Happstack.Lite
+import Happstack.Server.Routing              ( trailingSlash )
 
 import System.Directory
 import System.FilePath
@@ -18,13 +19,15 @@ import qualified Data.Text.Lazy as T
 -- Is this a javascript file or directory within a widgets directory?
 widget :: FilePath -> [String] -> ServerPart Response
 widget root baseUrl = msum [
-      nullDir >> jsMod root baseUrl
+      jsMod root baseUrl
     , path (\p -> widget root (baseUrl ++ [p]))
     ]
 
 -- Is this a javascript file within a widgets directory?
 jsMod :: FilePath -> [String] -> ServerPart Response
 jsMod root baseUrl = do
+      nullDir
+      trailingSlash
       maybeFile <- optional (lookText "filename")
       let filename = maybe "index.js" T.unpack maybeFile
           url = baseUrl ++ [filename]
