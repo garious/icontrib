@@ -5,10 +5,12 @@ function exportGoogle(text, yoink, callback) {
 
 var deps = [
     '../tag/tag.js', 
+    '../tag/layout.js',
     '../nav/index.js', 
     {path: '/mirror/google/jsapi', interpreter: exportGoogle},
     '/widgets/waitScreen.js',
-    '../ui/core.js'
+    '../ui/core.js',
+    '../css/colors.json'
 ];
 
 var defaultUser = {
@@ -29,19 +31,18 @@ var defaultUser = {
    ]
 };
 
-function onReady(E, NAV, google, wait, CORE, L) { 
+function onReady(E, L, NAV, google, wait, CORE, C) { 
 
     function chart(user) {
         user = user || defaultUser;
 
-        var userChart = E.div({id: 'userChart'}, [
-            E.div({id: 'chartPlaceHolder', style: 'width: 400px; height: 300px;'}, [
-                E.img({src: '/images/ajax-loader.gif', alt: 'Loading...', style: 'margin: 0px auto;'})
-            ])
+        var userChart = E.div([
+            E.img({src: '/images/ajax-loader.gif', alt: 'Loading...', style: {margin: '0px auto', width: '400px', height: '300px'}})
         ]);
    
         var cookPie = function() {
-            var options = {title: user.firstName + "'s General Fund", width: 400, height: 300, backgroundColor: { fill:'transparent' }};
+            var options = {width: 400, height: 300, backgroundColor: { fill:'transparent' }};
+            options.colors = [C.darkColor, C.middleColor, C.lightColor];
             var chart = new google.visualization.PieChart(userChart);
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'Charity');
@@ -126,26 +127,21 @@ function onReady(E, NAV, google, wait, CORE, L) {
     function summary(as) {
         as = as || {};
         var user = as.user || defaultUser;
-        var userChart = E.div({style: {'float': 'right', height: '350', textAlign: 'center'}}, [
+        var userChart = L.spoon([
             chart(user),
-            alignButton(user)
+            L.hug([L.pillow(100), alignButton(user)])
         ]);
 
-        return E.div([
-            E.div({'class': 'grid_8 widget'}, [
-                E.div({'class': 'widgetContent'}, [
-                    E.h2([as.title || '']),
-                    E.div([
-                        userChart,
-                        E.br(),
-                        E.br(),
-                        E.a({href: baseUrl + '/?main='+ user.firstName + user.lastName}, [
-                            E.img({style: {width: '175px', height: '225px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
-                            E.h3([user.firstName + ' ' + user.lastName])
-                        ]),
-                        E.h4(['Helped raise $' + user.alignedDonated])
-                    ])
-                ])
+        return L.spoon([
+            CORE.h2(as.title),
+            L.hug([
+                L.spoon([
+                    L.pillow(20),
+                    E.img({style: {width: '175px', height: '225px', borderRadius: '5px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
+                    CORE.h3([user.firstName + ' ' + user.lastName]),
+                    CORE.h4(['Helped raise $' + user.alignedDonated])
+                ], 20),
+	        userChart
             ])
         ]);
     }

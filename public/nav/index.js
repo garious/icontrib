@@ -14,8 +14,8 @@ function onReady(E, L, C, $, CORE) {
             top: 0,
             left: 0,
             width: '100%',
-            height: '75px',
-            backgroundColor: C.midDarkColor,
+            height: '80px',
+            backgroundColor: C.midDarkColor
         };
         
         var taglineStyle = {
@@ -23,13 +23,10 @@ function onReady(E, L, C, $, CORE) {
             color: C.accentColor,
             position: 'absolute',
             left: '125px',
-            top: '15px'
+            top: '20px'
         };
 
         var navStyle = {
-            backgroundColor: '#EEE',
-            border: 'solid 1px silver',
-            padding: '5px',
             position: 'absolute',
             right: '25px',
             top: '15px'
@@ -38,10 +35,17 @@ function onReady(E, L, C, $, CORE) {
         var errorBox = E.div();
 
         var loginForm = E.form({style: {marginBottom: 0}}, [
-            "Email ",    E.input({type: "text", name: "email", size: "20"}),
-            "Password ", E.input({type: "password", name: "password", size: "10"}),
-            E.input({type: 'submit', value: 'Log in'}),
-            errorBox
+            CORE.box([
+              L.hug([
+                CORE.label("Email "),    E.input({type: "text", name: "email", size: "20"}),
+                L.pillow(20),
+                CORE.label("Password "), E.input({type: "password", name: "password", size: "10"}),
+                L.pillow(20),
+                E.input({type: 'submit', value: 'Log in'}),
+                errorBox,
+                L.pillow(20)
+              ])
+            ])
         ]);
 
         loginForm.onsubmit = function(e){
@@ -74,11 +78,10 @@ function onReady(E, L, C, $, CORE) {
             ]),
 
             E.div({style: taglineStyle}, [
-                //'Improve the world today.'
                 CORE.h2('Improve the world today.')
             ]),
 
-            E.div({style: navStyle, 'class': "widget"}, [loginForm])
+            E.div({style: navStyle}, [loginForm])
         ]);
     };
 
@@ -113,17 +116,17 @@ function onReady(E, L, C, $, CORE) {
             dockItem({href: '/contact/', src: '/images/rss.png', title: "Keep Informed"})
         ]);
 
-        var body = E.div({'class': 'separator'}, xs);
+        var body = E.div(xs);
 
-        return L.spoon([navbar, body/*, doc*/], 20);
+        var e = L.spoon([navbar, body/*, doc*/], 20);
+        e.style.backgroundColor = '#EEE';
+        return e;
     };
 
 
     var footerStyle = {
-        position: 'fixed',
         bottom: '0px',
         width: '100%',
-        background: C.midDarkColor,
         height: '23px',
         color: C.accentColor,
         textAlign: 'right'
@@ -131,7 +134,9 @@ function onReady(E, L, C, $, CORE) {
 
     function footer(xs) {
         return E.div({style: footerStyle}, [
-            E.div({style: {paddingRight: '20px'}}, xs)
+            E.hr(),
+            E.div({style: {paddingRight: '20px'}}, xs),
+            E.hr()
         ]); 
     }
 

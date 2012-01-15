@@ -1,21 +1,31 @@
 var deps = [
     '../tag/tag.js',
+    '../tag/layout.js',
     '../css/colors.json',
     '../jquery/jquery-mod.js'
 ];
 
-function onReady(E, C, $) {
+function onReady(E, L, C, $) {
+
+    function a(as, xs) {
+        if (xs === undefined) {
+            xs = as;
+            as = {};
+        }
+        as.style = as.style || {};
+        as.style.textDecoration = 'none';
+        return E.a(as, xs);
+    }
 
     function button(as, xs) {
         if (xs === undefined) {
             xs = as;
             as = null;
         }
-        var e = E.a({href: as.href, style: {backgroundColor: C.middleColor, color: '#fff', borderRadius: '5px', padding: '10px'}}, xs);
+        var e = E.a({href: as.href, style: {textDecoration: 'none', backgroundColor: C.middleColor, color: '#fff', borderRadius: '5px', padding: '10px'}}, xs);
         $(e).hover(
             function() {
                 e.style.backgroundColor = C.lightColor;
-                e.style.textDecoration = 'none';
             },
             function() {
                 e.style.backgroundColor = C.middleColor;
@@ -30,21 +40,30 @@ function onReady(E, C, $) {
             as = {};
         }
         as.style = as.style || {};
-        as.style.backgroundColor = C.lightClearColor;
+        as.style.backgroundColor = 'white';
         as.style.border = '2px solid silver';
         as.style.borderRadius = '5px';
+  
+        var space = L.pillow(15);
+        var ys = [space].concat(xs);
+        ys.push(space);
 
         return E.div(as, [
-            E.div({style: {margin: '15px 15px 15px 15px'}}, xs)
+            //E.div({style: {margin: '15px 15px 15px 15px'}}, xs)   // Why doesn't L.spoon respect the margin?
+            L.spoon([space, L.hug(ys), space])
         ]);
     }
 
+    var font = "15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
     function hStyle(sizeOffset) {
         return {
-            font: "15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif",
-            fontWeight: 'normal',
-            fontSize: C.smallestHeader + sizeOffset
+            font: font,
+            fontSize: C.smallestHeader + sizeOffset,
+            margin: 0
         };
+    }
+    function label(s) {
+        return E.label({style: {font: font}}, s);
     }
     function h1(s) {
         return E.h1({style: hStyle(10)}, s);
@@ -66,6 +85,8 @@ function onReady(E, C, $) {
     }
 
     return {
+         a: a,
+         label: label,
          button: button,
          box: box,
          h1: h1,
