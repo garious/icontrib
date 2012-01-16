@@ -21,8 +21,5 @@ function onReady(E, NAV, html) {
     };
 }
 
-return {
-    deps: deps,
-    callback: onReady
-};
+define(deps, onReady);
 

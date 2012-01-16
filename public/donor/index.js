@@ -160,7 +160,7 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
                             E.p({style: {width: '600'}}, user.mission),
                             E.br(),
 	                    alignButton(user)
-                        ], 20),
+                        ], 20)
                     ], 30)
                 ], 20)
             ]);
@@ -220,8 +220,5 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
     };
 }
 
-return {
-    deps: deps,
-    callback: onReady
-};
+define(deps, onReady);
 

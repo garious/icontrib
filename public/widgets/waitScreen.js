@@ -116,9 +116,11 @@ function waitScreen(log, $){
     };
 };
 
-return { 
-	deps: [ "/widgets/logger.js", "/jquery/jquery-mod.js" ],
-	callback: function(log, $) {
-		return new waitScreen(log, $);
-	}
-};
+var deps = [ "/widgets/logger.js", "/jquery/jquery-mod.js" ];
+
+function onReady(log, $) {
+    return new waitScreen(log, $);
+}
+
+define(deps, onReady);
+

@@ -92,7 +92,5 @@ function onReady(E, L, C, $) {
     };
 }
 
-return {
-    deps: deps,
-    callback: onReady
-};
+define(deps, onReady);
+

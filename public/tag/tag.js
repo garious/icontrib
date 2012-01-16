@@ -58,6 +58,6 @@ for (var i = 0; i < tags.length; i++) {
     TAG[nm] = mkTag(nm);
 }
 
-return TAG;
+define(TAG);
 
 

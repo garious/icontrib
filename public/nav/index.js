@@ -150,8 +150,5 @@ function onReady(E, L, C, $, CORE) {
 
 }
 
-return {
-    deps: deps,
-    callback: onReady
-};
+define(deps, onReady);
  

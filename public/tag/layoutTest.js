@@ -45,9 +45,5 @@ function onReady(E, L) {
 }
 
 
-return {
-    deps: deps,
-    callback: onReady
-};
-
+define(deps, onReady);
 

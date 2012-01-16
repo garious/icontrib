@@ -44,8 +44,5 @@ function onReady(E, NAV, html, toaHtml) {
     };
 }
 
-return {
-    deps: deps,
-    callback: onReady
-};
+define(deps, onReady);
 

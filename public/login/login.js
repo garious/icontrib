@@ -25,75 +25,78 @@ function listObject(type, input, output, func) {
 }
 
 
-return {
-    deps: [
-        '../tag/tag.js', 
-        '../jquery/jquery-mod.js'
-    ],
-    callback: function(E, $) { 
-        var loginForm = function(login_url, check_url) {
-            var toInput = function (name, val) {
-                    if(name == "password") {
-                        return E.input({type: "password", name: name, size: "10"});
+var deps = [
+    '../tag/tag.js', 
+    '../jquery/jquery-mod.js'
+];
+
+function onReady(E, $) { 
+
+    var loginForm = function(login_url, check_url) {
+        var toInput = function (name, val) {
+                if(name == "password") {
+                    return E.input({type: "password", name: name, size: "10"});
+                } else {
+                    if(val === null) {
+                        return E.input({type: "text", name: name, size: "10"});
                     } else {
-                        if(val === null) {
-                            return E.input({type: "text", name: name, size: "10"});
-                        } else {
-                            return E.input({type: "text", name: name, size: "10", value: val});
-                        }
+                        return E.input({type: "text", name: name, size: "10", value: val});
                     }
-                };
-            var errorBox = E.div();
-            var formType = { UserLogin : { email : null,
-                                           password : null
-                                         }
-                           };
-            var formInputs = mapObject(formType, formType, {}, toInput);
-
-            var toForm = function(name, val, arr) {
-                    arr.push(name);
-                    arr.push(val);
-                };
-            var formArr = listObject(formType, formInputs, [], toForm);
-            formArr.push(E.input({type: 'submit', value: 'login or suck it'}));
-            formArr.push(errorBox);
-
-            var formBox = E.form(formArr);
-
-            formBox.onsubmit = function(e){
-                e.preventDefault();
-                var toVal = function(name, val) {
-                        return val.value;
-                    };
-                var formValues = mapObject(formType, formInputs, {}, toVal);
-                var dataString = JSON.stringify(formValues);
-                $.ajax({
-                    type: "POST",
-                    url: login_url,
-                    data: dataString,
-                    dataType: "json",
-                    success: function(data) {
-                        if(data.Left) {
-                            errorBox.innerHTML = JSON.stringify(data);
-                        }
-                    }
-                });
+                }
             };
-    
+        var errorBox = E.div();
+        var formType = { UserLogin : { email : null,
+                                       password : null
+                                     }
+                       };
+        var formInputs = mapObject(formType, formType, {}, toInput);
+
+        var toForm = function(name, val, arr) {
+                arr.push(name);
+                arr.push(val);
+            };
+        var formArr = listObject(formType, formInputs, [], toForm);
+        formArr.push(E.input({type: 'submit', value: 'login or suck it'}));
+        formArr.push(errorBox);
+
+        var formBox = E.form(formArr);
+
+        formBox.onsubmit = function(e){
+            e.preventDefault();
+            var toVal = function(name, val) {
+                    return val.value;
+                };
+            var formValues = mapObject(formType, formInputs, {}, toVal);
+            var dataString = JSON.stringify(formValues);
             $.ajax({
-                type: "GET",
-                url: check_url,
+                type: "POST",
+                url: login_url,
+                data: dataString,
                 dataType: "json",
                 success: function(data) {
-                    if(data.Right) {
-                        formBox.innerHTML = data.Right;
+                    if(data.Left) {
+                        errorBox.innerHTML = JSON.stringify(data);
                     }
                 }
             });
-            return formBox;
-         };
-         return {
-            loginForm: loginForm
         };
-    }
-};
+
+        $.ajax({
+            type: "GET",
+            url: check_url,
+            dataType: "json",
+            success: function(data) {
+                if(data.Right) {
+                    formBox.innerHTML = data.Right;
+                }
+            }
+        });
+        return formBox;
+    };
+    return {
+        loginForm: loginForm
+    };
+}
+
+define(deps, onReady);
+
