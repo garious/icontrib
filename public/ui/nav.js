@@ -1,13 +1,13 @@
 var deps = [
     '../tag/tag.js', 
     '../tag/layout.js', 
-    '../css/colors.json', 
-    '../jquery/jquery-mod.js',
-    '../ui/core.js',
-    '../login/login.js'
+    'colors.json', 
+    'core.js',
+    'login.js',
+    '../jquery/jquery-mod.js'
 ];
 
-function onReady(E, L, C, $, CORE, LOGIN) { 
+function onReady(E, L, C, CORE, LOGIN, $) { 
 
     function nav(as) {
         as = as || {};

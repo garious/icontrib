@@ -1,7 +1,7 @@
 var deps = [
     '../tag/tag.js', 
     '../tag/layout.js', 
-    '../nav/index.js', 
+    '../ui/nav.js', 
     '../ui/core.js', 
     'body.html',
     'toa.html'

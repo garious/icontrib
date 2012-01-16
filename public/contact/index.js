@@ -1,6 +1,6 @@
 var deps = [
     '../tag/tag.js', 
-    '../nav/index.js', 
+    '../ui/nav.js', 
 ];
 
 function onReady(E, NAV) {

@@ -6,11 +6,11 @@ function exportGoogle(text, yoink, callback) {
 var deps = [
     '../tag/tag.js', 
     '../tag/layout.js',
-    '../nav/index.js', 
+    '../ui/nav.js', 
     {path: '/mirror/google/jsapi', interpreter: exportGoogle},
     '/widgets/waitScreen.js',
     '../ui/core.js',
-    '../css/colors.json'
+    '../ui/colors.json'
 ];
 
 var defaultUser = {

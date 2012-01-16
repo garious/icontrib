@@ -1,7 +1,7 @@
 var deps = [
     '../tag/tag.js',
     '../tag/layout.js',
-    '../css/colors.json',
+    'colors.json',
     '../jquery/jquery-mod.js'
 ];
 
