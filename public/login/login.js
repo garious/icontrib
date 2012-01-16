@@ -32,7 +32,7 @@ var deps = [
 
 function onReady(E, $) { 
 
-    var loginForm = function(login_url, check_url) {
+    var loginForm = function(loginUrl) {
         var toInput = function (name, val) {
                 if(name == "password") {
                     return E.input({type: "password", name: name, size: "10"});
@@ -45,10 +45,12 @@ function onReady(E, $) {
                 }
             };
         var errorBox = E.div();
-        var formType = { UserLogin : { email : null,
-                                       password : null
-                                     }
-                       };
+        var formType = {
+            UserLogin: {
+                email: null,
+                password: null
+            }
+        };
         var formInputs = mapObject(formType, formType, {}, toInput);
 
         var toForm = function(name, val, arr) {
@@ -56,12 +58,12 @@ function onReady(E, $) {
                 arr.push(val);
             };
         var formArr = listObject(formType, formInputs, [], toForm);
-        formArr.push(E.input({type: 'submit', value: 'login or suck it'}));
+        formArr.push(E.input({type: 'submit', value: 'Log in'}));
         formArr.push(errorBox);
 
         var formBox = E.form(formArr);
 
-        formBox.onsubmit = function(e){
+        $(formBox).submit( function(e) {
             e.preventDefault();
             var toVal = function(name, val) {
                     return val.value;
@@ -70,27 +72,19 @@ function onReady(E, $) {
             var dataString = JSON.stringify(formValues);
             $.ajax({
                 type: "POST",
-                url: login_url,
+                url: loginUrl,
                 data: dataString,
                 dataType: "json",
                 success: function(data) {
                     if(data.Left) {
                         errorBox.innerHTML = JSON.stringify(data);
+                    } else {
+                        window.location.reload();
                     }
                 }
             });
-        };
-
-        $.ajax({
-            type: "GET",
-            url: check_url,
-            dataType: "json",
-            success: function(data) {
-                if(data.Right) {
-                    formBox.innerHTML = data.Right;
-                }
-            }
         });
+
         return formBox;
     };
     return {

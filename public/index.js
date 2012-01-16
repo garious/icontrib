@@ -4,17 +4,18 @@ var deps = [
     '/nav/index.js', 
     '/ui/core.js', 
     '/donor/index.js',
-    '/donor/tom.json'
+    '/donor/tom.json',
+    '/data/userStatus.json'
 ];
 
-function onReady(E, L, NAV, CORE, DONOR, donordata) {
+function onReady(E, L, NAV, CORE, DONOR, USER, STATUS) {
 
     function body() {
         return L.spoon([
             L.hug([
                 L.pillow(100),
                 CORE.box({style: {width: '600px'}}, [
-                    DONOR.summary({user: donordata, title: 'Most Influential Donor'})
+                    DONOR.summary({user: USER, title: 'Most Influential Donor'})
                 ]),
                 CORE.box({style: {width: '350px', height: '120px'}}, [
                     L.spoon([
@@ -35,7 +36,7 @@ function onReady(E, L, NAV, CORE, DONOR, donordata) {
     return {
         title: 'IContrib.org - Improve the world today',
         body: body,
-        main: NAV.frame([ body() ])
+        main: NAV.frame({userStatus: STATUS}, [ body() ])
     };
 }
 

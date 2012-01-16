@@ -1,14 +1,16 @@
 var deps = [
     '../tag/tag.js', 
+    '../tag/layout.js', 
     '../nav/index.js', 
+    '../ui/core.js', 
     'body.html',
     'toa.html'
 ];
 
-function onReady(E, NAV, html, toaHtml) {
+function onReady(E, L, NAV, CORE, html, toaHtml) {
     
     function body() {
-        var toaDiv = E.div({'class': 'widgetContent'});
+        var toaDiv = E.div({'class': 'widgetContent', style: {height: '300px', overflow: 'auto'}});
         toaDiv.innerHTML = toaHtml;
 
         var toaFieldSet = E.fieldset([
@@ -16,21 +18,24 @@ function onReady(E, NAV, html, toaHtml) {
             E.div({'class': 'widget'}, [toaDiv])
         ]);
 
-        var button = E.input({type: 'submit', value: 'Sign up'});
+        var button = E.input({type: 'submit', value: 'Register'});
 
-        var form = E.form({'counter-reset': 'fieldsets'});
+        var form = E.form({counterReset: 'fieldsets', style: {width: '600px'}});
         form.innerHTML = html;
         form.appendChild(toaFieldSet);
         form.appendChild(button);
 
-        return E.div({id: 'content', 'class': 'container_12'}, [
-            E.div({id: 'call-to-action', 'class': 'grid_12'}, [
-        	E.div({'class': 'widgetContent'}, ['Enable your organization to recieve regular contributions today!'])
-            ]),
-            E.div({'class': 'grid_12'}, [
-                E.div({'class': 'widget'}, [
-        	    E.div({'class': 'widgetContent'}, [form])
-                ])
+        return L.hug([
+            L.pillow(300),
+            L.spoon([
+                E.link({type: "text/css", href: "/css/main.css", rel: "stylesheet"}),
+                CORE.box([
+                    E.div({style: {width: '600px'}}, [
+                        E.text('Register your organization to recieve recurring contributions from IContrib.org donors.')
+                    ])
+                ]),
+                L.pillow(30),
+                CORE.box([form])
             ])
         ]);
     }

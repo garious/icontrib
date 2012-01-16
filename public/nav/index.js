@@ -3,12 +3,15 @@ var deps = [
     '../tag/layout.js', 
     '../css/colors.json', 
     '../jquery/jquery-mod.js',
-    '../ui/core.js'
+    '../ui/core.js',
+    '../login/login.js'
 ];
 
-function onReady(E, L, C, $, CORE) { 
+function onReady(E, L, C, $, CORE, LOGIN) { 
 
-    var nav = function() {
+    function nav(as) {
+        as = as || {};
+
         var headerStyle = {
             overflow: 'auto', // Required for IE
             top: 0,
@@ -26,51 +29,34 @@ function onReady(E, L, C, $, CORE) {
             top: '20px'
         };
 
-        var navStyle = {
+        var loginStyle = {
             position: 'absolute',
             right: '25px',
             top: '15px'
         };
 
-        var errorBox = E.div();
+        //var errorBox = E.div();
 
-        var loginForm = E.form({style: {marginBottom: 0}}, [
-            CORE.box([
-              L.hug([
-                CORE.label("Email "),    E.input({type: "text", name: "email", size: "20"}),
-                L.pillow(20),
-                CORE.label("Password "), E.input({type: "password", name: "password", size: "10"}),
-                L.pillow(20),
-                E.input({type: 'submit', value: 'Log in'}),
-                errorBox,
-                L.pillow(20)
-              ])
-            ])
-        ]);
+        //var loginForm = E.form({style: {marginBottom: 0}}, [
+        //    CORE.box([
+        //      L.hug([
+        //        CORE.label("Email "),    E.input({type: "text", name: "email", size: "20"}),
+        //        L.pillow(20),
+        //        CORE.label("Password "), E.input({type: "password", name: "password", size: "10"}),
+        //        L.pillow(20),
+        //        E.input({type: 'submit', value: 'Log in'}),
+        //        errorBox,
+        //        L.pillow(20)
+        //      ])
+        //    ])
+        //]);
 
-        loginForm.onsubmit = function(e){
-            e.preventDefault();
-            var dataString = loginForm.serialize();
-            $.ajax({
-                type: "POST",
-                url: "/get_user",
-                data: dataString,
-                dataType: "json",
-                success: function(data) {
-                    errorBox.innerHTML = data;
-                }
-            });
-        };
-
-        // TODO: this is broken?
-        //$.ajax({
-        //    type: "GET",
-        //    url: "/check_user",
-        //    dataType: "json",
-        //    success: function(data) {
-        //       loginForm.innerHTML = data;
-        //    }
-        //});
+        var loginForm;
+        if (as.userStatus && as.userStatus.Right) {
+            loginForm = E.text(as.userStatus.Right);
+        } else {
+            loginForm = LOGIN.loginForm('/login_user');
+        }
 
         return E.div({style: headerStyle}, [ 
             E.a({href: '/'}, [
@@ -81,7 +67,7 @@ function onReady(E, L, C, $, CORE) {
                 CORE.h2('Improve the world today')
             ]),
 
-            E.div({style: navStyle}, [loginForm])
+            CORE.box({style: loginStyle}, [loginForm])
         ]);
     };
 
@@ -107,7 +93,7 @@ function onReady(E, L, C, $, CORE) {
         xs = xs || [];
         as = as || {};
         
-        var navbar = nav();
+        var navbar = nav(as);
 
         var doc = dock( /*{align: 'bottom', labels: 'tl', duration: 150, step: 25, distance: 90, fadein: 300},*/ [
             dockItem({href: '/',         src: '/images/home.png', title: "Home"}),

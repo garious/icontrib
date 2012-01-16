@@ -2,8 +2,12 @@ import Site                                  ( site, Site(Site) )
 import Happstack.Lite                        ( serve )
 import Data.Acid.Memory                      ( openMemoryState )
 import Control.Concurrent                    ( forkIO, killThread )
+import Control.Monad.Error                   ( runErrorT )
+import Char                                  ( ord )
 import qualified Account                     as A
+import qualified Data.ByteString.Lazy        as B
 import qualified CharityInfo                 as C
+
 
 main :: IO ()
 main = do
@@ -17,6 +21,15 @@ webThread = do
     ua <- openMemoryState A.empty
     ca <- openMemoryState A.empty
     ci <- openMemoryState C.empty
+
+    -- Hardcoded users
+    _ <- runErrorT $ do
+        A.addUser ua (toB "greg@icontrib.org") (toB "greg")
+        A.addUser ua (toB "anatoly@icontrib.org") (toB "anatoly")
+
     serve Nothing (site (Site ua ca ci))
 
+-- String to ByteString
+toB :: String -> B.ByteString
+toB = B.pack . map (fromIntegral . ord)
 

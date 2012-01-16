@@ -27,7 +27,8 @@ data Site = Site { userAccounts ::  AcidState A.Database
 
 site :: Site -> ServerPart Response
 site st = msum [ 
-      dir "login_user"          (post    (getUser (userAccounts st)))
+      dir "data" (dataServices st)
+    , dir "login_user"          (post    (loginUser (userAccounts st)))
     , dir "check_user"          (get     (checkUser (userAccounts st)))
     , dir "login_charity"       (post    (getUser (charityAccounts st)))
     , dir "check_charity"       (get     (checkUser (charityAccounts st)))
@@ -39,6 +40,11 @@ site st = msum [
     ]
   where
     root = "public"
+
+dataServices :: Site -> ServerPart Response
+dataServices st = msum [ 
+      dir "userStatus.json"    (get     (checkUser (userAccounts st)))
+    ]
 
 redirect ::  HTTP.Request_String -> ServerPart Response
 redirect req = do
@@ -101,7 +107,7 @@ checkUser db = do
    liftIO $ print cookie
    token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
    uid <- A.cookieToUser db token
-   let msg = "Thanks for coming back " ++ (toS uid)
+   let msg = "Welcome back " ++ (toS uid)
    liftIO $ putStrLn msg 
    return $ JS.toJSString msg
 
@@ -123,7 +129,7 @@ loginUser db = do
    liftIO $ putStrLn "loginUser" 
    (A.UserLogin uid pwd) <- getBody
    token <- A.loginToCookie db (uid) (pwd)
-   let msg = "Welcome Back " ++ (toS uid)
+   let msg = "Welcome back " ++ (toS uid)
    liftIO $ putStrLn msg 
    let cookie = mkCookie "token" (Url.encode (B.unpack token))
    lift $ addCookies [(Session, cookie)]
