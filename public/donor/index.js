@@ -4,13 +4,13 @@ function exportGoogle(text, yoink, callback) {
 }
 
 var deps = [
-    '../tag/tag.js', 
-    '../tag/layout.js',
-    '../ui/nav.js', 
+    '/tag/tag.js', 
+    '/tag/layout.js',
+    '/ui/nav.js', 
     {path: '/mirror/google/jsapi', interpreter: exportGoogle},
     '/widgets/waitScreen.js',
-    '../ui/core.js',
-    '../ui/colors.json'
+    '/ui/core.js',
+    '/ui/colors.json'
 ];
 
 var defaultUser = {

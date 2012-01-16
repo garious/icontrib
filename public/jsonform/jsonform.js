@@ -4,7 +4,7 @@ function mapObject(input, output, func) {
             output[prop] = {};
             mapObject(input[prop], output[prop], func);
         } else {
-            output[prop] = func(prop, input[prop])
+            output[prop] = func(prop, input[prop]);
         }
     }
 }
@@ -14,7 +14,7 @@ function listObject(input, output, func) {
         if(typeof(input[prop]) == "object") {
             listObject(input[prop], output, func);
         } else {
-            func(prop, input[prop], output)
+            func(prop, input[prop], output);
         }
     }
 }
@@ -29,11 +29,11 @@ function populateFromFormInputs(name, val, arr) {
 }
 
 var deps = [
-    '../tag/tag.js', 
-    '../jquery/jquery-mod.js'
-]
+    '/tag/tag.js', 
+    '/jquery/jquery-mod.js'
+];
 
-var onReady(E, $) {
+function onReady(E, $) {
     var jsonForm = function(post_url, get_url) {
         var errorBox = E.div();
         var formInputs = {};

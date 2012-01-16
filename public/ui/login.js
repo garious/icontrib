@@ -26,8 +26,8 @@ function listObject(type, input, output, func) {
 
 
 var deps = [
-    '../tag/tag.js', 
-    '../jquery/jquery-mod.js'
+    '/tag/tag.js', 
+    '/jquery/jquery-mod.js'
 ];
 
 function onReady(E, $) { 

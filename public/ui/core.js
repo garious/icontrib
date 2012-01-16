@@ -1,8 +1,8 @@
 var deps = [
-    '../tag/tag.js',
-    '../tag/layout.js',
+    '/tag/tag.js',
+    '/tag/layout.js',
     'colors.json',
-    '../jquery/jquery-mod.js'
+    '/jquery/jquery-mod.js'
 ];
 
 function onReady(E, L, C, $) {

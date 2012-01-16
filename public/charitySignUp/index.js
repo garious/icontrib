@@ -1,8 +1,8 @@
 var deps = [
-    '../tag/tag.js', 
-    '../tag/layout.js', 
-    '../ui/nav.js', 
-    '../ui/core.js', 
+    '/tag/tag.js', 
+    '/tag/layout.js', 
+    '/ui/nav.js', 
+    '/ui/core.js', 
     'body.html',
     'toa.html'
 ];

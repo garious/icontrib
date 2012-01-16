@@ -59,13 +59,14 @@ var YOINK = (function() {
         js: function(text, yoink, callback) {
             // Load the module
             var f_str = '(function (baseUrl, define) {' + text + '})';
+            var f;
             if (window && window.execScript) {
                 // Hack for Internet Explorer
                 window.execScript('_iesucks = ' + f_str);
-                var f = _iesucks;
+                f = _iesucks;
             } else {
                 // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-                var f = eval(f_str);
+                f = eval(f_str);
             }
             var called = false;
             function define(deps, f) {
@@ -177,8 +178,17 @@ var YOINK = (function() {
             };
             var interpretFile = function(i, files) {
                 var u = urls[i];
-        			console.log("yoink: interpreting '" + urls[i].path + "'");
-                loader.interpret(files[i], u.path, u.interpreter, getResources, mkOnInterpreted(u.path, i, files));
+
+                // Sometimes we do a redundant download.  Make sure we don't do a redundant interpret too!
+                var rsc = loader.cache[u.path];
+                if (rsc !== undefined) {
+                    console.log("yoink: skipping redundant download '" + urls[i].path + "'");
+                    rscs[i] = rsc;
+                    onInterpreted(i, files);
+                } else {
+                    console.log("yoink: interpreting '" + urls[i].path + "'");
+                    loader.interpret(files[i], u.path, u.interpreter, getResources, mkOnInterpreted(u.path, i, files));
+                }
             };
             var onDownloaded = function(files) {
                  cnt++;

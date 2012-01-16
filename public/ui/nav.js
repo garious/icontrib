@@ -1,10 +1,10 @@
 var deps = [
-    '../tag/tag.js', 
-    '../tag/layout.js', 
+    '/tag/tag.js', 
+    '/tag/layout.js', 
     'colors.json', 
     'core.js',
     'login.js',
-    '../jquery/jquery-mod.js'
+    '/jquery/jquery-mod.js'
 ];
 
 function onReady(E, L, C, CORE, LOGIN, $) { 
@@ -69,7 +69,7 @@ function onReady(E, L, C, CORE, LOGIN, $) {
 
             CORE.box({style: loginStyle}, [loginForm])
         ]);
-    };
+    }
 
     var dockItem = function(as) {
         as = as || {};
