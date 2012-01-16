@@ -23,7 +23,8 @@ function onReady(E, L, NAV, CORE, DONOR, USER, STATUS) {
                         E.ol({style: {width: '350px'}}, [
                             E.li([CORE.a({href: '/donor/?main=GlobalFundForWomen'}, 'Global Fund for Women')]),
                             E.li([CORE.a({href: '/donor/?main=Usoa'}, 'Underwater Society of America')])
-                        ])
+                        ]),
+                        L.pillow(30)
                     ])
                 ])
             ], 20),

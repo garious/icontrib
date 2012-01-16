@@ -105,7 +105,7 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
 
     function alignButton(user) {
         user = user || defaultUser;
-        var alignLink = CORE.button({href: '#'}, ['Align with ' + user.firstName]);
+        var alignLink = CORE.button({href: '#'}, ['Match it!']);
         alignLink.onclick = function(e) { 
             //TODO: On click, navigate to appropriate pages
             wait.load({
@@ -124,22 +124,78 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         return alignDiv;
     }
 
+    function isMember(xs, x) {
+        for (var i = 0; i < xs.length; i++) {
+            if ( xs[i] === x ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function fundContents(dist, nm) {
+        var rows = [];
+        var xs = [];
+        var total = 0;
+
+        // filter (nm `elem` dist.labels)
+        for (var i = 0; i < dist.length; i++) {
+            if (isMember(dist[i].labels, nm)) {
+                var d = dist[i];
+                total = total + d.shares;
+                xs.push(d);
+            }
+        }
+
+        for (var j = 0; j < xs.length; j++) {
+            var x = xs[j];
+
+            var cols = [
+                E.td([x.name]),
+                E.td([E.text(Math.round(1000 * x.shares / total) / 10 + '%')])
+            ];
+            rows.push(E.tr(cols));
+        }
+        return E.table({cellSpacing: 10}, rows);
+    }
+
+    function distributionTable(user) {
+        if (user.funds) {
+            var rows = [];
+            for (var i = 0; i < user.funds.length; i++) {
+                var row = L.spoon([
+                    L.hug([
+                        E.h4(user.funds[i]),
+                        alignButton(user)
+                    ], 30),
+                    L.hug([L.pillow(30), fundContents(user.distribution1, user.funds[i])])
+                ], 25);
+                rows.push(row);
+            }
+            return L.spoon(rows);
+        } else {
+            return alignButton(user);
+        }
+    }
+
     function summary(as) {
         as = as || {};
         var user = as.user || defaultUser;
         var userChart = L.spoon([
+            // TODO: On hover, show "dollars raised vs dollars donated"
+            L.hug([L.pillow(230, 0), CORE.h1('$' + user.alignedDonated + ' / $' + user.dollarsDonated)]),
             chart(user),
-            L.hug([L.pillow(100), alignButton(user)])
+            L.hug([L.pillow(50), distributionTable(user)]),
+            L.pillow(20)
         ]);
 
         return L.spoon([
-            CORE.h2(as.title),
+            CORE.h2(as.title), 
             L.hug([
                 L.spoon([
                     L.pillow(20),
                     E.img({style: {width: '175px', height: '225px', borderRadius: '5px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
-                    CORE.h3([user.firstName + ' ' + user.lastName]),
-                    CORE.h4(['Helped raise $' + user.alignedDonated])
+                    CORE.h3([user.firstName + ' ' + user.lastName])
                 ], 20),
 	        userChart
             ])
@@ -159,7 +215,7 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
                         L.spoon([
                             E.p({style: {width: '600'}}, user.mission),
                             E.br(),
-	                    alignButton(user)
+                            CORE.button({href: '#'}, ['Donate!'])
                         ], 20)
                     ], 30)
                 ], 20)

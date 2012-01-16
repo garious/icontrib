@@ -51,7 +51,12 @@ var TAG = {
     text:       text
 };
 
-var tags = ['br', 'hr', 'p', 'div', 'link', 'a', 'img', 'form', 'fieldset', 'input', 'label', 'h1', 'h2', 'h3', 'h4', 'base', 'ul', 'ol', 'li', 'legend'];
+var tags = [
+    'br', 'hr', 'p', 'div', 'link', 'a', 'img', 
+    'form', 'fieldset', 'input', 'label', 
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'base', 'ul', 'ol', 'li', 'legend', 'table', 'th', 'tr', 'td'
+];
 
 for (var i = 0; i < tags.length; i++) {
     var nm = tags[i];
