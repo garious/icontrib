@@ -3,7 +3,7 @@ var deps = [
     '../login/login.js'
 ];
 
-var function onReady(E, L) {
+function onReady(E, L) {
     var body = E.div([ 
         L.loginForm("/login_charity/","/check_charity/")
     ]);
