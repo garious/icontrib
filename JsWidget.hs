@@ -29,16 +29,14 @@ jsMod :: FilePath -> [String] -> ServerPart Response
 jsMod root baseUrl = do
       nullDir
       trailingSlash
-      maybeFile <- optional (lookText "filename")  -- TODO: Remove the "?filename=<name>" feature.
-      let filename = maybe "index.js" T.unpack maybeFile
-      jsModFile root baseUrl filename
+      jsModFile root baseUrl "index.js"
 
 -- Is there a javascript file here? 
 jsModFile :: FilePath -> [String] -> FilePath -> ServerPart Response
 jsModFile root baseUrl filename = do
       b <- liftIO (doesFileExist (joinPath (root : url)))
       guard b
-      maybeNm <- optional (lookText "main")
+      maybeNm <- optional (lookText "main")  -- TODO: Verify this string is a JavaScript identifier
       ok (toResponse (htmlForJsMod baseUrl filename (fmap T.unpack maybeNm)))
    where
       url = baseUrl ++ [filename]
