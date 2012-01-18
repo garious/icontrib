@@ -19,22 +19,29 @@ import qualified Data.Text.Lazy as T
 -- Is this a javascript file or directory within a widgets directory?
 widget :: FilePath -> [String] -> ServerPart Response
 widget root baseUrl = msum [
-      jsMod root baseUrl
+      path (\p -> jsModFile root baseUrl (p ++ ".js"))
+    , jsMod root baseUrl
     , path (\p -> widget root (baseUrl ++ [p]))
     ]
 
--- Is this a javascript file within a widgets directory?
+-- Is there a javascript file named 'index.js' within this directory?
 jsMod :: FilePath -> [String] -> ServerPart Response
 jsMod root baseUrl = do
       nullDir
       trailingSlash
-      maybeFile <- optional (lookText "filename")
+      maybeFile <- optional (lookText "filename")  -- TODO: Remove the "?filename=<name>" feature.
       let filename = maybe "index.js" T.unpack maybeFile
-          url = baseUrl ++ [filename]
+      jsModFile root baseUrl filename
+
+-- Is there a javascript file here? 
+jsModFile :: FilePath -> [String] -> FilePath -> ServerPart Response
+jsModFile root baseUrl filename = do
       b <- liftIO (doesFileExist (joinPath (root : url)))
       guard b
       maybeNm <- optional (lookText "main")
       ok (toResponse (htmlForJsMod baseUrl filename (fmap T.unpack maybeNm)))
+   where
+      url = baseUrl ++ [filename]
 
 htmlForJsMod :: [String] -> String -> Maybe String -> H.Html
 htmlForJsMod baseUrl filename maybeNm = appTemplate $ do

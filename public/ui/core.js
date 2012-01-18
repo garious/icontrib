@@ -75,7 +75,7 @@ function onReady(E, L, C, $) {
         return E.h5({style: hStyle(2)}, s);
     }
     function h6(s) {
-        return E.h6({style: h6Style(0)}, s);
+        return E.h6({style: hStyle(0)}, s);
     }
 
     return {

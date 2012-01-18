@@ -156,7 +156,9 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
             ];
             rows.push(E.tr(cols));
         }
-        return E.table({cellSpacing: 10}, rows);
+        return E.table({cellSpacing: 10}, [
+            E.tbody(rows)
+        ]);
     }
 
     function distributionTable(user) {

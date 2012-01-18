@@ -53,9 +53,10 @@ var TAG = {
 
 var tags = [
     'br', 'hr', 'p', 'div', 'link', 'a', 'img', 
-    'form', 'fieldset', 'input', 'label', 
+    'form', 'fieldset', 'input', 'label', 'button',
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-    'base', 'ul', 'ol', 'li', 'legend', 'table', 'th', 'tr', 'td'
+    'base', 'ul', 'ol', 'li', 'legend', 
+    'table', 'th', 'tr', 'td', 'thead', 'tbody', 'tfoot'
 ];
 
 for (var i = 0; i < tags.length; i++) {
