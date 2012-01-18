@@ -8,7 +8,7 @@ RUN_TESTS := $(wildcard *Test.hs)
 
 o = out
 
-all: test $o/icontrib
+all: test $o/icontrib lint
 
 serve: $o/icontrib
 	$<
@@ -42,11 +42,22 @@ deps:
 	cabal update
 	cabal install --only-dependencies
 
-%.js.lint:%.js Makefile
-	echo '(function() {' > $<.pre
-	echo '});' > $<.post
-	cat $<.pre $< $<.post > $<.lint
+deps.Darwin:
+	brew install jslint
+	brew install node
 
-%.js.ok:%.js.lint
-	jsl -output-format $*.js:__LINE__:__ERROR__ -process $<
+JS_WHITELIST:= \
+    $(wildcard public/jquery/jquery*.js) \
+    $(wildcard public/js/less-*.js) \
+    public/js/waitScreen.js \
+    public/widgets/waitScreen.js \
+
+JS_FILES:=$(filter-out $(JS_WHITELIST),$(wildcard public/*.js) $(wildcard public/*/*.js))
+
+lint: $(patsubst %,$o/%.ok,$(JS_FILES))
+
+$o/%.js.ok: %.js
+	jsl -output-format "$*.js:__LINE__:__COL__: __ERROR__" -process $<
+	@mkdir -p $(@D)
 	touch $@
+
