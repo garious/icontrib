@@ -30,8 +30,10 @@ site st = msum [
       dir "data" (dataServices st)
     , dir "login_user"          (post    (loginUser (userAccounts st)))
     , dir "check_user"          (get     (checkUser (userAccounts st)))
+    , dir "logout_user"         (get     (logOut (userAccounts st)))
     , dir "login_charity"       (post    (getUser (charityAccounts st)))
     , dir "check_charity"       (get     (checkUser (charityAccounts st)))
+    , dir "logout_charity"      (get     (logOut (charityAccounts st)))
     , dir "get_charity_info"    (get     (getInfo (charityAccounts st) (charityInfo st)))
     , dir "update_charity_info" (post    (postInfo (charityAccounts st) (charityInfo st)))
     , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "https://www.google.com/jsapi"))
@@ -100,16 +102,27 @@ postInfo userdb infodb = do
    uid <- A.cookieToUser userdb token
    C.updateInfo infodb uid (toS jdata)
 
-checkUser :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) JS.JSString
+checkUser :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) ()
 checkUser db = do 
-   liftIO $ putStrLn "checkUser" 
+    liftIO $ putStrLn "checkUser" 
+    cookie <- lift $ liftM Url.decode $ lookCookieValue "token"
+    liftIO $ print cookie
+    token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
+    uid <- A.cookieToUser db token
+    liftIO $ A.clearUserCookie db uid
+    liftIO $ putStrLn "cleaned user cookies" 
+
+logOut :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) JS.JSString
+logOut db = do 
+   liftIO $ putStrLn "logOut" 
    cookie <- lift $ liftM Url.decode $ lookCookieValue "token"
    liftIO $ print cookie
    token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
    uid <- A.cookieToUser db token
-   let msg = "Welcome back " ++ (toS uid)
+   let msg = (toS uid)
    liftIO $ putStrLn msg 
    return $ JS.toJSString msg
+
 
 newUser :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) JS.JSString
 newUser db = do  
@@ -117,7 +130,7 @@ newUser db = do
    (A.UserLogin uid pwd) <- getBody
    A.addUser db (uid) (pwd)
    token <- A.loginToCookie db (uid) (pwd)
-   let msg = "Thank you for registering " ++ (toS uid)
+   let msg = (toS uid)
    liftIO $ putStrLn msg 
    let cookie = mkCookie "token" (Url.encode (B.unpack token))
    lift $ addCookies [(Session, cookie)]
@@ -129,7 +142,7 @@ loginUser db = do
    liftIO $ putStrLn "loginUser" 
    (A.UserLogin uid pwd) <- getBody
    token <- A.loginToCookie db (uid) (pwd)
-   let msg = "Welcome back " ++ (toS uid)
+   let msg = (toS uid)
    liftIO $ putStrLn msg 
    let cookie = mkCookie "token" (Url.encode (B.unpack token))
    lift $ addCookies [(Session, cookie)]
