@@ -63,6 +63,7 @@ function onReady(E, $) {
         var logout = E.input({type: 'submit', value : 'Logout' });
         var logoutForm = E.form([logout]);
         $(logoutForm).submit( function(e) {
+            e.preventDefault();
             $.ajax({
                 type: "GET",
                 url: logoutUrl,
@@ -94,8 +95,9 @@ function onReady(E, $) {
                         loginSubmit = loginSubmitNew;
                     } else {
                         var logoutNew = E.input({type: 'submit', value : 'Logout ' + data.Right });
-                        logoutForm.replaceChild(logoutNew, logout); 
+                        var logoutOld = logout;
                         logout = logoutNew;
+                        logoutForm.replaceChild(logoutNew, logoutOld); 
                         widget.replaceChild(logoutForm, loginForm); 
                     }
                 }
@@ -108,8 +110,9 @@ function onReady(E, $) {
             success: function(data) {
                 if(data.Right) {
                     var logoutNew = E.input({type: 'submit', value : 'Logout ' + data.Right });
-                    logoutForm.replaceChild(logoutNew, logout); 
+                    var logoutOld = logout;
                     logout = logoutNew;
+                    logoutForm.replaceChild(logoutNew, logoutOld); 
                 } else {
                     widget.replaceChild(loginForm, logoutForm); 
                 }
