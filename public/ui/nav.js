@@ -13,43 +13,33 @@ function onReady(E, L, C, CORE, LOGIN, $) {
         as = as || {};
 
         var headerStyle = {
+            position: 'absolute',
             overflow: 'auto', // Required for IE
             top: 0,
             left: 0,
             width: '100%',
-            height: '80px',
-            backgroundColor: C.midDarkColor
+            height: '129px'
+        };
+
+        var imgStyle = {
+            position: 'absolute',
+            top: 0,
+            left: '250px',
+            height: '100%'
         };
         
         var taglineStyle = {
-            fontSize: '1.75em',
-            color: C.accentColor,
+            color: '#D0D0D0',
             position: 'absolute',
-            left: '125px',
-            top: '20px'
+            left: '425px',
+            top: '50px'
         };
 
         var loginStyle = {
             position: 'absolute',
-            right: '25px',
-            top: '15px'
+            left: '850px',
+            top: '10px'
         };
-
-        //var errorBox = E.div();
-
-        //var loginForm = E.form({style: {marginBottom: 0}}, [
-        //    CORE.box([
-        //      L.hug([
-        //        CORE.label("Email "),    E.input({type: "text", name: "email", size: "20"}),
-        //        L.pillow(20),
-        //        CORE.label("Password "), E.input({type: "password", name: "password", size: "10"}),
-        //        L.pillow(20),
-        //        E.input({type: 'submit', value: 'Log in'}),
-        //        errorBox,
-        //        L.pillow(20)
-        //      ])
-        //    ])
-        //]);
 
         var loginForm;
         if (as.userStatus && as.userStatus.Right) {
@@ -60,14 +50,14 @@ function onReady(E, L, C, CORE, LOGIN, $) {
 
         return E.div({style: headerStyle}, [ 
             E.a({href: '/'}, [
-                E.img({src: "/images/logo4.png", alt: "IContrib Home", style: {height: "100%"}, border: "0"})
+                E.img({src: "/images/logo.png", alt: "IContrib Home", style: imgStyle, border: "0"})
             ]),
 
             E.div({style: taglineStyle}, [
-                CORE.h2('Improve the world today')
+                CORE.h1('Improve the world today')
             ]),
 
-            CORE.box({style: loginStyle}, [loginForm])
+            E.div({style: loginStyle}, [loginForm])
         ]);
     }
 
@@ -105,21 +95,21 @@ function onReady(E, L, C, CORE, LOGIN, $) {
         var body = E.div(xs);
 
         var e = L.spoon([navbar, body/*, doc*/], 20);
-        e.style.backgroundColor = '#EEE';
+        e.style.backgroundColor = '#F3F3F6';
         return e;
     };
 
+    function footer(as, xs) {
+        if (as && as.constructor === Array) {
+            xs = as;
+            as = {};
+        }
+        as.style = as.style || {};
+        as.style.bottom = '0px';
+        as.style.width = '100%';
+        as.style.textAlign = 'center';
 
-    var footerStyle = {
-        bottom: '0px',
-        width: '100%',
-        height: '23px',
-        color: C.accentColor,
-        textAlign: 'right'
-    };
-
-    function footer(xs) {
-        return E.div({style: footerStyle}, [
+        return E.div(as, [
             E.hr(),
             E.div({style: {paddingRight: '20px'}}, xs),
             E.hr()

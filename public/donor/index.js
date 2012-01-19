@@ -151,8 +151,8 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
             var x = xs[j];
 
             var cols = [
-                E.td([x.name]),
-                E.td([E.text(Math.round(1000 * x.shares / total) / 10 + '%')])
+                E.td([CORE.p(x.name)]),
+                E.td({style: {textAlign: 'right'}}, [E.text(Math.round(1000 * x.shares / total) / 10 + '%')])
             ];
             rows.push(E.tr(cols));
         }
@@ -167,7 +167,7 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
             for (var i = 0; i < user.funds.length; i++) {
                 var row = L.spoon([
                     L.hug([
-                        E.h4(user.funds[i]),
+                        CORE.h4(user.funds[i]),
                         alignButton(user)
                     ], 30),
                     L.hug([L.pillow(30), fundContents(user.distribution1, user.funds[i])])

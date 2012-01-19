@@ -7,22 +7,26 @@ var deps = [
 
 function onReady(E, L, C, $) {
 
+    var font = "15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
+
     function a(as, xs) {
         if (xs === undefined) {
             xs = as;
             as = {};
         }
+        as = as || {};
         as.style = as.style || {};
         as.style.textDecoration = 'none';
+        as.style.font = font;
         return E.a(as, xs);
     }
 
     function button(as, xs) {
         if (xs === undefined) {
             xs = as;
-            as = null;
+            as = {};
         }
-        var e = E.a({href: as.href, style: {textDecoration: 'none', backgroundColor: C.middleColor, color: '#fff', borderRadius: '5px', padding: '10px'}}, xs);
+        var e = E.a({href: as.href || '#', style: {textDecoration: 'none', backgroundColor: C.middleColor, color: '#fff', padding: '10px'}}, xs);
         $(e).hover(
             function() {
                 e.style.backgroundColor = C.lightColor;
@@ -40,15 +44,13 @@ function onReady(E, L, C, $) {
             as = {};
         }
         as.style = as.style || {};
+        as.style.border = '1px solid silver';
         as.style.backgroundColor = 'white';
-        as.style.border = '2px solid silver';
-        as.style.borderRadius = '5px';
   
         var space = L.pillow(15);
         return L.spoon(as, [space, L.hug([space, E.div(xs), space]), space]);
     }
 
-    var font = "15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
     function hStyle(sizeOffset) {
         return {
             font: font,
@@ -77,6 +79,16 @@ function onReady(E, L, C, $) {
     function h6(s) {
         return E.h6({style: hStyle(0)}, s);
     }
+    function p(as, xs) {
+        if (xs === undefined) {
+            xs = as;
+            as = {};
+        }
+        as = as || {};
+        as.style = as.style || {};
+        as.style.font = font;
+        return E.p(as, xs);
+    }
 
     return {
          a: a,
@@ -88,7 +100,8 @@ function onReady(E, L, C, $) {
          h3: h3,
          h4: h4,
          h5: h5,
-         h6: h6
+         h6: h6,
+         p: p
     };
 }
 

@@ -26,6 +26,7 @@ function onReady(CORE, E) {
                 row('h4',     E.h4('E.h4'),              CORE.h4('CORE.h4')),
                 row('h5',     E.h5('E.h5'),              CORE.h5('CORE.h5')),
                 row('h6',     E.h6('E.h6'),              CORE.h6('CORE.h6')),
+                row('p',      E.p('E.p'),                CORE.p('CORE.p')),
                 row('a',      E.a({href: '#'}, ['E.a']), CORE.a({href: '#'}, ['CORE.a'])),
                 row('label',  E.label('E.label'),        CORE.label('CORE.label')),
                 row('button', E.button('E.button'),      CORE.button({href: '#'}, 'CORE.button')),
