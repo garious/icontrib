@@ -32,7 +32,7 @@ var deps = [
 
 function onReady(E, $) { 
 
-    var loginForm = function(loginUrl) {
+    var loginCtor = function(loginUrl, logoutUrl, checkUrl) {
         var toInput = function (name, val) {
                 if(name == "password") {
                     return E.input({type: "password", name: name, size: "10"});
@@ -44,7 +44,6 @@ function onReady(E, $) {
                     }
                 }
             };
-        var errorBox = E.div();
         var formType = {
             UserLogin: {
                 email: null,
@@ -58,12 +57,25 @@ function onReady(E, $) {
                 arr.push(val);
             };
         var formArr = listObject(formType, formInputs, [], toForm);
-        formArr.push(E.input({type: 'submit', value: 'Log in'}));
-        formArr.push(errorBox);
+        var loginSubmit = E.input({type: 'submit', value: 'Log in'});
+        formArr.push(loginSubmit);
+        
+        var logout = E.input({type: 'submit', value : 'Logout' });
+        var logoutForm = E.form([logout]);
+        $(logoutForm).submit( function(e) {
+            $.ajax({
+                type: "GET",
+                url: logoutUrl,
+                success: function(data) {
+                    window.location.reload();
+                }
+            });
+        });
 
-        var formBox = E.form(formArr);
+        var loginForm = E.form(formArr);
+        var widget = E.div([logoutForm]);
 
-        $(formBox).submit( function(e) {
+        $(loginForm).submit( function(e) {
             e.preventDefault();
             var toVal = function(name, val) {
                     return val.value;
@@ -77,18 +89,33 @@ function onReady(E, $) {
                 dataType: "json",
                 success: function(data) {
                     if(data.Left) {
-                        errorBox.innerHTML = JSON.stringify(data);
+                        var loginSubmitNew = E.input({type: 'submit', value: 'Try Again'});
+                        loginForm.replaceChild(loginSubmitNew, loginSubmit); 
+                        loginSubmit = loginSubmitNew;
                     } else {
-                        window.location.reload();
+                        widget.replaceChild(loginForm, logoutForm); 
                     }
                 }
             });
         });
-
-        return formBox;
+        $.ajax({
+            type: "GET",
+            url: checkUrl,
+            dataType: "json",
+            success: function(data) {
+                if(data.Right) {
+                    var logoutNew = E.input({type: 'submit', value : 'Logout ' + data.Right });
+                    logoutForm.replaceChild(logoutNew, logout); 
+                    logout = logoutNew;
+                } else {
+                    widget.replaceChild(loginForm, logoutForm); 
+                }
+            }
+        });
+        return widget;
     };
     return {
-        loginForm: loginForm
+        loginForm: loginCtor
     };
 }
 

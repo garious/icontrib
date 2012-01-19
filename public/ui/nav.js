@@ -35,28 +35,7 @@ function onReady(E, L, C, CORE, LOGIN, $) {
             top: '15px'
         };
 
-        //var errorBox = E.div();
-
-        //var loginForm = E.form({style: {marginBottom: 0}}, [
-        //    CORE.box([
-        //      L.hug([
-        //        CORE.label("Email "),    E.input({type: "text", name: "email", size: "20"}),
-        //        L.pillow(20),
-        //        CORE.label("Password "), E.input({type: "password", name: "password", size: "10"}),
-        //        L.pillow(20),
-        //        E.input({type: 'submit', value: 'Log in'}),
-        //        errorBox,
-        //        L.pillow(20)
-        //      ])
-        //    ])
-        //]);
-
-        var loginForm;
-        if (as.userStatus && as.userStatus.Right) {
-            loginForm = E.text(as.userStatus.Right);
-        } else {
-            loginForm = LOGIN.loginForm('/login_user');
-        }
+        var loginForm = LOGIN.loginForm('/login_user', '/logout_user', '/check_user');
 
         return E.div({style: headerStyle}, [ 
             E.a({href: '/'}, [
@@ -108,7 +87,6 @@ function onReady(E, L, C, CORE, LOGIN, $) {
         e.style.backgroundColor = '#EEE';
         return e;
     };
-
 
     var footerStyle = {
         bottom: '0px',

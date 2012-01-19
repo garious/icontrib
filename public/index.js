@@ -4,11 +4,10 @@ var deps = [
     '/ui/nav.js', 
     '/ui/core.js', 
     '/donor/index.js',
-    '/donor/tom.json',
-    '/data/userStatus.json'
+    '/donor/tom.json'
 ];
 
-function onReady(E, L, NAV, CORE, DONOR, USER, STATUS) {
+function onReady(E, L, NAV, CORE, DONOR, USER) {
 
     function body() {
         return L.spoon([
@@ -37,7 +36,7 @@ function onReady(E, L, NAV, CORE, DONOR, USER, STATUS) {
     return {
         title: 'IContrib.org - Improve the world today',
         body: body,
-        main: NAV.frame({userStatus: STATUS}, [ body() ])
+        main: NAV.frame([ body() ])
     };
 }
 
