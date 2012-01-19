@@ -87,5 +87,5 @@ appTemplate body =
      H.html $ do
        H.head $ do
          H.meta ! A.httpEquiv "Content-Type" ! A.content "text/html;charset=utf-8"
-       H.body body
+       H.body ! A.style "margin: 0; padding: 0" $ body
 
