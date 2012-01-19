@@ -12,7 +12,7 @@ function onReady(E, L, NAV, CORE, DONOR, USER) {
     function body() {
         return L.spoon([
             L.hug([
-                L.pillow(100),
+                L.pillow(200),
                 CORE.box({style: {width: '600px'}}, [
                     DONOR.summary({user: USER, title: 'Most Influential Donor'})
                 ]),
