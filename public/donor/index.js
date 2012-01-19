@@ -35,7 +35,11 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
 
     function chart(user) {
         user = user || defaultUser;
-
+        var dist = [];
+        for (var i = 0; i < user.distribution.length; i++) {
+            var ud = user.distribution[i]; 
+            dist.push([ud.name, ud.shares]); 
+        }
         var userChart = E.div([
             E.img({src: '/images/ajax-loader.gif', alt: 'Loading...', style: {margin: '0px auto', width: '400px', height: '300px'}})
         ]);
@@ -47,7 +51,7 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'Charity');
             data.addColumn('number', 'Percentage');
-            data.addRows(user.distribution);
+            data.addRows(dist);
             chart.draw(data, options);
         };
         google.load('visualization', '1.0', {packages:['corechart'], callback: cookPie});
@@ -170,7 +174,7 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
                         E.h4(user.funds[i]),
                         alignButton(user)
                     ], 30),
-                    L.hug([L.pillow(30), fundContents(user.distribution1, user.funds[i])])
+                    L.hug([L.pillow(30), fundContents(user.distribution, user.funds[i])])
                 ], 25);
                 rows.push(row);
             }

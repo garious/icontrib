@@ -5,10 +5,6 @@
    "dollarsDonated": 55,
    "alignedDonated": 65,
    "distribution": [
-       ["Global Fund for Women", 50],
-       ["Underwater Society of America", 5]
-   ],
-   "distribution1": [
        {"name": "Global Fund for Women", "shares": 50, "labels": ["Tom's General Fund"]},
        {"name": "Underwater Society of America", "shares": 5, "labels": ["Tom's General Fund"]}
    ],
