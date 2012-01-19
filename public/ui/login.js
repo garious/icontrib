@@ -32,7 +32,7 @@ var deps = [
 
 function onReady(E, $) { 
 
-    var loginCtor = function(loginUrl, logoutUrl, checkUrl) {
+    var loginCtor = function(cfg) {
         var toInput = function (name, val) {
                 if(name == "password") {
                     return E.input({type: "password", name: name, size: "10"});
@@ -66,7 +66,7 @@ function onReady(E, $) {
             e.preventDefault();
             $.ajax({
                 type: "GET",
-                url: logoutUrl,
+                url: cfg.logout,
                 success: function(data) {
                     window.location.reload();
                 }
@@ -85,7 +85,7 @@ function onReady(E, $) {
             var dataString = JSON.stringify(formValues);
             $.ajax({
                 type: "POST",
-                url: loginUrl,
+                url: cfg.login,
                 data: dataString,
                 dataType: "json",
                 success: function(data) {
@@ -104,7 +104,7 @@ function onReady(E, $) {
         });
         $.ajax({
             type: "GET",
-            url: checkUrl,
+            url: cfg.check,
             dataType: "json",
             success: function(data) {
                 if(data.Right) {
