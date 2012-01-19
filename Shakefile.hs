@@ -1,63 +1,91 @@
 module Shakefile where
 
-import Development.Shake
-import Development.Shake.FilePath
+import Development.Shake(need, want, readFileLines, writeFileLines, readFile', doesFileExist, Action, Rules, (*>), system', shake, shakeOptions)
+import Development.Shake.FilePath(replaceExtension, dropDirectory1, (<.>))
+import Control.Monad(filterM)
+import Data.Char(isAlphaNum, isUpper)
+import Data.List(nub, sort, isPrefixOf)
+import System.Environment(getArgs)
 
-import Control.Monad
-import Data.Char
-import Data.List
-
-import System.Environment
-
+-- Start Shake with our build rules
 main :: IO ()
 main = do
-  args <- getArgs
+    args <- getArgs
+    shake shakeOptions (rules args)
 
-  shake shakeOptions $ do
+-- Our build rules go here
+rules :: [String] -> Rules ()
+rules args = do
 
-    let moduleToFile ext xs = map (\x -> if x == '.' then '/' else x) xs <.> ext
-        obj = ("out/"++)
-        unobj = dropDirectory1
-
+    -- What the user wants
     want (obj "Main" : args)
 
-    "serve" *> \_ -> do
-        need [obj "Main"]
-        system' (obj "Main") []
+    -- Run the server.  Use: "runghc Shakefile.hs serve"
+    "serve" *> \_ -> run (obj "Main")
 
-    let ghc params = do
-            --askOracle ["ghc-version"]
-            --askOracle ["ghc-pkg"]
-            --flags <- askOracle ["ghc-flags"]
-            system' "ghc" $ params -- ++ flags
+    -- Build the server.  Use: "runghc Shakefile.hs"
+    obj "Main" *> exe
 
-    obj "Main" *> \out -> do
-        src <- readFileLines $ replaceExtension out "deps"
-        let os = map (obj . moduleToFile "o") $ "Main":src
-        need os
-        ghc $ ["--make", "-o",out, "-outputdir", obj ""] ++ ["Main.hs"] --os
+    -- Rules for building haskell executables
+    ghcRules
 
-    obj "*.deps" *> \out -> do
-        dep <- readFileLines $ replaceExtension out "dep"
-        let xs = map (obj . moduleToFile "deps") dep
-        need xs
-        ds <- fmap (nub . sort . (++) dep . concat) $ mapM readFileLines xs
-        writeFileLines out ds
 
-    obj "*.dep" *> \out -> do
-        src <- readFile' $ unobj $ replaceExtension out "hs"
-        let xs = hsImports src
-        xs' <- filterM (doesFileExist . moduleToFile "hs") xs
-        writeFileLines out xs'
+-- Build and run the given executable.  Note: Does not produce a build artifact.
+run :: FilePath -> Action ()
+run out = do
+    need [out]
+    system' out []
 
-    obj "*.hi" *> \out -> do
-        need [replaceExtension out "o"]
+-- The rules to build Haskell executables
+ghcRules :: Rules ()
+ghcRules = do
+        obj "*.deps" *> depsFile
+        obj "*.dep"  *> depFile
+        obj "*.hi"   *> interface
+        obj "*.o"    *> object
 
-    obj "*.o" *> \out -> do
-        dep <- readFileLines $ replaceExtension out "dep"
-        let hs = unobj $ replaceExtension out "hs"
-        need $ hs : map (obj . moduleToFile "hi") dep
-        ghc ["-c",hs, "-outputdir", obj "", "-i"++obj ""]
+-- Build the given Haskell executable
+-- Note: Currently builds all the objects but then uses GHC's "--make" to hunt down the packages.
+-- TODO: Grab the packages from cabal
+exe :: FilePath -> Action ()
+exe out = do
+    src <- readFileLines $ replaceExtension out "deps"
+    let os = map (obj . moduleToFile "o") $ unobj out : src
+    need os
+    ghc $ ["--make", "-o",out, "-outputdir", obj ""] ++ [unobj out ++ ".hs"] --os
+
+-- Build a dependency file
+depsFile :: FilePath -> Action ()
+depsFile out = do
+    dep <- readFileLines $ replaceExtension out "dep"
+    let xs = map (obj . moduleToFile "deps") dep
+    need xs
+    ds <- fmap (nub . sort . (++) dep . concat) $ mapM readFileLines xs
+    writeFileLines out ds
+
+-- Build a dependency file
+depFile :: FilePath -> Action ()
+depFile out = do
+    src <- readFile' $ unobj $ replaceExtension out "hs"
+    let xs = hsImports src
+    xs' <- filterM (doesFileExist . moduleToFile "hs") xs
+    writeFileLines out xs'
+
+-- Build a Haskell interface file
+interface :: FilePath -> Action ()
+interface out = do
+    need [replaceExtension out "o"]
+
+-- Build an object file from a Haskell source file
+object :: FilePath -> Action ()
+object out = do
+    dep <- readFileLines $ replaceExtension out "dep"
+    let hs = unobj $ replaceExtension out "hs"
+    need $ hs : map (obj . moduleToFile "hi") dep
+    ghc ["-c",hs, "-outputdir", obj "", "-i"++obj ""]
+
+
+-- Rules that depend on unreleased code in Shake
 
     --obj ".pkgs" *> \out -> do
     --    src <- readFile' "shake.cabal"
@@ -74,6 +102,26 @@ main = do
     --addOracle ["ghc-flags"] $ do
     --    pkgs <- readFileLines $ obj ".pkgs"
     --    return $ map ("-package=" ++) pkgs
+
+-- Invoke GHC
+ghc :: [String] -> Action ()
+ghc args = do
+    --askOracle ["ghc-version"]
+    --askOracle ["ghc-pkg"]
+    --flags <- askOracle ["ghc-flags"]
+    let flags = ["-Wall", "-Werror"]
+    system' "ghc" $ args ++ flags
+
+moduleToFile :: String -> String -> FilePath
+moduleToFile ext xs = map (\x -> if x == '.' then '/' else x) xs <.> ext
+
+-- Map a file to the output directory
+obj :: FilePath -> FilePath
+obj = ("out/"++)
+
+-- Unmap a file from the output directory
+unobj :: FilePath -> FilePath
+unobj = dropDirectory1
 
 
 
