@@ -93,7 +93,10 @@ function onReady(E, $) {
                         loginForm.replaceChild(loginSubmitNew, loginSubmit); 
                         loginSubmit = loginSubmitNew;
                     } else {
-                        widget.replaceChild(loginForm, logoutForm); 
+                        var logoutNew = E.input({type: 'submit', value : 'Logout ' + data.Right });
+                        logoutForm.replaceChild(logoutNew, logout); 
+                        logout = logoutNew;
+                        widget.replaceChild(logoutForm, loginForm); 
                     }
                 }
             });

@@ -102,9 +102,9 @@ postInfo userdb infodb = do
    uid <- A.cookieToUser userdb token
    C.updateInfo infodb uid (toS jdata)
 
-checkUser :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) ()
-checkUser db = do 
-    liftIO $ putStrLn "checkUser" 
+logOut :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) ()
+logOut db = do 
+    liftIO $ putStrLn "logOut" 
     cookie <- lift $ liftM Url.decode $ lookCookieValue "token"
     liftIO $ print cookie
     token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
@@ -112,9 +112,9 @@ checkUser db = do
     liftIO $ A.clearUserCookie db uid
     liftIO $ putStrLn "cleaned user cookies" 
 
-logOut :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) JS.JSString
-logOut db = do 
-   liftIO $ putStrLn "logOut" 
+checkUser :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) JS.JSString
+checkUser db = do 
+   liftIO $ putStrLn "checkUser" 
    cookie <- lift $ liftM Url.decode $ lookCookieValue "token"
    liftIO $ print cookie
    token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
