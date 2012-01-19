@@ -95,9 +95,8 @@ function onReady(E, $) {
                         loginSubmit = loginSubmitNew;
                     } else {
                         var logoutNew = E.input({type: 'submit', value : 'Logout ' + data.Right });
-                        var logoutOld = logout;
+                        logoutForm.replaceChild(logoutNew, logout); 
                         logout = logoutNew;
-                        logoutForm.replaceChild(logoutNew, logoutOld); 
                         widget.replaceChild(logoutForm, loginForm); 
                     }
                 }
@@ -110,9 +109,8 @@ function onReady(E, $) {
             success: function(data) {
                 if(data.Right) {
                     var logoutNew = E.input({type: 'submit', value : 'Logout ' + data.Right });
-                    var logoutOld = logout;
+                    logoutForm.replaceChild(logoutNew, logout); 
                     logout = logoutNew;
-                    logoutForm.replaceChild(logoutNew, logoutOld); 
                 } else {
                     widget.replaceChild(loginForm, logoutForm); 
                 }
