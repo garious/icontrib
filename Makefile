@@ -17,9 +17,9 @@ serve: $o/icontrib
 
 test: $(patsubst %,$o/%.passed,$(RUN_TESTS))
 
-$o/icontrib: Server.hs Site.hs test
+$o/icontrib: Main.hs Site.hs test
 	@mkdir -p $(@D)
-	ghc $(GHC_FLAGS) -outputdir $(@D) -o $@ --make $<
+	ghc $(GHC_FLAGS) -outputdir $o -o $@ --make $<
 
 # TODO: Replace this with a proper dependency scanner: "ghc -M"
 $(foreach n,$(RUN_TESTS),$(eval $(patsubst %,$o/%.passed,$n): $n $(patsubst %Test.hs,%.hs,$n)))
