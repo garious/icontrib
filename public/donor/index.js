@@ -227,10 +227,13 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
                 ], 20)
             ]);
 
-        return L.hug([
-            L.pillow(100),
-            box
-       ]);
+        return L.spoon([
+           L.hug([
+                L.pillow(200,0),
+                box
+           ], 20),
+           L.pillow(30)
+        ]);
     }
 
     function Usoa() {

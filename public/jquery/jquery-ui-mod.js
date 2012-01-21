@@ -9,7 +9,6 @@ function onReady($) {
 
     // jQuery UI requires that jQuery be in the global namespace when it is interpreted.
     window.jQuery = $;
-    window.$ = $;
 
     var deps = [
         {path: 'jquery-ui-1.8.16.custom.min.js', interpreter: exportJQuery}
