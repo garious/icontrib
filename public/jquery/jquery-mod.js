@@ -2,14 +2,18 @@
 // This file will always expose the latest jQuery as a module
 //
 
-var deps = [
-    'jquery-1.7.1.min.js',
-    'jquery-ui-1.8.16.custom.min.js'
-];
-
-function onReady() {
-     return jQuery.noConflict(true);
+// TODO: Generalize this function
+function exportJQuery(text, yoink, callback) {
+    YOINK.interpreters.js(text + '\ndefine( jQuery.noConflict(true) );', yoink, callback);
 }
 
-define(deps, onReady);
+var deps = [
+    {path: 'jquery-1.7.1.min.js', interpreter: exportJQuery}
+];
+
+function identity(x) {
+    return x;
+}
+
+define(deps, identity);
 

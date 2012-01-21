@@ -18,7 +18,16 @@ function onReady(E, L, C, $) {
         as.style = as.style || {};
         as.style.textDecoration = 'none';
         as.style.font = font;
-        return E.a(as, xs);
+        var e = E.a(as, xs);
+        $(e).hover(
+            function() {
+                e.style.textDecoration = 'underline';
+            },
+            function() {
+                e.style.textDecoration = 'none';
+            }
+        );
+        return e;
     }
 
     function button(as, xs) {

@@ -116,7 +116,7 @@ function waitScreen(log, $){
     };
 };
 
-var deps = [ "/widgets/logger.js", "/jquery/jquery-mod.js" ];
+var deps = [ "/widgets/logger.js", "/jquery/jquery-ui-mod.js" ];
 
 function onReady(log, $) {
     return new waitScreen(log, $);

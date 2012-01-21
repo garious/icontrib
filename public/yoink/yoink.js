@@ -68,14 +68,14 @@ var YOINK = (function() {
                 // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
                 f = eval(f_str);
             }
-            var called = false;
             function define(deps, f) {
-                called = true;
                 var m = f ? {deps: deps, callback: f} : deps;
                 yoinkMod(m, yoink, callback);
             }
             var mod = f(yoink.base, define);
-            if (!called) {
+
+            // Assume that if a module returns nothing, it will eventually call 'define()'
+            if (mod !== undefined) {
                 yoinkMod(mod, yoink, callback);
             }
         }
