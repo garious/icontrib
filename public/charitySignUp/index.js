@@ -15,7 +15,7 @@ function onReady(E, L, NAV, CORE, html, toaHtml) {
         var fieldStyle = {
             listStyle: 'none',
             padding: '5px 10px',
-            marginBottom: '2px',
+            marginBottom: '2px'
         };
 
         var labelStyle = {
