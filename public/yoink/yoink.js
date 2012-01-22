@@ -93,9 +93,9 @@ var YOINK = (function() {
                 // relative to the directory of the url we are currently loading.
                 var base = url.substring(0, url.lastIndexOf('/'));
                 var subloader = new ResourceLoader(base, this.cache, this.interpreters);
-                var yoink = function(urls, f) {return getResources.call(subloader, urls, f);};
-                yoink.base = base;
-                interpreter(rsc, yoink, callback);
+                var require = function(urls, f) {return getResources.call(subloader, urls, f);};
+                require.base = base;
+                interpreter(rsc, require, callback);
             }
         },
 
@@ -123,7 +123,7 @@ var YOINK = (function() {
             req.send();
         },
 
-        // Download resources in parallel asynchronously
+        // Download and interpret resources in parallel
         getResources: function(urls, callback) {
             var rscs = [];         // For the results of interpreting files
             var cnt = 0;           // For counting what we've downloaded
@@ -132,74 +132,46 @@ var YOINK = (function() {
                 this.getResources(us, f);  // Important: use 'this', not 'loader' so that we can overwrite 'this' later
             };
             var loader = this;
-            var onInterpreted = function(i, files) {
-                 i++;  // Index of the next item to interpret
 
-                 // Skip cached resources
-                 while (i < len && files[i] === null) {
-                     i++;
-                 }
+            function onInterpreted(i, rsc) {
+                 rscs[i] = rsc;
+                 cnt++;  // Index of the next item to interpret
 
-                 if (i === len) {
+                 if (cnt === len) {
                      callback.apply(null, rscs);
-                 } else {
-                     interpretFile(i, files);
                  }
-            };
-            var mkOnInterpreted = function(p, i, files) {
-                 return function(rsc) {
-                    // If resource does not return a result, force it to 'null' so that we have something to cache.
-                    if (rsc === undefined) {
-                       rsc = null;
-                    }
-                    rscs[i] = rsc;
-                    loader.cache[p] = rsc; // Cache the result
-                    onInterpreted(i, files);
-                 };
-            };
-            var interpretFile = function(i, files) {
-                var u = urls[i];
+            }
 
+            function interpretFile(u, str, callback) {
                 // Sometimes we do a redundant download.  Make sure we don't do a redundant interpret too!
                 var rsc = loader.cache[u.path];
                 if (rsc !== undefined) {
-                    console.log("yoink: skipping redundant download '" + urls[i].path + "'");
-                    rscs[i] = rsc;
-                    onInterpreted(i, files);
+                    console.log("yoink: skipping redundant download '" + u.path + "'");
+                    callback(rsc);
                 } else {
-                    console.log("yoink: interpreting '" + urls[i].path + "'");
-                    loader.interpret(files[i], u.path, u.interpreter, getResources, mkOnInterpreted(u.path, i, files));
+                    console.log("yoink: interpreting '" + u.path + "'");
+                    loader.interpret(str, u.path, u.interpreter, getResources, callback); 
                 }
-            };
-            var onDownloaded = function(files) {
-                 cnt++;
-                 
-                 // After all files have been downloaded, interpret each in order.
-                 if (cnt === len) {
-                     onInterpreted(-1, files);
-                 }
-            };
-            var mkOnDownloaded = function(i, files) {
-                return function(str) {
-                     files[i] = str;
-                     onDownloaded(files);
-                };
-            };
-            var download = function(i, files) {
+            }
+
+            function download(loader, i) {
                 urls[i] = loader.resolve(urls[i]);
                 var p = urls[i].path;
                 var rsc = loader.cache[p];
                 if (rsc === undefined) {
-                    loader.getFile(p, mkOnDownloaded(i, files));
+                    loader.getFile(p, function(str){
+                        interpretFile(urls[i], str, function(rsc) {
+                            loader.cache[p] = rsc; // Cache the result
+                            onInterpreted(i, rsc);
+                        });
+                    });
                 } else {
-                    files[i] = null;
-                    rscs[i] = rsc;
-                    onDownloaded(files);  // Skip downloading
+                    onInterpreted(i, rsc);  // Skip downloading
                 }
-            };
-            var files = [];        // For downloaded files
+            }
+
             for (var i = 0; i < len; i++) {
-                download(i, files);
+                download(loader, i);
             }
          }
     };
