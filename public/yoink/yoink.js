@@ -63,128 +63,121 @@ var YOINK = (function() {
         return o2;
     }
 
-    // System-wide cache of what to do once a resource has been downloaded.
-    var plans = {};
-    
-    function ResourceLoader(base, cache, interpreters) {
-        this.base = base || '';
-        this.cache = cache || {};
-        this.interpreters = interpreters || clone(defaultInterpreters);
-        return this;
+    function interpret(rsc, url, interpreter, interpreters, cache, callback) {
+        // Look up an interpreter for the URL's file extension
+        if (!interpreter) {
+            var ext = url.substring(url.lastIndexOf('.') + 1, url.length).toLowerCase();
+            interpreter = interpreters[ext] || function(x){return x;};
+        }
+
+        // Interpret the resource
+        if (interpreter.length === 1) {
+            callback( interpreter(rsc) );
+        } else {
+            // Provide loaded module with a version of loader that pulls modules 
+            // relative to the directory of the url we are currently loading.
+            var base = url.substring(0, url.lastIndexOf('/'));
+            var require = mkGetResources(base, cache, interpreters);
+            require.base = base;
+            interpreter(rsc, require, callback);
+        }
     }
 
-    ResourceLoader.prototype = {
-        interpret: function(rsc, url, interpreter, getResources, callback) {
-            // Look up an interpreter for the URL's file extension
-            if (!interpreter) {
-                var ext = url.substring(url.lastIndexOf('.') + 1, url.length).toLowerCase();
-                interpreter = this.interpreters[ext] || function(x){return x;};
+    // Download a text file asynchronously
+    function getFile(path, callback) {
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function() {
+            if (req.readyState === 4) {
+                callback(req.responseText);
             }
+        };
+        req.open('GET', path, true);
+        req.send();
+    }
 
-            // Interpret the resource
-            if (interpreter.length === 1) {
-                callback( interpreter(rsc) );
-            } else {
-                // Provide loaded module with a version of loader that pulls modules 
-                // relative to the directory of the url we are currently loading.
-                var base = url.substring(0, url.lastIndexOf('/'));
-                var subloader = new ResourceLoader(base, this.cache, this.interpreters);
-                var require = function(urls, f) {return getResources.call(subloader, urls, f);};
-                require.base = base;
-                interpreter(rsc, require, callback);
-            }
-        },
+    // System-wide cache of what to do once a resource has been downloaded.
+    var plans = {};
 
-        resolve: function(url) {
-            var p = url.path || url;
-            var f = url.interpreter || null;
-            if (this.base !== '' && p.charAt(0) !== '/' && p.indexOf('://') === -1) {
-               p = this.base + '/' + p;
-            }
+    function interpretFile(interpreters, cache, u, str) {
+        console.log("yoink: interpreting '" + u.path + "'");
+        interpret(str, u.path, u.interpreter, interpreters, cache, function(rsc) {
+            cache[u.path] = rsc; // Cache the result
+            // Execute the plan
+            var plan = plans[u.path];
+            delete plans[u.path];
+            plan(rsc);
+        }); 
+    }
 
-            // Normalize the path
-            p = p.replace(/[^\/]+[\/]\.\.[\/]/g,'');  // Remove redundant '%s/..' items.
-            return {path: p, interpreter: f};
-        },
-
-        // Download a text file asynchronously
-        getFile: function(path, callback) {
-            var req = new XMLHttpRequest();
-            req.onreadystatechange = function() {
-                if (req.readyState === 4) {
-                    callback(req.responseText);
+    function getResource(interpreters, cache, url, onInterpreted) {
+        var p = url.path;
+        var rsc = cache[p];
+        if (rsc === undefined) {
+            // Is anyone else already downloading this file?
+            var plan = plans[p];
+            if (plan === undefined) {
+                // Create a plan for what we will do with this module
+                plans[p] = function(rsc) {
+                    onInterpreted(rsc);
                 }
-            };
-            req.open('GET', path, true);
-            req.send();
-        },
+                getFile(p, function(str){
+                    interpretFile(interpreters, cache, url, str);
+                });
+            } else {
+                // Add ourselves to the plan.  The plan is effectively a FIFO queue of actions.
+                plans[p] = function(rsc) {
+                    plan(rsc);
+                    onInterpreted(rsc);
+                };
+            }
+        } else {
+            onInterpreted(rsc);  // Skip downloading
+        }
+    }
 
-        // Download and interpret resources in parallel
-        getResources: function(urls, callback) {
+    function resolve(base, url) {
+        var p = url.path || url;
+        var f = url.interpreter || null;
+        if (base !== '' && p.charAt(0) !== '/' && p.indexOf('://') === -1) {
+           p = base + '/' + p;
+        }
+
+        // Normalize the path
+        p = p.replace(/[^\/]+[\/]\.\.[\/]/g,'');  // Remove redundant '%s/..' items.
+        return {path: p, interpreter: f};
+    }
+
+    function mkGetResources(base, cache, interpreters) {
+        return function(urls, callback) {
             var rscs = [];         // For the results of interpreting files
             var cnt = 0;           // For counting what we've downloaded
             var len = urls.length; // How many things we need to interpret
-            var getResources = function(us, f) {
-                this.getResources(us, f);  // Important: use 'this', not 'loader' so that we can overwrite 'this' later
-            };
-            var loader = this;
 
-            function onInterpreted(i, rsc) {
-                 rscs[i] = rsc;
-                 cnt++;  // Index of the next item to interpret
+            function mkOnInterpreted(i) {
+                 return function(rsc) {
+                     rscs[i] = rsc;
+                     cnt++;  // Index of the next item to interpret
 
-                 if (cnt === len) {
-                     callback.apply(null, rscs);
-                 }
-            }
-
-            function interpretFile(u, str) {
-                console.log("yoink: interpreting '" + u.path + "'");
-                loader.interpret(str, u.path, u.interpreter, getResources, function(rsc) {
-                    loader.cache[u.path] = rsc; // Cache the result
-                    // Execute the plan
-                    var plan = plans[u.path];
-                    delete plans[u.path];
-                    plan(rsc);
-                }); 
-            }
-
-            function download(loader, i) {
-                urls[i] = loader.resolve(urls[i]);
-                var p = urls[i].path;
-                var rsc = loader.cache[p];
-                if (rsc === undefined) {
-                    // Is anyone else already downloading this file?
-                    var plan = plans[p];
-                    if (plan === undefined) {
-                        // Create a plan for what we will do with this module
-                        plans[p] = function(rsc) {
-                            onInterpreted(i, rsc);
-                        }
-                        loader.getFile(p, function(str){
-                            interpretFile(urls[i], str);
-                        });
-                    } else {
-                        // Add ourselves to the plan.  The plan is effectively a FIFO queue of actions.
-                        plans[p] = function(rsc) {
-                            plan(rsc);
-                            onInterpreted(i, rsc);
-                        };
-                    }
-                } else {
-                    onInterpreted(i, rsc);  // Skip downloading
-                }
+                     if (cnt === len) {
+                         callback.apply(null, rscs);
+                     }
+                 };
             }
 
             for (var i = 0; i < len; i++) {
-                download(loader, i);
+                var u = resolve(base, urls[i]);
+                getResource(interpreters, cache, u, mkOnInterpreted(i));
             }
-         }
-    };
-
-    // Constructor without exposing 'new' keyword
+        };
+    }
+    
+    // Resource Loader constructor
     function resourceLoader(base, cache, interpreters) {
-       return new ResourceLoader(base, cache, interpreters);
+        var base = base || '';
+        var cache = cache || {};
+        var interpreters = interpreters || clone(defaultInterpreters);
+
+        return {getResources: mkGetResources(base, cache, interpreters)};
     }
 
     return {
