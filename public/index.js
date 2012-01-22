@@ -33,12 +33,12 @@ function onReady(E, L, NAV, CORE, DONOR, USER) {
         ], 20);
     }
 
-    return {
+    define({
         title: 'IContrib.org - Improve the world today',
         body: body,
         main: NAV.frame([ body() ])
-    };
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

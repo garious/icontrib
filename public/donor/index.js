@@ -1,6 +1,6 @@
 // TODO: Generalize this function and move google's jsapi into a module
 function exportGoogle(text, yoink, callback) {
-    YOINK.interpreters.js(text + '\nreturn google;', yoink, callback);
+    YOINK.interpreters.js(text + '\ndefine(google);', yoink, callback);
 }
 
 var deps = [
@@ -271,7 +271,7 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         ]);
     }
    
-    return {
+    define({
         title: "IContrib - Improve the world today",
         main: main,
         body: body,
@@ -282,8 +282,8 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         TomBrown: TomBrown,
         Usoa: Usoa,
         GlobalFundForWomen: GlobalFundForWomen
-    };
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

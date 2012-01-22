@@ -99,7 +99,7 @@ function onReady(E, L, C, $) {
         return E.p(as, xs);
     }
 
-    return {
+    define({
          a: a,
          label: label,
          button: button,
@@ -111,8 +111,8 @@ function onReady(E, L, C, $) {
          h5: h5,
          h6: h6,
          p: p
-    };
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

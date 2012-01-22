@@ -102,13 +102,13 @@ function onReady(E, $) {
         return new Pillow(w, h);
     }
 
-    return {
+    define({
         hug:    hug,
         spoon:  spoon,
         pillow: pillow
-    };
+    });
 }
 
 
-define(deps, onReady);
+require(deps, onReady);
 

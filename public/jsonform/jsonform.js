@@ -70,10 +70,10 @@ function onReady(E, $) {
         };
         return jsonInfoBox;
     };
-    return {
+    define({
         jsonForm: jsonForm
-    };
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

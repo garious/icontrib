@@ -119,8 +119,8 @@ function waitScreen(log, $){
 var deps = [ "/widgets/logger.js", "/jquery/jquery-ui-mod.js" ];
 
 function onReady(log, $) {
-    return new waitScreen(log, $);
+    define( new waitScreen(log, $) );
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

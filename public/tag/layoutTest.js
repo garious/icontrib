@@ -38,12 +38,12 @@ function onReady(E, L) {
         ]);
     }
 
-    return {
+    define({
         main: test,
         hugTest: hugTest
-    };
+    });
 }
 
 
-define(deps, onReady);
+require(deps, onReady);
 

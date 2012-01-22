@@ -118,10 +118,10 @@ function onReady(E, $) {
         });
         return widget;
     };
-    return {
+    define({
         loginForm: loginCtor
-    };
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

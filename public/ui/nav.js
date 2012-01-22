@@ -111,15 +111,15 @@ function onReady(E, L, C, CORE, LOGIN, $) {
         ]); 
     }
 
-    return {
+    define({
         nav: nav,
         dock: dock,
         dockItem: dockItem,
         frame: frame,
         footer: footer
-    };
+    });
 
 }
 
-define(deps, onReady);
+require(deps, onReady);
  
