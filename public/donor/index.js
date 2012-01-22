@@ -109,7 +109,7 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
 
     function alignButton(user) {
         user = user || defaultUser;
-        var alignLink = CORE.button({href: '#'}, ['Match it!']);
+        var alignLink = CORE.button({href: '#'}, ['Donate!']);
         alignLink.onclick = function(e) { 
             //TODO: On click, navigate to appropriate pages
             wait.load({
