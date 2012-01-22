@@ -236,38 +236,27 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         ]);
     }
 
-    function Usoa() {
-        return {
-            deps: ['usoa.json'], 
-            callback: function(u) {
-                return NAV.frame([
-                    charity({user: u})
-                ]);
-            }
-        };
+    function Usoa(nodeReady) {
+        require(['usoa.json'], function(u) {
+            nodeReady( NAV.frame([charity({user: u})]) );
+        });
     }
 
-    function GlobalFundForWomen() {
-        return {
-            deps: ['gffw.json'], 
-            callback: function(u) {
-                return NAV.frame([
-                    charity({user: u})
-                ]);
-            }
-        };
+    function GlobalFundForWomen(nodeReady) {
+        require(['gffw.json'], function(u) {
+            nodeReady( NAV.frame([charity({user: u})]) );
+        });
     }
 
-    function TomBrown() {
-        function tomReady(tom) {
-            return main({user: tom});
-        }
-        return {deps: ['tom.json'], callback: tomReady};
+    function TomBrown(nodeReady) {
+        require(['tom.json'], function(tom) {
+            nodeReady( NAV.frame([body({user: tom})]) );
+        });
     }
 
-    function main(as) {
+    function main() {
         return NAV.frame([
-            body(as)
+            body()
         ]);
     }
    
