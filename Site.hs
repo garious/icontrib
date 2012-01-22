@@ -22,20 +22,13 @@ import Happstack.Lite
 
 data Site = Site { userAccounts ::  AcidState A.Database
                  , charityAccounts ::  AcidState A.Database
-                 , charityInfo :: AcidState C.Database 
+                 , charityInfo :: AcidState C.Database
                  }
 
 site :: Site -> ServerPart Response
 site st = msum [ 
-      dir "data" (dataServices st)
-    , dir "login_user"          (post    (loginUser (userAccounts st)))
-    , dir "check_user"          (get     (checkUser (userAccounts st)))
-    , dir "logout_user"         (get     (logOut (userAccounts st)))
-    , dir "login_charity"       (post    (getUser (charityAccounts st)))
-    , dir "check_charity"       (get     (checkUser (charityAccounts st)))
-    , dir "logout_charity"      (get     (logOut (charityAccounts st)))
-    , dir "get_charity_info"    (get     (getInfo (charityAccounts st) (charityInfo st)))
-    , dir "update_charity_info" (post    (postInfo (charityAccounts st) (charityInfo st)))
+      dir "user"    (userServices st)
+    , dir "charity" (charityServices st)
     , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "https://www.google.com/jsapi"))
     , JSW.widget root []
     , fileServer root
@@ -43,10 +36,29 @@ site st = msum [
   where
     root = "public"
 
-dataServices :: Site -> ServerPart Response
-dataServices st = msum [ 
-      dir "userStatus.json"    (get     (checkUser (userAccounts st)))
+userServices :: Site -> ServerPart Response
+userServices st = msum [ 
+      dir "login"          (post    (loginUser  "user" (userAccounts st)))
+    , dir "check"          (get     (checkUser  "user" (userAccounts st)))
+    , dir "logout"         (get     (logOut     "user" (userAccounts st)))
     ]
+
+charityServices :: Site -> ServerPart Response
+charityServices st = msum [ 
+      dir "login"      (post (loginUser  "charity" (charityAccounts st)))
+    , dir "check"      (get  (checkUser  "charity" (charityAccounts st)))
+    , dir "logout"     (get  (logOut     "charity" (charityAccounts st)))
+    , dir "add"        (post (addUser    "charity" (charityAccounts st)))
+    , dir "getInfo"    (get  (check' >>= (C.lookupInfo (charityInfo st))))
+    , dir "updateInfo" (post (check' >>= (updateInfo (charityInfo st))))
+    ]
+    where
+        check' = (checkUser "charity" (charityAccounts st))
+
+updateInfo :: AcidState C.Database -> C.CharityID -> ErrorT SE.ServerError (ServerPartT IO) ()
+updateInfo db uid = do
+    vv <- getBody
+    liftIO $ C.updateInfo db uid vv
 
 redirect ::  HTTP.Request_String -> ServerPart Response
 redirect req = do
@@ -85,74 +97,42 @@ fileServer dd = do
     addHeaderM "Pragma" "no-cache"
     serveDirectory DisableBrowsing [] dd
 
-getInfo :: AcidState A.Database -> AcidState C.Database -> ErrorT SE.ServerError (ServerPartT IO) C.CharityInfo
-getInfo userdb infodb = do 
-   liftIO $ putStrLn "getInfo" 
-   cookie <- lift $ liftM Url.decode $ lookCookieValue "token"
-   token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
-   uid <- A.cookieToUser userdb token
-   C.lookupInfo infodb uid
-
-postInfo :: AcidState A.Database -> AcidState C.Database -> ErrorT SE.ServerError (ServerPartT IO) ()
-postInfo userdb infodb = do 
-   liftIO $ putStrLn "postInfo" 
-   jdata <- lift $ lookBS "data"
-   cookie <- lift $ liftM Url.decode $ lookCookieValue "token"
-   token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
-   uid <- A.cookieToUser userdb token
-   C.updateInfo infodb uid (toS jdata)
-
-logOut :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) ()
-logOut db = do 
-    liftIO $ putStrLn "logOut" 
-    cookie <- lift $ liftM Url.decode $ lookCookieValue "token"
+logOut :: String -> AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) ()
+logOut name db = do 
+    liftIO $ putStrLn "logout" 
+    cookie <- lift $ liftM Url.decode $ lookCookieValue name
     liftIO $ print cookie
     token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
     uid <- A.cookieToUser db token
     liftIO $ A.clearUserCookie db uid
-    liftIO $ putStrLn "cleaned user cookies" 
+    liftIO $ putStrLn "cleared cookies" 
 
-checkUser :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) JS.JSString
-checkUser db = do 
-   liftIO $ putStrLn "checkUser" 
-   cookie <- lift $ liftM Url.decode $ lookCookieValue "token"
+checkUser :: String -> AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) A.UserID
+checkUser name db = do 
+   liftIO $ putStrLn "check" 
+   cookie <- lift $ liftM Url.decode $ lookCookieValue name 
    liftIO $ print cookie
    token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
    uid <- A.cookieToUser db token
-   let msg = (toS uid)
-   liftIO $ putStrLn msg 
-   return $ JS.toJSString msg
+   return uid
 
+loginUser :: String -> AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) A.UserID
+loginUser name db = do 
+   liftIO $ putStrLn "login" 
+   (A.UserLogin uid pwd) <- getBody
+   token <- A.loginToCookie db (uid) (pwd)
+   liftIO $ putStrLn (show uid)
+   let cookie = mkCookie name (Url.encode (B.unpack token))
+   lift $ addCookies [(Session, cookie)]
+   return $ uid
 
-newUser :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) JS.JSString
-newUser db = do  
-   liftIO $ putStrLn "newUser" 
+addUser :: String -> AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) A.UserID
+addUser name db = do 
+   liftIO $ putStrLn "add" 
    (A.UserLogin uid pwd) <- getBody
    A.addUser db (uid) (pwd)
-   token <- A.loginToCookie db (uid) (pwd)
-   let msg = (toS uid)
-   liftIO $ putStrLn msg 
-   let cookie = mkCookie "token" (Url.encode (B.unpack token))
-   lift $ addCookies [(Session, cookie)]
-   return $ JS.toJSString msg
-
-
-loginUser :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) JS.JSString
-loginUser db = do 
-   liftIO $ putStrLn "loginUser" 
-   (A.UserLogin uid pwd) <- getBody
-   token <- A.loginToCookie db (uid) (pwd)
-   let msg = (toS uid)
-   liftIO $ putStrLn msg 
-   let cookie = mkCookie "token" (Url.encode (B.unpack token))
-   lift $ addCookies [(Session, cookie)]
-   return $ JS.toJSString msg
+   loginUser name db
    
-getUser :: AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) JS.JSString
-getUser db = do
-   let ore = SE.catchOnly SE.UserDoesntExist
-   loginUser db `ore` newUser db
-
 getBody :: JS.JSON a => ErrorT SE.ServerError (ServerPartT IO) a 
 getBody = do   
     liftIO $ putStrLn "getBody"

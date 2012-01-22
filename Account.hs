@@ -8,6 +8,7 @@ import Control.Monad                         ( liftM, when )
 import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
 import Control.Monad.Error                   ( runErrorT, throwError, MonadError, liftIO, ErrorT)
+import Data.Maybe                            (isJust)
 import Data.Typeable                         ()
 import qualified Data.Map                    as Map
 import qualified Crypto.Hash.SHA512          as SHA512
@@ -49,11 +50,11 @@ empty = Database Map.empty Map.empty Map.empty
 
 addUserU :: UserID -> PasswordHash -> Update Database (Either ServerError ())
 addUserU uid phash = runErrorT $ do
-   when (BL.null uid) (throwError BadUsername)
-   db <- get
-   case(Map.lookup uid (users db)) of
-      Nothing -> put $ db { users = (Map.insert uid phash (users db)) }
-      (Just _) -> throwError UserAlreadyExists
+    when (BL.null uid) (throwError BadUsername)
+    db <- get
+    let mp = (users db)
+    when (isJust (Map.lookup uid mp)) (throwError UserAlreadyExists)
+    put $ db { users = (Map.insert uid phash mp) }
 
 cookieToUserQ :: Cookie -> Query Database (Either ServerError UserID)
 cookieToUserQ cookie = runErrorT $ do

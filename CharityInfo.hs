@@ -2,13 +2,10 @@
 {-# OPTIONS_GHC -fspec-constr-count=2 -fno-warn-orphans #-}
 module CharityInfo where
 
-import Monad                                 ( liftM )
 import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
-import Control.Monad.Error                   ( runErrorT, throwError, MonadError )
+import Control.Monad.Error                   ( runErrorT, MonadError )
 import Data.Typeable                         ()
-import Data.Maybe                            ( fromMaybe )
-import Data.List                             ( foldl' )
 import Data.Typeable                         (Typeable)
 import Control.Monad.IO.Class                ( MonadIO )
 import qualified Text.JSON                   as JS
@@ -37,7 +34,7 @@ $(derive makeJSON ''PointOfContact)
 data CharityInfo = CharityInfo { ein :: String
                                , organizationName :: String
                                , companyWebSite :: String
-                               , pointOfContact :: PointOfContact
+                               , contact :: PointOfContact
                                }
                  deriving (Show, Typeable)
 
@@ -52,32 +49,10 @@ empty :: Database
 empty = Database Map.empty
 
 --todo: do compare and exchange so you dont merge inside the db lock
-mergeU :: CharityID -> String -> Update Database (Either ServerError ())
-mergeU key str = runErrorT $ do
-   jdata <- checkResult $ JS.decode $ str
+updateU :: CharityID -> CharityInfo -> Update Database ()
+updateU key val =  do
    (Database db) <- get
-   let oldval = (fromMaybe JS.JSNull) $ liftM JS.showJSON $ Map.lookup key db
-   val <- checkResult $ merge oldval jdata
    put $ (Database $ Map.insert key val db)
-   where
-      merge :: JS.JSValue -> JS.JSValue -> JS.Result CharityInfo
-      merge ov jd = JS.readJSON $ mergeJSON ov jd
-
-checkResult :: MonadError ServerError m => Result a -> m a
-checkResult (JS.Ok a)    = return a
-checkResult (JS.Error _) = throwError RecordMergeError
-
-mergeJSON :: JS.JSValue -> JS.JSValue -> JS.JSValue
-mergeJSON (JS.JSObject old) (JS.JSObject new) = 
-   JS.JSObject $ JS.toJSObject $ mergeList (JS.fromJSObject old) (JS.fromJSObject new)
-   where
-      replace kk vv ll = (kk,vv):(filter (((/=) kk) . fst) ll)
-      mergeList oldlist newlist = foldl' mergeIntoList oldlist newlist
-      mergeIntoList oldlist (key,newval) =
-         case (lookup key oldlist) of
-            (Nothing)      -> (key, newval):oldlist
-            (Just oldval)  -> replace key (mergeJSON oldval newval) oldlist
-mergeJSON _ new = new
 
 lookupQ :: CharityID -> Query Database (Either ServerError CharityInfo)
 lookupQ key = runErrorT $ do
@@ -85,10 +60,10 @@ lookupQ key = runErrorT $ do
    checkMaybe UserDoesntExist $ Map.lookup key db
 
 
-$(makeAcidic ''Database ['mergeU, 'lookupQ])
+$(makeAcidic ''Database ['updateU, 'lookupQ])
 
 lookupInfo :: (MonadIO m, MonadError ServerError m) => AcidState Database -> CharityID -> m CharityInfo
 lookupInfo db cid = A.rethrow $ query db (LookupQ cid)
 
-updateInfo ::  (MonadIO m, MonadError ServerError m) => AcidState Database -> CharityID -> String -> m ()
-updateInfo db cid str = A.rethrow $ update db (MergeU cid str)
+updateInfo :: AcidState Database -> CharityID -> CharityInfo -> IO ()
+updateInfo db cid str = update db (UpdateU cid str)
