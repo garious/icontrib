@@ -119,7 +119,7 @@ var YOINK = (function() {
                 // Create a plan for what we will do with this module
                 plans[p] = function(rsc) {
                     onInterpreted(rsc);
-                }
+                };
                 getFile(p, function(str){
                     interpretFile(interpreters, cache, url, str);
                 });
@@ -173,9 +173,9 @@ var YOINK = (function() {
     
     // Resource Loader constructor
     function resourceLoader(base, cache, interpreters) {
-        var base = base || '';
-        var cache = cache || {};
-        var interpreters = interpreters || clone(defaultInterpreters);
+        base = base || '';
+        cache = cache || {};
+        interpreters = interpreters || clone(defaultInterpreters);
 
         return {getResources: mkGetResources(base, cache, interpreters)};
     }

@@ -3,12 +3,11 @@ var deps = [
     '/tag/layout.js', 
     '/ui/nav.js', 
     '/ui/core.js', 
-    'body.html',
     'toa.html'
 ];
 
 
-function onReady(E, L, NAV, CORE, html, toaHtml) {
+function onReady(E, L, NAV, CORE, toaHtml) {
 
     function inputField(as, xs) {
 
