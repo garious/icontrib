@@ -62,11 +62,14 @@ function onReady(E, L, C, CORE, LOGIN, $) {
         return e;
     };
 
-    var dock = function(as, xs) {
-        if (as && as.constructor === Array) {
-            xs = as;
-            as = null;
-        }
+    var dock = function() {
+        //var as = {align: 'bottom', labels: 'tl', duration: 150, step: 25, distance: 90, fadein: 300};
+        var xs = [
+            dockItem({href: '/',         src: '/images/home.png', title: "Home"}),
+            dockItem({href: '/donor/',   src: '/images/portfolio.png', title: "Your Portfolio"}),
+            dockItem({href: '/charity/', src: '/images/link.png', title: "Charities"}),
+            dockItem({href: '/contact/', src: '/images/rss.png', title: "Keep Informed"})
+        ];
         return E.div({'class': 'footer'}, [E.div({'class': 'navBar'}, xs)]);
     };
 
@@ -79,17 +82,9 @@ function onReady(E, L, C, CORE, LOGIN, $) {
         as = as || {};
         
         var navbar = nav(as);
-
-        var doc = dock( /*{align: 'bottom', labels: 'tl', duration: 150, step: 25, distance: 90, fadein: 300},*/ [
-            dockItem({href: '/',         src: '/images/home.png', title: "Home"}),
-            dockItem({href: '/donor/',   src: '/images/portfolio.png', title: "Your Portfolio"}),
-            dockItem({href: '/charity/', src: '/images/link.png', title: "Charities"}),
-            dockItem({href: '/contact/', src: '/images/rss.png', title: "Keep Informed"})
-        ]);
-
         var body = E.div(xs);
 
-        var e = L.spoon([navbar, body/*, doc*/], 20);
+        var e = L.spoon([navbar, body], 20);
         e.style.backgroundColor = '#F3F3F6';
         return e;
     };
