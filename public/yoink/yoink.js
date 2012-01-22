@@ -58,7 +58,7 @@ var YOINK = (function() {
         },
         js: function(text, yoink, callback) {
             // Load the module
-            var f_str = '(function (baseUrl, define) {' + text + '})';
+            var f_str = '(function (baseUrl, define, require) {' + text + '})';
             var f;
             if (window && window.execScript) {
                 // Hack for Internet Explorer
@@ -72,7 +72,7 @@ var YOINK = (function() {
                 var m = f ? {deps: deps, callback: f} : deps;
                 yoinkMod(m, yoink, callback);
             }
-            var mod = f(yoink.base, define);
+            var mod = f(yoink.base, define, yoink);
 
             // Assume that if a module returns nothing, it will eventually call 'define()'
             if (mod !== undefined) {
