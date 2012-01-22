@@ -34,67 +34,48 @@ console.info = console.info || function() { };
 
 var YOINK = (function() {
 
-    var yoinkMod = function(mod, yoink, callback) {
-        if (mod && mod.deps && mod.callback) {
-            yoink(mod.deps, function() {
-                var m = mod.callback.apply(null, arguments);
-                yoinkMod(m, yoink, callback);
-            });
-        } else {
-            callback(mod);
-        }
-    };
-
     var defaultInterpreters = {
         json: function(text) {
-            if (window && window.execScript) {
-                // Hack for Internet Explorer
-                var f_str = '(function () { return ' + text + ';})';
-                window.execScript('_iesucks = ' + f_str);
-                return _iesucks();
-            } else {
-                return JSON.parse(text);
-            }
+            return JSON.parse(text);
         },
-        js: function(text, yoink, callback) {
-            // Load the module
+        js: function(text, require, callback) {
+            // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
             var f_str = '(function (baseUrl, define, require) {' + text + '})';
-            var f;
-            if (window && window.execScript) {
-                // Hack for Internet Explorer
-                window.execScript('_iesucks = ' + f_str);
-                f = _iesucks;
-            } else {
-                // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-                f = eval(f_str);
-            }
-            function define(deps, f) {
-                var m = f ? {deps: deps, callback: f} : deps;
-                yoinkMod(m, yoink, callback);
-            }
-            var mod = f(yoink.base, define, yoink);
-
-            // Assume that if a module returns nothing, it will eventually call 'define()'
-            if (mod !== undefined) {
-                yoinkMod(mod, yoink, callback);
-            }
+            var f = eval(f_str);
+            f(require.base, callback, require);
         }
     };
 
-    var clone = function(o1) {
+    // Special handling for Internet Explorer
+    if (window && window.execScript) {
+        defaultInterpreters.json = function(text) {
+            var f_str = '(function () { return ' + text + ';})';
+            window.execScript('_iesucks = ' + f_str);
+            return _iesucks();
+        };
+
+        defaultInterpreters.js = function(text, require, callback) {
+            var f_str = '(function (baseUrl, define, require) {' + text + '})';
+            window.execScript('_iesucks = ' + f_str);
+            var f = _iesucks;
+            f(require.base, callback, require);
+        };
+    }
+
+    function clone(o1) {
         var o2 = {};
         for (k in o1) {
             o2[k] = o1[k];
         }
         return o2;
-    };
+    }
     
-    var ResourceLoader = function(base, cache, interpreters) {
+    function ResourceLoader(base, cache, interpreters) {
         this.base = base || '';
         this.cache = cache || {};
         this.interpreters = interpreters || clone(defaultInterpreters);
         return this;
-    };
+    }
 
     ResourceLoader.prototype = {
         interpret: function(rsc, url, interpreter, getResources, callback) {
