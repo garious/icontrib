@@ -46,9 +46,9 @@ userServices st = msum [
 charityServices :: Site -> ServerPart Response
 charityServices st = msum [ 
       dir "login"      (post (loginUser  "charity" (charityAccounts st)))
-    , dir "check"      (get  (checkUser  "charity" (charityAccounts st)))
     , dir "logout"     (get  (logOut     "charity" (charityAccounts st)))
     , dir "add"        (post (addUser    "charity" (charityAccounts st)))
+    , dir "check"      (get  check')
     , dir "getInfo"    (get  (check' >>= (C.lookupInfo (charityInfo st))))
     , dir "updateInfo" (post (check' >>= (updateInfo (charityInfo st))))
     ]
