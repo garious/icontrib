@@ -19,20 +19,13 @@
 //
 
 //
-// yoink, a simple resource loader.  XMLHttpRequest, console.log() and setTimeout() are the only dependencies.
+// yoink, a simple resource loader.  XMLHttpRequest is the only dependency.
 //
 
-//Debugging methods - log information to console (if available)
-if (!window.console) {
-    console = {};
-}
-
-console.log = console.log || function () { };
-console.warn = console.warn || function () { };
-console.error = console.error || function () { };
-console.info = console.info || function() { };
 
 var YOINK = (function() {
+
+    var console = window && window.console || {log: function(){}};
 
     var defaultInterpreters = {
         json: function(text) {
@@ -69,6 +62,9 @@ var YOINK = (function() {
         }
         return o2;
     }
+
+    // System-wide cache of what to do once a resource has been downloaded.
+    var plans = {};
     
     function ResourceLoader(base, cache, interpreters) {
         this.base = base || '';
@@ -142,16 +138,15 @@ var YOINK = (function() {
                  }
             }
 
-            function interpretFile(u, str, callback) {
-                // Sometimes we do a redundant download.  Make sure we don't do a redundant interpret too!
-                var rsc = loader.cache[u.path];
-                if (rsc !== undefined) {
-                    console.log("yoink: skipping redundant download '" + u.path + "'");
-                    callback(rsc);
-                } else {
-                    console.log("yoink: interpreting '" + u.path + "'");
-                    loader.interpret(str, u.path, u.interpreter, getResources, callback); 
-                }
+            function interpretFile(u, str) {
+                console.log("yoink: interpreting '" + u.path + "'");
+                loader.interpret(str, u.path, u.interpreter, getResources, function(rsc) {
+                    loader.cache[u.path] = rsc; // Cache the result
+                    // Execute the plan
+                    var plan = plans[u.path];
+                    delete plans[u.path];
+                    plan(rsc);
+                }); 
             }
 
             function download(loader, i) {
@@ -159,12 +154,23 @@ var YOINK = (function() {
                 var p = urls[i].path;
                 var rsc = loader.cache[p];
                 if (rsc === undefined) {
-                    loader.getFile(p, function(str){
-                        interpretFile(urls[i], str, function(rsc) {
-                            loader.cache[p] = rsc; // Cache the result
+                    // Is anyone else already downloading this file?
+                    var plan = plans[p];
+                    if (plan === undefined) {
+                        // Create a plan for what we will do with this module
+                        plans[p] = function(rsc) {
                             onInterpreted(i, rsc);
+                        }
+                        loader.getFile(p, function(str){
+                            interpretFile(urls[i], str);
                         });
-                    });
+                    } else {
+                        // Add ourselves to the plan.  The plan is effectively a FIFO queue of actions.
+                        plans[p] = function(rsc) {
+                            plan(rsc);
+                            onInterpreted(i, rsc);
+                        };
+                    }
                 } else {
                     onInterpreted(i, rsc);  // Skip downloading
                 }
