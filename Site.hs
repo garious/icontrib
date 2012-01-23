@@ -21,13 +21,12 @@ import Happstack.Lite
 
 
 data Site = Site { userAccounts ::  AcidState A.Database
-                 , charityAccounts ::  AcidState A.Database
                  , charityInfo :: AcidState C.Database
                  }
 
 site :: Site -> ServerPart Response
 site st = msum [ 
-      dir "user"    (userServices st)
+      dir "auth"    (authServices st)
     , dir "charity" (charityServices st)
     , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "https://www.google.com/jsapi"))
     , JSW.widget root []
@@ -36,24 +35,21 @@ site st = msum [
   where
     root = "public"
 
-userServices :: Site -> ServerPart Response
-userServices st = msum [ 
-      dir "login"          (post    (loginUser  "user" (userAccounts st)))
-    , dir "check"          (get     (checkUser  "user" (userAccounts st)))
-    , dir "logout"         (get     (logOut     "user" (userAccounts st)))
+authServices:: Site -> ServerPart Response
+authServices st = msum [ 
+      dir "login"          (post    (loginUser  "auth" (userAccounts st)))
+    , dir "check"          (get     (checkUser  "auth" (userAccounts st)))
+    , dir "logout"         (get     (logOut     "auth" (userAccounts st)))
+    , dir "add"            (post    (addUser    "auth" (userAccounts st)))
     ]
 
 charityServices :: Site -> ServerPart Response
 charityServices st = msum [ 
-      dir "login"      (post (loginUser  "charity" (charityAccounts st)))
-    , dir "logout"     (get  (logOut     "charity" (charityAccounts st)))
-    , dir "add"        (post (addUser    "charity" (charityAccounts st)))
-    , dir "check"      (get  check')
-    , dir "getInfo"    (get  (check' >>= (C.lookupInfo (charityInfo st))))
+      dir "getInfo"    (get  (check' >>= (C.lookupInfo (charityInfo st))))
     , dir "updateInfo" (post (check' >>= (updateInfo (charityInfo st))))
     ]
     where
-        check' = (checkUser "charity" (charityAccounts st))
+        check' = (checkUser "auth" (userAccounts st))
 
 updateInfo :: AcidState C.Database -> C.CharityID -> ErrorT SE.ServerError (ServerPartT IO) ()
 updateInfo db uid = do

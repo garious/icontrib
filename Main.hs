@@ -19,7 +19,6 @@ main = do
 webThread :: IO ()
 webThread = do
     ua <- openMemoryState A.empty
-    ca <- openMemoryState A.empty
     ci <- openMemoryState C.empty
 
     -- Hardcoded users
@@ -27,7 +26,7 @@ webThread = do
         A.addUser ua (toB "greg@icontrib.org") (toB "greg")
         A.addUser ua (toB "anatoly@icontrib.org") (toB "anatoly")
 
-    serve Nothing (site (Site ua ca ci))
+    serve Nothing (site (Site ua ci))
 
 -- String to ByteString
 toB :: String -> B.ByteString

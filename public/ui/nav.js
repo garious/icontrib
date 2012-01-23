@@ -41,7 +41,7 @@ function onReady(E, L, C, CORE, LOGIN, $) {
             top: '10px'
         };
 
-        var loginForm = LOGIN.loginForm({ login: '/user/login', logout: '/user/logout', check: '/user/check'});
+        var loginForm = LOGIN.loginForm({ root: '/auth' });
 
         return E.div({style: headerStyle}, [ 
             E.a({href: '/'}, [
