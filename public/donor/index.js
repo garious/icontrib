@@ -1,6 +1,6 @@
 // TODO: Generalize this function and move google's jsapi into a module
 function exportGoogle(text, yoink, callback) {
-    YOINK.interpreters.js(text + '\nreturn google;', yoink, callback);
+    YOINK.interpreters.js(text + '\ndefine(google);', yoink, callback);
 }
 
 var deps = [
@@ -155,7 +155,7 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
             var x = xs[j];
 
             var cols = [
-                E.td([CORE.p(x.name)]),
+                E.td([CORE.a({href: x.url}, x.name)]),
                 E.td({style: {textAlign: 'right'}}, [E.text(Math.round(1000 * x.shares / total) / 10 + '%')])
             ];
             rows.push(E.tr(cols));
@@ -208,82 +208,29 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         ]);
     }
 
-    function charity(as) {
-        as = as || {};
-        var user = as.user || defaultUser;
-	var box = CORE.box([
-                L.spoon([
-	            CORE.h2(user.firstName),
-                    L.hug([
-                        L.spoon([
-                            E.img({style: {width: '175px', height: '175px', borderRadius: '5px'}, src: user.imageUrl, alt: user.firstName})
-                        ], 20),
-                        L.spoon([
-                            E.p({style: {width: '600'}}, user.mission),
-                            E.br(),
-                            CORE.button({href: '#'}, ['Donate!'])
-                        ], 20)
-                    ], 30)
-                ], 20)
-            ]);
 
-        return L.spoon([
-           L.hug([
-                L.pillow(200,0),
-                box
-           ], 20),
-           L.pillow(30)
-        ]);
+    function TomBrown(params, nodeReady) {
+        require(['tom.json'], function(tom) {
+            nodeReady( NAV.frame([body({user: tom})]) );
+        });
     }
 
-    function Usoa() {
-        return {
-            deps: ['usoa.json'], 
-            callback: function(u) {
-                return NAV.frame([
-                    charity({user: u})
-                ]);
-            }
-        };
-    }
-
-    function GlobalFundForWomen() {
-        return {
-            deps: ['gffw.json'], 
-            callback: function(u) {
-                return NAV.frame([
-                    charity({user: u})
-                ]);
-            }
-        };
-    }
-
-    function TomBrown() {
-        function tomReady(tom) {
-            return main({user: tom});
-        }
-        return {deps: ['tom.json'], callback: tomReady};
-    }
-
-    function main(as) {
+    function main() {
         return NAV.frame([
-            body(as)
+            body()
         ]);
     }
    
-    return {
+    define({
         title: "IContrib - Improve the world today",
         main: main,
         body: body,
         summary: summary,
-        charity: charity,
         chart: chart,
         alignButton: alignButton,
-        TomBrown: TomBrown,
-        Usoa: Usoa,
-        GlobalFundForWomen: GlobalFundForWomen
-    };
+        TomBrown: TomBrown
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

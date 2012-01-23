@@ -12,14 +12,14 @@ function onReady(E, NAV, html) {
         return div;
     }
 
-    return {
+    define({
         title: "IContrib - Improve the world today.",
         body: body,
         main: NAV.frame([
             body()
         ])
-    };
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

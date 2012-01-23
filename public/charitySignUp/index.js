@@ -11,7 +11,6 @@ var deps = [
 
 
 function onReady(E, L, NAV, CORE, html, toaHtml, $, JF) {
-
     function inputField(input, as, xs) {
 
         var fieldStyle = {
@@ -127,14 +126,14 @@ function onReady(E, L, NAV, CORE, html, toaHtml, $, JF) {
         ]);
     }
 
-    return {
+    define({
         title: "IContrib - Improve the world today.",
         body: body,
         main: NAV.frame([
             body()
         ])
-    };
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

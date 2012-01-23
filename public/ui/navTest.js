@@ -14,11 +14,11 @@ function onReady(NAV, CORE, E) {
 
     }
 
-    return {
+    define({
        main: footer,
        footer: footer
-    };
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

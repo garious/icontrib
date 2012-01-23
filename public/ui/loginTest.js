@@ -3,11 +3,11 @@ var deps = [
 ];
 
 function onReady(LOGIN) {
-    return {
+    define({
         title: "boxes are foxes.",
         main:   LOGIN.loginForm("/login_charity/")
-    };
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

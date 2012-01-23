@@ -11,9 +11,5 @@ var deps = [
     {path: 'jquery-1.7.1.min.js', interpreter: exportJQuery}
 ];
 
-function identity(x) {
-    return x;
-}
-
-define(deps, identity);
+require(deps, define);
 

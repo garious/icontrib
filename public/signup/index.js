@@ -33,12 +33,12 @@ function onReady(E, NAV) {
         ]);
     }
 
-    return {
+    define({
         title: 'IContrib Signup',
         body: body,
         main: main
-    };
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

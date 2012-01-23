@@ -50,24 +50,15 @@ htmlForJsMod baseUrl filename maybeNm = appTemplate $ do
 --      nineAttr = H.toValue (mkPath (mkRelUrl baseUrl ["css", "960.css"]))
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
 
-      yoink = "\n(function(){\n"
-           ++ "function recurse(ldr, node, callback) {\n"
-           ++ "    if (node && node.deps && node.callback) {\n"
-           ++ "        ldr.getResources(node.deps, function(nd) {recurse(ldr, node.callback(nd), callback);})\n"
-           ++ "    } else {\n"
-           ++ "        callback(node);\n"
-           ++ "    }\n"
-           ++ "}\n"
-           ++ "var loader = YOINK.resourceLoader();\n"
-           ++ "loader.getResources(['" ++ filename ++ "'], function(M) {\n    "
+      yoink = "\nYOINK.require(['" ++ filename ++ "'], function(M) {\n    "
            ++ setTitle
            ++ reassign
-           ++ "var node = typeof M === 'function' ? M() : M;\n"
-           ++ "recurse(loader, node, function(nd) {document.body.appendChild(nd)});\n"
+           ++ "function nodeReady(nd){document.body.appendChild(nd);}\n    "
+           ++ "var node = typeof M === 'function' ? M({}, nodeReady) : M;\n    "
+           ++ "if (node !== undefined) { nodeReady(node); }\n"
            ++ "});\n"
-           ++ "})()\n"
 
-      setTitle = "if (M.title) { document.title = M.title; };\n    "
+      setTitle = "if (M.title) { document.title = M.title; }\n    "
 
       reassign = "M = " ++ (maybe "M.main || M" (\nm -> "M."++nm) maybeNm) ++ ";\n    "
  

@@ -21,12 +21,12 @@ function onReady(E) {
     var toInput = function (name, val) { 
         return E.input({}); 
     };
-    return {
+    define({
         map: map,
         toInput: toInput,
         toVal: toVal
-    };
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

@@ -36,10 +36,10 @@ function onReady(CORE, E) {
 
     }
 
-    return {
+    define({
        main: main
-    };
+    });
 }
 
-define(deps, onReady);
+require(deps, onReady);
 

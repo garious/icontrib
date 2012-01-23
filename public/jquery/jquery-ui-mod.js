@@ -14,7 +14,7 @@ function onReady($) {
         {path: 'jquery-ui-1.8.16.custom.min.js', interpreter: exportJQuery}
     ];
 
-    define(deps, function(jQuery) { return jQuery.noConflict(true); });
+    require(deps, function(jQuery) { define(jQuery.noConflict(true)); });
 }
 
 // Create a separate resource loader, so that jQuery UI can whomp its personal copy of jQuery.
