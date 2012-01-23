@@ -18,8 +18,13 @@ function onReady(E, $, JF) {
                 password: null
             }
         };
+        var swapNode = function(newNode, oldNode) {
+            oldNode.parentNode.replaceChild(newNode, oldNode);
+            return newNode;
+        };
         var inputs = JF.map(schema, schema, {}, JF.toInput);
         var loginSubmit = E.input({type: 'submit', value: 'Log in'});
+        var register = E.input({type: 'submit', value: 'Register'});
         
         var logout = E.input({type: 'submit', value : 'Logout' });
         var logoutForm = E.form([logout]);
@@ -33,7 +38,7 @@ function onReady(E, $, JF) {
                 }
             });
         });
-        var stylize = function(name, val) {
+        var stylize = function(name, val, oval) {
             val.type = 'text';
             val.name = name;
             val.size = 10;
@@ -61,14 +66,11 @@ function onReady(E, $, JF) {
                 dataType: "json",
                 success: function(data) {
                     if(data.Left) {
-                        var loginSubmitNew = E.input({type: 'submit', value: 'Try Again'});
-                        loginForm.replaceChild(loginSubmitNew, loginSubmit); 
-                        loginSubmit = loginSubmitNew;
+                        loginSubmit = swapNode(E.input({type: 'submit', value: 'Try Again'}), loginSubmit);
                     } else {
                         var logoutNew = E.input({type: 'submit', value : 'Logout ' + data.Right });
-                        logoutForm.replaceChild(logoutNew, logout); 
-                        logout = logoutNew;
-                        widget.replaceChild(logoutForm, loginForm); 
+                        logout = swapNode(logoutNew, logout);
+                        widget.replaceChild(logoutForm, loginForm);
                     }
                 }
             });
@@ -80,8 +82,7 @@ function onReady(E, $, JF) {
             success: function(data) {
                 if(data.Right) {
                     var logoutNew = E.input({type: 'submit', value : 'Logout ' + data.Right });
-                    logoutForm.replaceChild(logoutNew, logout); 
-                    logout = logoutNew;
+                    logout = swapNode(logoutNew, logout);
                 } else {
                     widget.replaceChild(loginForm, logoutForm); 
                 }
@@ -95,4 +96,3 @@ function onReady(E, $, JF) {
 }
 
 require(deps, onReady);
-

@@ -89,18 +89,38 @@ function onReady(E, L, NAV, CORE, html, toaHtml, $, JF) {
         var lastName    = inputField(pc.lastName,         {label: 'Last Name', type: 'text', name: 'lastName', required: 'required'});
         var phoneNumber = inputField(pc.phone,            {label: 'Phone Number', type: 'text', name: 'phoneNumber', placeholder: '(xxx) xxx-xxxx'});
         var email       = inputField(pc.email,            {label: 'Email', type: 'email', name: 'email', placeholder: 'abc@charity.org'});
+        var register    = E.input({type: 'submit', value : 'Register' });
         var form = E.form({style: {counterReset: 'fieldsets', width: '800px'}}, [
                 fieldset([legend('Organization Information'), ein, name, url ]),
                 fieldset([legend('Point of Contact'), firstName, lastName, phoneNumber, email ]),
                 fieldset([legend(['Terms of Agreement']), toaDiv ]),
-                E.input({type: 'submit', value : 'Register' })
-
+                register
         ]);
+        var swapNode = function(newNode, oldNode) {
+            oldNode.parentNode.replaceChild(newNode, oldNode);
+            return newNode;
+        };
+        //fetch the current charity info
+        $.ajax({
+            type: "GET",
+            url: '/charity/getInfo',
+            dataType: "json",
+            success: function(data) {
+                if(data.Right) {
+                    var fromVal = function(name, value, rv) { 
+                        rv.value = value; 
+                        return rv; 
+                    };
+                    inputs = JF.map(schema, data.Right, inputs, fromVal);
+                    register = swapNode(E.input({type: 'submit', value : 'Update' }), register);
+                }
+            }
+        });
+
         $(form).submit(function (e) {
             e.preventDefault();
             var values = JF.map(schema, inputs, {}, JF.toVal);
             var dataString = JSON.stringify(values);
-            console.log(dataString);
             $.ajax({
                 type: "POST",
                 url: '/charity/updateInfo',

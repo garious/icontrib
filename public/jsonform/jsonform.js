@@ -7,18 +7,26 @@ function onReady(E) {
         for(var prop in type) {
             if(type.hasOwnProperty(prop)) {
                 if(type[prop] === null) {
-                    output[prop] = func(prop, input[prop]);
+                    if(output[prop]) {
+                        output[prop] = func(prop, input[prop], output[prop]);
+                    } else {
+                        output[prop] = func(prop, input[prop], null);
+                    }
                 } else if(typeof(type[prop]) == "object") {
-                    output[prop] = mapObject(type[prop], input[prop], {}, func);
+                    if(output[prop]) {
+                        output[prop] = mapObject(type[prop], input[prop], output[prop], func);
+                    } else {
+                        output[prop] = mapObject(type[prop], input[prop], {}, func);
+                    }
                 } 
             }
         }
         return output;
     };
-    var toVal = function(name, val) {
+    var toVal = function(name, val, oval) {
         return val.value;
     };
-    var toInput = function (name, val) { 
+    var toInput = function (name, val, oval) { 
         return E.input({}); 
     };
     define({
