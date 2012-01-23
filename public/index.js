@@ -20,8 +20,8 @@ function onReady(E, L, NAV, CORE, DONOR, USER) {
                     L.spoon([
                         CORE.h2('Most Popular Charities'),
                         E.ol({style: {width: '350px'}}, [
-                            E.li([CORE.a({href: '/donor/?main=GlobalFundForWomen'}, 'Global Fund for Women')]),
-                            E.li([CORE.a({href: '/donor/?main=Usoa'}, 'Underwater Society of America')])
+                            E.li([CORE.a({href: '/charity/?main=gffw'}, 'Global Fund for Women')]),
+                            E.li([CORE.a({href: '/charity/?main=usoa'}, 'Underwater Society of America')])
                         ]),
                         L.pillow(30)
                     ])

@@ -155,7 +155,7 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
             var x = xs[j];
 
             var cols = [
-                E.td([CORE.p(x.name)]),
+                E.td([CORE.a({href: x.url}, x.name)]),
                 E.td({style: {textAlign: 'right'}}, [E.text(Math.round(1000 * x.shares / total) / 10 + '%')])
             ];
             rows.push(E.tr(cols));
@@ -208,45 +208,6 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         ]);
     }
 
-    function charity(as) {
-        as = as || {};
-        var user = as.user || defaultUser;
-	var box = CORE.box([
-                L.spoon([
-	            CORE.h2(user.firstName),
-                    L.hug([
-                        L.spoon([
-                            E.img({style: {width: '175px', height: '175px', borderRadius: '5px'}, src: user.imageUrl, alt: user.firstName})
-                        ], 20),
-                        L.spoon([
-                            E.p({style: {width: '600'}}, user.mission),
-                            E.br(),
-                            CORE.button({href: '#'}, ['Donate!'])
-                        ], 20)
-                    ], 30)
-                ], 20)
-            ]);
-
-        return L.spoon([
-           L.hug([
-                L.pillow(200,0),
-                box
-           ], 20),
-           L.pillow(30)
-        ]);
-    }
-
-    function Usoa(params, nodeReady) {
-        require(['usoa.json'], function(u) {
-            nodeReady( NAV.frame([charity({user: u})]) );
-        });
-    }
-
-    function GlobalFundForWomen(params, nodeReady) {
-        require(['gffw.json'], function(u) {
-            nodeReady( NAV.frame([charity({user: u})]) );
-        });
-    }
 
     function TomBrown(params, nodeReady) {
         require(['tom.json'], function(tom) {
@@ -265,12 +226,9 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         main: main,
         body: body,
         summary: summary,
-        charity: charity,
         chart: chart,
         alignButton: alignButton,
-        TomBrown: TomBrown,
-        Usoa: Usoa,
-        GlobalFundForWomen: GlobalFundForWomen
+        TomBrown: TomBrown
     });
 }
 
