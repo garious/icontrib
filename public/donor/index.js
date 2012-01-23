@@ -225,7 +225,7 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
     }
    
     define({
-        title: "IContrib - Improve the world today",
+        title: 'IContrib.org',
         main: main,
         body: body,
         summary: summary,

@@ -34,7 +34,7 @@ function onReady(E, L, NAV, CORE, DONOR, USER) {
     }
 
     define({
-        title: 'IContrib.org - Improve the world today',
+        title: 'IContrib.org',
         body: body,
         main: NAV.frame([ body() ])
     });

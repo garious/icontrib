@@ -127,7 +127,7 @@ function onReady(E, L, NAV, CORE, html, toaHtml, $, JF) {
     }
 
     define({
-        title: "IContrib - Improve the world today.",
+        title: 'IContrib.org',
         body: body,
         main: NAV.frame([
             body()

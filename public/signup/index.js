@@ -34,7 +34,7 @@ function onReady(E, NAV) {
     }
 
     define({
-        title: 'IContrib Signup',
+        title: 'IContrib.org Registration',
         body: body,
         main: main
     });

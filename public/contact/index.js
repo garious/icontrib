@@ -34,7 +34,7 @@ function onReady(E, NAV) {
     }
     
     define({
-        title: "IContrib - Improve the world today.",
+        title: 'IContrib.org',
         body: body,
         main: NAV.frame([
             body()

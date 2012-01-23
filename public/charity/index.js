@@ -61,7 +61,7 @@ function onReady(E, L, CORE, NAV, html) {
     }
 
     define({
-        title: "IContrib - Improve the world today.",
+        title: 'IContrib.org',
         body: body,
         main: main,
         usoa: Usoa,
