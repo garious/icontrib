@@ -149,24 +149,29 @@ var YOINK = (function() {
 
     function mkGetResources(base, cache, interpreters) {
         return function(urls, callback) {
-            var rscs = [];         // For the results of interpreting files
-            var cnt = 0;           // For counting what we've downloaded
             var len = urls.length; // How many things we need to interpret
 
-            function mkOnInterpreted(i) {
-                 return function(rsc) {
-                     rscs[i] = rsc;
-                     cnt++;  // Index of the next item to interpret
+            if (len === 0) {
+                callback();
+            } else {
+                var rscs = [];         // For the results of interpreting files
+                var cnt = 0;           // For counting what we've downloaded
 
-                     if (cnt === len) {
-                         callback.apply(null, rscs);
-                     }
-                 };
-            }
+                function mkOnInterpreted(i) {
+                     return function(rsc) {
+                         rscs[i] = rsc;
+                         cnt++;  // Index of the next item to interpret
 
-            for (var i = 0; i < len; i++) {
-                var u = resolve(base, urls[i]);
-                getResource(interpreters, cache, u, mkOnInterpreted(i));
+                         if (cnt === len) {
+                             callback.apply(null, rscs);
+                         }
+                     };
+                }
+
+                for (var i = 0; i < len; i++) {
+                    var u = resolve(base, urls[i]);
+                    getResource(interpreters, cache, u, mkOnInterpreted(i));
+                }
             }
         };
     }
