@@ -1,10 +1,11 @@
 var deps = [
     '/tag/tag.js', 
     '/jquery/jquery-mod.js',
-    '/jsonform/jsonform.js'
+    '/jsonform/jsonform.js',
+    '/donor/greg.json' // TODO: Use the login widget to get this data
 ];
 
-function onReady(E, $, JF) { 
+function onReady(E, $, JF, USER) { 
 
     var loginCtor = function(cfg) {
         var logoutUrl = cfg.root + "/logout";
@@ -53,7 +54,12 @@ function onReady(E, $, JF) {
             inputs.UserLogin.password, 
             loginSubmit
         ]);
-        var widget = E.div([logoutForm]);
+        var widget = E.div([
+            E.a({href: '/donor/?main=GregFitzgerald'}, [
+                E.img({style: {width: '75px', height: '75px', borderRadius: '5px'}, src: USER.imageUrl, alt: USER.firstName + ' ' + USER.lastName})
+            ]),
+            logoutForm
+        ]);
 
         $(loginForm).submit( function(e) {
             e.preventDefault();

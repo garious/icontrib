@@ -1,6 +1,6 @@
 // TODO: Generalize this function and move google's jsapi into a module
-function exportGoogle(text, yoink, callback) {
-    YOINK.interpreters.js(text + '\ndefine(google);', yoink, callback);
+function exportGoogle(text, require, callback) {
+    YOINK.interpreters.js(text + '\ndefine(google);', require, callback);
 }
 
 var deps = [
@@ -14,27 +14,13 @@ var deps = [
 ];
 
 var defaultUser = {
-   firstName: 'Greg',
-   lastName: 'Fitzgerald',
    description: 'Align with me to support underwater hockey in the United States!',
-   imageUrl: '/images/gregf.jpg',
-   dollarsDonated: 2456,
-   alignedDonated: 12456,
    alignedImageUrl: '/images/friends.png',
-   distribution: [
-       ['UNICEF', 35],
-       ['American Red Cross', 10],
-       ['La Jolla Playhouse', 10],
-       ['San Diego Foundation', 10], 
-       ['USA UWH', 80],
-       ['LACC', 20]
-   ]
 };
 
-function onReady(E, L, NAV, google, wait, CORE, C) { 
+function onReady(E, L, NAV, GOOGLE, WAIT, CORE, C) { 
 
     function chart(user) {
-        user = user || defaultUser;
         var dist = [];
         for (var i = 0; i < user.distribution.length; i++) {
             var ud = user.distribution[i]; 
@@ -47,75 +33,26 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         var cookPie = function() {
             var options = {width: 400, height: 300, backgroundColor: { fill:'transparent' }};
             options.colors = [C.darkColor, C.middleColor, C.lightColor];
-            var chart = new google.visualization.PieChart(userChart);
-            var data = new google.visualization.DataTable();
+            var chart = new GOOGLE.visualization.PieChart(userChart);
+            var data = new GOOGLE.visualization.DataTable();
             data.addColumn('string', 'Charity');
             data.addColumn('number', 'Percentage');
             data.addRows(dist);
             chart.draw(data, options);
         };
-        google.load('visualization', '1.0', {packages:['corechart'], callback: cookPie});
+        GOOGLE.load('visualization', '1.0', {packages:['corechart'], callback: cookPie});
 
         return userChart;
     }
 
-    function body(as) {
-        as = as || {};
-   
-        var user = as.user || defaultUser;
-   
-        var userChart = chart(user);
-   
-        return E.div({'class': 'container_12'}, [
-            E.div({id: 'call-to-action', 'class': 'grid_12'}, [
-                E.div({'class': 'widgetContent'}, [user.description || defaultUser.description])
-            ]),
-            
-            E.div({'class': 'grid_3 separator'}, [
-                E.div({'class': 'widget'}, [
-                    E.div({'class': 'widgetContent'}, [
-                        E.h3([user.firstName + ' ' + user.lastName]),
-                        E.img({src: user.imageUrl, height: '175px', width: '150px'})
-                    ]),
-        
-                    E.div({'class': 'widgetContent'}, [
-                        E.h3([user.firstName + " has donated $" + user.dollarsDonated])
-                    ])
-                ])
-            ]),
-        
-            E.div({'class': 'grid_6 separator'}, [
-                E.div({'class': 'widget'}, [
-                    E.div({'class': 'widgetContent', style: {textAlign: 'center'}}, [userChart, alignButton(user)]) 
-                ]) 
-            ]),
-        
-            E.div({'class': 'grid_3 omega separator'}, [
-                E.div({'class': 'widget'}, [
-                    E.div({'class': 'widgetContent'}, [
-                        E.h3(['Aligned with ' + user.firstName]),
-                        E.img({src: user.alignedImageUrl || defaultUser.alignedImageUrl, height: '170px', width: '170px'})
-                    ]),
-        
-                    E.div({'class': 'widgetContent'}, [
-                        E.h3([user.firstName + "'s friends have raised $" + user.alignedDonated])
-                    ])
-                ])
-            ]),
-        
-            E.div({'class': 'grid_12 clear bread'})
-        ]);
-    }
-
     function alignButton(user) {
-        user = user || defaultUser;
         var alignLink = CORE.button({href: '#'}, ['Donate!']);
         alignLink.onclick = function(e) { 
             //TODO: On click, navigate to appropriate pages
-            wait.load({
+            WAIT.load({
                 buttons: {
                     "Sign In" : function(e) { window.location ="/signup/"; },
-                    "Keep Adding Stuff" : function(e) { wait.close(); } 
+                    "Keep Adding Stuff" : function(e) { WAIT.close(); } 
                 }, 
                 title: "What do you want to do?",
                 content: "From here, you can either sign up to fund your distribution, or continue selecting organizations you would like to support."
@@ -183,15 +120,15 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
                 ])]);
                 rows.push(row);
             }
-            return L.spoon(rows);
+            return L.spoon(rows, 20);
         } else {
             return alignButton(user);
         }
     }
 
-    function summary(as) {
+    function profile(as) {
         as = as || {};
-        var user = as.user || defaultUser;
+        var user = as.user || {};
         var userChart = L.spoon([
             L.hug([L.pillow(50, 0), CORE.h3('Helps raise $' + user.alignedDonated + ' per month')]),
             chart(user)
@@ -211,27 +148,55 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         ]);
     }
 
+    function dashboard(as) {
+        as = as || {};
+        var user = as.user || {};
+        var userChart = L.spoon([
+            L.hug([L.pillow(50, 0), CORE.h3('You have helped raise $' + user.alignedDonated + ' per month')]),
+            chart(user)
+        ]);
+
+        return L.spoon([
+            CORE.h2(as.title), 
+            L.pillow(30),
+            L.hug([
+                L.spoon([
+                    E.img({style: {width: '175px', height: '175px', borderRadius: '5px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
+                    CORE.h3([user.firstName + ' ' + user.lastName])
+                ], 20),
+	        userChart
+            ]),
+            CORE.button({href: '#'}, ['Save Changes'])
+        ]);
+    }
+
 
     function TomBrown(params, nodeReady) {
-        require(['tom.json'], function(tom) {
-            nodeReady( NAV.frame([body({user: tom})]) );
+        require(['tom.json'], function(user) {
+            nodeReady( NAV.frame([profile({user: user})]) );
         });
     }
 
-    function main() {
-        return NAV.frame([
-            body()
-        ]);
+    function GregFitzgerald(params, nodeReady) {
+        require(['greg.json'], function(user) {
+            nodeReady( NAV.frame([
+                L.hug([
+                    L.pillow(250),
+                    CORE.box([dashboard({user: user})]),
+                ])
+            ]));
+        });
     }
-   
+
     define({
         title: 'IContrib.org',
-        main: main,
-        body: body,
-        summary: summary,
+        main: TomBrown,
+        summary: profile,
+        dashboard: dashboard,
         chart: chart,
         alignButton: alignButton,
-        TomBrown: TomBrown
+        TomBrown: TomBrown,
+        GregFitzgerald: GregFitzgerald
     });
 }
 

@@ -33,10 +33,14 @@ function onReady(E, L, NAV, CORE, DONOR, USER) {
         ], 20);
     }
 
+    function main() {
+        return NAV.frame([ body() ]);
+    }
+
     define({
         title: 'IContrib.org',
         body: body,
-        main: NAV.frame([ body() ])
+        main: main
     });
 }
 
