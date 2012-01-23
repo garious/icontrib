@@ -19,6 +19,7 @@ import Data.Acid
 import Data.SafeCopy
 import ServerError
 
+--authenticated user for charity account
 type CharityID    = A.UserID
 
 data PointOfContact = PointOfContact { firstName :: String 
