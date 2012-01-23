@@ -148,7 +148,8 @@ var YOINK = (function() {
     }
 
     function mkGetResources(base, cache, interpreters) {
-        return function(urls, callback) {
+
+        function getResources(urls, callback) {
             var len = urls.length; // How many things we need to interpret
 
             if (len === 0) {
@@ -173,7 +174,9 @@ var YOINK = (function() {
                     getResource(interpreters, cache, u, mkOnInterpreted(i));
                 }
             }
-        };
+        }
+
+        return getResources;
     }
     
     // Resource Loader constructor
@@ -185,7 +188,12 @@ var YOINK = (function() {
         return {getResources: mkGetResources(base, cache, interpreters)};
     }
 
+    function require(urls, callback) {
+        return resourceLoader().getResources(urls, callback);
+    }
+
     return {
+       require: require,
        resourceLoader: resourceLoader,
        interpreters: defaultInterpreters
     };

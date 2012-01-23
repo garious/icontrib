@@ -50,11 +50,11 @@ htmlForJsMod baseUrl filename maybeNm = appTemplate $ do
 --      nineAttr = H.toValue (mkPath (mkRelUrl baseUrl ["css", "960.css"]))
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
 
-      yoink = "\nYOINK.resourceLoader().getResources(['" ++ filename ++ "'], function(M) {\n    "
+      yoink = "\nYOINK.require(['" ++ filename ++ "'], function(M) {\n    "
            ++ setTitle
            ++ reassign
            ++ "function nodeReady(nd){document.body.appendChild(nd);}\n    "
-           ++ "var node = typeof M === 'function' ? M(nodeReady) : M;\n    "
+           ++ "var node = typeof M === 'function' ? M({}, nodeReady) : M;\n    "
            ++ "if (node !== undefined) { nodeReady(node); }\n"
            ++ "});\n"
 

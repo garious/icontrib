@@ -236,19 +236,19 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         ]);
     }
 
-    function Usoa(nodeReady) {
+    function Usoa(params, nodeReady) {
         require(['usoa.json'], function(u) {
             nodeReady( NAV.frame([charity({user: u})]) );
         });
     }
 
-    function GlobalFundForWomen(nodeReady) {
+    function GlobalFundForWomen(params, nodeReady) {
         require(['gffw.json'], function(u) {
             nodeReady( NAV.frame([charity({user: u})]) );
         });
     }
 
-    function TomBrown(nodeReady) {
+    function TomBrown(params, nodeReady) {
         require(['tom.json'], function(tom) {
             nodeReady( NAV.frame([body({user: tom})]) );
         });
