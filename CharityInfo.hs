@@ -33,15 +33,19 @@ $(derive makeJSON ''PointOfContact)
 
 data OrganizationInfo = OrganizationInfo { ein :: String
                                          , organizationName :: String
-                                         , companyWebSite :: String
+                                         , companyWebsite :: String
                                          }
                              deriving (Show, Typeable)
 
 $(deriveSafeCopy 0 'base ''OrganizationInfo)
 $(derive makeJSON ''OrganizationInfo)
 
-data CharityInfo = CharityInfo OrganizationInfo PointOfContact
+data CharityInfo = CharityInfo { info :: OrganizationInfo 
+                               , poc :: PointOfContact
+                               }
                  deriving (Show, Typeable)
+new :: CharityInfo
+new = CharityInfo (OrganizationInfo "ein" "name" "website") (PointOfContact "first" "last" "phone" "email")
 
 $(deriveSafeCopy 0 'base ''CharityInfo)
 $(derive makeJSON ''CharityInfo)

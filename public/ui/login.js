@@ -1,64 +1,25 @@
-function mapObject(type, input, output, func) {
-    for(var prop in type) {
-        if(type.hasOwnProperty(prop)) {
-            if(type[prop] === null) {
-                output[prop] = func(prop, input[prop]);
-            } else if(typeof(type[prop]) == "object") {
-                output[prop] = mapObject(type[prop], input[prop], {}, func);
-            } 
-        }
-    }
-    return output;
-}
-
-function listObject(type, input, output, func) {
-    for(var prop in type) {
-        if(type.hasOwnProperty(prop)) {
-            if(type[prop] === null) {
-                func(prop, input[prop], output);
-            } else if(typeof(type[prop]) == "object") {
-                listObject(type[prop], input[prop], output, func);
-            } 
-        }
-    }
-    return output;
-}
-
-
 var deps = [
     '/tag/tag.js', 
-    '/jquery/jquery-mod.js'
+    '/jquery/jquery-mod.js',
+    '/jsonform/jsonform.js'
 ];
 
-function onReady(E, $) { 
+function onReady(E, $, JF) { 
 
     var loginCtor = function(cfg) {
-        var toInput = function (name, val) {
-                if(name == "password") {
-                    return E.input({type: "password", name: name, size: "10"});
-                } else {
-                    if(val === null) {
-                        return E.input({type: "text", name: name, size: "10"});
-                    } else {
-                        return E.input({type: "text", name: name, size: "10", value: val});
-                    }
-                }
-            };
-        var formType = {
+        var logoutUrl = cfg.root + "/logout";
+        var loginUrl  = cfg.root + "/login";
+        var checkUrl  = cfg.root + "/check";
+        var addUrl    = cfg.root + "/add";
+        //stupid schema, the 'null' services as a sentinal when i traverse it
+        var schema = {
             UserLogin: {
                 email: null,
                 password: null
             }
         };
-        var formInputs = mapObject(formType, formType, {}, toInput);
-
-        var toForm = function(name, val, arr) {
-                arr.push(name);
-                arr.push(val);
-            };
-        var formArr = listObject(formType, formInputs, [], toForm);
+        var inputs = JF.map(schema, schema, {}, JF.toInput);
         var loginSubmit = E.input({type: 'submit', value: 'Log in'});
-        formArr.push(loginSubmit);
         
         var logout = E.input({type: 'submit', value : 'Logout' });
         var logoutForm = E.form([logout]);
@@ -66,26 +27,36 @@ function onReady(E, $) {
             e.preventDefault();
             $.ajax({
                 type: "GET",
-                url: cfg.logout,
+                url: logoutUrl,
                 success: function(data) {
                     window.location.reload();
                 }
             });
         });
-
-        var loginForm = E.form(formArr);
+        var stylize = function(name, val) {
+            val.type = 'text';
+            val.name = name;
+            val.size = 10;
+            return val;
+        };
+        //now i have an object with a bunch of empty inputs, whose layout matches my schema
+        //i can traverse the schema in parallel with the object and reference the input fields
+        inputs = JF.map(schema, inputs, inputs, stylize);
+        inputs.UserLogin.password.type = 'password';
+        var loginForm = E.form([
+            inputs.UserLogin.email, 
+            inputs.UserLogin.password, 
+            loginSubmit
+        ]);
         var widget = E.div([logoutForm]);
 
         $(loginForm).submit( function(e) {
             e.preventDefault();
-            var toVal = function(name, val) {
-                    return val.value;
-                };
-            var formValues = mapObject(formType, formInputs, {}, toVal);
+            var formValues = JF.map(schema, inputs, {}, JF.toVal);
             var dataString = JSON.stringify(formValues);
             $.ajax({
                 type: "POST",
-                url: cfg.login,
+                url: loginUrl,
                 data: dataString,
                 dataType: "json",
                 success: function(data) {
@@ -104,7 +75,7 @@ function onReady(E, $) {
         });
         $.ajax({
             type: "GET",
-            url: cfg.check,
+            url: checkUrl,
             dataType: "json",
             success: function(data) {
                 if(data.Right) {
