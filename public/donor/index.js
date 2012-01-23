@@ -178,7 +178,7 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
                         L.spoon([
                             L.pillow(50),
                             alignButton(user)
-                        ]),
+                        ])
                     ], 100)
                 ])]);
                 rows.push(row);
