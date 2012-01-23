@@ -169,13 +169,18 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         if (user.funds) {
             var rows = [];
             for (var i = 0; i < user.funds.length; i++) {
-                var row = L.spoon([
+                var row = CORE.box([E.div({style: {width: 550}}, [
                     L.hug([
-                        CORE.h4(user.funds[i]),
-                        alignButton(user)
-                    ], 30),
-                    L.hug([L.pillow(30), fundContents(user.distribution, user.funds[i])])
-                ], 25);
+                        L.spoon([
+                            CORE.h4(user.funds[i]),
+                            L.hug([L.pillow(30), fundContents(user.distribution, user.funds[i])])
+                        ], 25),
+                        L.spoon([
+                            L.pillow(50),
+                            alignButton(user)
+                        ])
+                    ], 100)
+                ])]);
                 rows.push(row);
             }
             return L.spoon(rows);
@@ -188,23 +193,21 @@ function onReady(E, L, NAV, google, wait, CORE, C) {
         as = as || {};
         var user = as.user || defaultUser;
         var userChart = L.spoon([
-            // TODO: On hover, show "dollars raised vs dollars donated"
-            L.hug([L.pillow(230, 0), CORE.h1('$' + user.alignedDonated + ' / $' + user.dollarsDonated)]),
-            chart(user),
-            L.hug([L.pillow(50), distributionTable(user)]),
-            L.pillow(20)
+            L.hug([L.pillow(50, 0), CORE.h3('Helps raise $' + user.alignedDonated + ' per month')]),
+            chart(user)
         ]);
 
         return L.spoon([
             CORE.h2(as.title), 
+            L.pillow(30),
             L.hug([
                 L.spoon([
-                    L.pillow(20),
                     E.img({style: {width: '175px', height: '225px', borderRadius: '5px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
                     CORE.h3([user.firstName + ' ' + user.lastName])
                 ], 20),
 	        userChart
-            ])
+            ]),
+            distributionTable(user)
         ]);
     }
 
