@@ -4,85 +4,60 @@ Yoink.js
 
 yoink.js is a small and simple module loader for JavaScript.
 
-* Yoink modules are simple.  Here is the "Hello World" of Yoink modules:
+Yoink modules are simple.  Here is the "Hello World" of Yoink modules:
 
   ~~~javascript
-  return document.createTextNode("Hello world!");
+  define( document.createTextNode("Hello world!") );
   ~~~
 
-* HTML is minimal.  Add Yoink, load a module, and use it to construct the DOM.
+Add Yoink, load your module, and use it to construct the DOM.
 
   ~~~html
   <html>
       <body>
-          <script type="text/javascript" src="https://raw.github.com/garious/yoink/master/yoink-min.js"></script>
+          <script type="text/javascript" src="yoink-min.js"></script>
           <script type="text/javascript">
-              var loader = YOINK.resourceLoader();
-              loader.getResources(['helloworld.js'], function(hello) {
-                  document.body.appendChild(hello);
+              YOINK.require(['helloworld.js'], function(HELLO) {
+                  document.body.appendChild(HELLO);
               });
           </script>
       </body>
   </html>
   ~~~
 
+Yoink modules may load other modules.  Modules are downloaded and interpreted in
+parallel.
 
-* Resources loaded in parallel.
 
   ~~~javascript
   var loader = YOINK.resourceLoader();
-  loader.getResources(['helloworld.js', 'goodbye.js'], function(hello, goodbye) {
-      document.body.appendChild(hello);
-      document.body.appendChild(goodbye);
+  loader.getResources(['helloworld.js', 'goodbye.js'], function(HELLO, GOODBYE) {
+      document.body.appendChild(HELLO);
+      document.body.appendChild(GOODBYE);
   });
   ~~~
 
-* Intuitive semantics.  
-  
-  * Resources are downloaded in parallel.
-  * Resources are interpreted in order.
-  * Cached resources are never reinterpreted.
-
-* Yoink modules are scalable.  When you return the 'module' object, Yoink will first
-  download its dependencies.
+To download a module that tells you what modules to download:
 
   ~~~javascript
-  var deps = ['fileNextToHello.js'];
+  require(['a.js'], function(A) {
 
-  function onReady(neighbor) {
-      return document.createTextNode(neighbor.message);
-  }
+      require(A.moreDeps, function(B, C, D) {
+          define( document.createTextNode(A.message + B.message) );
+      });
 
-  return {deps: deps, callback: onReady};
+  });
   ~~~
 
-  And if your module returns a module that returns a module, Yoink will recursively
-  download those dependencies too.  This can be useful if you need to first download
-  a module to figure out what other modules need to be downloaded.
-
-  ~~~javascript
-  return {
-      deps: ['a.js'], 
-      callback: function(A) {
-          return {
-              deps: A.deps,
-              callback: function(B) {
-                  return document.createTextNode(A.message + B.message);
-              }
-          }
-      }
-  };
-  ~~~
-
-* Modules know where they are.  Modules are loaded with a local variable 'baseUrl'
-  that tells module authors where the module is with respect to the root directory.  Module
-  authors can use this value to reference external resources, such as an image file inside
-  the module directory.
+Modules know where they are.  Modules are loaded with a local variable 'baseUrl'
+that tells module authors where the module is with respect to the root directory.  Module
+authors can use this value to reference external resources, such as an image file inside
+the module directory.
 
   ~~~javascript
   var e = document.createElement('img');
   e.src = baseUrl + '/favicon.png'; 
-  return e;
+  define( e );
   ~~~
 
 
