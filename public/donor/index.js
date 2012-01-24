@@ -10,15 +10,16 @@ var deps = [
     {path: '/mirror/google/jsapi', interpreter: exportGoogle},
     '/widgets/waitScreen.js',
     '/ui/core.js',
-    '/ui/colors.json'
+    '/ui/colors.json',
+    '/jquery/jquery-ui-mod.js'
 ];
 
 var defaultUser = {
    description: 'Align with me to support underwater hockey in the United States!',
-   alignedImageUrl: '/images/friends.png',
+   alignedImageUrl: '/images/friends.png'
 };
 
-function onReady(E, L, NAV, GOOGLE, WAIT, CORE, C) { 
+function onReady(E, L, NAV, GOOGLE, WAIT, CORE, C, $) { 
 
     function chart(user) {
         var dist = [];
@@ -102,6 +103,28 @@ function onReady(E, L, NAV, GOOGLE, WAIT, CORE, C) {
         ]);
     }
 
+    function updateFundContents(dist) {
+        var rows = [];
+
+        for (var j = 0; j < dist.length; j++) {
+            var x = dist[j];
+
+            var sldr = E.div({style: {width: 200}});
+            $(sldr).slider({value: x.shares});
+
+            var cols = [
+                E.td([CORE.a({href: x.url}, x.name)]),
+                E.td([sldr])
+            ];
+            rows.push(E.tr(cols));
+        }
+        return E.table({cellSpacing: 10}, [
+            E.link({href: "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css", rel: "stylesheet", type: "text/css"}),
+ 
+            E.tbody(rows)
+        ]);
+    }
+
     function distributionTable(user) {
         if (user.funds) {
             var rows = [];
@@ -124,6 +147,12 @@ function onReady(E, L, NAV, GOOGLE, WAIT, CORE, C) {
         } else {
             return alignButton(user);
         }
+    }
+
+    function updateDistributionTable(user) {
+        return E.div({style: {width: 550}}, [
+            L.hug([L.pillow(30), updateFundContents(user.distribution)])
+        ]);
     }
 
     function profile(as) {
@@ -152,7 +181,7 @@ function onReady(E, L, NAV, GOOGLE, WAIT, CORE, C) {
         as = as || {};
         var user = as.user || {};
         var userChart = L.spoon([
-            L.hug([L.pillow(50, 0), CORE.h3('You have helped raise $' + user.alignedDonated + ' per month')]),
+            L.hug([L.pillow(50, 0), CORE.h3('You help raise $' + user.alignedDonated + ' per month')]),
             chart(user)
         ]);
 
@@ -166,7 +195,9 @@ function onReady(E, L, NAV, GOOGLE, WAIT, CORE, C) {
                 ], 20),
 	        userChart
             ]),
-            CORE.button({href: '#'}, ['Save Changes'])
+            updateDistributionTable(user),
+            CORE.button({href: '#'}, ['Save Changes']),
+            L.pillow(30)
         ]);
     }
 
@@ -182,7 +213,7 @@ function onReady(E, L, NAV, GOOGLE, WAIT, CORE, C) {
             nodeReady( NAV.frame([
                 L.hug([
                     L.pillow(250),
-                    CORE.box([dashboard({user: user})]),
+                    CORE.box([dashboard({user: user})])
                 ])
             ]));
         });
