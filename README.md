@@ -2,7 +2,9 @@
 Yoink.js
 ========
 
-yoink.js is a small and simple module loader for JavaScript.
+yoink.js is a small and simple module loader for JavaScript.  The API and design
+goals are very similar to RequireJS, but Yoink cuts the fat.  The implementation
+is much smaller and simpler, and the plugin model is especially simple.
 
 Yoink modules are simple.  Here is the "Hello World" of Yoink modules:
 
@@ -30,14 +32,15 @@ parallel.
 
 
   ~~~javascript
-  var loader = YOINK.resourceLoader();
-  loader.getResources(['helloworld.js', 'goodbye.js'], function(HELLO, GOODBYE) {
+  YOINK.require(['helloworld.js', 'goodbye.js'], function(HELLO, GOODBYE) {
       document.body.appendChild(HELLO);
       document.body.appendChild(GOODBYE);
   });
   ~~~
 
-To download a module that tells you what modules to download:
+To download a module that tells you what modules to download, call require
+as many times as you need.  'define()' can be called after any number of
+asynchronous calls.
 
   ~~~javascript
   require(['a.js'], function(A) {
@@ -59,6 +62,34 @@ the module directory.
   e.src = baseUrl + '/favicon.png'; 
   define( e );
   ~~~
+
+Yoink caches modules, but sometimes you want multiple caches.  For example, jQuery
+plugins modify jQuery, so you may want a cache with just jQuery and another with
+a second copy of jQuery that plugins stomp all over.
+
+~~~
+function exportJQuery(text, yoink, callback) {
+    YOINK.interpreters.js(text + '\ndefine( jQuery.noConflict(true) );', yoink, callback);
+}
+
+function onReady($) {
+    // jQuery UI requires jQuery.  Therefore its 'onReady' callback must return a second set 
+    // of dependencies and callback.
+
+    // jQuery UI requires that jQuery be in the global namespace when it is interpreted.
+    window.jQuery = $;
+
+    var deps = [
+        {path: 'jquery-ui-1.8.16.custom.min.js', interpreter: exportJQuery}
+    ];
+
+    require(deps, function(jQuery) { define(jQuery.noConflict(true)); });
+}
+
+// Create a separate resource loader, so that jQuery UI can whomp its personal copy of jQuery.
+YOINK.require(['/jquery/jquery-mod.js'], onReady);
+~~~
+
 
 
 Contributing
