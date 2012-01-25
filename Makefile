@@ -41,10 +41,12 @@ dist:
 deps:
 	cabal update
 	cabal install --only-dependencies
+	npm install jslint
 
 deps.Darwin:
 	brew install jslint
 	brew install node
+	brew install npm
 
 JS_WHITELIST:= \
     $(wildcard public/jquery/jquery*.js) \
@@ -54,10 +56,16 @@ JS_WHITELIST:= \
 
 JS_FILES:=$(filter-out $(JS_WHITELIST),$(wildcard public/*.js) $(wildcard public/*/*.js))
 
-lint: $(patsubst %,$o/%.ok,$(JS_FILES))
+JSLINT_FILES:=public/yoink/yoink.js
+
+lint: $(patsubst %,$o/%.ok,$(JS_FILES)) $(patsubst %,$o/%.lint,$(JSLINT_FILES))
 
 $o/%.js.ok: %.js
 	jsl -output-format "$*.js:__LINE__:__COL__: __ERROR__" -process $<
 	@mkdir -p $(@D)
-	touch $@
+	@touch $@
 
+$o/%.js.lint: %.js
+	node_modules/.bin/jslint --predef=define --predef=require --predef=baseUrl --predef=YOINK $<
+	@mkdir -p $(@D)
+	@touch $@
