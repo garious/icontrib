@@ -1,13 +1,16 @@
+var authDeps = [
+    {path: '/auth/check', interpreter: YOINK.interpreters.json} // TODO: add a '.json' extension to this resource
+];
+
 var deps = [
     '/tag/tag.js', 
     '/tag/layout.js', 
-    'colors.json', 
     'core.js',
-    'login.js',
     '/jquery/jquery-mod.js'
 ];
 
-function onReady(E, L, C, CORE, LOGIN, $) { 
+function onAuthReady(AUTH) { 
+function onReady(E, L, CORE, $, ME) { 
 
     function nav(as) {
         as = as || {};
@@ -37,22 +40,78 @@ function onReady(E, L, C, CORE, LOGIN, $) {
 
         var loginStyle = {
             position: 'absolute',
-            left: '850px',
+            left: '875px',
             top: '10px'
         };
 
-        var loginForm = LOGIN.loginForm({ root: '/auth' });
+        var logo = E.a({href: '/'}, [
+            E.img({src: "/images/logo.png", alt: "IContrib Home", style: imgStyle, border: "0"})
+        ]);
 
-        return E.div({style: headerStyle}, [ 
-            E.a({href: '/'}, [
-                E.img({src: "/images/logo.png", alt: "IContrib Home", style: imgStyle, border: "0"})
-            ]),
+        var loginWidget;
+        if (AUTH.Left) {
+            var username = E.input({type: 'text'});
+            var password = E.input({type: 'password'});
+            var badLogin = E.span({hidden: true, style: {height: 20, color: 'red'}}, 'bad username or password');
+            var loginButton = CORE.button('Log in');
+            $(loginButton).click(function(e) {
+                e.preventDefault();
+                var formValues = {
+                    UserLogin: {
+                        email: username.value,
+                        password: password.value 
+                    }
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: '/auth/login',
+                    data: JSON.stringify(formValues),
+                    dataType: 'json',
+                    success: function(data) {
+                        if(data.Left) {
+                            badLogin.hidden = false;
+                        } else {
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+            loginWidget = L.hug({style: loginStyle}, [
+                    L.spoon([
+                        L.hug([CORE.label('Username'), username]),
+                        L.hug([CORE.label('Password'), password]),
+                        badLogin,
+                        loginButton
+                    ], 5),
+                    as.thumbnail
+                ], 30);
+        } else {
+            var logoutButton = CORE.a({href: '#'}, 'Log out');
+            $(logoutButton).click(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'GET',
+                    url: '/auth/logout',
+                    success: function(data) {
+                        window.location.reload();
+                    }
+                });
+            });
 
-            E.div({style: taglineStyle}, [
-                CORE.h1('Improve the world today')
-            ]),
+           loginWidget = L.hug({style: loginStyle}, [
+              as.thumbnail,
+              E.div({style: {width: 100}}, [logoutButton])
+           ], 30);
+        }
 
-            E.div({style: loginStyle}, [loginForm])
+        return L.spoon([ 
+            E.div({style: headerStyle}, [ 
+                logo,
+                E.div({style: taglineStyle}, [
+                    CORE.h1('Improve the world today')
+                ]),
+                loginWidget
+            ])
         ]);
     }
 
@@ -80,7 +139,15 @@ function onReady(E, L, C, CORE, LOGIN, $) {
         }
         xs = xs || [];
         as = as || {};
-        
+
+        var imageUrl = AUTH.Left && '/donor/anonymous.jpg' || ME.imageUrl;
+
+        var thumbnail = E.a({href: '/me/'}, [
+            E.img({style: {width: '110px', height: '110px', borderRadius: '5px'}, src: imageUrl, alt: ME.firstName + ' ' + ME.lastName})
+        ]);
+
+        as.thumbnail = thumbnail;
+
         var navbar = nav(as);
         var body = E.div(xs);
 
@@ -106,15 +173,26 @@ function onReady(E, L, C, CORE, LOGIN, $) {
         ]); 
     }
 
+    function userInfo() {
+        return ME;
+    }
+
     define({
         nav: nav,
         dock: dock,
         dockItem: dockItem,
         frame: frame,
-        footer: footer
+        footer: footer,
+        userInfo: userInfo
     });
 
 }
 
+var donorId = AUTH.Left && 'anonymous' || AUTH.Right;
+var donorUrl = '/donor/' + donorId + '.json';
+deps.push(donorUrl);
 require(deps, onReady);
+}
+
+require(authDeps, onAuthReady);
  

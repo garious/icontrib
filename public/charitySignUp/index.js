@@ -3,14 +3,13 @@ var deps = [
     '/tag/layout.js', 
     '/ui/nav.js', 
     '/ui/core.js', 
-    'body.html',
     'toa.html',
     '/jquery/jquery-mod.js',
     '/jsonform/jsonform.js'
 ];
 
 
-function onReady(E, L, NAV, CORE, html, toaHtml, $, JF) {
+function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
     function inputField(input, as, xs) {
 
         var fieldStyle = {

@@ -23,8 +23,8 @@ webThread = do
 
     -- Hardcoded users
     _ <- runErrorT $ do
-        A.addUser ua (toB "greg@icontrib.org") (toB "greg")
-        A.addUser ua (toB "anatoly@icontrib.org") (toB "anatoly")
+        A.addUser ua (toB "greg") (toB "greg")
+        A.addUser ua (toB "anatoly") (toB "anatoly")
 
     serve Nothing (site (Site ua ci))
 

@@ -9,7 +9,7 @@
        {"name": "Underwater Society of America", "url": "/charity/?main=usoa", "shares": 5, "labels": ["Tom's General Fund"]}
    ],
    "funds": [
-       "Tom's General Fund"
+       {"name": "Tom's General Fund", "id": "TomBrown-GeneralFund"}
    ]
 }
 

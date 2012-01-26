@@ -53,6 +53,7 @@ JS_WHITELIST:= \
     $(wildcard public/js/less-*.js) \
     public/js/waitScreen.js \
     public/widgets/waitScreen.js \
+    public/js/json2.js \
 
 JS_FILES:=$(filter-out $(JS_WHITELIST),$(wildcard public/*.js) $(wildcard public/*/*.js))
 

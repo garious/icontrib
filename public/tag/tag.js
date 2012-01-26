@@ -52,7 +52,7 @@ var TAG = {
 };
 
 var tags = [
-    'br', 'hr', 'p', 'div', 'link', 'a', 'img', 
+    'br', 'hr', 'p', 'div', 'link', 'a', 'img', 'span',
     'form', 'fieldset', 'input', 'label', 'button',
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
     'base', 'ul', 'ol', 'li', 'legend', 

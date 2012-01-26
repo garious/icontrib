@@ -1,11 +1,10 @@
 var deps = [
     '/tag/tag.js', 
     '/jquery/jquery-mod.js',
-    '/jsonform/jsonform.js',
-    '/donor/greg.json' // TODO: Use the login widget to get this data
+    '/jsonform/jsonform.js'
 ];
 
-function onReady(E, $, JF, USER) { 
+function onReady(E, $, JF) { 
 
     var loginCtor = function(cfg) {
         var logoutUrl = cfg.root + "/logout";
@@ -55,16 +54,14 @@ function onReady(E, $, JF, USER) {
             loginSubmit
         ]);
         var widget = E.div([
-            E.a({href: '/donor/?main=GregFitzgerald'}, [
-                E.img({style: {width: '75px', height: '75px', borderRadius: '5px'}, src: USER.imageUrl, alt: USER.firstName + ' ' + USER.lastName})
-            ]),
-            logoutForm
+             logoutForm
         ]);
 
         $(loginForm).submit( function(e) {
             e.preventDefault();
             var formValues = JF.map(schema, inputs, {}, JF.toVal);
             var dataString = JSON.stringify(formValues);
+    console.log(formValues);
             $.ajax({
                 type: "POST",
                 url: loginUrl,

@@ -2,18 +2,11 @@ var deps = [
     '/tag/tag.js', 
     '/tag/layout.js', 
     '/ui/core.js', 
-    '/ui/nav.js', 
-    'body.html'
+    '/ui/nav.js'
 ];
 
-function onReady(E, L, CORE, NAV, html) {
+function onReady(E, L, CORE, NAV) {
     
-    function body() {
-        var div = E.div();
-        div.innerHTML = html;
-        return div;
-    }
-
     function charity(as) {
         as = as || {};
         var user = as.user || defaultUser;
@@ -27,7 +20,7 @@ function onReady(E, L, CORE, NAV, html) {
                     L.spoon([
                         E.p({style: {width: '600'}}, user.mission),
                         E.br(),
-                        CORE.button({href: '#'}, ['Donate!'])
+                        CORE.button({href: '/me/?donateTo=' + user.id}, ['Donate!'])
                     ], 20)
                 ], 30)
             ], 20)
@@ -54,16 +47,9 @@ function onReady(E, L, CORE, NAV, html) {
         });
     }
 
-    function main() {
-        return NAV.frame([
-            body()
-        ]);
-    }
-
     define({
         title: 'IContrib.org',
-        body: body,
-        main: main,
+        main: Usoa,
         usoa: Usoa,
         gffw: GlobalFundForWomen
     });

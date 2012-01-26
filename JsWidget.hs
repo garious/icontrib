@@ -43,11 +43,11 @@ jsModFile root baseUrl filename = do
 
 htmlForJsMod :: [String] -> String -> Maybe String -> H.Html
 htmlForJsMod baseUrl filename maybeNm = appTemplate $ do
---      H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.media "all" ! A.href nineAttr
+      H.script ! A.src jsonAttr   ! A.type_ "text/javascript" $ ""
       H.script ! A.src yoinkAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
   where
---      nineAttr = H.toValue (mkPath (mkRelUrl baseUrl ["css", "960.css"]))
+      jsonAttr = H.toValue (mkPath (mkRelUrl baseUrl ["js", "json2.js"]))
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
 
       yoink = "\nYOINK.require(['" ++ filename ++ "'], function(M) {\n    "

@@ -1,11 +1,16 @@
+var initialDeps = [
+    '/donor/mostInfluential.json'
+];
+
 var deps = [
     '/tag/tag.js', 
     '/tag/layout.js', 
     '/ui/nav.js', 
     '/ui/core.js', 
-    '/donor/index.js',
-    '/donor/tom.json'
+    '/donor/index.js'
 ];
+
+function onInitialReady(BEST) {
 
 function onReady(E, L, NAV, CORE, DONOR, USER) {
 
@@ -44,5 +49,9 @@ function onReady(E, L, NAV, CORE, DONOR, USER) {
     });
 }
 
+deps.push('/donor/' + BEST + '.json');
 require(deps, onReady);
+}
+
+require(initialDeps, onInitialReady);
 

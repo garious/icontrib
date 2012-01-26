@@ -27,6 +27,7 @@ data Site = Site { userAccounts ::  AcidState A.Database
 site :: Site -> ServerPart Response
 site st = msum [ 
       dir "auth"    (authServices st)
+    , dir "donor"   (donorServices st)
     , dir "charity" (charityServices st)
     , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "https://www.google.com/jsapi"))
     , JSW.widget root []
@@ -41,6 +42,11 @@ authServices st = msum [
     , dir "check"          (get     (checkUser  "auth" (userAccounts st)))
     , dir "logout"         (get     (logOut     "auth" (userAccounts st)))
     , dir "add"            (post    (addUser    "auth" (userAccounts st)))
+    ]
+
+donorServices:: Site -> ServerPart Response
+donorServices _st = msum [ 
+      dir "mostInfluential.json" (rsp ("tom" :: String))
     ]
 
 charityServices :: Site -> ServerPart Response

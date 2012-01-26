@@ -6,7 +6,7 @@ function waitScreen(log, $){
     /* Private Variables */
     var Me = this; 
     	
-	var oProgressBar = $("<div>").attr("id", "progressBar");
+    var oProgressBar = $("<div>").attr("id", "progressBar");
     
     var oAjaxImage = $("<img>").attr("style", "float: right;")
 							   .attr("src", "/images/ajax-loader.gif")
@@ -17,13 +17,12 @@ function waitScreen(log, $){
     var oContentText = $("<div>").append("Please Wait...");
 	
 	var htmlDialog = $("<div>")
-						.attr("id", "dialog-progress")
-						.attr("title", "Loading...")
-						.append($("<p>")
-							.append(oContentText)
-							.append(oAjaxImage)
-						)
-						.append(oProgressBar);
+            .attr("id", "dialog-progress")
+            .attr("title", "Loading...")
+            .append($("<p>")
+            .append(oContentText)
+            .append(oAjaxImage)
+        ).append(oProgressBar);
 					
     var percentComplete = 0.0;
     var totalNumberComplete = 0.0;
@@ -95,15 +94,14 @@ function waitScreen(log, $){
 
             if (Me.nTotalNumber > 0) {
                 percentComplete = (100 * totalNumberComplete) / Me.nTotalNumber;
-            }
-            else {
+            } else {
                 log.error("The total number of items to process was not set for the splash screen.");
             }
  
             this.updatePercent(percentComplete);
         } else {
-			log.error("The # of items given for the progress update is greater than the total number available.");
-		}
+            log.error("The # of items given for the progress update is greater than the total number available.");
+        }
     };
 
     this.updatePercent = function(nPercentComplete) {
