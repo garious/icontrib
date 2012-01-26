@@ -3,6 +3,7 @@
 module JsWidget where
 
 import Happstack.Lite
+import Happstack.Server                      ( lookPairs )
 import Happstack.Server.Routing              ( trailingSlash )
 
 import System.Directory
@@ -14,6 +15,7 @@ import Data.List                             ( intercalate )
 import           Text.Blaze ((!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
+import qualified Text.JSON                   as JS
 import qualified Data.Text.Lazy as T
 
 -- Is this a javascript file or directory within a widgets directory?
@@ -37,12 +39,14 @@ jsModFile root baseUrl filename = do
       b <- liftIO (doesFileExist (joinPath (root : url)))
       guard b
       maybeNm <- optional (lookText "main")  -- TODO: Verify this string is a JavaScript identifier
-      ok (toResponse (htmlForJsMod baseUrl filename (fmap T.unpack maybeNm)))
+      ps <- lookPairs
+      let ps' = [(s, x) | (s, Right x) <- ps]
+      ok (toResponse (htmlForJsMod baseUrl filename (fmap T.unpack maybeNm) (JS.toJSObject ps')))
    where
       url = baseUrl ++ [filename]
 
-htmlForJsMod :: [String] -> String -> Maybe String -> H.Html
-htmlForJsMod baseUrl filename maybeNm = appTemplate $ do
+htmlForJsMod :: [String] -> String -> Maybe String -> JS.JSObject String -> H.Html
+htmlForJsMod baseUrl filename maybeNm ps = appTemplate $ do
       H.script ! A.src jsonAttr   ! A.type_ "text/javascript" $ ""
       H.script ! A.src yoinkAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
@@ -54,9 +58,11 @@ htmlForJsMod baseUrl filename maybeNm = appTemplate $ do
            ++ setTitle
            ++ reassign
            ++ "function nodeReady(nd){document.body.appendChild(nd);}\n    "
-           ++ "var node = typeof M === 'function' ? M({}, nodeReady) : M;\n    "
+           ++ "var node = typeof M === 'function' ? M(" ++ params ++ ", nodeReady) : M;\n    "
            ++ "if (node !== undefined) { nodeReady(node); }\n"
            ++ "});\n"
+
+      params = JS.encode ps
 
       setTitle = "if (M.title) { document.title = M.title; }\n    "
 
