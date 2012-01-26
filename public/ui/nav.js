@@ -151,7 +151,7 @@ function onReady(E, L, CORE, $, ME) {
         var navbar = nav(as);
         var body = E.div(xs);
 
-        var e = L.spoon([navbar, body], 20);
+        var e = E.div({style: {height: '100%'}}, [L.spoon([navbar, body], 20)]);
         e.style.backgroundColor = '#F3F3F6';
         return e;
     };
