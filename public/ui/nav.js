@@ -86,7 +86,7 @@ function onReady(E, L, CORE, $, ME) {
                     as.thumbnail
                 ], 30);
         } else {
-            var logoutButton = CORE.a({href: '#'}, 'Log out');
+            var logoutButton = CORE.a({href: '#'}, 'Sign out');
             $(logoutButton).click(function(e) {
                 e.preventDefault();
                 $.ajax({

@@ -49,18 +49,22 @@ function onReady(E, L, NAV, CORE, CHART, $UI) {
             distributionTable(user),
             CORE.h3('My funding'),
             L.hug([L.pillow(30), E.input({type: 'text', value: user.dollarsDonated}), CORE.h6("dollars per month")], 10),
-            CORE.button({href: '#'}, ['Save Changes']),
-            L.pillow(30)
+            L.pillow(20),
+            L.hug([L.pillow(220,0), E.div({width: 200}, [CORE.button({href: '#'}, ['Save Changes'])])]),
+            L.pillow(20)
         ], 10);
     }
 
     function main() {
         return NAV.frame([
-            L.hug([
-                L.pillow(250),
-                CORE.box([
-                    dashboard({user: NAV.userInfo()})
-                ])
+            L.spoon([
+                L.hug([
+                    L.pillow(250),
+                    CORE.box([
+                        dashboard({user: NAV.userInfo()})
+                    ])
+                ]),
+                L.pillow(20) 
             ])
         ]);
     }
