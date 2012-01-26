@@ -61,7 +61,7 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
 
     function body() {
 
-        var toaDiv = E.div({style: {margin: '15px', height: '300px', overflow: 'auto'}});
+        var toaDiv = E.div({style: {margin: '15px', height: '220px', overflow: 'auto'}});
         toaDiv.innerHTML = toaHtml;
         var info = { OrganizationInfo: { 
                         ein: null,
@@ -88,11 +88,13 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
         var lastName    = inputField(pc.lastName,         {label: 'Last Name', type: 'text', name: 'lastName', required: 'required'});
         var phoneNumber = inputField(pc.phone,            {label: 'Phone Number', type: 'text', name: 'phoneNumber', placeholder: '(xxx) xxx-xxxx'});
         var email       = inputField(pc.email,            {label: 'Email', type: 'email', name: 'email', placeholder: 'abc@charity.org'});
-        var register    = E.input({type: 'submit', value : 'Register' });
+        //var checkbox    = E.input({type: 'checkbox', style: {width: '200px'}}, 'I agree to the terms above');
+        var register    = CORE.button('Register!');
         var form = E.form({style: {counterReset: 'fieldsets', width: '800px'}}, [
                 fieldset([legend('Organization Information'), ein, name, url ]),
                 fieldset([legend('Point of Contact'), firstName, lastName, phoneNumber, email ]),
-                fieldset([legend(['Terms of Agreement']), toaDiv ]),
+                fieldset([legend('Interchange Fee'), E.div({style: {left: '30px', position: 'absolute'}}, [CORE.h4('3.9%')])]),
+                fieldset([legend(['Terms of Agreement']), toaDiv/*, checkbox*/ ]),
                 register
         ]);
         var swapNode = function(newNode, oldNode) {
@@ -116,7 +118,7 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
             }
         });
 
-        $(form).submit(function (e) {
+        $(form).click(function (e) {
             e.preventDefault();
             var values = JF.map(schema, inputs, {}, JF.toVal);
             var dataString = JSON.stringify(values);
