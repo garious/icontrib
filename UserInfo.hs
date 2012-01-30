@@ -59,6 +59,12 @@ lookupQ key = runErrorT $ do
    (Database db) <- ask
    checkMaybe UserDoesntExist $ Map.lookup key db
 
+listQ :: Query Database ([A.UserID])
+listQ = do
+   (Database db) <- ask
+   return $ Map.keys db
+
+
 mostInfluentialQ :: Query Database (Either ServerError UserInfo)
 mostInfluentialQ = runErrorT $ do
    (Database db) <- ask
@@ -69,7 +75,7 @@ mostInfluentialQ = runErrorT $ do
         influence aa = negate $ (centsDonated aa) + (alignedDonated aa)
    head' $ sortBy (compare `on` influence) $ values db 
 
-$(makeAcidic ''Database ['updateU, 'lookupQ, 'mostInfluentialQ])
+$(makeAcidic ''Database ['updateU, 'lookupQ, 'mostInfluentialQ, 'listQ])
 
 mostInfluential :: (MonadIO m, MonadError ServerError m) => AcidState Database -> m UserInfo
 mostInfluential db = A.rethrow $ query db MostInfluentialQ
@@ -79,4 +85,7 @@ lookupInfo db cid = A.rethrow $ query db (LookupQ cid)
 
 updateInfo :: AcidState Database -> A.UserID -> UserInfo -> IO ()
 updateInfo db cid str = update db (UpdateU cid str)
+
+list :: AcidState Database -> IO ([A.UserID])
+list db = query db (ListQ)
 

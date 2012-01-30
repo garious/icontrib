@@ -2,7 +2,6 @@ module UserInfoTest where
 
 import Data.Acid.Memory                      ( openMemoryState )
 import qualified UserInfo                    as U
-import qualified Text.JSON                   as JS
 
 import TestUtil
 import ServerError
@@ -16,9 +15,9 @@ updateInfoTest :: IO ()
 updateInfoTest = do
     db <- openMemoryState U.empty
     let ui = U.UserInfo "anatoly" "yako" "foo" 100 100 [] []
-    putStrLn (JS.encode ui)
     U.updateInfo db (toB "anatoly") ui
     assertEqErrorT "updated"  (U.lookupInfo db (toB "anatoly"))   (Right ui)
+    assertEqM "list"  (U.list db )   [(toB "anatoly")]
 
 mostInfluentialTest :: IO ()
 mostInfluentialTest = do

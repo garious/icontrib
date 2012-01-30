@@ -53,6 +53,7 @@ donorServices st = msum [
       dir "update"               (post  (check >>= (withBody (U.updateInfo (userInfo st)))))
     , dir "get"                  (get   (check >>= (U.lookupInfo (userInfo st))))
     , dir "mostInfluential.json" (get   (U.mostInfluential (userInfo st)))
+    , dir "ls"                   (get   (liftIO $ U.list (userInfo st)))
     ]
     where
         check = (checkUser "auth" (userAccounts st))
