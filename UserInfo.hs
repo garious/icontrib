@@ -21,9 +21,9 @@ import Data.SafeCopy
 import ServerError
 
 data Fund = Fund { name :: String 
+                 , url :: String
                  , shares :: Int
                  , labels :: [String]
-                 , url :: String
                  }
           deriving (Show, Typeable, Eq)
 

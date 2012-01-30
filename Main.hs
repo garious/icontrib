@@ -8,6 +8,7 @@ import qualified Account                     as A
 import qualified Data.ByteString.Lazy        as B
 import qualified CharityInfo                 as C
 import qualified UserInfo                    as U
+import qualified Text.JSON                   as JS
 
 main :: IO ()
 main = do
@@ -22,11 +23,16 @@ webThread = do
     ci <- openMemoryState C.empty
     ui <- openMemoryState U.empty
 
+    gregf <- readFile "public/donor/greg.json"
     -- Hardcoded users
     _ <- runErrorT $ do
         A.addUser ua (toB "greg") (toB "greg")
         A.addUser ua (toB "anatoly") (toB "anatoly")
-
+    let 
+        checkResult (JS.Ok a)    = return a
+        checkResult (JS.Error ss) = error ss
+    gi <- checkResult(JS.decode gregf)
+    U.updateInfo ui (toB "greg") gi
     serve Nothing (site (Site ua ci ui))
 
 -- String to ByteString
