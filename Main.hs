@@ -7,7 +7,7 @@ import Char                                  ( ord )
 import qualified Account                     as A
 import qualified Data.ByteString.Lazy        as B
 import qualified CharityInfo                 as C
-
+import qualified UserInfo                    as U
 
 main :: IO ()
 main = do
@@ -20,13 +20,14 @@ webThread :: IO ()
 webThread = do
     ua <- openMemoryState A.empty
     ci <- openMemoryState C.empty
+    ui <- openMemoryState U.empty
 
     -- Hardcoded users
     _ <- runErrorT $ do
         A.addUser ua (toB "greg") (toB "greg")
         A.addUser ua (toB "anatoly") (toB "anatoly")
 
-    serve Nothing (site (Site ua ci))
+    serve Nothing (site (Site ua ci ui))
 
 -- String to ByteString
 toB :: String -> B.ByteString

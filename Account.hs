@@ -141,8 +141,8 @@ instance Random Word8 where
     random rng = randomR (minBound, maxBound) rng
  
 newSalt :: IO BS.ByteString
-newSalt = liftM BS.pack $ sequence $ take 32 $ repeat randomIO
+newSalt = liftM BS.pack $ sequence $ take 64 $ repeat randomIO
 
 newCookie :: IO BL.ByteString
-newCookie = liftM BL.pack $ sequence $ take 32 $ repeat randomIO
+newCookie = liftM BL.pack $ sequence $ take 64 $ repeat randomIO
 

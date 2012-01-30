@@ -20,7 +20,6 @@ data ServerError = UserAlreadyExists
                  | RecordMergeError
                  | NoBody
                  | InternalError
-                 | FundDoesntExist
                  deriving (Data, Typeable, Eq, Show)
 
 $(deriveSafeCopy 0 'base ''ServerError)

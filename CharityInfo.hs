@@ -19,8 +19,6 @@ import Data.Acid
 import Data.SafeCopy
 import ServerError
 
---authenticated user for charity account
-type CharityID    = A.UserID
 
 data PointOfContact = PointOfContact { firstName :: String 
                                      , lastName :: String
@@ -52,28 +50,26 @@ $(deriveSafeCopy 0 'base ''CharityInfo)
 $(derive makeJSON ''CharityInfo)
 
    
-data Database = Database !(Map.Map CharityID CharityInfo)
+data Database = Database !(Map.Map A.UserID CharityInfo)
 $(deriveSafeCopy 0 'base ''Database)
 
 empty :: Database
 empty = Database Map.empty
 
---todo: do compare and exchange so you dont merge inside the db lock
-updateU :: CharityID -> CharityInfo -> Update Database ()
+updateU :: A.UserID -> CharityInfo -> Update Database ()
 updateU key val =  do
    (Database db) <- get
    put $ (Database $ Map.insert key val db)
 
-lookupQ :: CharityID -> Query Database (Either ServerError CharityInfo)
+lookupQ :: A.UserID -> Query Database (Either ServerError CharityInfo)
 lookupQ key = runErrorT $ do
    (Database db) <- ask
    checkMaybe UserDoesntExist $ Map.lookup key db
 
-
 $(makeAcidic ''Database ['updateU, 'lookupQ])
 
-lookupInfo :: (MonadIO m, MonadError ServerError m) => AcidState Database -> CharityID -> m CharityInfo
+lookupInfo :: (MonadIO m, MonadError ServerError m) => AcidState Database -> A.UserID -> m CharityInfo
 lookupInfo db cid = A.rethrow $ query db (LookupQ cid)
 
-updateInfo :: AcidState Database -> CharityID -> CharityInfo -> IO ()
+updateInfo :: AcidState Database -> A.UserID -> CharityInfo -> IO ()
 updateInfo db cid str = update db (UpdateU cid str)
