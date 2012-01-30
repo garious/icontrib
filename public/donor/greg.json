@@ -2,7 +2,7 @@
    "firstName": "Greg",
    "lastName": "Fitzgerald",
    "imageUrl": "/images/gregf.jpg",
-   "centsDonated": 100,
+   "centsDonated": 10000,
    "alignedDonated": 1000,
    "alignedUsers": ["tom", "elisa"],
    "distribution": [

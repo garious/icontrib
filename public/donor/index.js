@@ -121,7 +121,7 @@ function onReady(E, L, NAV, CHART, CORE, C, $) {
 
     function TomBrown(params, nodeReady) {
         require(['tom.json'], function(user) {
-            nodeReady( NAV.frame([profile({user: user})]) );
+            nodeReady( NAV.frame([profile({user: user.UserInfo})]) );
         });
     }
 
