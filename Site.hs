@@ -7,6 +7,7 @@ import Control.Monad                         ( liftM )
 import Char                                  ( chr )
 import Control.Monad.Error                   ( runErrorT, ErrorT, throwError )
 import Happstack.Server.Monads               ( ServerPartT )
+import System.FilePath                       ( takeBaseName )
 --import Control.Applicative                   ( (<|>) )
 import qualified Data.ByteString.Lazy        as B
 import qualified Codec.Binary.Url            as Url
@@ -54,11 +55,11 @@ donorServices st = msum [
     , dir "get"                  (get   (check >>= (U.lookupInfo (userInfo st))))
     , dir "mostInfluential.json" (get   (U.mostInfluential (userInfo st)))
     , dir "ls"                   (get   (liftIO $ U.list (userInfo st)))
+    , (get (lift basename >>=  (U.lookupInfo (userInfo st))))
     ]
     where
         check = (checkUser "auth" (userAccounts st))
-
-
+        basename = path $ \ (pp::String) -> return  (A.toB (takeBaseName pp)) 
 charityServices :: Site -> ServerPart Response
 charityServices st = msum [ 
       dir "update" (post (check >>= (withBody (C.updateInfo (charityInfo st)))))

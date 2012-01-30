@@ -4,6 +4,7 @@ module Account where
 
 import Control.Monad.IO.Class                ( MonadIO )
 import Data.Word                             ( Word8 )
+import Char                                  ( ord )
 import Control.Monad                         ( liftM, when )
 import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
@@ -100,6 +101,8 @@ hashPassword salt pwd = (iterate step pwdS) !! iterationCount
 toS :: BL.ByteString -> BS.ByteString
 toS = BS.concat . BL.toChunks
 
+toB :: String -> BL.ByteString
+toB = BL.pack . map (fromIntegral . ord)
 
 $(makeAcidic ''Database ['addUserU, 'checkPasswordQ, 'addUserCookieU, 'cookieToUserQ, 'listUsersQ, 'clearUserCookieU ])
 
