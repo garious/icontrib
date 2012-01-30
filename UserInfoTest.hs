@@ -31,4 +31,5 @@ mostInfluentialTest = do
 main :: IO ()
 main = do
     lookupTest
+    updateInfoTest 
     mostInfluentialTest 
