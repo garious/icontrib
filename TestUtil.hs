@@ -9,7 +9,7 @@ toB :: String -> B.ByteString
 toB = B.pack . map (fromIntegral . ord)
 
 -- Assert an ErrorT action returns the expected value
-assertEqErrorT :: (Show e, Show a, Eq e, Eq a) => String -> ErrorT e IO a -> Either e a -> IO ()
+assertEqErrorT :: (Show e, Show a, Eq e, Eq a, Monad m) => String -> ErrorT e m a -> Either e a -> m ()
 assertEqErrorT msg transaction expected = assertEqM msg (runErrorT transaction) expected
 
 
@@ -29,13 +29,13 @@ isRight (Left _)  = False
 
 
 -- Assert a monadic returns the expected value
-assertEqM :: (Eq a, Show a) => String -> IO a -> a -> IO ()
+assertEqM :: (Eq a, Show a, Monad m) => String -> m a -> a -> m ()
 assertEqM msg actualM expected = do
     actual <- actualM
     assert (msg ++ ": " ++ (show actual) ++ " /= " ++ (show expected)) (actual == expected)
 
 -- Assert the argument is true or bail out with the given error message
-assert :: String -> Bool -> IO ()
+assert :: Monad m => String -> Bool -> m ()
 assert msg False = error msg
 assert _   True  = return ()
 
