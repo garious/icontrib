@@ -32,7 +32,7 @@ isRight (Left _)  = False
 assertEqM :: (Eq a, Show a) => String -> IO a -> a -> IO ()
 assertEqM msg actualM expected = do
     actual <- actualM
-    assert (msg ++ " " ++ (show actual)) (actual == expected)
+    assert (msg ++ ": " ++ (show actual) ++ " /= " ++ (show expected)) (actual == expected)
 
 -- Assert the argument is true or bail out with the given error message
 assert :: String -> Bool -> IO ()

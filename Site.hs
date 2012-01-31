@@ -8,7 +8,7 @@ import Char                                  ( chr )
 import Control.Monad.Error                   ( runErrorT, ErrorT, throwError )
 import Happstack.Server.Monads               ( ServerPartT )
 import System.FilePath                       ( takeBaseName )
---import Control.Applicative                   ( (<|>) )
+import Control.Applicative                   ( (<|>) )
 import qualified Data.ByteString.Lazy        as B
 import qualified Codec.Binary.Url            as Url
 import qualified Text.JSON                   as JS
@@ -117,11 +117,17 @@ logOut db uid = do
 checkUser :: String -> AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) A.UserID
 checkUser name db = do 
    liftIO $ putStrLn "check" 
-   cookie <- lift $ liftM Url.decode $ lookCookieValue name 
+   cookie <- lift $ getCookieValue name
    liftIO $ print cookie
-   token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
+   token <- SE.checkMaybe SE.CookieDecode $ cookie 
    uid <- A.cookieToUser db token
    return uid
+
+getCookieValue :: String -> ServerPartT IO (Maybe B.ByteString)
+getCookieValue name = do { val <- lookCookieValue name
+                         ; return $ liftM B.pack $ Url.decode val
+                         }
+                     <|> return Nothing
 
 loginUser :: String -> AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) A.UserID
 loginUser name db = do 
