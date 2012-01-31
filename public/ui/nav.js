@@ -57,10 +57,8 @@ function onReady(E, L, CORE, $, ME) {
             $(loginButton).click(function(e) {
                 e.preventDefault();
                 var formValues = {
-                    UserLogin: {
-                        email: username.value,
-                        password: password.value 
-                    }
+                    email: username.value,
+                    password: password.value 
                 };
                 $.ajax({
                     type: 'POST',

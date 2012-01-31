@@ -1,6 +1,6 @@
 module SiteTest where
 
-import Site                                  ( site, Site(Site) )
+import Site                                  ( site, Site(Site), jsonDecode )
 import Data.Acid.Memory                      ( openMemoryState )
 import Control.Concurrent                    ( forkIO, killThread )
 import Control.Monad.Trans                   ( liftIO )
@@ -8,7 +8,7 @@ import Data.Maybe                            ( fromMaybe )
 import qualified Account                     as A
 import qualified CharityInfo                 as C
 import qualified UserInfo                    as U
-import qualified Text.JSON                   as JS
+import Text.JSON.Generic                     as JS
 import qualified Network.HTTP                as HTTP
 import qualified Network.Browser             as HTTP
 import qualified Network.URI                 as URI
@@ -35,10 +35,14 @@ loginUser = post "/auth/login"
 checkUser :: HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError A.UserID)
 checkUser = get "/auth/check"
 
+--logged out the current user
+logoutUser :: HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError ())
+logoutUser = get "/auth/logout"
+
 main :: IO ()
 main = do
     let run tt = do tid <- forkIO emptyServer
-                    _ <-  tt
+                    _ <- tt
                     killThread tid
     run addUserTest
     run loginUserTest
@@ -79,23 +83,23 @@ emptyServer = do
     let cfg = Happs.defaultServerConfig { Happs.port = port }
     Happs.serve (Just cfg) (site (Site ua ci ui))
 
-post :: (JS.JSON b, JS.JSON a) => String -> a -> HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError b) 
+post :: (Data b, Data a) => String -> a -> HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError b) 
 post url msg = do
     let 
             uri = fromMaybe (error $ "parse url: " ++ url) $ URI.parseURI (host ++ url)
-            body = (JS.encode msg)
+            body = (JS.encodeJSON msg)
             req = HTTP.formToRequest $ HTTP.Form HTTP.POST uri [(body,"")]
     (_,hrsp) <- HTTP.request $ req
-    return $! checkJS $ JS.decode $ HTTP.rspBody hrsp
+    return $! checkJS $ jsonDecode $ HTTP.rspBody hrsp
     where
-       checkJS (JS.Ok a)     = a
-       checkJS (JS.Error ss) = error ss
+       checkJS (Just a) = a
+       checkJS Nothing  = error "sitetest: post json decode"
 
-get :: (JS.JSON b) => String ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError b) 
+get :: (Data b) => String ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError b) 
 get url = do
     let req = HTTP.getRequest (host ++ url)
     (_,hrsp) <- HTTP.request $ req
-    return $! checkJS $ JS.decode $ HTTP.rspBody hrsp
+    return $! checkJS $ jsonDecode $ HTTP.rspBody hrsp
     where
-       checkJS (JS.Ok a)     = a
-       checkJS (JS.Error ss) = error ss
+       checkJS (Just a) = a
+       checkJS Nothing  = error "sitetest: get json decode"

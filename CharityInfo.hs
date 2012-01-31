@@ -5,8 +5,7 @@ module CharityInfo where
 import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
 import Control.Monad.Error                   ( runErrorT, MonadError )
-import Data.Typeable                         ()
-import Data.Typeable                         (Typeable)
+import Data.Data                             ( Data, Typeable )
 import Control.Monad.IO.Class                ( MonadIO )
 import qualified Text.JSON                   as JS
 import qualified Data.Map                    as Map
@@ -25,7 +24,7 @@ data PointOfContact = PointOfContact { firstName :: String
                                      , phone :: String
                                      , email :: String
                                      }
-                    deriving (Show, Typeable, Eq)
+                    deriving (Show, Typeable, Data, Eq)
 
 $(deriveSafeCopy 0 'base ''PointOfContact)
 $(derive makeJSON ''PointOfContact)
@@ -34,7 +33,7 @@ data OrganizationInfo = OrganizationInfo { ein :: String
                                          , organizationName :: String
                                          , companyWebsite :: String
                                          }
-                             deriving (Show, Typeable, Eq)
+                             deriving (Show, Typeable, Data, Eq)
 
 $(deriveSafeCopy 0 'base ''OrganizationInfo)
 $(derive makeJSON ''OrganizationInfo)
@@ -42,7 +41,7 @@ $(derive makeJSON ''OrganizationInfo)
 data CharityInfo = CharityInfo { info :: OrganizationInfo 
                                , poc :: PointOfContact
                                }
-                 deriving (Show, Typeable, Eq)
+                 deriving (Show, Typeable, Data, Eq)
 
 $(deriveSafeCopy 0 'base ''CharityInfo)
 $(derive makeJSON ''CharityInfo)

@@ -48,7 +48,7 @@ function onReady(E, L, NAV, CORE, CHART, $UI) {
 	    userChart,
             distributionTable(user),
             CORE.h3('My funding'),
-            L.hug([L.pillow(30), E.input({type: 'text', value: user.dollarsDonated}), CORE.h6("dollars per month")], 10),
+            L.hug([L.pillow(30), E.input({type: 'text', value: user.centsDonated / 100.0}), CORE.h6("dollars per month")], 10),
             L.pillow(20),
             L.hug([L.pillow(220,0), E.div({width: 200}, [CORE.button({href: '#'}, ['Save Changes'])])]),
             L.pillow(20)

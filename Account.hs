@@ -9,8 +9,9 @@ import Control.Monad                         ( liftM, when )
 import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
 import Control.Monad.Error                   ( runErrorT, throwError, MonadError, liftIO, ErrorT)
-import Data.Maybe                            (isJust)
-import Data.Typeable                         ()
+import Data.Maybe                            ( isJust )
+import Data.Typeable                         ( Typeable )
+import Data.Data                             ( Data )
 import qualified Data.Map                    as Map
 import qualified Crypto.Hash.SHA512          as SHA512
 import qualified Data.ByteString.Lazy        as BL
@@ -19,9 +20,6 @@ import Data.Acid
 import Data.SafeCopy
 import Random(randomIO, Random, random, randomR)
 import ServerError
-import Text.JSON
-import Data.Derive.JSON
-import Data.DeriveTH
 
 
 type UserID    = BL.ByteString
@@ -34,7 +32,7 @@ type Salt      = BS.ByteString
 data UserLogin = UserLogin { email :: UserID
                            , password :: Password
                            }
-$(derive makeJSON ''UserLogin)
+               deriving (Typeable, Data)
 
 
 data PasswordHash = PasswordHash Hash Salt

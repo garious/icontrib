@@ -5,17 +5,13 @@ module UserInfo where
 import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
 import Control.Monad.Error                   ( runErrorT, MonadError, throwError )
-import Data.Typeable                         ( Typeable )
+import Data.Data                             ( Typeable, Data )
 import Data.Function                         ( on )
 import Data.List                             ( sortBy )
 import Control.Monad.IO.Class                ( MonadIO )
-import qualified Text.JSON                   as JS
 import qualified Data.Map                    as Map
 import qualified Account                     as A
 
-import Text.JSON
-import Data.Derive.JSON
-import Data.DeriveTH
 import Data.Acid
 import Data.SafeCopy
 import ServerError
@@ -25,10 +21,10 @@ data Fund = Fund { name :: String
                  , shares :: Int
                  , labels :: [String]
                  }
-          deriving (Show, Typeable, Eq)
+          deriving (Show, Typeable, Data, Eq)
 
 $(deriveSafeCopy 0 'base ''Fund)
-$(derive makeJSON ''Fund)
+
 data UserInfo = UserInfo { firstName        :: String
                          , lastName         :: String
                          , imageUrl         :: String
@@ -37,10 +33,10 @@ data UserInfo = UserInfo { firstName        :: String
                          , distribution     :: [Fund]
                          , funds :: [String]
                          }
-              deriving (Show, Typeable, Eq)
+              deriving (Show, Typeable, Data, Eq)
 
 $(deriveSafeCopy 0 'base ''UserInfo)
-$(derive makeJSON ''UserInfo)
+
 
 data Database = Database !(Map.Map A.UserID UserInfo)
               deriving (Show, Typeable)

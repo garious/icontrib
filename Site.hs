@@ -3,15 +3,16 @@ module Site where
 
 import Control.Monad.Trans                   ( liftIO, lift )
 import Data.Acid                             ( AcidState )
+import Data.Data                             ( Data )
 import Control.Monad                         ( liftM )
 import Char                                  ( chr )
-import Control.Monad.Error                   ( runErrorT, ErrorT, throwError )
+import Control.Monad.Error                   ( runErrorT, ErrorT )
 import Happstack.Server.Monads               ( ServerPartT )
 import System.FilePath                       ( takeBaseName )
 import Control.Applicative                   ( (<|>) )
 import qualified Data.ByteString.Lazy        as B
 import qualified Codec.Binary.Url            as Url
-import qualified Text.JSON                   as JS
+import qualified Text.JSON.Generic           as JS
 import qualified ServerError                 as SE
 import qualified Account                     as A
 import qualified CharityInfo                 as C
@@ -20,7 +21,6 @@ import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP
 import Happstack.Server(askRq, rqUri, lookPairs)
 import Happstack.Lite
-
 
 data Site = Site { userAccounts ::  AcidState A.Database
                  , charityInfo :: AcidState C.Database
@@ -60,6 +60,7 @@ donorServices st = msum [
     where
         check = (checkUser "auth" (userAccounts st))
         basename = path $ \ (pp::String) -> return  (A.toB (takeBaseName pp)) 
+
 charityServices :: Site -> ServerPart Response
 charityServices st = msum [ 
       dir "update" (post (check >>= (withBody (C.updateInfo (charityInfo st)))))
@@ -68,7 +69,7 @@ charityServices st = msum [
     where
         check = (checkUser "auth" (userAccounts st))
 
-withBody :: JS.JSON t => (t1 -> t -> IO b) -> t1 -> ErrorT SE.ServerError (ServerPartT IO) b 
+withBody :: Data t => (t1 -> t -> IO b) -> t1 -> ErrorT SE.ServerError (ServerPartT IO) b
 withBody ff uid = do
     bd <- getBody
     liftIO $ ff uid bd
@@ -84,7 +85,7 @@ redirect req = do
       check (Left err)  = error (show err) 
       check (Right rr)  = rr
 
-get :: (Show a, JS.JSON a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPartT IO Response
+get :: (Show a, Data a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPartT IO Response
 get page = do 
    method GET
    rq <- askRq
@@ -92,7 +93,7 @@ get page = do
    rv <- runErrorT page
    rsp $ rv 
 
-post :: (Show a, JS.JSON a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPartT IO Response
+post :: (Show a, Data a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPartT IO Response
 post page = do 
    method POST
    rq <- askRq
@@ -146,26 +147,31 @@ addUser name db = do
    A.addUser db (uid) (pwd)
    loginUser name db
    
-getBody :: JS.JSON a => ErrorT SE.ServerError (ServerPartT IO) a 
+getBody :: Data a => ErrorT SE.ServerError (ServerPartT IO) a 
 getBody = do   
     liftIO $ putStrLn "getBody"
     bd <- lift $ lookPairs
     let 
-            checkResult (JS.Ok a)    = return a
-            checkResult (JS.Error ss) = throwError (SE.JSONDecodeError ss)
-            decode a = checkResult $ JS.decode a 
+            decode a = SE.checkMaybe (SE.JSONDecodeError a) $ jsonDecode a 
             --GIANT FREAKING HACK :)
             --wtf cant i get the request body
             from (name, (Right ss)) = name ++ ss
             from (_, (Left _)) = []
+            bd' :: String
             bd' = concatMap from bd
     liftIO $ print ("body"::String, bd')
     decode $ bd'
 
-rsp :: (Show a, JS.JSON a) => a -> ServerPart Response
+jsonDecode :: Data a => String -> Maybe a
+jsonDecode a = (Just $ JS.decodeJSON a) <|> Nothing
+
+jsonEncode :: Data a => a -> String 
+jsonEncode = JS.encodeJSON
+
+rsp :: (Show a, Data a) => a -> ServerPart Response
 rsp msg = do
     liftIO (print msg)
-    ok $ toResponse $ JS.encode msg
+    ok $ toResponse $ JS.encodeJSON msg
 
 toS :: B.ByteString -> String
 toS ss = map (chr . fromIntegral) $ B.unpack ss
