@@ -5,7 +5,7 @@ var deps = [
 function onReady(LOGIN) {
     define({
         title: "boxes are foxes.",
-        main:   LOGIN.loginForm("/login_charity/")
+        main:   LOGIN.loginForm({root:"/auth"})
     });
 }
 

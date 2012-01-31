@@ -13,10 +13,8 @@ function onReady(E, $, JF) {
         var addUrl    = cfg.root + "/add";
         //stupid schema, the 'null' services as a sentinal when i traverse it
         var schema = {
-            UserLogin: {
-                email: null,
-                password: null
-            }
+            email: null,
+            password: null
         };
         var swapNode = function(newNode, oldNode) {
             oldNode.parentNode.replaceChild(newNode, oldNode);
@@ -47,10 +45,10 @@ function onReady(E, $, JF) {
         //now i have an object with a bunch of empty inputs, whose layout matches my schema
         //i can traverse the schema in parallel with the object and reference the input fields
         inputs = JF.map(schema, inputs, inputs, stylize);
-        inputs.UserLogin.password.type = 'password';
+        inputs.password.type = 'password';
         var loginForm = E.form([
-            inputs.UserLogin.email, 
-            inputs.UserLogin.password, 
+            inputs.email, 
+            inputs.password, 
             loginSubmit
         ]);
         var widget = E.div([
