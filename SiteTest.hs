@@ -14,7 +14,6 @@ import qualified Network.HTTP                as HTTP
 import qualified Network.Browser             as HTTP
 import qualified Network.URI                 as URI
 import qualified Happstack.Lite              as Happs
-import qualified Data.ByteString.Lazy        as BL
 
 import TestUtil
 import ServerError
@@ -26,7 +25,7 @@ host :: String
 host = "http://localhost:" ++ (show port)
 
 --interface
-addUser :: A.UserLogin -> IO (Either ServerError BL.ByteString)
+addUser :: A.UserLogin -> IO (Either ServerError A.UserID)
 addUser = post "/auth/add"
 
 main :: IO ()
