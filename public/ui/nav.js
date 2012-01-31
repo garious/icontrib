@@ -99,8 +99,8 @@ function onReady(E, L, CORE, $, ME) {
                 ]),
                 L.spoon([
                     L.pillow(0, 10),
-                    loginWidget(as),
-                ]),
+                    loginWidget(as)
+                ])
             ])
         ]);
     }
@@ -109,7 +109,7 @@ function onReady(E, L, CORE, $, ME) {
         as = as || {};
         var e = E.a({href: as.href}, [ E.img({src: as.src, alt: as.title, title: as.title}) ]);
         return e;
-    };
+    }
 
     function dock() {
         //var as = {align: 'bottom', labels: 'tl', duration: 150, step: 25, distance: 90, fadein: 300};
@@ -120,7 +120,7 @@ function onReady(E, L, CORE, $, ME) {
             dockItem({href: '/contact/', src: '/images/rss.png', title: "Keep Informed"})
         ];
         return E.div({'class': 'footer'}, [E.div({'class': 'navBar'}, xs)]);
-    };
+    }
 
     function frame(as, xs) {
         if (as && as.constructor === Array) {
@@ -144,7 +144,7 @@ function onReady(E, L, CORE, $, ME) {
         var e = E.div({style: {height: getWindowInnerHeight()}}, [L.spoon([navbar, L.pillow(20), body])]);
         e.style.backgroundColor = '#F3F3F6';
         return e;
-    };
+    }
 
     function footer(as, xs) {
         if (as && as.constructor === Array) {
