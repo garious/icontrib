@@ -7,6 +7,7 @@ import Control.Monad                         ( liftM )
 import Char                                  ( chr )
 import Control.Monad.Error                   ( runErrorT, ErrorT, throwError )
 import Happstack.Server.Monads               ( ServerPartT )
+import System.FilePath                       ( takeBaseName )
 import Control.Applicative                   ( (<|>) )
 import qualified Data.ByteString.Lazy        as B
 import qualified Codec.Binary.Url            as Url
@@ -14,6 +15,7 @@ import qualified Text.JSON                   as JS
 import qualified ServerError                 as SE
 import qualified Account                     as A
 import qualified CharityInfo                 as C
+import qualified UserInfo                    as U
 import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP
 import Happstack.Server(askRq, rqUri, lookPairs)
@@ -22,6 +24,7 @@ import Happstack.Lite
 
 data Site = Site { userAccounts ::  AcidState A.Database
                  , charityInfo :: AcidState C.Database
+                 , userInfo :: AcidState U.Database
                  }
 
 site :: Site -> ServerPart Response
@@ -38,29 +41,37 @@ site st = msum [
 
 authServices:: Site -> ServerPart Response
 authServices st = msum [ 
-      dir "login"          (post    (loginUser  "auth" (userAccounts st)))
-    , dir "check"          (get     (checkUser  "auth" (userAccounts st)))
-    , dir "logout"         (get     (logOut     "auth" (userAccounts st)))
-    , dir "add"            (post    (addUser    "auth" (userAccounts st)))
-    ]
-
-donorServices:: Site -> ServerPart Response
-donorServices _st = msum [ 
-      dir "mostInfluential.json" (rsp ("tom" :: String))
-    ]
-
-charityServices :: Site -> ServerPart Response
-charityServices st = msum [ 
-      dir "getInfo"    (get  (check' >>= (C.lookupInfo (charityInfo st))))
-    , dir "updateInfo" (post (check' >>= (updateInfo (charityInfo st))))
+      dir "login"  (post    (loginUser  "auth" (userAccounts st)))
+    , dir "add"    (post    (addUser    "auth" (userAccounts st)))
+    , dir "logout" (get     (check >>= logOut (userAccounts st)))
+    , dir "check"  (get     check)
     ]
     where
-        check' = (checkUser "auth" (userAccounts st))
+        check = (checkUser "auth" (userAccounts st))
 
-updateInfo :: AcidState C.Database -> C.CharityID -> ErrorT SE.ServerError (ServerPartT IO) ()
-updateInfo db uid = do
-    vv <- getBody
-    liftIO $ C.updateInfo db uid vv
+donorServices:: Site -> ServerPart Response
+donorServices st = msum [ 
+      dir "update"               (post  (check >>= (withBody (U.updateInfo (userInfo st)))))
+    , dir "get"                  (get   (check >>= (U.lookupInfo (userInfo st))))
+    , dir "mostInfluential.json" (get   (U.mostInfluential (userInfo st)))
+    , dir "ls"                   (get   (liftIO $ U.list (userInfo st)))
+    , (get (lift basename >>=  (U.lookupInfo (userInfo st))))
+    ]
+    where
+        check = (checkUser "auth" (userAccounts st))
+        basename = path $ \ (pp::String) -> return  (A.toB (takeBaseName pp)) 
+charityServices :: Site -> ServerPart Response
+charityServices st = msum [ 
+      dir "update" (post (check >>= (withBody (C.updateInfo (charityInfo st)))))
+    , dir "get"    (get  (check >>= (C.lookupInfo (charityInfo st))))
+    ]
+    where
+        check = (checkUser "auth" (userAccounts st))
+
+withBody :: JS.JSON t => (t1 -> t -> IO b) -> t1 -> ErrorT SE.ServerError (ServerPartT IO) b 
+withBody ff uid = do
+    bd <- getBody
+    liftIO $ ff uid bd
 
 redirect ::  HTTP.Request_String -> ServerPart Response
 redirect req = do
@@ -78,17 +89,15 @@ get page = do
    method GET
    rq <- askRq
    liftIO $ print ("get"::String, (rqUri rq))
-   let err = return (Left (SE.InternalError))
-   rv <- ((runErrorT page) <|> err)
-   rsp $ rv
+   rv <- runErrorT page
+   rsp $ rv 
 
 post :: (Show a, JS.JSON a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPartT IO Response
 post page = do 
    method POST
    rq <- askRq
-   liftIO $ print rq
-   let err = return (Left (SE.InternalError))
-   rv <- ((runErrorT page) <|> err)
+   liftIO $ print ("post"::String, (rqUri rq))
+   rv <- (runErrorT page)
    rsp $ rv
 
 homePage :: ServerPart Response
@@ -99,24 +108,26 @@ fileServer dd = do
     addHeaderM "Pragma" "no-cache"
     serveDirectory DisableBrowsing [] dd
 
-logOut :: String -> AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) ()
-logOut name db = do 
-    liftIO $ putStrLn "logout" 
-    cookie <- lift $ liftM Url.decode $ lookCookieValue name
-    liftIO $ print cookie
-    token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
-    uid <- A.cookieToUser db token
+logOut :: AcidState A.Database ->  A.UserID -> ErrorT SE.ServerError (ServerPartT IO) ()
+logOut db uid = do 
+    liftIO $ putStrLn $ "logout: " ++ (toS uid)
     liftIO $ A.clearUserCookie db uid
     liftIO $ putStrLn "cleared cookies" 
 
 checkUser :: String -> AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) A.UserID
 checkUser name db = do 
    liftIO $ putStrLn "check" 
-   cookie <- lift $ liftM Url.decode $ lookCookieValue name 
+   cookie <- lift $ getCookieValue name
    liftIO $ print cookie
-   token <- SE.checkMaybe SE.CookieDecode $ liftM B.pack $ cookie 
+   token <- SE.checkMaybe SE.CookieDecode $ cookie 
    uid <- A.cookieToUser db token
    return uid
+
+getCookieValue :: String -> ServerPartT IO (Maybe B.ByteString)
+getCookieValue name = do { val <- lookCookieValue name
+                         ; return $ liftM B.pack $ Url.decode val
+                         }
+                     <|> return Nothing
 
 loginUser :: String -> AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) A.UserID
 loginUser name db = do 

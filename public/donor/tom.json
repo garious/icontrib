@@ -1,15 +1,16 @@
-{
-   "firstName": "Tom",
-   "lastName": "Brown",
-   "imageUrl": "/images/eric.jpg",
-   "dollarsDonated": 55,
-   "alignedDonated": 65,
-   "distribution": [
-       {"name": "Global Fund for Women", "url": "/charity/?main=gffw", "shares": 50, "labels": ["Tom's General Fund"]},
-       {"name": "Underwater Society of America", "url": "/charity/?main=usoa", "shares": 5, "labels": ["Tom's General Fund"]}
-   ],
-   "funds": [
-       {"name": "Tom's General Fund", "id": "TomBrown-GeneralFund"}
-   ]
+{ "UserInfo":
+    {
+       "firstName": "Tom",
+       "lastName": "Brown",
+       "imageUrl": "/images/eric.jpg",
+       "centsDonated": 5500,
+       "alignedDonated": 6500,
+       "distribution": [
+           { "Fund": {"name": "Global Fund for Women", "url": "/charity/?main=gffw", "shares": 50, "labels": ["Tom's General Fund"]}},
+           { "Fund": {"name": "Underwater Society of America", "url": "/charity/?main=usoa", "shares": 5, "labels": ["Tom's General Fund"]}}
+       ],
+       "funds": [
+           "Tom's General Fund"
+       ]
+    }
 }
-

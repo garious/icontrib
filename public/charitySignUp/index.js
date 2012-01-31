@@ -104,7 +104,7 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
         //fetch the current charity info
         $.ajax({
             type: "GET",
-            url: '/charity/getInfo',
+            url: '/charity/get',
             dataType: "json",
             success: function(data) {
                 if(data.Right) {
@@ -124,7 +124,7 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
             var dataString = JSON.stringify(values);
             $.ajax({
                 type: "POST",
-                url: '/charity/updateInfo',
+                url: '/charity/update',
                 data: dataString,
                 dataType: "json",
                 success: function(data) {
