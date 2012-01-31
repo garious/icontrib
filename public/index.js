@@ -21,6 +21,7 @@ function onReady(E, L, NAV, CORE, DONOR, USER) {
                 CORE.box({style: {width: '600px'}}, [
                     DONOR.summary({user: USER, title: 'Most Influential Donor'})
                 ]),
+                L.pillow(20),
                 CORE.box({style: {width: '350px', height: '120px'}}, [
                     L.spoon([
                         CORE.h2('Most Popular Charities'),
@@ -31,7 +32,7 @@ function onReady(E, L, NAV, CORE, DONOR, USER) {
                         L.pillow(30)
                     ])
                 ])
-            ], 20),
+            ]),
             NAV.footer([
                 CORE.a({href: 'charitySignUp/'}, 'Charity Registration')
             ])

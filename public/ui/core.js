@@ -68,7 +68,7 @@ function onReady(E, L, C, $) {
         };
     }
     function label(s) {
-        return E.label({style: {font: font}}, s);
+        return E.label({style: {width: 10 * s.length, height: 20, font: font}}, s);
     }
     function h1(s) {
         return E.h1({style: hStyle(10)}, s);
