@@ -38,22 +38,25 @@ checkUser = get "/auth/check"
 main :: IO ()
 main = do
     let run tt = do tid <- forkIO emptyServer
-                    _ <- liftIO $ HTTP.browse $ tt
+                    _ <-  tt
                     killThread tid
     run addUserTest
     run loginUserTest
     run checkUserTest
 
-checkUserTest :: HTTP.BrowserAction (HTTP.HandleStream String) ()
-checkUserTest = do
+checkUserTest :: IO ()
+checkUserTest = liftIO $ HTTP.browse $ do
     let user = (A.UserLogin (A.toB "anatoly") (A.toB "anatoly"))
         add = addUser user
+    --empty server, no cookie in browser
     assertEqM "check" checkUser (Left SE.CookieDecode)
+    --added new user, which should log us in
     assertEqM "check" add (Right (A.toB "anatoly"))
+    --check if we are logged in
     assertEqM "check" checkUser (Right (A.toB "anatoly"))
 
-loginUserTest :: HTTP.BrowserAction (HTTP.HandleStream String) ()
-loginUserTest = do
+loginUserTest :: IO ()
+loginUserTest = liftIO $ HTTP.browse $ do
     let 
         user = (A.UserLogin (A.toB "anatoly") (A.toB "anatoly"))
         login = loginUser user
@@ -62,8 +65,8 @@ loginUserTest = do
     assertEqM "login" add (Right (A.toB "anatoly"))
     assertEqM "login" login (Right (A.toB "anatoly"))
 
-addUserTest ::  HTTP.BrowserAction (HTTP.HandleStream String) ()
-addUserTest = do
+addUserTest ::  IO ()
+addUserTest = liftIO $ HTTP.browse $ do
     let run = addUser (A.UserLogin (A.toB "anatoly") (A.toB "anatoly"))
     assertEqM "add" run (Right (A.toB "anatoly"))
     assertEqM "add" run (Left SE.UserAlreadyExists)
