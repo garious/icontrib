@@ -53,13 +53,16 @@ donorServices:: Site -> ServerPart Response
 donorServices st = msum [ 
       dir "update"               (post  (check >>= (withBody (U.updateInfo (userInfo st)))))
     , dir "get"                  (get   (check >>= (U.lookupInfo (userInfo st))))
-    , dir "mostInfluential.json" (get   (U.mostInfluential (userInfo st)))
     , dir "ls"                   (get   (liftIO $ U.list (userInfo st)))
-    , (get (lift basename >>=  (U.lookupInfo (userInfo st))))
+    , dir "mostInfluential.json" (getf   (U.mostInfluential (userInfo st)))
+    , (getf (lift basename >>=  (U.lookupInfo (userInfo st))))
     ]
     where
         check = (checkUser "auth" (userAccounts st))
-        basename = path $ \ (pp::String) -> return  (A.toB (takeBaseName pp)) 
+        isext ee pp
+            | (reverse ee) == (take (length ee) $ reverse pp) = return  (A.toB (takeBaseName pp))
+            | otherwise = mzero
+        basename = path $ \ (pp::String) -> isext ".json" pp
 
 charityServices :: Site -> ServerPart Response
 charityServices st = msum [ 
@@ -84,6 +87,16 @@ redirect req = do
       fromCode (x,y,z) = x * 100 + y * 10 + z
       check (Left err)  = error (show err) 
       check (Right rr)  = rr
+
+getf :: (Show a, Data a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPartT IO Response
+getf page = do 
+   method GET
+   rq <- askRq
+   liftIO $ print ("get"::String, (rqUri rq))
+   rv <- runErrorT page
+   case(rv) of
+        (Left ee) -> notFound (toResponse $ show ee)
+        (Right res) -> rsp $ res 
 
 get :: (Show a, Data a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPartT IO Response
 get page = do 
@@ -170,8 +183,9 @@ jsonEncode = JS.encodeJSON
 
 rsp :: (Show a, Data a) => a -> ServerPart Response
 rsp msg = do
-    liftIO (print msg)
-    ok $ toResponse $ JS.encodeJSON msg
+    let json = jsonEncode msg
+    liftIO (print json)
+    ok $ toResponse $ json
 
 toS :: B.ByteString -> String
 toS ss = map (chr . fromIntegral) $ B.unpack ss

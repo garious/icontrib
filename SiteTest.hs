@@ -47,6 +47,17 @@ main = do
     run addUserTest
     run loginUserTest
     run checkUserTest
+    run logoutUserTest
+
+logoutUserTest :: IO ()
+logoutUserTest = liftIO $ HTTP.browse $ do
+    let user = (A.UserLogin (A.toB "anatoly") (A.toB "anatoly"))
+        add = addUser user
+    assertEqM "logout" checkUser (Left SE.CookieDecode)
+    assertEqM "logout" add (Right (A.toB "anatoly"))
+    assertEqM "logout" checkUser (Right (A.toB "anatoly"))
+    assertEqM "logout" logoutUser (Right ())
+    assertEqM "logout" checkUser (Left SE.BadCookie)
 
 checkUserTest :: IO ()
 checkUserTest = liftIO $ HTTP.browse $ do
