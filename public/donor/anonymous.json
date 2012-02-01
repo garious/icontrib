@@ -1,8 +1,9 @@
 {
+   "uid": "anonymous",
    "firstName": "New",
    "lastName": "Donor",
    "imageUrl": "/donor/anonymous.jpg",
-   "centsDonated": 0,
+   "dollarsDonated": 0,
    "alignedDonated": 0,
    "distribution": [
    ],

@@ -15,31 +15,10 @@ import qualified Account                     as A
 import Data.Acid
 import Data.SafeCopy
 import ServerError
-
-data Fund = Fund { name :: String 
-                 , url :: String
-                 , shares :: Int
-                 , labels :: [String]
-                 }
-          deriving (Show, Typeable, Data, Eq)
-
-$(deriveSafeCopy 0 'base ''Fund)
-
-data UserInfo = UserInfo { firstName        :: String
-                         , lastName         :: String
-                         , imageUrl         :: String
-                         , centsDonated     :: Int
-                         , alignedDonated   :: Int
-                         , distribution     :: [Fund]
-                         , funds :: [String]
-                         }
-              deriving (Show, Typeable, Data, Eq)
-
-$(deriveSafeCopy 0 'base ''UserInfo)
-
+import Data.UserInfo
 
 data Database = Database !(Map.Map A.UserID UserInfo)
-              deriving (Show, Typeable)
+              deriving (Show, Data, Typeable)
 $(deriveSafeCopy 0 'base ''Database)
 
 empty :: Database
@@ -60,14 +39,13 @@ listQ = do
    (Database db) <- ask
    return $ Map.keys db
 
-
 mostInfluentialQ :: Query Database (Either ServerError A.UserID)
 mostInfluentialQ = runErrorT $ do
    (Database db) <- ask
    let 
         head' [] = throwError UserDoesntExist
         head' ls = return $ fst $ head ls
-        influence aa = negate $ (centsDonated $ snd aa) + (alignedDonated $ snd aa)
+        influence aa = negate $ (dollarsDonated $ snd aa) + (alignedDonated $ snd aa)
    head' $ sortBy (compare `on` influence) $ Map.toList db
 
 $(makeAcidic ''Database ['updateU, 'lookupQ, 'mostInfluentialQ, 'listQ])

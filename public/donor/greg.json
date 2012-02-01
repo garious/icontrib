@@ -2,16 +2,16 @@
    "firstName": "Greg",
    "lastName": "Fitzgerald",
    "imageUrl": "/images/gregf.jpg",
-   "centsDonated": 10000,
+   "dollarsDonated": 100,
    "alignedDonated": 1000,
    "alignedUsers": ["tom", "elisa"],
    "distribution": [
-      {"name": "UNICEF", "url": "/charity/?main=unicef", "shares": 35, "labels": ["Greg's General Fund"]},
-      {"name": "American Red Cross", "url": "/charity/?main=redcross", "shares": 10, "labels": ["Greg's General Fund"]},
-      {"name": "La Jolla Playhouse", "url": "/charity/?main=ljp", "shares": 10, "labels": ["Greg's San Diego Fund"]},
-      {"name": "San Diego Foundation", "url": "/charity/?main=sdfoundation", "shares": 10, "labels": ["Greg's San Diego Fund"]},
-      {"name": "Underwater Society of America", "url": "/charity/?main=usoa", "shares": 80, "labels": ["Greg's Personal Fund"]},
-      {"name": "LACC", "url": "/charity/?main=lacc", "shares": 20, "labels": ["Greg's Personal Fund"]}
+       {"name": "UNICEF", "url": "/charity/?main=unicef", "shares": 35, "labels": ["Greg's General Fund"]},
+       {"name": "American Red Cross", "url": "/charity/?main=redcross", "shares": 10, "labels": ["Greg's General Fund"]},
+       {"name": "La Jolla Playhouse", "url": "/charity/?main=ljp", "shares": 10, "labels": ["Greg's San Diego Fund"]},
+       {"name": "San Diego Foundation", "url": "/charity/?main=sdfoundation", "shares": 10, "labels": ["Greg's San Diego Fund"]},
+       {"name": "Underwater Society of America", "url": "/charity/?main=usoa", "shares": 80, "labels": ["Greg's Personal Fund"]},
+       {"name": "LACC", "url": "/charity/?main=lacc", "shares": 20, "labels": ["Greg's Personal Fund"]}
    ],
    "funds": [
        "Greg's General Fund",
@@ -19,4 +19,5 @@
        "Greg's Personal Fund"
    ]
 }
+
 

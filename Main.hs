@@ -20,7 +20,6 @@ webThread = do
     ci <- openMemoryState C.empty
     ui <- openMemoryState U.empty
 
-    gregf <- readFile "public/donor/greg.json"
     tomf <- readFile "public/donor/tom.json"
     anon <- readFile "public/donor/anonymous.json"
     -- Hardcoded users
@@ -31,10 +30,8 @@ webThread = do
     let 
         checkResult (Just a) = return a
         checkResult Nothing  = error "main: checkResult: reading default json files" 
-    gi <- checkResult (jsonDecode gregf)
     ti <- checkResult (jsonDecode tomf)
     ai <- checkResult (jsonDecode anon)
-    U.updateInfo ui (A.toB "greg") gi
     U.updateInfo ui (A.toB "tom") ti
     U.updateInfo ui (A.toB "anonymous") ai
     serve Nothing (site (Site ua ci ui))

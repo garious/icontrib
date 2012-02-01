@@ -1,14 +1,16 @@
 {
+   "uid": "tom",
    "firstName": "Tom",
    "lastName": "Brown",
    "imageUrl": "/images/eric.jpg",
-   "centsDonated": 5500,
-   "alignedDonated": 6500,
+   "dollarsDonated": 55,
+   "alignedDonated": 65,
    "distribution": [
        {"name": "Global Fund for Women", "url": "/charity/?main=gffw", "shares": 50, "labels": ["Tom's General Fund"]},
        {"name": "Underwater Society of America", "url": "/charity/?main=usoa", "shares": 5, "labels": ["Tom's General Fund"]}
    ],
    "funds": [
-       "Tom's General Fund"
+       {"name": "Tom's General Fund", "labels": ["TomBrown-GeneralFund"]}
    ]
 }
+

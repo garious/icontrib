@@ -32,7 +32,7 @@ site st = msum [
       dir "auth"    (authServices st)
     , dir "donor"   (donorServices st)
     , dir "charity" (charityServices st)
-    , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "https://www.google.com/jsapi"))
+    , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "http://www.google.com/jsapi"))
     , JSW.widget root []
     , fileServer root
     ]
