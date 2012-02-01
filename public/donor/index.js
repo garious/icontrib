@@ -16,7 +16,7 @@ var defaultUser = {
 function onReady(E, L, NAV, CHART, CORE, C, $) { 
 
     function alignButton(user) {
-        var alignLink = CORE.button({href: '/me/?donateTo=' + user.uid}, ['Donate!']);
+        var alignLink = CORE.button({href: '/me/?donateTo=' + user.id}, ['Donate!']);
         return alignLink;
         //alignLink.onclick = function(e) { 
         //    //TODO: On click, navigate to appropriate pages

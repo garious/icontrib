@@ -54,7 +54,7 @@ donorServices st = msum [
       dir "update"               (post  (check >>= (withBody (U.updateInfo (userInfo st)))))
     , dir "get"                  (get   (check >>= (U.lookupInfo (userInfo st))))
     , dir "ls"                   (get   (liftIO $ U.list (userInfo st)))
-    , dir "mostInfluential.json" (getf   (U.mostInfluential (userInfo st)))
+    , dir "mostInfluential.json" (getf  (U.mostInfluential (userInfo st)))
     , (getf (lift basename >>=  (U.lookupInfo (userInfo st))))
     ]
     where

@@ -45,7 +45,7 @@ mostInfluentialQ = runErrorT $ do
    let 
         head' [] = throwError UserDoesntExist
         head' ls = return $ fst $ head ls
-        influence aa = negate $ (dollarsDonated $ snd aa) + (alignedDonated $ snd aa)
+        influence aa = negate $ (centsDonated $ snd aa) + (alignedDonated $ snd aa)
    head' $ sortBy (compare `on` influence) $ Map.toList db
 
 $(makeAcidic ''Database ['updateU, 'lookupQ, 'mostInfluentialQ, 'listQ])
