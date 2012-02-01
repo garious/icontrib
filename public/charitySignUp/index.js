@@ -82,7 +82,7 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
         var oi = inputs.CharityInfo.info.OrganizationInfo; 
         var pc = inputs.CharityInfo.poc.PointOfContact;
         var name        = inputField(oi.organizationName, {label: 'Organization Name', type: 'text', name: 'name'});
-        var ein         = inputField(oi.ein,              {label: 'EIN', type: 'number', name: 'ein', required: 'required'});
+        var ein         = inputField(oi.ein,              {label: 'EIN', type: 'text', name: 'ein', required: 'required'});
         var url         = inputField(oi.companyWebsite,   {label: 'Company Website', type: 'url', name: 'url', placeholder: 'http://'});
         var firstName   = inputField(pc.firstName,        {label: 'First Name', type: 'text', name: 'firstName', required: 'required'});
         var lastName    = inputField(pc.lastName,         {label: 'Last Name', type: 'text', name: 'lastName', required: 'required'});
