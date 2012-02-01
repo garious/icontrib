@@ -57,7 +57,14 @@ function onReady(E, L, C, $) {
         as.style.backgroundColor = 'white';
   
         var space = L.pillow(15);
-        return L.spoon(as, [space, L.hug([space, E.div(xs), space]), space]);
+
+        return E.div(as, [
+            L.spoon([
+                space, 
+                L.hug([space].concat(xs).concat([space])),
+                space
+            ])
+        ]);
     }
 
     function hStyle(sizeOffset) {

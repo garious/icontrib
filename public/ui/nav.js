@@ -52,7 +52,7 @@ function onReady(E, L, CORE, $, ME) {
                     L.hug([CORE.label('Username'), username]), L.pillow(5),
                     L.hug([CORE.label('Password'), password]), L.pillow(5),
                     badLogin, L.pillow(5),
-                    loginButton
+                    L.hug([L.pillow(110,0), E.div({style: {width: 90}}, [loginButton])])
                 ]), L.pillow(30),
                 as.thumbnail
              ]);

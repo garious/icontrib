@@ -92,8 +92,6 @@ function onReady(E, L, NAV, CHART, CORE, C, $) {
                 rows.push(row);
             }
             return L.spoon(rows, 20);
-        } else {
-            return alignButton(user);
         }
     }
 
@@ -101,7 +99,7 @@ function onReady(E, L, NAV, CHART, CORE, C, $) {
         as = as || {};
         var user = as.user || {};
         var userChart = L.spoon([
-            L.hug([L.pillow(50, 0), CORE.h3('Helps raise $' + user.alignedDonated + ' per month')]),
+            L.hug([L.pillow(50, 0), CORE.h3('Helps raise $' + Math.round(user.alignedDonated / 100) + ' per month')]),
             CHART.pie(user)
         ]);
 
