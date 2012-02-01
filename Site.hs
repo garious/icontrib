@@ -29,12 +29,12 @@ data Site = Site { userAccounts ::  AcidState A.Database
 
 site :: Site -> ServerPart Response
 site st = msum [ 
-      dir "auth"    (authServices st)
+      JSW.widget root []
+    , fileServer root
+    , dir "auth"    (authServices st)
     , dir "donor"   (donorServices st)
     , dir "charity" (charityServices st)
     , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "http://www.google.com/jsapi"))
-    , JSW.widget root []
-    , fileServer root
     ]
   where
     root = "public"
