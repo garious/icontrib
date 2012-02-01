@@ -95,7 +95,7 @@ getf page = do
    liftIO $ print ("get"::String, (rqUri rq))
    rv <- runErrorT page
    case(rv) of
-        (Left ee) -> notFound (toResponse $ show ee)
+        (Left ee) -> internalServerError (toResponse $ show ee)
         (Right res) -> rsp $ res 
 
 get :: (Show a, Data a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPartT IO Response

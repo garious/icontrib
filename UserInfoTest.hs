@@ -26,8 +26,8 @@ mostInfluentialTest = do
     let toly = U.UserInfo "anatoly" "yako" "foo" 100 100 [] []
     U.updateInfo db (toB "anatoly") toly
     let greg = U.UserInfo "greg" "fitz" "foo" 200 100 [] []
-    U.updateInfo db (toB "anatoly") greg
-    assertEqErrorT "updated"  (U.mostInfluential db)  (Right greg)
+    U.updateInfo db (toB "greg") greg
+    assertEqErrorT "updated"  (U.mostInfluential db)  (Right $ toB "greg")
 
 main :: IO ()
 main = do
