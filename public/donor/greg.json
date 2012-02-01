@@ -3,7 +3,7 @@
    "lastName": "Fitzgerald",
    "imageUrl": "/images/gregf.jpg",
    "centsDonated": 10000,
-   "alignedDonated": 100000,
+   "alignedDonated": 10000,
    "alignedUsers": ["tom", "elisa"],
    "distribution": [
        {"name": "UNICEF", "url": "/charity/?main=unicef", "shares": 35, "labels": ["Greg's General Fund"]},

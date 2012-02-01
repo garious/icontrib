@@ -39,7 +39,7 @@ function onReady(E, L, NAV, CORE, CHART, $UI) {
         var user = as.user || {};
         var userChart = L.spoon([
             CORE.h3('My impact'),
-            L.hug([L.pillow(30), CORE.h6((user.alignedUsers || []).length + ' donors are aligned with your distribution.  Together you help raise $' + user.alignedDonated + ' per month!')]),
+            L.hug([L.pillow(30), CORE.h6((user.alignedUsers || []).length + ' donors are aligned with your distribution.  Together you help raise $' + Math.round(user.alignedDonated / 100) + ' per month!')]),
             CORE.h3('My charitable distribution'),
             L.hug([L.pillow(100), CHART.pie(user)])
         ]);
