@@ -12,6 +12,7 @@ import System.FilePath                       ( takeBaseName )
 import Control.Applicative                   ( (<|>) )
 import JSONUtil                              ( jsonEncode, jsonDecode )
 import qualified Data.ByteString.Lazy        as B
+import qualified Data.ByteString.Lazy.Char8  as BS
 import qualified Codec.Binary.Url            as Url
 import qualified ServerError                 as SE
 import qualified Account                     as A
@@ -60,7 +61,7 @@ donorServices st = msum [
     where
         check = (checkUser "auth" (userAccounts st))
         isext ee pp
-            | (reverse ee) == (take (length ee) $ reverse pp) = return  (A.toB $ takeBaseName pp)
+            | (reverse ee) == (take (length ee) $ reverse pp) = return  (BS.pack $ takeBaseName pp)
             | otherwise = mzero
         basename = path $ \ (pp::String) -> isext ".json" pp
 

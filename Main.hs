@@ -4,6 +4,7 @@ import Data.Acid.Memory                      ( openMemoryState )
 import Control.Concurrent                    ( forkIO, killThread )
 import Control.Monad.Error                   ( runErrorT, liftIO )
 import JSONUtil                              ( jsonDecode )
+import qualified Data.ByteString.Lazy.Char8  as BS
 import qualified Account                     as A
 import qualified CharityInfo                 as C
 import qualified UserInfo                    as U
@@ -27,10 +28,10 @@ webThread = do
     _ <- runErrorT $ do
         ti <- jsonDecode tomf
         ai <- jsonDecode anon
-        A.addUser ua (A.toB "greg") (A.toB "greg")
-        A.addUser ua (A.toB "anatoly") (A.toB "anatoly")
-        A.addUser ua (A.toB "tom") (A.toB "tom")
-        liftIO $ U.updateInfo ui (A.toB "tom") ti
-        liftIO $ U.updateInfo ui (A.toB "anonymous") ai
+        A.addUser ua (BS.pack "greg")     (BS.pack "greg")
+        A.addUser ua (BS.pack "anatoly")  (BS.pack "anatoly")
+        A.addUser ua (BS.pack "tom")      (BS.pack "tom")
+        liftIO $ U.updateInfo ui (BS.pack "tom")       ti
+        liftIO $ U.updateInfo ui (BS.pack "anonymous") ai
     serve Nothing (site (Site ua ci ui))
 
