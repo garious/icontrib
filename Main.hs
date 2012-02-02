@@ -1,8 +1,9 @@
-import Site                                  ( site, Site(Site), jsonDecode )
+import Site                                  ( site, Site(Site) )
 import Happstack.Lite                        ( serve )
 import Data.Acid.Memory                      ( openMemoryState )
 import Control.Concurrent                    ( forkIO, killThread )
 import Control.Monad.Error                   ( runErrorT )
+import JSONUtil                              ( jsonDecodeE )
 import qualified Account                     as A
 import qualified CharityInfo                 as C
 import qualified UserInfo                    as U
@@ -30,8 +31,8 @@ webThread = do
     let 
         checkResult (Just a) = return a
         checkResult Nothing  = error "main: checkResult: reading default json files" 
-    ti <- checkResult (jsonDecode tomf)
-    ai <- checkResult (jsonDecode anon)
+    ti <- checkResult (jsonDecodeE tomf)
+    ai <- checkResult (jsonDecodeE anon)
     U.updateInfo ui (A.toB "tom") ti
     U.updateInfo ui (A.toB "anonymous") ai
     serve Nothing (site (Site ua ci ui))

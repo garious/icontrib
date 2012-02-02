@@ -16,6 +16,7 @@ data ServerError = UserAlreadyExists
                  | BadCookie
                  | PasswordsDontMatch
                  | CookieDecode
+                 | JSONParseError String
                  | JSONDecodeError String
                  | RecordMergeError
                  | NoBody

@@ -1,6 +1,6 @@
 module SiteTest where
 
-import Site                                  ( site, Site(Site), jsonDecode )
+import Site                                  ( site, Site(Site) )
 import Data.Acid.Memory                      ( openMemoryState )
 import Control.Concurrent                    ( forkIO, killThread )
 import Control.Monad.Trans                   ( liftIO )
@@ -14,6 +14,7 @@ import qualified Network.Browser             as HTTP
 import qualified Network.URI                 as URI
 import qualified Happstack.Lite              as Happs
 import qualified ServerError                 as SE
+import qualified JSONUtil                    as JS
 import TestUtil
 
 port :: Int
@@ -98,19 +99,13 @@ post :: (Data b, Data a) => String -> a -> HTTP.BrowserAction (HTTP.HandleStream
 post url msg = do
     let 
             uri = fromMaybe (error $ "parse url: " ++ url) $ URI.parseURI (host ++ url)
-            body = (JS.encodeJSON msg)
+            body = (JS.jsonEncode msg)
             req = HTTP.formToRequest $ HTTP.Form HTTP.POST uri [(body,"")]
     (_,hrsp) <- HTTP.request $ req
-    return $! checkJS $ jsonDecode $ HTTP.rspBody hrsp
-    where
-       checkJS (Just a) = a
-       checkJS Nothing  = error "sitetest: post json decode"
+    return $! JS.jsonDecodeE $ HTTP.rspBody hrsp
 
 get :: (Data b) => String ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError b) 
 get url = do
     let req = HTTP.getRequest (host ++ url)
     (_,hrsp) <- HTTP.request $ req
-    return $! checkJS $ jsonDecode $ HTTP.rspBody hrsp
-    where
-       checkJS (Just a) = a
-       checkJS Nothing  = error "sitetest: get json decode"
+    return $! JS.jsonDecodeE $ HTTP.rspBody hrsp

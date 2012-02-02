@@ -10,9 +10,9 @@ import Control.Monad.Error                   ( runErrorT, ErrorT )
 import Happstack.Server.Monads               ( ServerPartT )
 import System.FilePath                       ( takeBaseName )
 import Control.Applicative                   ( (<|>) )
+import JSONUtil                              ( jsonEncode, jsonDecode )
 import qualified Data.ByteString.Lazy        as B
 import qualified Codec.Binary.Url            as Url
-import qualified Text.JSON.Generic           as JS
 import qualified ServerError                 as SE
 import qualified Account                     as A
 import qualified CharityInfo                 as C
@@ -60,7 +60,7 @@ donorServices st = msum [
     where
         check = (checkUser "auth" (userAccounts st))
         isext ee pp
-            | (reverse ee) == (take (length ee) $ reverse pp) = return  (A.toB (takeBaseName pp))
+            | (reverse ee) == (take (length ee) $ reverse pp) = return  (A.toB $ takeBaseName pp)
             | otherwise = mzero
         basename = path $ \ (pp::String) -> isext ".json" pp
 
@@ -165,7 +165,6 @@ getBody = do
     liftIO $ putStrLn "getBody"
     bd <- lift $ lookPairs
     let 
-            decode a = SE.checkMaybe (SE.JSONDecodeError a) $ jsonDecode a 
             --GIANT FREAKING HACK :)
             --wtf cant i get the request body
             from (name, (Right ss)) = name ++ ss
@@ -173,13 +172,7 @@ getBody = do
             bd' :: String
             bd' = concatMap from bd
     liftIO $ print ("body"::String, bd')
-    decode $ bd'
-
-jsonDecode :: Data a => String -> Maybe a
-jsonDecode a = (Just $ JS.decodeJSON a) <|> Nothing
-
-jsonEncode :: Data a => a -> String 
-jsonEncode = JS.encodeJSON
+    jsonDecode $ bd'
 
 rsp :: (Show a, Data a) => a -> ServerPart Response
 rsp msg = do
