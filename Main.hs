@@ -2,8 +2,8 @@ import Site                                  ( site, Site(Site) )
 import Happstack.Lite                        ( serve )
 import Data.Acid.Memory                      ( openMemoryState )
 import Control.Concurrent                    ( forkIO, killThread )
-import Control.Monad.Error                   ( runErrorT )
-import JSONUtil                              ( jsonDecodeE )
+import Control.Monad.Error                   ( runErrorT, liftIO )
+import JSONUtil                              ( jsonDecode )
 import qualified Account                     as A
 import qualified CharityInfo                 as C
 import qualified UserInfo                    as U
@@ -25,15 +25,12 @@ webThread = do
     anon <- readFile "public/donor/anonymous.json"
     -- Hardcoded users
     _ <- runErrorT $ do
+        ti <- jsonDecode tomf
+        ai <- jsonDecode anon
         A.addUser ua (A.toB "greg") (A.toB "greg")
         A.addUser ua (A.toB "anatoly") (A.toB "anatoly")
         A.addUser ua (A.toB "tom") (A.toB "tom")
-    let 
-        checkResult (Just a) = return a
-        checkResult Nothing  = error "main: checkResult: reading default json files" 
-    ti <- checkResult (jsonDecodeE tomf)
-    ai <- checkResult (jsonDecodeE anon)
-    U.updateInfo ui (A.toB "tom") ti
-    U.updateInfo ui (A.toB "anonymous") ai
+        liftIO $ U.updateInfo ui (A.toB "tom") ti
+        liftIO $ U.updateInfo ui (A.toB "anonymous") ai
     serve Nothing (site (Site ua ci ui))
 
