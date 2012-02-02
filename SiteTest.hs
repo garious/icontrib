@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module SiteTest where
 
 import Site                                  ( site, Site(Site), jsonDecode )
@@ -51,39 +53,39 @@ main = do
 
 logoutUserTest :: IO ()
 logoutUserTest = liftIO $ HTTP.browse $ do
-    let user = (A.UserLogin (A.toB "anatoly") (A.toB "anatoly"))
+    let user = A.UserLogin "anatoly" "anatoly"
         add = addUser user
     assertEqM "logout" checkUser (Left SE.CookieDecode)
-    assertEqM "logout" add (Right (A.toB "anatoly"))
-    assertEqM "logout" checkUser (Right (A.toB "anatoly"))
+    assertEqM "logout" add (Right "anatoly")
+    assertEqM "logout" checkUser (Right "anatoly")
     assertEqM "logout" logoutUser (Right ())
     assertEqM "logout" checkUser (Left SE.BadCookie)
 
 checkUserTest :: IO ()
 checkUserTest = liftIO $ HTTP.browse $ do
-    let user = (A.UserLogin (A.toB "anatoly") (A.toB "anatoly"))
+    let user = A.UserLogin "anatoly" "anatoly"
         add = addUser user
     --empty server, no cookie in browser
     assertEqM "check" checkUser (Left SE.CookieDecode)
     --added new user, which should log us in
-    assertEqM "check" add (Right (A.toB "anatoly"))
+    assertEqM "check" add (Right "anatoly")
     --check if we are logged in
-    assertEqM "check" checkUser (Right (A.toB "anatoly"))
+    assertEqM "check" checkUser (Right "anatoly")
 
 loginUserTest :: IO ()
 loginUserTest = liftIO $ HTTP.browse $ do
     let 
-        user = (A.UserLogin (A.toB "anatoly") (A.toB "anatoly"))
+        user = A.UserLogin "anatoly" "anatoly"
         login = loginUser user
         add = addUser user
     assertEqM "login" login (Left SE.UserDoesntExist)
-    assertEqM "login" add (Right (A.toB "anatoly"))
-    assertEqM "login" login (Right (A.toB "anatoly"))
+    assertEqM "login" add (Right "anatoly")
+    assertEqM "login" login (Right "anatoly")
 
 addUserTest ::  IO ()
 addUserTest = liftIO $ HTTP.browse $ do
-    let run = addUser (A.UserLogin (A.toB "anatoly") (A.toB "anatoly"))
-    assertEqM "add" run (Right (A.toB "anatoly"))
+    let run = addUser (A.UserLogin "anatoly" "anatoly")
+    assertEqM "add" run (Right "anatoly")
     assertEqM "add" run (Left SE.UserAlreadyExists)
 
 emptyServer :: IO ()

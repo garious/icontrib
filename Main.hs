@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 import Site                                  ( site, Site(Site), jsonDecode )
 import Happstack.Lite                        ( serve )
 import Data.Acid.Memory                      ( openMemoryState )
@@ -24,15 +26,15 @@ webThread = do
     anon <- readFile "public/donor/anonymous.json"
     -- Hardcoded users
     _ <- runErrorT $ do
-        A.addUser ua (A.toB "greg") (A.toB "greg")
-        A.addUser ua (A.toB "anatoly") (A.toB "anatoly")
-        A.addUser ua (A.toB "tom") (A.toB "tom")
+        A.addUser ua "greg" "greg"
+        A.addUser ua "anatoly" "anatoly"
+        A.addUser ua "tom" "tom"
     let 
         checkResult (Just a) = return a
         checkResult Nothing  = error "main: checkResult: reading default json files" 
     ti <- checkResult (jsonDecode tomf)
     ai <- checkResult (jsonDecode anon)
-    U.updateInfo ui (A.toB "tom") ti
-    U.updateInfo ui (A.toB "anonymous") ai
+    U.updateInfo ui "tom" ti
+    U.updateInfo ui "anonymous" ai
     serve Nothing (site (Site ua ci ui))
 

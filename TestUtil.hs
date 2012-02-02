@@ -1,12 +1,6 @@
 module TestUtil where
 
-import qualified Data.ByteString.Lazy        as B
-import Char                                  ( ord )
 import Control.Monad.Error                   ( runErrorT, ErrorT )
-
--- String to ByteString
-toB :: String -> B.ByteString
-toB = B.pack . map (fromIntegral . ord)
 
 -- Assert an ErrorT action returns the expected value
 assertEqErrorT :: (Show e, Show a, Eq e, Eq a, Monad m) => String -> ErrorT e m a -> Either e a -> m ()

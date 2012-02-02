@@ -11,6 +11,7 @@ import Happstack.Server.Monads               ( ServerPartT )
 import System.FilePath                       ( takeBaseName )
 import Control.Applicative                   ( (<|>) )
 import qualified Data.ByteString.Lazy        as B
+import qualified Data.ByteString.Lazy.Char8  as BS
 import qualified Codec.Binary.Url            as Url
 import qualified Text.JSON.Generic           as JS
 import qualified ServerError                 as SE
@@ -60,7 +61,7 @@ donorServices st = msum [
     where
         check = (checkUser "auth" (userAccounts st))
         isext ee pp
-            | (reverse ee) == (take (length ee) $ reverse pp) = return  (A.toB (takeBaseName pp))
+            | (reverse ee) == (take (length ee) $ reverse pp) = return (BS.pack (takeBaseName pp))
             | otherwise = mzero
         basename = path $ \ (pp::String) -> isext ".json" pp
 
