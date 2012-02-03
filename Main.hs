@@ -33,5 +33,5 @@ webThread = do
         A.addUser ua (BS.pack "tom")      (BS.pack "tom")
         liftIO $ U.updateInfo ui (BS.pack "tom")       ti
         liftIO $ U.updateInfo ui (BS.pack "anonymous") ai
-    serve (Just tls) 8000 (site (Site ua ci ui))
+    serve (Just ("localhost", tls)) 8000 (site (Site ua ci ui))
 

@@ -49,21 +49,36 @@ import Happstack.Server                      ( ServerPart
                                              , TLSConf
                                              , decodeBody
                                              , defaultBodyPolicy
+                                             , http
+                                             , https
+                                             , seeOther
+                                             , tlsPort
                                              )
 data Site = Site { userAccounts ::  AcidState A.Database
                  , charityInfo :: AcidState C.Database
                  , userInfo :: AcidState U.Database
                  }
 
-serve :: Maybe TLSConf -> Int -> ServerPart Response -> IO ()
-serve mtls pp part = 
+serve :: Maybe (String, TLSConf) -> Int -> ServerPart Response -> IO ()
+serve mtls portnum part = 
     let 
         ramQuota  =  1000000
         diskQuota = 20000000
         tmpDir    = "/tmp/"
-    in  simpleHTTP (nullConf { port = pp, tls = mtls }) $ do 
+    in  simpleHTTP (nullConf { port = portnum, tls = (liftM snd) mtls }) $ do 
             decodeBody (defaultBodyPolicy tmpDir diskQuota ramQuota (ramQuota `div` 10))
-            part
+            servepart mtls part
+    
+tohttps :: String -> Int -> ServerPart Response
+tohttps hn pn = (seeOther ("https://" ++ hn ++ ":" ++ show pn) (toResponse ()))
+
+servepart :: Maybe (String, TLSConf) -> ServerPart Response -> ServerPart Response
+servepart (Just (hn, tlsconf)) part = msum [ do http 
+                                                (tohttps hn (tlsPort tlsconf))
+                                           , do https 
+                                                part
+                                           ]
+servepart Nothing part = part
 
 site :: Site -> ServerPart Response
 site st = msum [ 
