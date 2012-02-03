@@ -2,7 +2,7 @@ UNAME:=$(shell uname)
 
 -include $(UNAME).min
 
-GHC_FLAGS+=-Wall -Werror
+GHC_FLAGS+=-Wall -Werror -threaded
 
 RUN_TESTS := $(wildcard *Test.hs)
 

@@ -7,7 +7,7 @@ import qualified Data.ByteString.Lazy.Char8  as BS
 import qualified Account                     as A
 import qualified CharityInfo                 as C
 import qualified UserInfo                    as U
-
+import Happstack.Server                      ( TLSConf(TLSConf) )
 main :: IO ()
 main = do
     tid <- forkIO webThread
@@ -17,6 +17,7 @@ main = do
 
 webThread :: IO ()
 webThread = do
+    let tls = TLSConf 8443 "server.crt" "server.key"
     ua <- openMemoryState A.empty
     ci <- openMemoryState C.empty
     ui <- openMemoryState U.empty
@@ -32,5 +33,5 @@ webThread = do
         A.addUser ua (BS.pack "tom")      (BS.pack "tom")
         liftIO $ U.updateInfo ui (BS.pack "tom")       ti
         liftIO $ U.updateInfo ui (BS.pack "anonymous") ai
-    serve Nothing 8000 (site (Site ua ci ui))
+    serve (Just tls) 8000 (site (Site ua ci ui))
 
