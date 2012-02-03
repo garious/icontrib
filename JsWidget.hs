@@ -2,8 +2,8 @@
 
 module JsWidget where
 
-import Happstack.Lite
-import Happstack.Server                      ( lookPairs )
+import Monad                                 ( msum )
+import Happstack.Server                      ( ServerPart, Response, path, nullDir, lookPairs, ok, toResponse )
 import Happstack.Server.Routing              ( trailingSlash )
 
 import System.Directory

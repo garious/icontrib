@@ -20,13 +20,50 @@ import qualified CharityInfo                 as C
 import qualified UserInfo                    as U
 import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP
-import Happstack.Server(askRq, rqUri, lookPairs)
-import Happstack.Lite
-
+import Monad                                 ( msum, mzero )
+import Happstack.Server                      ( ServerPart
+                                             , Response
+                                             , path
+                                             , lookPairs
+                                             , ok
+                                             , internalServerError
+                                             , toResponse
+                                             , askRq
+                                             , rqUri
+                                             , dir
+                                             , setResponseCode 
+                                             , serveDirectory
+                                             , Browsing(DisableBrowsing)
+                                             , setHeaderM 
+                                             , method
+                                             , Method(GET, POST)
+                                             , addHeaderM
+                                             , lookCookieValue
+                                             , mkCookie
+                                             , addCookies
+                                             , CookieLife(Session)
+                                             , simpleHTTP
+                                             , nullConf
+                                             , port
+                                             , tls
+                                             , TLSConf
+                                             , decodeBody
+                                             , defaultBodyPolicy
+                                             )
 data Site = Site { userAccounts ::  AcidState A.Database
                  , charityInfo :: AcidState C.Database
                  , userInfo :: AcidState U.Database
                  }
+
+serve :: Maybe TLSConf -> Int -> ServerPart Response -> IO ()
+serve mtls pp part = 
+    let 
+        ramQuota  =  1000000
+        diskQuota = 20000000
+        tmpDir    = "/tmp/"
+    in  simpleHTTP (nullConf { port = pp, tls = mtls }) $ do 
+            decodeBody (defaultBodyPolicy tmpDir diskQuota ramQuota (ramQuota `div` 10))
+            part
 
 site :: Site -> ServerPart Response
 site st = msum [ 

@@ -2,7 +2,7 @@
 
 module SiteTest where
 
-import Site                                  ( site, Site(Site) )
+import Site                                  ( site, Site(Site), serve )
 import Data.Acid.Memory                      ( openMemoryState )
 import Control.Concurrent                    ( forkIO, killThread )
 import Control.Monad.Trans                   ( liftIO )
@@ -14,7 +14,6 @@ import Text.JSON.Generic                     as JS
 import qualified Network.HTTP                as HTTP
 import qualified Network.Browser             as HTTP
 import qualified Network.URI                 as URI
-import qualified Happstack.Lite              as Happs
 import qualified ServerError                 as SE
 import qualified JSONUtil                    as JS
 import TestUtil
@@ -94,8 +93,7 @@ emptyServer = do
     ua <- openMemoryState A.empty
     ci <- openMemoryState C.empty
     ui <- openMemoryState U.empty
-    let cfg = Happs.defaultServerConfig { Happs.port = port }
-    Happs.serve (Just cfg) (site (Site ua ci ui))
+    serve Nothing port (site (Site ua ci ui))
 
 post :: (Data b, Data a) => String -> a -> HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError b) 
 post url msg = do

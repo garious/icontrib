@@ -16,7 +16,7 @@ Executable icontrib
                      acid-state >= 0.6.2 && < 0.7,
                      Crypto >= 4.2.4 && < 4.3,
                      cryptohash >= 0.7.4 && < 0.8,
-                     happstack-lite >= 6.0.2 && < 7.0,
+                     happstack-server >= 6.5.6,
                      HTTP >= 4000.2.2,
                      network >= 2.3.0.8,
                      safecopy >= 0.6.1 && < 0.7,

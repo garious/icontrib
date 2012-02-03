@@ -1,5 +1,4 @@
-import Site                                  ( site, Site(Site) )
-import Happstack.Lite                        ( serve )
+import Site                                  ( site, Site(Site), serve )
 import Data.Acid.Memory                      ( openMemoryState )
 import Control.Concurrent                    ( forkIO, killThread )
 import Control.Monad.Error                   ( runErrorT, liftIO )
@@ -33,5 +32,5 @@ webThread = do
         A.addUser ua (BS.pack "tom")      (BS.pack "tom")
         liftIO $ U.updateInfo ui (BS.pack "tom")       ti
         liftIO $ U.updateInfo ui (BS.pack "anonymous") ai
-    serve Nothing (site (Site ua ci ui))
+    serve Nothing 8000 (site (Site ua ci ui))
 
