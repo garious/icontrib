@@ -14,13 +14,9 @@ serve: $o/icontrib
 	$<
 
 libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
-	echo "HEY!!! YOU ARE BUILDING A SHARED LIBRARY FOR SSL"
-	     "this needs to point to system installation of the library on a live server"
 	g++  -fpic -nostartfiles -nostdlib -shared /usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a -o libcryptopp.dylib
 
 /usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a:
-	echo "HEY!!! YOU ARE FETCHING A SHARED LIBRARY FOR SSL"
-	     "this needs to point to system installation of the library on a live server"
 	brew install cryptopp #for ssl
 
 test: $(patsubst %,$o/%.passed,$(RUN_TESTS))
