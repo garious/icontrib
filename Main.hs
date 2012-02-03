@@ -17,7 +17,7 @@ main = do
 
 webThread :: IO ()
 webThread = do
-    let tls = TLSConf 8443 "server.crt" "server.key"
+    let tls = TLSConf 8443 "testcert/server.crt" "testcert/server.key"
     ua <- openMemoryState A.empty
     ci <- openMemoryState C.empty
     ui <- openMemoryState U.empty
