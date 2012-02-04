@@ -53,8 +53,13 @@ function onReady(E, L, C, $) {
             as = {};
         }
         as.style = as.style || {};
-        as.style.border = '1px solid silver';
+        as.style.border = '2px solid #cfcfcf';
         as.style.backgroundColor = 'white';
+
+        var shadow = '0px 0px 5px 2px #ddd';
+        as.style.MozBoxShadow = shadow;
+        as.style.WebkitBoxShadow = shadow;
+        as.style.Shadow = shadow;
   
         var space = L.pillow(15);
 

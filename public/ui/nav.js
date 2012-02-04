@@ -139,9 +139,7 @@ function onReady(E, L, CORE, $, ME) {
         var navbar = nav(as);
         var body = E.div(xs);
 
-        var e = E.div({style: {height: getWindowInnerHeight()}}, [L.spoon([navbar, L.pillow(20), body])]);
-        e.style.backgroundColor = '#F3F3F6';
-        return e;
+        return E.div({style: {height: getWindowInnerHeight()}}, [L.spoon([navbar, L.pillow(20), body])]);
     }
 
     function footer(as, xs) {

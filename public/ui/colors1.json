@@ -1,0 +1,19 @@
+{
+    "primaryColor": "#a7d322", // Green
+    "lightColor": "#5252b6",
+    "middleColor": "#2d2db6",
+    "darkColor": "#000046",
+    "midDarkColor": "#141451",
+    "primaryCompColor": "#9A7400",
+    "midDarkCompColor": "#745E1D",
+    "darkCompColor": "#644B00",
+    "middleCompColor": "#CDA633",
+    "lightCompColor": "#CDB05C",
+    "headerHeight": "75px",
+    "footerHeight": "75px",
+    "otherFooter": "25px",
+    "accentColor": "#eeeeee",
+    "primaryText": "#333333",
+    "smallestHeader": 15
+}
+
