@@ -55,11 +55,11 @@ function onReady(I, DIM, DOM) {
         }
     };
     
-    // a TwoDimensional instance for the Bed class
-    var Bed_TwoDimensional = Pillow_TwoDimensional;
+    // a TwoDimensional instance for the Party class
+    var Party_TwoDimensional = Pillow_TwoDimensional;
     
-    // a ToDom instance for the Bed class
-    var Bed_ToDom = {
+    // a ToDom instance for the Party class
+    var Party_ToDom = {
         toDom: function (me) {
             var div = document.createElement('div');
             div.style.height = me.height;
@@ -98,22 +98,22 @@ function onReady(I, DIM, DOM) {
         {'interface': DIM.TwoDimensional, instance: Pillow_TwoDimensional}
     ];
     
-    // bed(attrs, subelements)
+    // party(attrs, subelements)
     //
     //    a placeholder for visual elements to snuggle
-    function bed(as, xs) {
+    function party(as, xs) {
     
         return {
-            constructor: bed,
+            constructor: party,
             width: as.width,
             height: as.height,
             subelements: xs
         };
     }
     
-    bed.interfaces = [
-        {'interface': DOM.ToDom,          instance: Bed_ToDom},
-        {'interface': DIM.TwoDimensional, instance: Bed_TwoDimensional}
+    party.interfaces = [
+        {'interface': DOM.ToDom,          instance: Party_ToDom},
+        {'interface': DIM.TwoDimensional, instance: Party_TwoDimensional}
     ];
     
     // Concatenate elements
@@ -126,7 +126,7 @@ function onReady(I, DIM, DOM) {
             dim = setPos(x, dim);
         }
     
-        return bed(dim, xs);
+        return party(dim, xs);
     }
     
     // Set the horizontal position of a 2D element
