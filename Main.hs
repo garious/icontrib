@@ -10,7 +10,8 @@ import qualified UserInfo                    as U
 import Happstack.Server                      ( TLSConf(TLSConf) )
 main :: IO ()
 main = do
-    tid <- forkIO webThread
+    let loop = (webThread `catch` (\ _ -> loop))
+    tid <- forkIO loop
     putStrLn "Web server running. Press <enter> to exit."
     _ <- getLine
     killThread tid
