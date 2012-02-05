@@ -63,8 +63,8 @@ function onReady(E, L, NAV, CHART, CORE, C, $) {
             var x = xs[j];
 
             var cols = [
-                E.td([CORE.a({href: x.url}, x.name)]),
-                E.td({style: {textAlign: 'right'}}, [E.text(Math.round(1000 * x.shares / total) / 10 + '%')])
+                E.td({style: {textAlign: 'right'}}, [CORE.h6(Math.round(1000 * x.shares / total) / 10 + '%')]),
+                E.td([CORE.a({href: x.url}, x.name)])
             ];
             rows.push(E.tr(cols));
         }
@@ -77,18 +77,19 @@ function onReady(E, L, NAV, CHART, CORE, C, $) {
         if (user.funds) {
             var rows = [];
             for (var i = 0; i < user.funds.length; i++) {
-                var row = CORE.box([E.div({style: {width: 550}}, [
-                    L.hug([
-                        L.spoon([
+                var row = E.div({style: {width: 550}}, [
+                    L.spoon([
+                        L.hug([
                             CORE.h4(user.funds[i].name),
-                            L.hug([L.pillow(30), fundContents(user.distribution, user.funds[i].name)])
-                        ], 25),
-                        L.spoon([
-                            L.pillow(50),
+                            L.pillow(300, 0),
                             alignButton({id: user.funds[i].labels[0]})
+                        ]),
+                        L.hug([
+                            CHART.pie1(user),
+                            L.hug([fundContents(user.distribution, user.funds[i].name)])
                         ])
-                    ], 100)
-                ])]);
+                    ])
+                ]);
                 rows.push(row);
             }
             return L.spoon(rows, 20);
@@ -98,37 +99,28 @@ function onReady(E, L, NAV, CHART, CORE, C, $) {
     function profile(as) {
         as = as || {};
         var user = as.user || {};
-        var userChart = L.spoon([
-            L.hug([L.pillow(50, 0), CORE.h3('Helps raise $' + Math.round(user.alignedDonated / 100) + ' per month')]),
-            CHART.pie(user)
+        var userInfo = L.hug([
+            L.pillow(25, 0), 
+            L.spoon([
+                CORE.h3([user.firstName + ' ' + user.lastName]),
+                CORE.h5('Helps raise $' + Math.round(user.alignedDonated / 100) + ' per month')
+            ])
         ]);
 
         return L.spoon([
-            CORE.h2(as.title), 
-            L.pillow(30),
             L.hug([
-                L.spoon([
-                    E.img({style: {width: '175px', height: '225px', borderRadius: '5px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
-                    CORE.h3([user.firstName + ' ' + user.lastName])
-                ], 20),
-	        userChart
+                E.img({style: {width: '70px', height: '90px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
+	        userInfo
             ]),
+            L.pillow(0, 20),
             distributionTable(user)
         ]);
     }
 
-    function TomBrown(params, nodeReady) {
-        require(['tom.json'], function(user) {
-            nodeReady( NAV.frame([profile({user: user})]) );
-        });
-    }
-
     define({
         title: 'IContrib.org',
-        main: TomBrown,
-        summary: profile,
-        alignButton: alignButton,
-        TomBrown: TomBrown
+        profile: profile,
+        alignButton: alignButton
     });
 }
 

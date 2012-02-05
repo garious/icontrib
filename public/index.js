@@ -20,19 +20,19 @@ function onReady(E, L, NAV, CORE, POP, DONOR, USER) {
         var listItems = [];
         for (var i = 0; i < POP.length; i += 1) {
             var x = POP[i];
-            listItems.push( E.li([CORE.a({href: '/charity/?main=' + x.id}, x.name)]) );
+            listItems.push( E.li([CORE.a({href: '/charity/?id=' + x.id}, x.name)]) );
         }
 
         return L.spoon([
             L.hug([
                 L.pillow(200),
                 CORE.box({style: {width: '600px'}}, [
-                    DONOR.summary({user: USER, title: 'Most Influential Donor'})
+                    DONOR.profile({user: USER})
                 ]),
                 L.pillow(20),
                 CORE.box({style: {width: '350px', height: '120px'}}, [
                     L.spoon([
-                        CORE.h2('Most Popular Charities'),
+                        CORE.h2('Recommended Funds'),
                         E.ol({style: {width: '350px'}}, listItems),
                         L.pillow(30)
                     ])

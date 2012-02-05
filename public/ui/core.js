@@ -35,7 +35,7 @@ function onReady(E, L, C, $) {
             xs = as;
             as = {};
         }
-        var e = E.a({href: as.href || '#', style: {textDecoration: 'none', backgroundColor: C.middleColor, color: '#fff', padding: '10px'}}, xs);
+        var e = E.a({href: as.href || '#', style: {font: font, textDecoration: 'none', backgroundColor: C.middleColor, color: '#fff', padding: '5px', borderRadius: '2px'}}, xs);
         $(e).hover(
             function() {
                 e.style.backgroundColor = C.lightColor;
