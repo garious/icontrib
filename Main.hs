@@ -7,12 +7,15 @@ import qualified Data.ByteString.Lazy.Char8  as BS
 import qualified Account                     as A
 import qualified CharityInfo                 as C
 import qualified UserInfo                    as U
+import qualified Log                         as Log
 --import Happstack.Server                      ( TLSConf(TLSConf) )
+
 main :: IO ()
 main = do
+    Log.start
     let loop = (webThread `catch` (\ _ -> loop))
     tid <- forkIO loop
-    putStrLn "Web server running. Press <enter> to exit."
+    Log.debugM  "Web server running. Press <enter> to exit."
     _ <- getLine
     killThread tid
 
@@ -33,7 +36,6 @@ webThread = do
         A.addUser ua (BS.pack "tom")      (BS.pack "tom")
         liftIO $ U.updateInfo ui (BS.pack "tom")       ti
         liftIO $ U.updateInfo ui (BS.pack "anonymous") ai
-    --let tls = TLSConf 8443 "testcert/server.crt" "testcert/server.key"
-    --serve (Just ("localhost", tls)) 8000 (site (Site ua ci ui))
+    --serve (Just ("localhost", TLSConf 8443 "testcert/server.crt" "testcert/server.key")) 8000 (site (Site ua ci ui))
     serve Nothing 8000 (site (Site ua ci ui))
 
