@@ -97,7 +97,7 @@ authServices:: Site -> ServerPart Response
 authServices st = msum [ 
       dir "login"  (post    (loginUser  "auth" (userAccounts st)))
     , dir "add"    (post    (addUser    "auth" (userAccounts st)))
-    , dir "logout" (get     (check >>= logOut (userAccounts st)))
+    , dir "logout" (post    (check >>= logOut (userAccounts st)))
     , dir "check"  (get     check)
     ]
     where
