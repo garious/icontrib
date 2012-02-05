@@ -8,7 +8,7 @@ import qualified Account                     as A
 import qualified CharityInfo                 as C
 import qualified UserInfo                    as U
 import qualified Log                         as Log
---import Happstack.Server                      ( TLSConf(TLSConf) )
+import Happstack.Server                      ( TLSConf(TLSConf) )
 
 main :: IO ()
 main = do
@@ -36,6 +36,6 @@ webThread = do
         A.addUser ua (BS.pack "tom")      (BS.pack "tom")
         liftIO $ U.updateInfo ui (BS.pack "tom")       ti
         liftIO $ U.updateInfo ui (BS.pack "anonymous") ai
-    --serve (Just ("localhost", TLSConf 8443 "testcert/server.crt" "testcert/server.key")) 8000 (site (Site ua ci ui))
-    serve Nothing 8000 (site (Site ua ci ui))
+    serve (Just ("localhost", TLSConf 8443 "testcert/server.crt" "testcert/server.key")) 8000 (site (Site ua ci ui))
+    --serve Nothing 8000 (site (Site ua ci ui))
 

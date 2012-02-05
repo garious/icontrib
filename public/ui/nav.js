@@ -61,7 +61,7 @@ function onReady(E, L, CORE, $, ME) {
             $(logoutButton).click(function(e) {
                 e.preventDefault();
                 $.ajax({
-                    type: 'GET',
+                    type: 'POST',
                     url: '/auth/logout',
                     success: function(data) {
                         window.location.reload();
