@@ -54,6 +54,7 @@ import Happstack.Server                      ( ServerPart
                                              , seeOther
                                              , tlsPort
                                              )
+import qualified Log as Log
 data Site = Site { userAccounts ::  AcidState A.Database
                  , charityInfo :: AcidState C.Database
                  , userInfo :: AcidState U.Database
@@ -96,7 +97,7 @@ authServices:: Site -> ServerPart Response
 authServices st = msum [ 
       dir "login"  (post    (loginUser  "auth" (userAccounts st)))
     , dir "add"    (post    (addUser    "auth" (userAccounts st)))
-    , dir "logout" (get     (check >>= logOut (userAccounts st)))
+    , dir "logout" (post    (check >>= logOut (userAccounts st)))
     , dir "check"  (get     check)
     ]
     where
@@ -145,7 +146,7 @@ getf :: (Show a, Data a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPa
 getf page = do 
    method GET
    rq <- askRq
-   liftIO $ print ("get"::String, (rqUri rq))
+   liftIO $ Log.debugShow ("get"::String, (rqUri rq))
    rv <- runErrorT page
    case(rv) of
         (Left ee) -> internalServerError (toResponse $ show ee)
@@ -155,7 +156,7 @@ get :: (Show a, Data a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPar
 get page = do 
    method GET
    rq <- askRq
-   liftIO $ print ("get"::String, (rqUri rq))
+   liftIO $ Log.debugShow ("get"::String, (rqUri rq))
    rv <- runErrorT page
    rsp $ rv 
 
@@ -163,7 +164,7 @@ post :: (Show a, Data a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPa
 post page = do 
    method POST
    rq <- askRq
-   liftIO $ print ("post"::String, (rqUri rq))
+   liftIO $ Log.debugShow ("post"::String, (rqUri rq))
    rv <- (runErrorT page)
    rsp $ rv
 
@@ -177,15 +178,15 @@ fileServer dd = do
 
 logOut :: AcidState A.Database ->  A.UserID -> ErrorT SE.ServerError (ServerPartT IO) ()
 logOut db uid = do 
-    liftIO $ putStrLn $ "logout: " ++ (toS uid)
+    liftIO $ Log.debugM $ "logout: " ++ (toS uid)
     liftIO $ A.clearUserCookie db uid
-    liftIO $ putStrLn "cleared cookies" 
+    liftIO $ Log.debugM "cleared cookies" 
 
 checkUser :: String -> AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) A.UserID
 checkUser name db = do 
-   liftIO $ putStrLn "check" 
+   liftIO $ Log.debugM "check" 
    cookie <- lift $ getCookieValue name
-   liftIO $ print cookie
+   liftIO $ Log.debugShow cookie
    token <- SE.checkMaybe SE.CookieDecode $ cookie 
    uid <- A.cookieToUser db token
    return uid
@@ -198,24 +199,24 @@ getCookieValue name = do { val <- lookCookieValue name
 
 loginUser :: String -> AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) A.UserID
 loginUser name db = do 
-   liftIO $ putStrLn "login" 
+   liftIO $ Log.debugM "login" 
    (A.UserLogin uid pwd) <- getBody
    token <- A.loginToCookie db (uid) (pwd)
-   liftIO $ putStrLn (show uid)
+   liftIO $ Log.debugM (show uid)
    let cookie = mkCookie name (Url.encode (B.unpack token))
    lift $ addCookies [(Session, cookie)]
    return $ uid
 
 addUser :: String -> AcidState A.Database -> ErrorT SE.ServerError (ServerPartT IO) A.UserID
 addUser name db = do 
-   liftIO $ putStrLn "add" 
+   liftIO $ Log.debugM "add" 
    (A.UserLogin uid pwd) <- getBody
    A.addUser db (uid) (pwd)
    loginUser name db
    
 getBody :: Data a => ErrorT SE.ServerError (ServerPartT IO) a 
 getBody = do   
-    liftIO $ putStrLn "getBody"
+    liftIO $ Log.debugM "getBody"
     bd <- lift $ lookPairs
     let 
             --GIANT FREAKING HACK :)
@@ -224,13 +225,13 @@ getBody = do
             from (_, (Left _)) = []
             bd' :: String
             bd' = concatMap from bd
-    liftIO $ print ("body"::String, bd')
+    liftIO $ Log.debugShow ("body"::String, bd')
     jsonDecode $ bd'
 
 rsp :: (Show a, Data a) => a -> ServerPart Response
 rsp msg = do
     let json = jsonEncode msg
-    liftIO (print json)
+    liftIO (Log.debugShow json)
     ok $ toResponse $ json
 
 toS :: B.ByteString -> String

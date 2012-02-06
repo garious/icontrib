@@ -39,7 +39,7 @@ checkUser = get "/auth/check"
 
 --logged out the current user
 logoutUser :: HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError ())
-logoutUser = get "/auth/logout"
+logoutUser = post "/auth/logout" ()
 
 main :: IO ()
 main = do
