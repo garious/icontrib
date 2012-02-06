@@ -1,11 +1,11 @@
 var deps = [
     '/tag/tag.js', 
-    '/tag/layout.js',
+    '/tag/layout1.js',
     '/ui/nav.js', 
     '/ui/chart.js', 
     '/ui/core.js',
-    '/ui/colors.json',
-    '/jquery/jquery-ui-mod.js'
+    '/ui/colors.json'// ,
+    //'/jquery/jquery-ui-mod.js'
 ];
 
 var defaultUser = {
@@ -13,7 +13,7 @@ var defaultUser = {
    alignedImageUrl: '/images/friends.png'
 };
 
-function onReady(E, L, NAV, CHART, CORE, C, $) { 
+function onReady(E, L, NAV, CHART, CORE, C) { //, $) { 
 
     function alignButton(user) {
         var alignLink = CORE.button({href: '/me/?donateTo=' + user.id}, ['Donate!']);
@@ -61,33 +61,30 @@ function onReady(E, L, NAV, CHART, CORE, C, $) {
 
         for (var j = 0; j < xs.length; j++) {
             var x = xs[j];
+            var pct = CORE.h6(Math.round(1000 * x.shares / total) / 10 + '%');
 
-            var cols = [
-                E.td({style: {textAlign: 'right'}}, [CORE.h6(Math.round(1000 * x.shares / total) / 10 + '%')]),
-                E.td([CORE.a({href: x.url}, x.name)])
-            ];
-            rows.push(E.tr(cols));
+            var cols = L.hug([
+                E.div({style: {width: '70px', height: pct.height}}, [pct]),
+                CORE.a({href: x.url}, x.name)
+            ]);
+            rows.push(cols);
         }
-        return E.table({cellSpacing: 10}, [
-            E.tbody(rows)
-        ]);
+        return L.spoon(rows);
     }
 
     function distributionTable(user) {
         if (user.funds) {
             var rows = [];
             for (var i = 0; i < user.funds.length; i++) {
-                var row = E.div({style: {width: 550}}, [
-                    L.spoon([
-                        L.hug([
-                            CORE.h4(user.funds[i].name),
-                            L.pillow(300, 0),
-                            alignButton({id: user.funds[i].labels[0]})
-                        ]),
-                        L.hug([
-                            CHART.pie1(user),
-                            L.hug([fundContents(user.distribution, user.funds[i].name)])
-                        ])
+                var row = L.spoon([
+                    L.hug([
+                        CORE.h4(user.funds[i].name),
+                        L.pillow(300, 0),
+                        alignButton({id: user.funds[i].labels[0]})
+                    ]),
+                    L.hug([
+                        CHART.pie1(user),
+                        L.hug([fundContents(user.distribution, user.funds[i].name)])
                     ])
                 ]);
                 rows.push(row);
@@ -102,7 +99,7 @@ function onReady(E, L, NAV, CHART, CORE, C, $) {
         var userInfo = L.hug([
             L.pillow(25, 0), 
             L.spoon([
-                CORE.h3([user.firstName + ' ' + user.lastName]),
+                CORE.h3(user.firstName + ' ' + user.lastName),
                 CORE.h5('Helps raise $' + Math.round(user.alignedDonated / 100) + ' per month')
             ])
         ]);

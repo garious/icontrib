@@ -4,7 +4,7 @@ var initialDeps = [
 
 var deps = [
     '/tag/tag.js', 
-    '/tag/layout.js', 
+    '/tag/layout1.js', 
     '/ui/nav.js', 
     '/ui/core.js', 
     '/charity/popular.json', 
@@ -17,25 +17,23 @@ function onReady(E, L, NAV, CORE, POP, DONOR, USER) {
 
     function body() {
 
-        var listItems = [];
+        var listItems = [
+            CORE.h2('Recommended Funds')
+        ];
         for (var i = 0; i < POP.length; i += 1) {
             var x = POP[i];
-            listItems.push( E.li([CORE.a({href: '/charity/?id=' + x.id}, x.name)]) );
+            listItems.push( CORE.a({href: '/charity/?id=' + x.id}, x.name) );
         }
 
         return L.spoon([
             L.hug([
                 L.pillow(200),
-                CORE.box({style: {width: '600px'}}, [
+                CORE.box({width: '600px'}, [
                     DONOR.profile({user: USER})
                 ]),
                 L.pillow(20),
-                CORE.box({style: {width: '350px', height: '120px'}}, [
-                    L.spoon([
-                        CORE.h2('Recommended Funds'),
-                        E.ol({style: {width: '350px'}}, listItems),
-                        L.pillow(30)
-                    ])
+                CORE.box([
+                    L.spoon(listItems)
                 ])
             ]),
             NAV.footer([

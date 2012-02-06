@@ -11,6 +11,7 @@ var deps = [
 function onReady(E, C, GOOGLE) {
 
 
+    // Uses Google visualization library to generate an interactive pie chart
     function pie(user) {
         var dist = [];
         for (var i = 0; i < user.distribution.length; i++) {
@@ -36,6 +37,7 @@ function onReady(E, C, GOOGLE) {
         return userChart;
     }
 
+    // Uses Google API to generate a simple pie chart image
     function pie1(user) {
         var height = 150;
         var width = 150;
@@ -51,7 +53,7 @@ function onReady(E, C, GOOGLE) {
         }
 
         return E.img({
-            src: 'https://chart.googleapis.com/chart?cht=p&chs=' + chs + '&chd=' + chd,
+            src: 'https://chart.googleapis.com/chart?cht=p&chco=a7d322&chs=' + chs + '&chd=' + chd,
             alt: 'Chart',
             style: {width: width + 'px', height: height + 'px'}
         });

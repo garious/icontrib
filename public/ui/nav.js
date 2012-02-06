@@ -5,8 +5,7 @@ var authDeps = [
 var deps = [
     '/tag/tag.js', 
     '/tag/layout1.js', 
-    'core.js',
-    '/jquery/jquery-mod.js'
+    'core.js'
 ];
 
 // TODO: how to get window.innerHeight in IE 8?
@@ -18,8 +17,25 @@ function getWindowInnerWidth() {
     return window.innerWidth;
 }
 
+function post(path, params, callback) {
+    var req = new XMLHttpRequest();
+    req.onreadystatechange = function () {
+        if (req.readyState === 4) {
+            callback(req.responseText);
+        }
+    };
+
+    var body = JSON.stringify(params);
+
+    req.open('POST', path, true);
+    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    req.send(body);
+}
+
+
 function onAuthReady(AUTH) { 
-function onReady(E, L, CORE, $, ME) { 
+function onReady(E, L, CORE, ME) { 
 
     function loginWidget(as) {
         if (AUTH.Left) {
@@ -27,23 +43,18 @@ function onReady(E, L, CORE, $, ME) {
             var password = E.input({type: 'password', size: 18});
             var badLogin = E.span({hidden: true, style: {height: 20, width: 200, color: 'red'}}, 'bad username or password');
             var loginButton = CORE.button('Log in');
-            $(loginButton).click(function(e) {
+            loginButton.addEventListener('click', function(e) {
                 e.preventDefault();
                 var formValues = {
                     email: username.value,
                     password: password.value 
                 };
-                $.ajax({
-                    type: 'POST',
-                    url: '/auth/login',
-                    data: JSON.stringify(formValues),
-                    dataType: 'json',
-                    success: function(data) {
-                        if(data.Left) {
-                            badLogin.hidden = false;
-                        } else {
-                            window.location.reload();
-                        }
+                post('/auth/login', formValues, function(data) {
+                    var data = JSON.parse(data);
+                    if(data.Left) {
+                        badLogin.hidden = false;
+                    } else {
+                        window.location.reload();
                     }
                 });
             });
@@ -58,14 +69,10 @@ function onReady(E, L, CORE, $, ME) {
              ]);
         } else {
             var logoutButton = CORE.a({href: '#'}, 'Sign out');
-            $(logoutButton).click(function(e) {
+            logoutButton.addEventListener('click', function(e) {
                 e.preventDefault();
-                $.ajax({
-                    type: 'GET',
-                    url: '/auth/logout',
-                    success: function(data) {
-                        window.location.reload();
-                    }
+                post('/auth/logout', {}, function(data) {
+                    window.location.reload();
                 });
             });
 
