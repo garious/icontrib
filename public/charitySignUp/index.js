@@ -5,11 +5,12 @@ var deps = [
     '/ui/core.js', 
     'toa.html',
     '/jquery/jquery-mod.js',
-    '/jsonform/jsonform.js'
+    '/jsonform/jsonform.js',
+    '/charity/get.json'
 ];
 
 
-function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
+function onReady(E, L, NAV, CORE, toaHtml, $, JF, CHARITY) {
 
     function inputField(input, as, xs) {
 
@@ -91,7 +92,21 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
         var phoneNumber = inputField(pc.phone,            {label: 'Phone Number', type: 'text', name: 'phoneNumber', placeholder: '(xxx) xxx-xxxx'});
         var email       = inputField(pc.email,            {label: 'Email', type: 'email', name: 'email', placeholder: 'abc@charity.org'});
         //var checkbox    = CORE.input({type: 'checkbox', width: 200}, 'I agree to the terms above');
-        var register    = CORE.button('Register!');
+
+        function setVal (name, value, rv) { 
+            rv.value = value; 
+            return rv; 
+        }
+
+        var buttonText;
+        if(CHARITY.Right) {
+            inputs = JF.map(schema, CHARITY.Right, inputs, setVal);
+            buttonText = 'Update';
+        } else {
+            buttonText = 'Register!';
+        }
+        var register = CORE.button(buttonText);
+
         var form = E.form({style: {counterReset: 'fieldsets', width: '800px', height: '720px'}}, [
                 fieldset([legend('Organization Information'), ein, name, url ]),
                 fieldset([legend('Point of Contact'), firstName, lastName, phoneNumber, email ]),
@@ -99,28 +114,8 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
                 fieldset([legend(['Terms of Agreement']), toaDiv/*, checkbox*/ ]),
                 register
         ]);
-        var swapNode = function(newNode, oldNode) {
-            oldNode.parentNode.replaceChild(newNode, oldNode);
-            return newNode;
-        };
-        //fetch the current charity info
-        $.ajax({
-            type: "GET",
-            url: '/charity/get',
-            dataType: "json",
-            success: function(data) {
-                if(data.Right) {
-                    var fromVal = function(name, value, rv) { 
-                        rv.value = value; 
-                        return rv; 
-                    };
-                    inputs = JF.map(schema, data.Right, inputs, fromVal);
-                    register = swapNode(CORE.input({type: 'submit', value : 'Update' }), register);
-                }
-            }
-        });
 
-        $(form).click(function (e) {
+        $(register).click(function (e) {
             e.preventDefault();
             var values = JF.map(schema, inputs, {}, JF.toVal);
             var dataString = JSON.stringify(values);

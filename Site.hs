@@ -121,7 +121,7 @@ donorServices st = msum [
 charityServices :: Site -> ServerPart Response
 charityServices st = msum [ 
       dir "update" (post (check >>= (withBody (C.updateInfo (charityInfo st)))))
-    , dir "get"    (get  (check >>= (C.lookupInfo (charityInfo st))))
+    , dir "get.json" (get  (check >>= (C.lookupInfo (charityInfo st))))
     ]
     where
         check = (checkUser "auth" (userAccounts st))
