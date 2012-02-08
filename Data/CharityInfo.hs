@@ -6,7 +6,7 @@ import qualified Data.Map                    as Map
 import qualified Account                     as A
 import Data.SafeCopy
 
-
+type Ein = String
 data PointOfContact = PointOfContact { firstName :: String 
                                      , lastName :: String
                                      , phone :: String
@@ -16,7 +16,7 @@ data PointOfContact = PointOfContact { firstName :: String
 
 $(deriveSafeCopy 0 'base ''PointOfContact)
 
-data OrganizationInfo = OrganizationInfo { ein :: String
+data OrganizationInfo = OrganizationInfo { ein :: Ein
                                          , organizationName :: String
                                          , companyWebsite :: String
                                          }
@@ -31,8 +31,8 @@ data CharityInfo = CharityInfo { info :: OrganizationInfo
 
 $(deriveSafeCopy 0 'base ''CharityInfo)
 
-   
-data Database = Database !(Map.Map A.UserID CharityInfo)
+type CharityMap = Map.Map Ein CharityInfo 
+data Database = Database !(Map.Map A.UserID CharityMap)
 $(deriveSafeCopy 0 'base ''Database)
 
 
