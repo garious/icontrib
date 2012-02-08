@@ -4,13 +4,29 @@ var deps = [
     '/ui/nav.js', 
     '/ui/core.js', 
     'toa.html',
-    '/jquery/jquery-mod.js',
     '/jsonform/jsonform.js',
     '/charity/get.json'
 ];
 
+// TODO: Move this to a shared location
+function post(path, params, callback) {
+    var req = new XMLHttpRequest();
+    req.onreadystatechange = function () {
+        if (req.readyState === 4) {
+            callback(req.responseText);
+        }
+    };
 
-function onReady(E, L, NAV, CORE, toaHtml, $, JF, CHARITY) {
+    var body = JSON.stringify(params);
+
+    req.open('POST', path, true);
+    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    req.send(body);
+}
+
+
+function onReady(E, L, NAV, CORE, toaHtml, JF, CHARITY) {
 
     function inputField(input, as, xs) {
 
@@ -68,27 +84,30 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF, CHARITY) {
         toaDiv.innerHTML = toaHtml;
         var info = { ein: null,
                      organizationName: null,
-                     companyWebsite: null
+                     companyWebsite: null,
+                     paymentAddress: null
                    };
-        var poc = { firstName: null,
-                    lastName: null,
-                    phone: null,
-                    email: null
-                  };
+        //var poc = { firstName: null,
+        //            lastName: null,
+        //            phone: null,
+        //            email: null
+        //          };
         //stupid schema, the 'null' services as a sentinal when i traverse it
-        var schema = { info: info, poc: poc };
+        //var schema = { info: info, poc: poc };
+        var schema = { info: info };
         //now i have an object with a bunch of empty inputs, whose layout matches my schema
         //i can traverse the schema in parallel with the object and reference the input fields
         var inputs = JF.map(schema, schema, {}, JF.toInput);
         var oi = inputs.info; 
-        var pc = inputs.poc;
+        //var pc = inputs.poc;
         var name        = inputField(oi.organizationName, {label: 'Organization Name', type: 'text', name: 'name'});
         var ein         = inputField(oi.ein,              {label: 'EIN', type: 'text', name: 'ein', required: 'required'});
-        var url         = inputField(oi.companyWebsite,   {label: 'Company Website', type: 'url', name: 'url', placeholder: 'http://'});
-        var firstName   = inputField(pc.firstName,        {label: 'First Name', type: 'text', name: 'firstName', required: 'required'});
-        var lastName    = inputField(pc.lastName,         {label: 'Last Name', type: 'text', name: 'lastName', required: 'required'});
-        var phoneNumber = inputField(pc.phone,            {label: 'Phone Number', type: 'text', name: 'phoneNumber', placeholder: '(xxx) xxx-xxxx'});
-        var email       = inputField(pc.email,            {label: 'Email', type: 'email', name: 'email', placeholder: 'abc@charity.org'});
+        var url         = inputField(oi.companyWebsite,   {label: 'Website URL', type: 'url', name: 'url', placeholder: 'http://'});
+        var payAddr     = inputField(oi.paymentAddress,   {label: 'PayPal address', type: 'email', name: 'payAddr', placeholder: 'donations@charity.org'});
+        //var firstName   = inputField(pc.firstName,        {label: 'First Name', type: 'text', name: 'firstName', required: 'required'});
+        //var lastName    = inputField(pc.lastName,         {label: 'Last Name', type: 'text', name: 'lastName', required: 'required'});
+        //var phoneNumber = inputField(pc.phone,            {label: 'Phone Number', type: 'text', name: 'phoneNumber', placeholder: '(xxx) xxx-xxxx'});
+        //var email       = inputField(pc.email,            {label: 'Email', type: 'email', name: 'email', placeholder: 'abc@charity.org'});
         //var checkbox    = CORE.input({type: 'checkbox', width: 200}, 'I agree to the terms above');
 
         function setVal (name, value, rv) { 
@@ -106,27 +125,23 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF, CHARITY) {
         var register = CORE.button(buttonText);
 
         var form = E.form({style: {counterReset: 'fieldsets', width: '800px', height: '720px'}}, [
-                fieldset([legend('Organization Information'), ein, name, url ]),
-                fieldset([legend('Point of Contact'), firstName, lastName, phoneNumber, email ]),
+                fieldset([legend('Organization Information'), ein, name, url, payAddr ]),
+                //fieldset([legend('Point of Contact'), firstName, lastName, phoneNumber, email ]),
                 fieldset([legend('Interchange Fee'), E.div({style: {left: '30px', position: 'absolute'}}, [CORE.h4('3.9%')])]),
                 fieldset([legend(['Terms of Agreement']), toaDiv/*, checkbox*/ ]),
                 register
         ]);
-        $(register).click(function (e) {
+
+        register.addEventListener('click', function (e) {
             e.preventDefault();
             var values = JF.map(schema, inputs, {}, JF.toVal);
             var dataString = JSON.stringify(values);
-            $.ajax({
-                type: "POST",
-                url: '/charity/update',
-                data: dataString,
-                dataType: "json",
-                success: function(data) {
-                    var dataString = JSON.stringify(data);
-                    console.log(dataString);
-                }
-             });
+            post('/charity/update', dataString, function(data) {
+                var dataString = JSON.stringify(data);
+                console.log(dataString);
+            });
         });
+
         return L.hug([
             L.pillow(250),
             L.spoon([
