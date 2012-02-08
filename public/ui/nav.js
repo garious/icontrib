@@ -49,8 +49,8 @@ function onReady(E, L, CORE, ME) {
                     email: username.value,
                     password: password.value 
                 };
-                post('/auth/login', formValues, function(data) {
-                    var data = JSON.parse(data);
+                post('/auth/login', formValues, function(dat) {
+                    var data = JSON.parse(dat);
                     if(data.Left) {
                         badLogin.hidden = false;
                     } else {
