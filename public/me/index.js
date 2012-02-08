@@ -1,33 +1,36 @@
 var deps = [
     '/tag/tag.js', 
-    '/tag/layout.js', 
+    '/tag/layout1.js', 
     '/ui/nav.js',
     '/ui/core.js',
-    '/ui/chart.js',
-    '/jquery/jquery-ui-mod.js'
+    '/ui/chart.js'
 ];
 
-function onReady(E, L, NAV, CORE, CHART, $UI) { 
+function onReady(E, L, NAV, CORE, CHART) { 
 
     function fundContents(dist) {
+
+        var total = 0;
+        for (var i = 0; i < dist.length; i++) {
+            var d = dist[i];
+            total = total + d.shares;
+        }
+
         var rows = [];
 
         for (var j = 0; j < dist.length; j++) {
             var x = dist[j];
 
-            var sldr = E.div({style: {width: 200}});
-            $UI(sldr).slider({value: x.shares});
-
-            var cols = [
-                E.td([CORE.a({href: x.url}, x.name)]),
-                E.td([sldr])
-            ];
-            rows.push(E.tr(cols));
+            var pct = Math.round(x.shares / total * 1000) / 10;
+            var cols = L.hug([
+                CORE.input({type: 'text', size: 4, value: pct}),
+                L.pillow(10, 0),
+                CORE.a({href: x.url}, x.name)
+            ]);
+            rows.push(cols);
+            rows.push(L.pillow(0,15));
         }
-        return E.table({cellSpacing: 10}, [
-            E.link({type: "text/css", href: "/css/smoothness/jquery-ui-1.8.16.custom.css", rel: "stylesheet"}),
-            E.tbody(rows)
-        ]);
+        return L.spoon(rows);
     }
 
     function distributionTable(user) {
@@ -37,9 +40,13 @@ function onReady(E, L, NAV, CORE, CHART, $UI) {
     function dashboard(as) {
         as = as || {};
         var user = as.user || {};
+        var alignedUsers = user.alignedUsers || [];
+        var raised = Math.round(user.alignedDonated / 100);
+        var impactMsg = alignedUsers.length + ' donors are aligned with your distribution.  Together you help raise $' + raised + ' per month!';
+
         var userChart = L.spoon([
             CORE.h3('My impact'),
-            L.hug([L.pillow(30), CORE.h6((user.alignedUsers || []).length + ' donors are aligned with your distribution.  Together you help raise $' + Math.round(user.alignedDonated / 100) + ' per month!')]),
+            L.hug([L.pillow(30), CORE.h6(impactMsg)]),
             CORE.h3('My charitable distribution'),
             L.hug([L.pillow(100), CHART.pie(user)])
         ]);
@@ -48,10 +55,11 @@ function onReady(E, L, NAV, CORE, CHART, $UI) {
 	    userChart,
             distributionTable(user),
             CORE.h3('My funding'),
-            L.hug([L.pillow(30), E.input({type: 'text', value: user.centsDonated / 100.0}), CORE.h6("dollars per month")], 10),
-            L.pillow(20),
-            L.hug([L.pillow(220,0), E.div({width: 200}, [CORE.button({href: '#'}, ['Save Changes'])])]),
-            L.pillow(20)
+            L.pillow(0, 20),
+            L.hug([L.pillow(30, 0), CORE.input({type: 'text', size: 10, value: user.centsDonated / 100.0}), L.pillow(10,0), CORE.h6("dollars per month")]),
+            L.pillow(0, 20),
+            L.hug([L.pillow(20,0), CORE.button({href: '#'}, ['Save Changes'])]),
+            L.pillow(0, 20)
         ], 10);
     }
 

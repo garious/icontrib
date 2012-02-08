@@ -1,6 +1,6 @@
 var deps = [
     '/tag/tag.js', 
-    '/tag/layout.js', 
+    '/tag/layout1.js', 
     '/ui/nav.js', 
     '/ui/core.js', 
     'toa.html',
@@ -10,12 +10,14 @@ var deps = [
 
 
 function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
+
     function inputField(input, as, xs) {
 
         var fieldStyle = {
             listStyle: 'none',
             padding: '5px 10px',
-            marginBottom: '2px'
+            marginBottom: '2px',
+            height: '20px'  // TODO: derive this from field contents
         };
 
         var labelStyle = {
@@ -56,7 +58,7 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
     }
 
     function fieldset(xs) {
-        return E.fieldset({style: {border: 'none', marginBottom: '10px'}}, xs);
+        return E.fieldset({style: {border: 'none', marginBottom: '10px', height: (xs * 20) + 'px'}}, xs);
     }
 
     function body() {
@@ -86,9 +88,9 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
         var lastName    = inputField(pc.lastName,         {label: 'Last Name', type: 'text', name: 'lastName', required: 'required'});
         var phoneNumber = inputField(pc.phone,            {label: 'Phone Number', type: 'text', name: 'phoneNumber', placeholder: '(xxx) xxx-xxxx'});
         var email       = inputField(pc.email,            {label: 'Email', type: 'email', name: 'email', placeholder: 'abc@charity.org'});
-        //var checkbox    = E.input({type: 'checkbox', style: {width: '200px'}}, 'I agree to the terms above');
+        //var checkbox    = CORE.input({type: 'checkbox', width: 200}, 'I agree to the terms above');
         var register    = CORE.button('Register!');
-        var form = E.form({style: {counterReset: 'fieldsets', width: '800px'}}, [
+        var form = E.form({style: {counterReset: 'fieldsets', width: '800px', height: '720px'}}, [
                 fieldset([legend('Organization Information'), ein, name, url ]),
                 fieldset([legend('Point of Contact'), firstName, lastName, phoneNumber, email ]),
                 fieldset([legend('Interchange Fee'), E.div({style: {left: '30px', position: 'absolute'}}, [CORE.h4('3.9%')])]),
@@ -112,7 +114,7 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
                         return rv; 
                     };
                     inputs = JF.map(schema, data.Right, inputs, fromVal);
-                    register = swapNode(E.input({type: 'submit', value : 'Update' }), register);
+                    register = swapNode(CORE.input({type: 'submit', value : 'Update' }), register);
                 }
             }
         });
@@ -141,7 +143,8 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
                     ])
                 ]),
                 L.pillow(30),
-                CORE.box([form])
+                CORE.box([form]),
+                L.pillow(30)
             ])
         ]);
     }
