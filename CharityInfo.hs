@@ -5,50 +5,12 @@ module CharityInfo where
 import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
 import Control.Monad.Error                   ( runErrorT, MonadError )
-import Data.Data                             ( Data, Typeable )
 import Control.Monad.IO.Class                ( MonadIO )
-import qualified Text.JSON                   as JS
 import qualified Data.Map                    as Map
 import qualified Account                     as A
-
-import Text.JSON
-import Data.Derive.JSON
-import Data.DeriveTH
 import Data.Acid
-import Data.SafeCopy
 import ServerError
-
-
-data PointOfContact = PointOfContact { firstName :: String 
-                                     , lastName :: String
-                                     , phone :: String
-                                     , email :: String
-                                     }
-                    deriving (Show, Typeable, Data, Eq)
-
-$(deriveSafeCopy 0 'base ''PointOfContact)
-$(derive makeJSON ''PointOfContact)
-
-data OrganizationInfo = OrganizationInfo { ein :: String
-                                         , organizationName :: String
-                                         , companyWebsite :: String
-                                         }
-                             deriving (Show, Typeable, Data, Eq)
-
-$(deriveSafeCopy 0 'base ''OrganizationInfo)
-$(derive makeJSON ''OrganizationInfo)
-
-data CharityInfo = CharityInfo { info :: OrganizationInfo 
-                               , poc :: PointOfContact
-                               }
-                 deriving (Show, Typeable, Data, Eq)
-
-$(deriveSafeCopy 0 'base ''CharityInfo)
-$(derive makeJSON ''CharityInfo)
-
-   
-data Database = Database !(Map.Map A.UserID CharityInfo)
-$(deriveSafeCopy 0 'base ''Database)
+import Data.CharityInfo
 
 empty :: Database
 empty = Database Map.empty

@@ -17,6 +17,7 @@ import qualified Codec.Binary.Url            as Url
 import qualified ServerError                 as SE
 import qualified Account                     as A
 import qualified CharityInfo                 as C
+import qualified Data.CharityInfo            as C
 import qualified UserInfo                    as U
 import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP

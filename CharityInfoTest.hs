@@ -4,6 +4,7 @@ module UserInfoTest where
 
 import Data.Acid.Memory                      ( openMemoryState )
 import qualified CharityInfo                 as C
+import qualified Data.CharityInfo            as C
 
 import TestUtil
 import ServerError

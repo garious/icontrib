@@ -63,24 +63,22 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
 
         var toaDiv = E.div({style: {margin: '15px', height: '220px', overflow: 'auto'}});
         toaDiv.innerHTML = toaHtml;
-        var info = { OrganizationInfo: { 
-                        ein: null,
-                        organizationName: null,
-                        companyWebsite: null
-                   }};
-        var poc = { PointOfContact: { 
-                        firstName: null,
-                        lastName: null,
-                        phone: null,
-                        email: null
-                  }};
+        var info = { ein: null,
+                     organizationName: null,
+                     companyWebsite: null
+                   };
+        var poc = { firstName: null,
+                    lastName: null,
+                    phone: null,
+                    email: null
+                  };
         //stupid schema, the 'null' services as a sentinal when i traverse it
-        var schema = {  CharityInfo: { info: info, poc: poc } };
+        var schema = { info: info, poc: poc };
         //now i have an object with a bunch of empty inputs, whose layout matches my schema
         //i can traverse the schema in parallel with the object and reference the input fields
         var inputs = JF.map(schema, schema, {}, JF.toInput);
-        var oi = inputs.CharityInfo.info.OrganizationInfo; 
-        var pc = inputs.CharityInfo.poc.PointOfContact;
+        var oi = inputs.info; 
+        var pc = inputs.poc;
         var name        = inputField(oi.organizationName, {label: 'Organization Name', type: 'text', name: 'name'});
         var ein         = inputField(oi.ein,              {label: 'EIN', type: 'text', name: 'ein', required: 'required'});
         var url         = inputField(oi.companyWebsite,   {label: 'Company Website', type: 'url', name: 'url', placeholder: 'http://'});
@@ -107,6 +105,7 @@ function onReady(E, L, NAV, CORE, toaHtml, $, JF) {
             url: '/charity/get',
             dataType: "json",
             success: function(data) {
+ console.log("Anatoly sucks:", data);
                 if(data.Right) {
                     var fromVal = function(name, value, rv) { 
                         rv.value = value; 
