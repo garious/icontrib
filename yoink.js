@@ -22,18 +22,20 @@
 // yoink, a simple resource loader.  XMLHttpRequest is the only dependency.
 //
 
+/*jslint vars: true, evil: true, regexp: true, browser: true*/
 
-var YOINK = (function() {
+var YOINK = (function () {
+    'use strict';
 
-    var console = window && window.console || {log: function(){}};
+    var console = (window && window.console) || {log: function () {}};
 
     var defaultInterpreters = {
-        json: function(text) {
+        json: function (text) {
             return JSON.parse(text);
         },
-        js: function(text, require, callback) {
+        js: function (text, require, callback) {
             // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-            var f_str = '(function (baseUrl, define, require) {' + text + '})';
+            var f_str = '(function (baseUrl, define, require) {"use strict";' + text + '})';
             var f = eval(f_str);
             f(require.base, callback, require);
         }
@@ -41,38 +43,39 @@ var YOINK = (function() {
 
     // Special handling for Internet Explorer
     if (window && window.execScript) {
-        defaultInterpreters.json = function(text) {
-            var f_str = '(function () { return ' + text + ';})';
-            window.execScript('_iesucks = ' + f_str);
-            return _iesucks();
-        };
-
-        defaultInterpreters.js = function(text, require, callback) {
+        defaultInterpreters.js = function (text, require, callback) {
             var f_str = '(function (baseUrl, define, require) {' + text + '})';
-            window.execScript('_iesucks = ' + f_str);
-            var f = _iesucks;
+            /*global iesucks: true*/
+            window.execScript('iesucks = ' + f_str);
+            var f = iesucks;
             f(require.base, callback, require);
         };
     }
 
     function clone(o1) {
         var o2 = {};
+        var k;
         for (k in o1) {
-            o2[k] = o1[k];
+            if (o1.hasOwnProperty(k)) {
+                o2[k] = o1[k];
+            }
         }
         return o2;
     }
+
+    // Forward-declare mutual recursion
+    var mkGetResources;
 
     function interpret(rsc, url, interpreter, interpreters, cache, callback) {
         // Look up an interpreter for the URL's file extension
         if (!interpreter) {
             var ext = url.substring(url.lastIndexOf('.') + 1, url.length).toLowerCase();
-            interpreter = interpreters[ext] || function(x){return x;};
+            interpreter = interpreters[ext] || function (x) { return x; };
         }
 
         // Interpret the resource
         if (interpreter.length === 1) {
-            callback( interpreter(rsc) );
+            callback(interpreter(rsc));
         } else {
             // Provide loaded module with a version of loader that pulls modules 
             // relative to the directory of the url we are currently loading.
@@ -86,9 +89,9 @@ var YOINK = (function() {
     // Download a text file asynchronously
     function getFile(path, callback) {
         var req = new XMLHttpRequest();
-        req.onreadystatechange = function() {
+        req.onreadystatechange = function () {
             if (req.readyState === 4) {
-                callback(req.responseText);
+                callback(req.responseText, req.status || 200);
             }
         };
         req.open('GET', path, true);
@@ -98,15 +101,23 @@ var YOINK = (function() {
     // System-wide cache of what to do once a resource has been downloaded.
     var plans = {};
 
-    function interpretFile(interpreters, cache, u, str) {
-        console.log("yoink: interpreting '" + u.path + "'");
-        interpret(str, u.path, u.interpreter, interpreters, cache, function(rsc) {
+    function interpretFile(interpreters, cache, u, str, httpCode) {
+        function callback(rsc) {
             cache[u.path] = rsc; // Cache the result
             // Execute the plan
             var plan = plans[u.path];
             delete plans[u.path];
             plan(rsc);
-        }); 
+        }
+        if (httpCode >= 200 && httpCode < 300) {
+            console.log("yoink: interpreting '" + u.path + "'");
+            interpret(str, u.path, u.interpreter, interpreters, cache, callback);
+        } else if (u.onError) {
+            var rsc = u.onError(httpCode);
+            callback(rsc);
+        } else {
+            throw httpCode;
+        }
     }
 
     function getResource(interpreters, cache, url, onInterpreted) {
@@ -117,15 +128,15 @@ var YOINK = (function() {
             var plan = plans[p];
             if (plan === undefined) {
                 // Create a plan for what we will do with this module
-                plans[p] = function(rsc) {
+                plans[p] = function (rsc) {
                     onInterpreted(rsc);
                 };
-                getFile(p, function(str){
-                    interpretFile(interpreters, cache, url, str);
+                getFile(p, function (str, httpCode) {
+                    interpretFile(interpreters, cache, url, str, httpCode);
                 });
             } else {
                 // Add ourselves to the plan.  The plan is effectively a FIFO queue of actions.
-                plans[p] = function(rsc) {
+                plans[p] = function (rsc) {
                     plan(rsc);
                     onInterpreted(rsc);
                 };
@@ -139,43 +150,46 @@ var YOINK = (function() {
         var p = url.path || url;
         var f = url.interpreter || null;
         if (base !== '' && p.charAt(0) !== '/' && p.indexOf('://') === -1) {
-           p = base + '/' + p;
+            p = base + '/' + p;
         }
 
         // Normalize the path
-        p = p.replace(/[^\/]+[\/]\.\.[\/]/g,'');  // Remove redundant '%s/..' items.
-        return {path: p, interpreter: f};
+        p = p.replace(/[^\/]+[\/]\.\.[\/]/g, '');  // Remove redundant '%s/..' items.
+        return {path: p, interpreter: f, onError: url.onError};
     }
 
-    function mkGetResources(base, cache, interpreters) {
-        return function(urls, callback) {
+    mkGetResources = function (base, cache, interpreters) {
+
+        function getResources(urls, callback) {
             var len = urls.length; // How many things we need to interpret
+            var i;
+            var rscs = [];         // For the results of interpreting files
+            var cnt = 0;           // For counting what we've downloaded
+
+            function mkOnInterpreted(i) {
+                return function (rsc) {
+                    rscs[i] = rsc;
+                    cnt += 1;  // Index of the next item to interpret
+
+                    if (cnt === len) {
+                        callback.apply(null, rscs);
+                    }
+                };
+            }
 
             if (len === 0) {
                 callback();
             } else {
-                var rscs = [];         // For the results of interpreting files
-                var cnt = 0;           // For counting what we've downloaded
-
-                function mkOnInterpreted(i) {
-                     return function(rsc) {
-                         rscs[i] = rsc;
-                         cnt++;  // Index of the next item to interpret
-
-                         if (cnt === len) {
-                             callback.apply(null, rscs);
-                         }
-                     };
-                }
-
-                for (var i = 0; i < len; i++) {
+                for (i = 0; i < len; i += 1) {
                     var u = resolve(base, urls[i]);
                     getResource(interpreters, cache, u, mkOnInterpreted(i));
                 }
             }
-        };
-    }
-    
+        }
+
+        return getResources;
+    };
+
     // Resource Loader constructor
     function resourceLoader(base, cache, interpreters) {
         base = base || '';
@@ -185,9 +199,14 @@ var YOINK = (function() {
         return {getResources: mkGetResources(base, cache, interpreters)};
     }
 
+    function require(urls, callback) {
+        return resourceLoader().getResources(urls, callback);
+    }
+
     return {
-       resourceLoader: resourceLoader,
-       interpreters: defaultInterpreters
+        require: require,
+        resourceLoader: resourceLoader,
+        interpreters: defaultInterpreters
     };
-})();
+}());
 
