@@ -98,7 +98,7 @@ var YOINK = (function () {
         var req = new XMLHttpRequest();
         req.onreadystatechange = function () {
             if (req.readyState === 4) {
-                callback(req.responseText);
+                callback(req.responseText, req.status || 200);
             }
         };
         req.open('GET', path, true);
@@ -108,15 +108,23 @@ var YOINK = (function () {
     // System-wide cache of what to do once a resource has been downloaded.
     var plans = {};
 
-    function interpretFile(interpreters, cache, u, str) {
-        console.log("yoink: interpreting '" + u.path + "'");
-        interpret(str, u.path, u.interpreter, interpreters, cache, function (rsc) {
+    function interpretFile(interpreters, cache, u, str, httpCode) {
+        function callback(rsc) {
             cache[u.path] = rsc; // Cache the result
             // Execute the plan
             var plan = plans[u.path];
             delete plans[u.path];
             plan(rsc);
-        });
+        }
+        if (httpCode >= 200 && httpCode < 300) {
+            console.log("yoink: interpreting '" + u.path + "'");
+            interpret(str, u.path, u.interpreter, interpreters, cache, callback);
+        } else if (u.onError) {
+            var rsc = u.onError(httpCode);
+            callback(rsc);
+        } else {
+            throw httpCode;
+        }
     }
 
     function getResource(interpreters, cache, url, onInterpreted) {
@@ -130,8 +138,8 @@ var YOINK = (function () {
                 plans[p] = function (rsc) {
                     onInterpreted(rsc);
                 };
-                getFile(p, function (str) {
-                    interpretFile(interpreters, cache, url, str);
+                getFile(p, function (str, httpCode) {
+                    interpretFile(interpreters, cache, url, str, httpCode);
                 });
             } else {
                 // Add ourselves to the plan.  The plan is effectively a FIFO queue of actions.
@@ -154,7 +162,7 @@ var YOINK = (function () {
 
         // Normalize the path
         p = p.replace(/[^\/]+[\/]\.\.[\/]/g, '');  // Remove redundant '%s/..' items.
-        return {path: p, interpreter: f};
+        return {path: p, interpreter: f, onError: url.onError};
     }
 
     mkGetResources = function (base, cache, interpreters) {
