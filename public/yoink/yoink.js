@@ -43,13 +43,6 @@ var YOINK = (function () {
 
     // Special handling for Internet Explorer
     if (window && window.execScript) {
-        defaultInterpreters.json = function (text) {
-            var f_str = '(function () { return ' + text + ';})';
-            /*global iesucks: true*/
-            window.execScript('iesucks = ' + f_str);
-            return iesucks();
-        };
-
         defaultInterpreters.js = function (text, require, callback) {
             var f_str = '(function (baseUrl, define, require) {' + text + '})';
             /*global iesucks: true*/
