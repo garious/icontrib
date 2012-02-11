@@ -36,9 +36,7 @@ function onReady(CORE, E) {
 
     }
 
-    define({
-       main: main
-    });
+    define(main());
 }
 
 require(deps, onReady);

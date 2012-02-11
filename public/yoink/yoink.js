@@ -33,22 +33,22 @@ var YOINK = (function () {
         json: function (text) {
             return JSON.parse(text);
         },
-        js: function (text, require, callback) {
+        js: function (text, require, callback, params) {
             // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-            var f_str = '(function (baseUrl, define, require) {"use strict";' + text + '})';
+            var f_str = '(function (baseUrl, define, require, params) {"use strict";' + text + '})';
             var f = eval(f_str);
-            f(require.base, callback, require);
+            f(require.base, callback, require, params);
         }
     };
 
     // Special handling for Internet Explorer
     if (window && window.execScript) {
-        defaultInterpreters.js = function (text, require, callback) {
-            var f_str = '(function (baseUrl, define, require) {' + text + '})';
+        defaultInterpreters.js = function (text, require, callback, params) {
+            var f_str = '(function (baseUrl, define, require, params) {' + text + '})';
             /*global iesucks: true*/
             window.execScript('iesucks = ' + f_str);
             var f = iesucks;
-            f(require.base, callback, require);
+            f(require.base, callback, require, params);
         };
     }
 
@@ -66,7 +66,7 @@ var YOINK = (function () {
     // Forward-declare mutual recursion
     var mkGetResources;
 
-    function interpret(rsc, url, interpreter, interpreters, cache, callback) {
+    function interpret(rsc, url, params, interpreter, interpreters, cache, callback) {
         // Look up an interpreter for the URL's file extension
         if (!interpreter) {
             var ext = url.substring(url.lastIndexOf('.') + 1, url.length).toLowerCase();
@@ -82,7 +82,7 @@ var YOINK = (function () {
             var base = url.substring(0, url.lastIndexOf('/'));
             var require = mkGetResources(base, cache, interpreters);
             require.base = base;
-            interpreter(rsc, require, callback);
+            interpreter(rsc, require, callback, params);
         }
     }
 
@@ -111,7 +111,7 @@ var YOINK = (function () {
         }
         if (httpCode >= 200 && httpCode < 300) {
             console.log("yoink: interpreting '" + u.path + "'");
-            interpret(str, u.path, u.interpreter, interpreters, cache, callback);
+            interpret(str, u.path, u.params, u.interpreter, interpreters, cache, callback);
         } else if (u.onError) {
             var rsc = u.onError(httpCode);
             callback(rsc);
@@ -148,6 +148,7 @@ var YOINK = (function () {
 
     function resolve(base, url) {
         var p = url.path || url;
+        var ps = url.params || {};
         var f = url.interpreter || null;
         if (base !== '' && p.charAt(0) !== '/' && p.indexOf('://') === -1) {
             p = base + '/' + p;
@@ -155,7 +156,7 @@ var YOINK = (function () {
 
         // Normalize the path
         p = p.replace(/[^\/]+[\/]\.\.[\/]/g, '');  // Remove redundant '%s/..' items.
-        return {path: p, interpreter: f, onError: url.onError};
+        return {path: p, params: ps, interpreter: f, onError: url.onError};
     }
 
     mkGetResources = function (base, cache, interpreters) {

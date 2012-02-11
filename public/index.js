@@ -13,9 +13,7 @@ var deps = [
 
 function onInitialReady(BEST) {
 
-function onReady(E, L, NAV, CORE, POP, DONOR, USER) {
-
-    function body() {
+    function onReady(E, L, NAV, CORE, POP, DONOR, USER) {
 
         var listItems = [
             CORE.h2('Recommended Funds')
@@ -25,7 +23,7 @@ function onReady(E, L, NAV, CORE, POP, DONOR, USER) {
             listItems.push( CORE.a({href: '/charity/?id=' + x.id}, x.name) );
         }
 
-        return L.spoon([
+        var body = L.spoon([
             L.hug([
                 L.pillow(200),
                 CORE.box({width: '600px'}, [
@@ -39,22 +37,14 @@ function onReady(E, L, NAV, CORE, POP, DONOR, USER) {
             NAV.footer([
                 CORE.a({href: 'charitySignUp/'}, 'Charity Registration')
             ])
-        ], 20);
+        ]);
+
+        define( NAV.frame([body]) );
+
     }
 
-    function main() {
-        return NAV.frame([ body() ]);
-    }
-
-    define({
-        title: 'IContrib.org',
-        body: body,
-        main: main
-    });
-}
-
-deps.push('/donor/' + BEST + '.json');
-require(deps, onReady);
+    deps.push('/donor/' + BEST + '.json');
+    require(deps, onReady);
 }
 
 require(initialDeps, onInitialReady);
