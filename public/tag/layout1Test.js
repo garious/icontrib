@@ -45,10 +45,7 @@ function onReady(E, L) {
         ]);
     }
 
-    define({
-        main: test,
-        hugTest: hugTest
-    });
+    define(test);
 }
 
 

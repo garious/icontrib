@@ -52,15 +52,9 @@ htmlForJsMod baseUrl filename ps = appTemplate $ do
       jsonAttr = H.toValue (mkPath (mkRelUrl baseUrl ["js", "json2.js"]))
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
 
-      yoink = "\nYOINK.require(['" ++ filename ++ "'], function(M) {\n    "
-           ++ "if (M.title) { document.title = M.title; }\n    "
-           ++ "M = M.main || M;\n    "
-           ++ "function nodeReady(nd){\n    "
-           ++ "    if (typeof nd === 'string') { nd = document.createTextNode(nd); }\n    "
-           ++ "    document.body.appendChild(nd);\n    "
-           ++ "}\n    "
-           ++ "var node = typeof M === 'function' ? M(" ++ params ++ ", nodeReady) : M;\n    "
-           ++ "if (node !== undefined) { nodeReady(node); }\n"
+      yoink = "\nYOINK.require([{path: '" ++ filename ++ "', params: " ++ params ++ "}], function(nd) {\n    "
+           ++ "if (typeof nd === 'string') { nd = document.createTextNode(nd); }\n    "
+           ++ "document.body.appendChild(nd);\n    "
            ++ "});\n"
 
       params = JS.encode ps

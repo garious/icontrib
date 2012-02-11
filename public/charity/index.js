@@ -2,10 +2,11 @@ var deps = [
     '/tag/tag.js', 
     '/tag/layout1.js', 
     '/ui/core.js', 
-    '/ui/nav.js'
+    '/ui/nav.js',
+    params.id + '.json'
 ];
 
-function onReady(E, L, CORE, NAV) {
+function onReady(E, L, CORE, NAV, USER) {
     
     function charity(as) {
         as = as || {};
@@ -35,16 +36,7 @@ function onReady(E, L, CORE, NAV) {
         ]);
     }
 
-    function main(params, nodeReady) {
-        require([params.id + '.json'], function(u) {
-            nodeReady( NAV.frame([charity({user: u})]) );
-        });
-    }
-
-    define({
-        title: 'IContrib.org',
-        main: main
-    });
+    define( NAV.frame([charity({user: USER})]) );
 
 }
 

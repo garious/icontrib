@@ -63,24 +63,19 @@ function onReady(E, L, NAV, CORE, CHART) {
         ], 10);
     }
 
-    function main() {
-        return NAV.frame([
-            L.spoon([
-                L.hug([
-                    L.pillow(250),
-                    CORE.box([
-                        dashboard({user: NAV.userInfo()})
-                    ])
-                ]),
-                L.pillow(20) 
-            ])
-        ]);
-    }
+    var main = NAV.frame([
+        L.spoon([
+            L.hug([
+                L.pillow(250),
+                CORE.box([
+                    dashboard({user: NAV.userInfo()})
+                ])
+            ]),
+            L.pillow(20) 
+        ])
+    ]);
 
-    define({
-        main: main
-    });
-
+    define(main);
 }
 
 require(deps, onReady);

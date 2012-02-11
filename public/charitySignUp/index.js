@@ -157,13 +157,7 @@ function onReady(E, L, NAV, CORE, toaHtml, JF, CHARITY) {
         ]);
     }
 
-    define({
-        title: 'IContrib.org',
-        body: body,
-        main: NAV.frame([
-            body()
-        ])
-    });
+    define( NAV.frame([body()]) );
 }
 
 require(deps, onReady);

@@ -4,11 +4,11 @@ var deps = [
 ];
 
 function onReady(E, NAV) {
+
     function body() {
-        return E.div({id: 'content', 'class': 'container_12'}, [
-            E.div({id: 'call-to-action'}, ['Sign up, improve the world today.']),
-            E.div({'class': 'grid_12'}),
-            E.div({'class': 'grid_5 grey-box'}, [
+        return E.div([
+            E.div(['Sign up, improve the world today.']),
+            E.div([
                 E.form({method: "post", action: "/addUser"}, [
                    'Name:',     E.br(), E.input({type: 'text', length: 10, name: 'nameS'}), E.br(),
                    'Email:',    E.br(), E.input({type: 'text', length: 10, name: 'emailS'}), E.br(),
@@ -17,27 +17,15 @@ function onReady(E, NAV) {
                    E.input({type: 'submit', value: 'Submit'})
                 ])
             ]),
-            E.div({'class': 'grid_1'}, [
-                E.p({align: 'center', sytle: 'font-size:24px; font-weight:bold;'}, [E.br(), E.br(), E.br(), E.br(), E.br(), 'or'])
-            ]),
-            E.div({'class': 'grid_5'}, [
+            E.p({align: 'center', sytle: 'font-size:24px; font-weight:bold;'}, [E.br(), E.br(), E.br(), E.br(), E.br(), 'or'])
+            E.div([
                 E.br(), E.br(), E.br(), E.br(),
                 E.img({src: 'login-cloud.png', alt: 'Log in up above...'})
             ])
         ]);
     }
 
-    function main() {
-        return NAV.frame([
-            body()
-        ]);
-    }
-
-    define({
-        title: 'IContrib.org Registration',
-        body: body,
-        main: main
-    });
+    define( NAV.frame([body()]) );
 }
 
 require(deps, onReady);
