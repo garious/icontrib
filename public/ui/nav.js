@@ -4,6 +4,7 @@ var authDeps = [
 
 var deps = [
     '/tag/tag.js', 
+    '/tag/todom.js', 
     '/tag/layout1.js', 
     'core.js'
 ];
@@ -35,7 +36,7 @@ function post(path, params, callback) {
 
 
 function onAuthReady(AUTH) { 
-function onReady(E, L, CORE, ME) { 
+function onReady(E, DOM, L, CORE, ME) { 
 
     function loginWidget(as) {
         if (AUTH.Left) {
@@ -127,6 +128,27 @@ function onReady(E, L, CORE, ME) {
         return E.div({'class': 'footer'}, [E.div({'class': 'navBar'}, xs)]);
     }
 
+    //
+    // Web Page object
+    //
+    function webpage(domNode) {
+        return {
+            constructor: webpage,
+            domNode: domNode
+        };
+    }
+    var Page_ToDom = {
+        toDom: function (me) {
+            return me.domNode;
+        },
+        getTitle: function (me) {
+            return "IContrib.org";
+        }
+    };
+    webpage.interfaces = [
+        {'interface': DOM.ToDom, 'instance': Page_ToDom}
+    ];
+
     function frame(as, xs) {
         if (as && as.constructor === Array) {
             xs = as;
@@ -146,7 +168,9 @@ function onReady(E, L, CORE, ME) {
         var navbar = nav(as);
         var body = E.div(xs);
 
-        return E.div({style: {height: getWindowInnerHeight()}}, [L.spoon([navbar, L.pillow(20), body])]);
+        var node = E.div({style: {height: getWindowInnerHeight()}}, [L.spoon([navbar, L.pillow(20), body])]);
+
+        return webpage(node);
     }
 
     function footer(as, xs) {
