@@ -15,6 +15,8 @@ function onInitialReady(BEST) {
 
     function onReady(E, L, NAV, CORE, POP, DONOR, USER) {
 
+        var sep = L.pillow(20);
+
         var listItems = [
             CORE.h2('Recommended Funds')
         ];
@@ -29,11 +31,12 @@ function onInitialReady(BEST) {
                 CORE.box({width: '600px'}, [
                     DONOR.profile({user: USER})
                 ]),
-                L.pillow(20),
+                sep,
                 CORE.box([
                     L.spoon(listItems)
                 ])
             ]),
+            sep,
             NAV.footer([
                 CORE.a({href: 'charitySignUp/'}, 'Charity Registration')
             ])

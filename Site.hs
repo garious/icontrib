@@ -75,7 +75,8 @@ tohttps :: String -> Int -> ServerPart Response
 tohttps hn pn = (seeOther ("https://" ++ hn ++ ":" ++ show pn) (toResponse ()))
 
 servepart :: Maybe (String, TLSConf) -> ServerPart Response -> ServerPart Response
-servepart (Just (hn, tlsconf)) part = msum [ do http 
+servepart (Just (hn, tlsconf)) part = msum [ http >> part -- TODO: Fix https
+                                           , do http 
                                                 (tohttps hn (tlsPort tlsconf))
                                            , do https 
                                                 part
