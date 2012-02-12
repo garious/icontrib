@@ -46,14 +46,12 @@ function onReady(E, L, C, $) {
         as.style.height = dim.height + 'px';
 
         var e = E.a(as, xs);
-        //$(e).hover(
-        //    function() {
-        //        e.style.textDecoration = 'underline';
-        //    },
-        //    function() {
-        //        e.style.textDecoration = 'none';
-        //    }
-        //);
+        e.addEventListener('mouseover', function() {
+            e.style.textDecoration = 'underline';
+        });
+        e.addEventListener('mouseout', function() {
+            e.style.textDecoration = 'none';
+        });
         return e;
     }
 
@@ -89,14 +87,12 @@ function onReady(E, L, C, $) {
             }
         }, xs);
 
-        //$(e).hover(
-        //    function() {
-        //        e.style.backgroundColor = C.lightColor;
-        //    },
-        //    function() {
-        //        e.style.backgroundColor = C.middleColor;
-        //    }
-        //);
+        e.addEventListener('mouseover', function() {
+            e.style.backgroundColor = C.lightColor;
+        });
+        e.addEventListener('mouseout', function() {
+            e.style.backgroundColor = C.middleColor;
+        });
 
         return e;
     }

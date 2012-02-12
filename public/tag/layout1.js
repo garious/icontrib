@@ -35,6 +35,9 @@ var Tag_TwoDimensional = {
 var Tag_ToDom = {
     toDom: function (me) {
         return me;
+    },
+    getTitle: function (me) {
+        return undefined;
     }
 };
 
@@ -76,6 +79,9 @@ function onReady(I, DIM, DOM) {
                 }
             }
             return div;
+        },
+        getTitle: function (me) {
+            return undefined;
         }
     };
     

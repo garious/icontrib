@@ -17,7 +17,7 @@ function onReady(E, NAV) {
                    E.input({type: 'submit', value: 'Submit'})
                 ])
             ]),
-            E.p({align: 'center', sytle: 'font-size:24px; font-weight:bold;'}, [E.br(), E.br(), E.br(), E.br(), E.br(), 'or'])
+            E.p({align: 'center', sytle: 'font-size:24px; font-weight:bold;'}, [E.br(), E.br(), E.br(), E.br(), E.br(), 'or']),
             E.div([
                 E.br(), E.br(), E.br(), E.br(),
                 E.img({src: 'login-cloud.png', alt: 'Log in up above...'})

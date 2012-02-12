@@ -52,9 +52,23 @@ htmlForJsMod baseUrl filename ps = appTemplate $ do
       jsonAttr = H.toValue (mkPath (mkRelUrl baseUrl ["js", "json2.js"]))
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
 
-      yoink = "\nYOINK.require([{path: '" ++ filename ++ "', params: " ++ params ++ "}], function(nd) {\n    "
-           ++ "if (typeof nd === 'string') { nd = document.createTextNode(nd); }\n    "
-           ++ "document.body.appendChild(nd);\n    "
+      yoink = "\nYOINK.require([\n"
+           ++ "    '/tag/interface.js',\n"
+           ++ "    '/tag/todom.js',\n"
+           ++ "    {path: '" ++ filename ++ "', params: " ++ params ++ "}\n"
+           ++ "], function(IFACE, DOM, WIDGET) {\n"
+           ++ "    var iface = IFACE.getInterface(WIDGET, DOM.ToDom);\n"
+           ++ "    var nd;\n"
+           ++ "    if (iface) {\n"
+           ++ "        nd = iface.toDom(WIDGET);\n"
+           ++ "        var title = iface.getTitle(WIDGET);\n"
+           ++ "        if (title) {\n"
+           ++ "            document.title = title;\n"
+           ++ "        }\n"
+           ++ "    } else {\n"
+           ++ "        nd = WIDGET;\n"
+           ++ "    }\n"
+           ++ "    document.body.appendChild(nd);\n"
            ++ "});\n"
 
       params = JS.encode ps

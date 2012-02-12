@@ -4,8 +4,7 @@ var deps = [
     '/ui/nav.js', 
     '/ui/chart.js', 
     '/ui/core.js',
-    '/ui/colors.json'// ,
-    //'/jquery/jquery-ui-mod.js'
+    '/ui/colors.json'
 ];
 
 var defaultUser = {
@@ -13,27 +12,10 @@ var defaultUser = {
    alignedImageUrl: '/images/friends.png'
 };
 
-function onReady(E, L, NAV, CHART, CORE, C) { //, $) { 
+function onReady(E, L, NAV, CHART, CORE, C) {
 
     function alignButton(user) {
-        var alignLink = CORE.button({href: '/me/?donateTo=' + user.id}, ['Donate!']);
-        return alignLink;
-        //alignLink.onclick = function(e) { 
-        //    //TODO: On click, navigate to appropriate pages
-        //    WAIT.load({
-        //        buttons: {
-        //            "Sign In" : function(e) { window.location ="/signup/"; },
-        //            "Keep Adding Stuff" : function(e) { WAIT.close(); } 
-        //        }, 
-        //        title: "What do you want to do?",
-        //        content: "From here, you can either sign up to fund your distribution, or continue selecting organizations you would like to support."
-        //    });
-        //};
-        //var alignDiv = E.div([
-        //   E.link({type: "text/css", href: "/css/smoothness/jquery-ui-1.8.16.custom.css", rel: "stylesheet"}),
-        //   alignLink
-        //]);
-        //return alignDiv;
+        return CORE.button({href: '/me/?donateTo=' + user.id}, ['Donate!']);
     }
 
     function isMember(xs, x) {
@@ -84,7 +66,7 @@ function onReady(E, L, NAV, CHART, CORE, C) { //, $) {
                     ]),
                     L.hug([
                         CHART.pie1(user),
-                        L.hug([fundContents(user.distribution, user.funds[i].name)])
+                        fundContents(user.distribution, user.funds[i].name)
                     ])
                 ]);
                 rows.push(row);
@@ -100,7 +82,9 @@ function onReady(E, L, NAV, CHART, CORE, C) { //, $) {
             L.pillow(25, 0), 
             L.spoon([
                 CORE.h3(user.firstName + ' ' + user.lastName),
-                CORE.h5('Helps raise $' + Math.round(user.alignedDonated / 100) + ' per month')
+                E.span({style: {color: 'red'}}, [
+                    CORE.h5('Helps raise $' + Math.round(user.alignedDonated / 100) + ' per month')
+                ])
             ])
         ]);
 
