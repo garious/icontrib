@@ -5,6 +5,7 @@
    "imageUrl": "/donor/tombrown.jpg",
    "centsDonated": 5500,
    "alignedDonated": 6500,
+   "alignedUsers": [],
    "distribution": [
        {"name": "Global Fund for Women", "url": "/charity/?id=gffw", "shares": 50, "labels": ["General Fund"]},
        {"name": "Underwater Society of America", "url": "/charity/?id=usoa", "shares": 5, "labels": ["General Fund"]}

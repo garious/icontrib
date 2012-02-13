@@ -16,6 +16,7 @@ data UserInfo = UserInfo { uid              :: A.UserID
                          , imageUrl         :: String
                          , centsDonated     :: Int
                          , alignedDonated   :: Int
+                         , alignedUsers     :: [A.UserID]
                          , distribution     :: [Distribution]
                          , funds            :: [Fund]
                          }

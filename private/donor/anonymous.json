@@ -5,6 +5,7 @@
    "imageUrl": "/donor/anonymous.jpg",
    "centsDonated": 0,
    "alignedDonated": 0,
+   "alignedUsers": [],
    "distribution": [
    ],
    "funds": [

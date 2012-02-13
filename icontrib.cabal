@@ -19,6 +19,7 @@ Executable icontrib
                      happstack-server >= 6.5.6,
                      hslogger,
                      SMTPClient,
+                     MissingH,
                      HTTP >= 4000.2.2,
                      network >= 2.3.0.8,
                      safecopy >= 0.6.1 && < 0.7,

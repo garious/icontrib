@@ -1,0 +1,18 @@
+{
+   "uid": "eric",
+   "firstName": "Eric",
+   "lastName": "Mills",
+   "imageUrl": "../images/eric.jpg",
+   "centsDonated": 5500,
+   "description": "I research cost-effective ways to save lives.  Align with me to help deliver mosquito nets, immunize children, and prevent the spread of HIV.",
+   "alignedDonated": 6500,
+   "alignedUsers": [],
+   "distribution": [
+       {"name": "Underwater Society of America", "url": "/charity/?id=usoa", "shares": 5, "labels": ["General Fund"]}, 
+       {"name": "Global Fund for Women", "url": "/charity/?id=gffw", "shares": 50, "labels": ["General Fund"]}
+   ],
+   "funds" : [
+       {"name": "General Fund", "labels": ["Erics-GeneralFund"]}
+   ]
+}
+
