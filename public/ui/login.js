@@ -1,7 +1,7 @@
 var deps = [
     '/tag/tag.js', 
     '/jquery/jquery-mod.js',
-    '/jsonform/jsonform.js'
+    '/js/jsonform.js'
 ];
 
 function onReady(E, $, JF) { 

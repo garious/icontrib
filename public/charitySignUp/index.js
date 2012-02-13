@@ -4,7 +4,7 @@ var deps = [
     '/ui/nav.js', 
     '/ui/core.js', 
     'toa.html',
-    '/jsonform/jsonform.js',
+    '/js/jsonform.js',
     '/charity/get.json'
 ];
 
