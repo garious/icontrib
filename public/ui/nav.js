@@ -93,18 +93,12 @@ function onReady(E, DOM, L, CORE, ME) {
         ]);
 
         return E.div({style: {width: getWindowInnerWidth(), height: '129px'}}, [ 
-            L.hug([ 
-                L.pillow(250, 0),
-                logo,
-                L.pillow(25, 0),
-                L.spoon([
-                    L.pillow(450, 40),
-                    E.div({style: {color: '#D0D0D0'}}, [
-                        CORE.h1('Improve the world today')
-                    ])
-                ]),
-                L.spoon([
-                    L.pillow(0, 10),
+            L.spoon([
+                L.pillow(0, 20),
+                L.hug([ 
+                    L.pillow(250, 0),
+                    logo,
+                    L.pillow(400, 0),
                     loginWidget(as)
                 ])
             ])
@@ -151,7 +145,13 @@ function onReady(E, DOM, L, CORE, ME) {
         var navbar = nav(as);
         var body = E.div(xs);
 
-        var node = E.div({style: {height: getWindowInnerHeight()}}, [L.spoon([navbar, L.pillow(20), body])]);
+        var node = E.div({style: {height: getWindowInnerHeight()}}, [
+            L.spoon([
+                navbar, 
+                L.pillow(20), 
+                body
+            ])
+        ]);
 
         return webpage(node);
     }
