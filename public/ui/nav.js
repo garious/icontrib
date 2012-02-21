@@ -89,43 +89,20 @@ function onReady(E, DOM, L, CORE, ME) {
         as = as || {};
 
         var logo = E.a({href: '/', style: {width: '129px'}}, [
-            E.img({src: "/images/logo.png", alt: "IContrib Home", border: "0"})
+            E.img({src: baseUrl + "/logo.png", alt: "IContrib Home", border: "0"})
         ]);
 
         return E.div({style: {width: getWindowInnerWidth(), height: '129px'}}, [ 
-            L.hug([ 
-                L.pillow(250, 0),
-                logo,
-                L.pillow(25, 0),
-                L.spoon([
-                    L.pillow(450, 40),
-                    E.div({style: {color: '#D0D0D0'}}, [
-                        CORE.h1('Improve the world today')
-                    ])
-                ]),
-                L.spoon([
-                    L.pillow(0, 10),
+            L.spoon([
+                L.pillow(0, 20),
+                L.hug([ 
+                    L.pillow(250, 0),
+                    logo,
+                    L.pillow(400, 0),
                     loginWidget(as)
                 ])
             ])
         ]);
-    }
-
-    function dockItem(as) {
-        as = as || {};
-        var e = E.a({href: as.href}, [ E.img({src: as.src, alt: as.title, title: as.title}) ]);
-        return e;
-    }
-
-    function dock() {
-        //var as = {align: 'bottom', labels: 'tl', duration: 150, step: 25, distance: 90, fadein: 300};
-        var xs = [
-            dockItem({href: '/',         src: '/images/home.png', title: "Home"}),
-            dockItem({href: '/donor/',   src: '/images/portfolio.png', title: "Your Portfolio"}),
-            dockItem({href: '/charity/', src: '/images/link.png', title: "Charities"}),
-            dockItem({href: '/contact/', src: '/images/rss.png', title: "Keep Informed"})
-        ];
-        return E.div({'class': 'footer'}, [E.div({'class': 'navBar'}, xs)]);
     }
 
     //
@@ -168,7 +145,13 @@ function onReady(E, DOM, L, CORE, ME) {
         var navbar = nav(as);
         var body = E.div(xs);
 
-        var node = E.div({style: {height: getWindowInnerHeight()}}, [L.spoon([navbar, L.pillow(20), body])]);
+        var node = E.div({style: {height: getWindowInnerHeight()}}, [
+            L.spoon([
+                navbar, 
+                L.pillow(20), 
+                body
+            ])
+        ]);
 
         return webpage(node);
     }
@@ -196,8 +179,6 @@ function onReady(E, DOM, L, CORE, ME) {
 
     define({
         nav: nav,
-        dock: dock,
-        dockItem: dockItem,
         frame: frame,
         footer: footer,
         userInfo: userInfo

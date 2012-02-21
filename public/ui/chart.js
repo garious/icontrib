@@ -19,7 +19,7 @@ function onReady(E, C, GOOGLE) {
             dist.push([ud.name, ud.shares]); 
         }
         var userChart = E.div({style: {width: '300px', height: '225px'}}, [
-            E.img({src: '/images/ajax-loader.gif', alt: 'Loading...', style: {margin: '0px auto'}})
+            E.img({src: baseUrl + '/ajax-loader.gif', alt: 'Loading...', style: {margin: '0px auto'}})
         ]);
    
         var cookPie = function() {

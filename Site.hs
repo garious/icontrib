@@ -22,6 +22,7 @@ import qualified UserInfo                    as U
 import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP
 import Monad                                 ( msum, mzero )
+import Happstack.Server.SimpleHTTPS          ( simpleHTTPS, TLSConf, tlsPort )
 import Happstack.Server                      ( ServerPart
                                              , Response
                                              , path
@@ -46,14 +47,9 @@ import Happstack.Server                      ( ServerPart
                                              , simpleHTTP
                                              , nullConf
                                              , port
-                                             , tls
-                                             , TLSConf
                                              , decodeBody
                                              , defaultBodyPolicy
-                                             , http
-                                             , https
                                              , seeOther
-                                             , tlsPort
                                              )
 import qualified Log as Log
 data Site = Site { userAccounts ::  AcidState A.Database
@@ -61,27 +57,33 @@ data Site = Site { userAccounts ::  AcidState A.Database
                  , userInfo :: AcidState U.Database
                  }
 
-serve :: Maybe (String, TLSConf) -> Int -> ServerPart Response -> IO ()
-serve mtls portnum part = 
+serve :: Either TLSConf Int -> ServerPart Response -> IO ()
+serve (Right pn) part =
     let 
         ramQuota  =  1000000
         diskQuota = 20000000
         tmpDir    = "/tmp/"
-    in  simpleHTTP (nullConf { port = portnum, tls = (liftM snd) mtls }) $ do 
+    in  simpleHTTP (nullConf { port = pn}) $ do 
             decodeBody (defaultBodyPolicy tmpDir diskQuota ramQuota (ramQuota `div` 10))
-            servepart mtls part
-    
+            part
+
+serve (Left tlsconf) part =
+    let
+        ramQuota  =  1000000
+        diskQuota = 20000000
+        tmpDir    = "/tmp/"
+    in  simpleHTTPS tlsconf $ do
+            decodeBody (defaultBodyPolicy tmpDir diskQuota ramQuota (ramQuota `div` 10))
+            part
+
+redirectToSSL :: TLSConf -> String -> Int -> IO ()
+redirectToSSL tlsconf hn pn = simpleHTTP (nullConf { port = pn }) $ do
+    liftIO $ Log.debugM "redirecting to ssl" 
+    tohttps hn (tlsPort tlsconf)
+
 tohttps :: String -> Int -> ServerPart Response
 tohttps hn pn = (seeOther ("https://" ++ hn ++ ":" ++ show pn) (toResponse ()))
 
-servepart :: Maybe (String, TLSConf) -> ServerPart Response -> ServerPart Response
-servepart (Just (hn, tlsconf)) part = msum [ http >> part -- TODO: Fix https
-                                           , do http 
-                                                (tohttps hn (tlsPort tlsconf))
-                                           , do https 
-                                                part
-                                           ]
-servepart Nothing part = part
 
 site :: Site -> ServerPart Response
 site st = msum [ 

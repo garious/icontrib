@@ -1,0 +1,1 @@
+define("Hello " + params.name + "!");

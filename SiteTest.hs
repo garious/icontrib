@@ -93,7 +93,7 @@ emptyServer = do
     ua <- openMemoryState A.empty
     ci <- openMemoryState C.empty
     ui <- openMemoryState U.empty
-    serve Nothing port (site (Site ua ci ui))
+    serve (Right port) (site (Site ua ci ui))
 
 post :: (Data b, Data a) => String -> a -> HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError b) 
 post url msg = do

@@ -1,8 +1,7 @@
 var deps = [
     '/tag/tag.js',
     '/tag/layout1.js',
-    'colors.json'//,
-    //'/jquery/jquery-mod.js'
+    'colors.js'
 ];
 
 function clone(o1) {
@@ -16,7 +15,7 @@ function clone(o1) {
     return o2;
 }
 
-function onReady(E, L, C, $) {
+function onReady(E, L, C) {
 
     var font = "15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
 
@@ -80,7 +79,7 @@ function onReady(E, L, C, $) {
                 font: font, 
                 textDecoration: 'none', 
                 textAlign: 'center', 
-                backgroundColor: C.middleColor, 
+                backgroundColor: C.red, 
                 color: '#fff', 
                 padding: '5px', 
                 borderRadius: '2px'
@@ -88,10 +87,10 @@ function onReady(E, L, C, $) {
         }, xs);
 
         e.addEventListener('mouseover', function() {
-            e.style.backgroundColor = C.lightColor;
+            e.style.backgroundColor = C.red;
         });
         e.addEventListener('mouseout', function() {
-            e.style.backgroundColor = C.middleColor;
+            e.style.backgroundColor = C.red;
         });
 
         return e;
