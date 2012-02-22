@@ -17,16 +17,18 @@ function clone(o1) {
 
 function onReady(E, L, C) {
 
-    var font = "15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
+    var defaultFont = "/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
+    var defaultFontSize = 15;
+    var font = defaultFontSize + "px" + defaultFont;
 
     function textDimensions(as, s) {
         var canvas = E.canvas();
-        var fontSize = as.fontSize || 15;
+        var fontSize = as.fontSize || defaultFontSize;
 
         if (canvas && canvas.getContext) {
 
             var ctx = canvas.getContext('2d');
-            ctx.font = as.font || font;
+            ctx.font = fontSize + "px" + defaultFont;
             ctx.fontSize = fontSize;
 
             var dim = ctx.measureText(s);
@@ -78,14 +80,8 @@ function onReady(E, L, C) {
         return e;
     }
 
-    function button(as, s) {
-        if (s === undefined) {
-            s = as;
-            as = null;
-        }
-        as = as && clone(as) || {};
-
-        var dim = textDimensions({}, s);
+    function button(as) {
+        var dim = textDimensions({}, as.text);
 
         var e = E.a({
             href: as.href || '#', 
@@ -100,7 +96,7 @@ function onReady(E, L, C) {
                 padding: '5px', 
                 borderRadius: '2px'
             }
-        }, s);
+        }, as.text);
 
         e.addEventListener('mouseover', function() {
             e.style.backgroundColor = C.red;
@@ -142,8 +138,7 @@ function onReady(E, L, C) {
         }, [e]);
     }
 
-    function hStyle(sizeOffset, s) {
-        var fontSize = C.smallestHeader + sizeOffset;
+    function hStyle(fontSize, s) {
         var dim = textDimensions({fontSize: fontSize}, s);
 
         return {
@@ -160,22 +155,22 @@ function onReady(E, L, C) {
         return E.label({style: {width: dim.width, height: dim.height, font: font}}, s);
     }
     function h1(s) {
-        return E.h1({style: hStyle(10, s)}, s);
+        return E.h1({style: hStyle(C.h1Size, s)}, s);
     }
     function h2(s) {
-        return E.h2({style: hStyle(8, s)}, s);
+        return E.h2({style: hStyle(C.h2Size, s)}, s);
     }
     function h3(s) {
-        return E.h3({style: hStyle(6, s)}, s);
+        return E.h3({style: hStyle(C.h3Size, s)}, s);
     }
     function h4(s) {
-        return E.h4({style: hStyle(4, s)}, s);
+        return E.h4({style: hStyle(C.h4Size, s)}, s);
     }
     function h5(s) {
-        return E.h5({style: hStyle(2, s)}, s);
+        return E.h5({style: hStyle(C.h5Size, s)}, s);
     }
     function h6(s) {
-        return E.h6({style: hStyle(0, s)}, s);
+        return E.h6({style: hStyle(C.h6Size, s)}, s);
     }
     function p(as, xs) {
         if (xs === undefined) {

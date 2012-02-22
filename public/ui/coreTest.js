@@ -29,7 +29,7 @@ function onReady(CORE, E) {
                 row('p',      E.p('E.p'),                CORE.p('CORE.p')),
                 row('a',      E.a({href: '#'}, ['E.a']), CORE.a({href: '#'}, ['CORE.a'])),
                 row('label',  E.label('E.label'),        CORE.label('CORE.label')),
-                row('button', E.button('E.button'),      CORE.button({href: '#'}, 'CORE.button')),
+                row('button', E.button('E.button'),      CORE.button({href: '#', text: 'CORE.button'})),
                 row('box',    E.div([E.p(['E.div'])]),   CORE.box())
             ])
         ]);

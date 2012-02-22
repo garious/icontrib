@@ -58,7 +58,7 @@ function onReady(E, L, NAV, CORE, CHART) {
             L.pillow(0, 20),
             L.hug([L.pillow(30, 0), CORE.input({type: 'text', size: 10, value: user.centsDonated / 100.0}), L.pillow(10,0), CORE.h6("dollars per month")]),
             L.pillow(0, 20),
-            L.hug([L.pillow(20,0), CORE.button({href: '#'}, 'Save Changes')]),
+            L.hug([L.pillow(20,0), CORE.button({href: '#', text: 'Save Changes'})]),
             L.pillow(0, 20)
         ], 10);
     }

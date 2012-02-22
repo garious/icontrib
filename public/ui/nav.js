@@ -43,7 +43,7 @@ function onReady(E, DOM, L, CORE, ME) {
             var username = E.input({type: 'text', size: 18});
             var password = E.input({type: 'password', size: 18});
             var badLogin = E.span({hidden: true, style: {height: 20, width: 200, color: 'red'}}, 'bad username or password');
-            var loginButton = CORE.button('Log in');
+            var loginButton = CORE.button({text: 'Log in'});
             loginButton.addEventListener('click', function(e) {
                 e.preventDefault();
                 var formValues = {
