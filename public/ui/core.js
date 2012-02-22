@@ -20,12 +20,29 @@ function onReady(E, L, C) {
     var font = "15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
 
     function textDimensions(as, s) {
-        // TODO: use at least font, fontSize and maxWidth
+        var canvas = E.canvas();
         var fontSize = as.fontSize || 15;
-        return {
-            width: fontSize * s.length * 0.6,
-            height: fontSize + 6
-        };
+
+        if (canvas && canvas.getContext) {
+
+            var ctx = canvas.getContext('2d');
+            ctx.font = as.font || font;
+            ctx.fontSize = fontSize;
+
+            var dim = ctx.measureText(s);
+
+            return {
+                width: dim.width,
+                height: fontSize + 6
+            };
+
+        } else {
+            // No canvas available on this browser - time to guess.
+            return {
+                width: fontSize * s.length * 0.6,
+                height: fontSize + 6
+            };
+        }
     }
 
     function a(as, xs) {
@@ -61,14 +78,13 @@ function onReady(E, L, C) {
         return e;
     }
 
-    function button(as, xs) {
-        if (xs === undefined) {
-            xs = as;
+    function button(as, s) {
+        if (s === undefined) {
+            s = as;
             as = null;
         }
         as = as && clone(as) || {};
 
-        var s = typeof xs === 'string' && xs || xs[0];
         var dim = textDimensions({}, s);
 
         var e = E.a({
@@ -84,7 +100,7 @@ function onReady(E, L, C) {
                 padding: '5px', 
                 borderRadius: '2px'
             }
-        }, xs);
+        }, s);
 
         e.addEventListener('mouseover', function() {
             e.style.backgroundColor = C.red;

@@ -15,7 +15,7 @@ var defaultUser = {
 function onReady(E, L, NAV, CHART, CORE, C) {
 
     function alignButton(user) {
-        return CORE.button({href: '/me/?donateTo=' + user.id}, ['Donate!']);
+        return CORE.button({href: '/me/?donateTo=' + user.id}, 'Donate!');
     }
 
     function isMember(xs, x) {
