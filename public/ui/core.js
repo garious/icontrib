@@ -62,6 +62,7 @@ function onReady(E, L, C) {
         as.style.font = font;
         as.style.width = dim.width + 'px';
         as.style.height = dim.height + 'px';
+        as.style.color = 'blue';
 
         var e = E.a(as, xs);
         e.addEventListener('mouseover', function() {
