@@ -13,28 +13,47 @@ function onReady(E, C, GOOGLE) {
 
     // Uses Google visualization library to generate an interactive pie chart
     function pie(user) {
-        var dist = [];
-        for (var i = 0; i < user.distribution.length; i++) {
-            var ud = user.distribution[i]; 
-            dist.push([ud.name, ud.shares]); 
-        }
         var userChart = E.div({style: {width: '300px', height: '225px'}}, [
             E.img({src: baseUrl + '/ajax-loader.gif', alt: 'Loading...', style: {margin: '0px auto'}})
         ]);
    
-        var cookPie = function() {
-            var options = {width: 300, height: 225, tooltip: {trigger: 'none'}, legend: {position: 'none'}};
-            options.colors = [C.darkColor, C.middleColor, C.lightColor];
-            var chart = new GOOGLE.visualization.PieChart(userChart);
-            var data = new GOOGLE.visualization.DataTable();
+        var me = {
+            element: userChart,
+            distribution: user.distribution
+        };
+
+        var chart = null;
+        var data = null;
+        var options = {width: 300, height: 225, tooltip: {trigger: 'none'}, legend: {position: 'none'}};
+        options.colors = [C.darkColor, C.middleColor, C.lightColor];
+
+        function draw() {
+            if (data && chart) {
+                 var dist = [];
+                 for (var i = 0; i < me.distribution.length; i++) {
+                     var ud = me.distribution[i]; 
+                     dist.push([ud.name, ud.shares]); 
+                 }
+                 data.removeRows(0, data.getNumberOfRows());
+                 data.addRows(dist);
+                 chart.draw(data, options);
+            }
+        }
+
+        function createChart() {
+            chart = new GOOGLE.visualization.PieChart(userChart);
+            data = new GOOGLE.visualization.DataTable();
             data.addColumn('string', 'Charity');
             data.addColumn('number', 'Percentage');
-            data.addRows(dist);
-            chart.draw(data, options);
-        };
-        GOOGLE.load('visualization', '1.0', {packages:['corechart'], callback: cookPie});
+            draw();
+        }
 
-        return userChart;
+        GOOGLE.load('visualization', '1.0', {packages:['corechart'], callback: createChart});
+
+        // expose the draw function to the caller
+        me.draw = draw;
+
+        return me;
     }
 
     // Uses Google API to generate a simple pie chart image
