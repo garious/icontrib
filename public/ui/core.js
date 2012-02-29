@@ -17,15 +17,34 @@ function clone(o1) {
 
 function onReady(E, L, C) {
 
-    var font = "15px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
+    var defaultFont = "/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
+    var defaultFontSize = 15;
+    var font = defaultFontSize + "px" + defaultFont;
 
     function textDimensions(as, s) {
-        // TODO: use at least font, fontSize and maxWidth
-        var fontSize = as.fontSize || 15;
-        return {
-            width: fontSize * s.length * 0.6,
-            height: fontSize + 6
-        };
+        var canvas = E.canvas();
+        var fontSize = as.fontSize || defaultFontSize;
+
+        if (canvas && canvas.getContext) {
+
+            var ctx = canvas.getContext('2d');
+            ctx.font = fontSize + "px" + defaultFont;
+            ctx.fontSize = fontSize;
+
+            var dim = ctx.measureText(s);
+
+            return {
+                width: dim.width,
+                height: fontSize + 6
+            };
+
+        } else {
+            // No canvas available on this browser - time to guess.
+            return {
+                width: fontSize * s.length * 0.6,
+                height: fontSize + 6
+            };
+        }
     }
 
     function a(as, xs) {
@@ -43,6 +62,7 @@ function onReady(E, L, C) {
         as.style.font = font;
         as.style.width = dim.width + 'px';
         as.style.height = dim.height + 'px';
+        as.style.color = 'blue';
 
         var e = E.a(as, xs);
         e.addEventListener('mouseover', function() {
@@ -61,15 +81,11 @@ function onReady(E, L, C) {
         return e;
     }
 
-    function button(as, xs) {
-        if (xs === undefined) {
-            xs = as;
-            as = null;
-        }
-        as = as && clone(as) || {};
+    function button(as) {
+        var dim = textDimensions({}, as.text);
 
-        var s = typeof xs === 'string' && xs || xs[0];
-        var dim = textDimensions({}, s);
+        var color      = as.loud ? C.red : C.middleColor;
+        var focusColor = as.loud ? C.red : C.lightColor;
 
         var e = E.a({
             href: as.href || '#', 
@@ -79,18 +95,18 @@ function onReady(E, L, C) {
                 font: font, 
                 textDecoration: 'none', 
                 textAlign: 'center', 
-                backgroundColor: C.red, 
+                backgroundColor: color, 
                 color: '#fff', 
                 padding: '5px', 
                 borderRadius: '2px'
             }
-        }, xs);
+        }, as.text);
 
         e.addEventListener('mouseover', function() {
-            e.style.backgroundColor = C.red;
+            e.style.backgroundColor = focusColor;
         });
         e.addEventListener('mouseout', function() {
-            e.style.backgroundColor = C.red;
+            e.style.backgroundColor = color;
         });
 
         return e;
@@ -126,8 +142,7 @@ function onReady(E, L, C) {
         }, [e]);
     }
 
-    function hStyle(sizeOffset, s) {
-        var fontSize = C.smallestHeader + sizeOffset;
+    function hStyle(fontSize, s) {
         var dim = textDimensions({fontSize: fontSize}, s);
 
         return {
@@ -144,22 +159,22 @@ function onReady(E, L, C) {
         return E.label({style: {width: dim.width, height: dim.height, font: font}}, s);
     }
     function h1(s) {
-        return E.h1({style: hStyle(10, s)}, s);
+        return E.h1({style: hStyle(C.h1Size, s)}, s);
     }
     function h2(s) {
-        return E.h2({style: hStyle(8, s)}, s);
+        return E.h2({style: hStyle(C.h2Size, s)}, s);
     }
     function h3(s) {
-        return E.h3({style: hStyle(6, s)}, s);
+        return E.h3({style: hStyle(C.h3Size, s)}, s);
     }
     function h4(s) {
-        return E.h4({style: hStyle(4, s)}, s);
+        return E.h4({style: hStyle(C.h4Size, s)}, s);
     }
     function h5(s) {
-        return E.h5({style: hStyle(2, s)}, s);
+        return E.h5({style: hStyle(C.h5Size, s)}, s);
     }
     function h6(s) {
-        return E.h6({style: hStyle(0, s)}, s);
+        return E.h6({style: hStyle(C.h6Size, s)}, s);
     }
     function p(as, xs) {
         if (xs === undefined) {

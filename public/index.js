@@ -18,7 +18,8 @@ function onInitialReady(BEST) {
         var sep = L.pillow(20);
 
         var listItems = [
-            CORE.h2('Recommended Funds')
+            CORE.h2('Recommended Funds'),
+            L.pillow(0, 10)
         ];
         for (var i = 0; i < POP.length; i += 1) {
             var x = POP[i];

@@ -20,7 +20,7 @@ function onReady(E, L, CORE, NAV) {
                     L.spoon([
                         E.p({style: {height: '100', width: '600'}}, user.mission), 
                         L.pillow(20),
-                        CORE.button({href: '/me/?donateTo=' + user.id}, ['Donate!'])
+                        CORE.button({href: '/me/?donateTo=' + user.id, text: 'Donate!', loud: true})
                     ])
                 ])
             ])

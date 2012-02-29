@@ -39,27 +39,32 @@ function onAuthReady(AUTH) {
 function onReady(E, DOM, L, CORE, ME) { 
 
     function loginWidget(as) {
-        if (AUTH.Left) {
-            var username = E.input({type: 'text', size: 18});
-            var password = E.input({type: 'password', size: 18});
-            var badLogin = E.span({hidden: true, style: {height: 20, width: 200, color: 'red'}}, 'bad username or password');
-            var loginButton = CORE.button('Log in');
-            loginButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                var formValues = {
-                    email: username.value,
-                    password: password.value 
-                };
-                post('/auth/login', formValues, function(dat) {
-                    var data = JSON.parse(dat);
-                    if(data.Left) {
-                        badLogin.hidden = false;
-                    } else {
-                        window.location.reload();
-                    }
-                });
+        var username = E.input({type: 'text', size: 18});
+        var password = E.input({type: 'password', size: 18});
+
+        function submit(e) {
+            e.preventDefault();
+            var formValues = {
+                email: username.value,
+                password: password.value 
+            };
+            post('/auth/login', formValues, function(dat) {
+                var data = JSON.parse(dat);
+                if(data.Left) {
+                    badLogin.hidden = false;
+                } else {
+                    window.location = '/me/';
+                }
             });
-            return L.hug([
+        }
+
+        if (AUTH.Left) {
+            var badLogin = E.span({hidden: true, style: {height: 20, width: 200, color: 'red'}}, 'bad username or password');
+            var loginButton = CORE.button({text: 'Log in'});
+
+            loginButton.addEventListener('click', submit);
+
+            var widget = L.hug([
                 L.spoon([
                     L.hug([CORE.label('Username'), username]), L.pillow(5),
                     L.hug([CORE.label('Password'), password]), L.pillow(5),
@@ -67,7 +72,16 @@ function onReady(E, DOM, L, CORE, ME) {
                     L.hug([L.pillow(110,0), E.div({style: {width: 90}}, [loginButton])])
                 ]), L.pillow(30),
                 as.thumbnail
-             ]);
+            ]);
+
+            widget.addEventListener('keyup', function(e) {
+                if (e.keyCode === 13) {
+                   submit(e);
+                }
+            });
+
+            return widget;
+
         } else {
             var logoutButton = CORE.a({href: '#'}, 'Sign out');
             logoutButton.addEventListener('click', function(e) {
@@ -98,7 +112,7 @@ function onReady(E, DOM, L, CORE, ME) {
                 L.hug([ 
                     L.pillow(250, 0),
                     logo,
-                    L.pillow(400, 0),
+                    L.pillow(450, 0),
                     loginWidget(as)
                 ])
             ])

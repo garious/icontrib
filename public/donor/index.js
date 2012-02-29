@@ -3,8 +3,7 @@ var deps = [
     '/tag/layout1.js',
     '/ui/nav.js', 
     '/ui/chart.js', 
-    '/ui/core.js',
-    '/ui/colors.json'
+    '/ui/core.js'
 ];
 
 var defaultUser = {
@@ -12,10 +11,10 @@ var defaultUser = {
    alignedImageUrl: '/images/friends.png'
 };
 
-function onReady(E, L, NAV, CHART, CORE, C) {
+function onReady(E, L, NAV, CHART, CORE) {
 
     function alignButton(user) {
-        return CORE.button({href: '/me/?donateTo=' + user.id}, ['Donate!']);
+        return CORE.button({href: '/me/?donateTo=' + user.id, loud: true, text: 'Donate!'});
     }
 
     function isMember(xs, x) {
@@ -61,7 +60,7 @@ function onReady(E, L, NAV, CHART, CORE, C) {
                 var row = L.spoon([
                     L.hug([
                         CORE.h4(user.funds[i].name),
-                        L.pillow(300, 0),
+                        L.pillow(390, 0),
                         alignButton({id: user.funds[i].labels[0]})
                     ]),
                     L.hug([
