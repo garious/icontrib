@@ -94,14 +94,14 @@ function onReady(E, L, NAV, CORE, toaHtml, JF, CHARITY) {
         //          };
         //stupid schema, the 'null' services as a sentinal when i traverse it
         //var schema = { info: info, poc: poc };
-        var schema = { info: info };
+        var schema = { info };
         //now i have an object with a bunch of empty inputs, whose layout matches my schema
         //i can traverse the schema in parallel with the object and reference the input fields
         var inputs = JF.map(schema, schema, {}, JF.toInput);
         var oi = inputs.info; 
         //var pc = inputs.poc;
-        var name        = inputField(oi.organizationName, {label: 'Organization Name', type: 'text', name: 'name'});
-        var ein         = inputField(oi.ein,              {label: 'EIN', type: 'text', name: 'ein', required: 'required'});
+        var name        = inputField(organizationName, {label: 'Organization Name', type: 'text', name: 'name'});
+        var ein         = inputField(ein,              {label: 'EIN', type: 'text', name: 'ein', required: 'required'});
         var url         = inputField(oi.companyWebsite,   {label: 'Website URL', type: 'url', name: 'url', placeholder: 'http://'});
         var payAddr     = inputField(oi.paymentAddress,   {label: 'PayPal address', type: 'email', name: 'payAddr', placeholder: 'donations@charity.org'});
         //var firstName   = inputField(pc.firstName,        {label: 'First Name', type: 'text', name: 'firstName', required: 'required'});

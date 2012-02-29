@@ -14,5 +14,3 @@ data Distribution = Distribution { name   :: String
                    deriving (Eq, Ord, Show, Data, Typeable)
 
 $(deriveSafeCopy 0 'base ''Distribution)
-
-
