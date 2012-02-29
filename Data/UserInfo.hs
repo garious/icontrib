@@ -5,12 +5,13 @@ module Data.UserInfo where
 import Data.Data                             ( Typeable, Data )
 import qualified Account                     as A
 
+import Data.IxSet
 import Data.SafeCopy
 import Data.Distribution
 import Data.Fund
 
 
-data UserInfo = UserInfo { uid              :: A.UserID 
+data UserInfo = UserInfo { owner            :: A.UserID 
                          , firstName        :: String
                          , lastName         :: String
                          , imageUrl         :: String
@@ -20,8 +21,14 @@ data UserInfo = UserInfo { uid              :: A.UserID
                          , distribution     :: [Distribution]
                          , funds            :: [Fund]
                          }
-              deriving (Show, Typeable, Data, Eq)
+              deriving (Eq, Ord, Show, Data, Typeable)
 
+
+instance Indexable UserInfo where
+    empty = ixSet [ ixFun $ \ci -> [ owner ci ]
+                  ]
 $(deriveSafeCopy 0 'base ''UserInfo)
 
-
+newtype Database = Database (IxSet UserInfo)
+                 deriving (Data, Typeable)
+$(deriveSafeCopy 0 'base ''Database)

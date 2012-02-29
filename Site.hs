@@ -14,11 +14,13 @@ import JSONUtil                              ( jsonEncode, jsonDecode )
 import qualified Data.ByteString.Lazy        as B
 import qualified Data.ByteString.Lazy.Char8  as BS
 import qualified Codec.Binary.Url            as Url
-import qualified ServerError                 as SE
+import qualified Data.ServerError            as SE
+import ServerError                           ( justOr )
 import qualified Account                     as A
 import qualified CharityInfo                 as C
 import qualified Data.CharityInfo            as C
 import qualified UserInfo                    as U
+import qualified Data.UserInfo               as U
 import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP
 import Monad                                 ( msum, mzero )
@@ -84,7 +86,6 @@ redirectToSSL tlsconf hn pn = simpleHTTP (nullConf { port = pn }) $ do
 tohttps :: String -> Int -> ServerPart Response
 tohttps hn pn = (seeOther ("https://" ++ hn ++ ":" ++ show pn) (toResponse ()))
 
-
 site :: Site -> ServerPart Response
 site st = msum [ 
       JSW.widget root []
@@ -110,10 +111,10 @@ authServices st = msum [
 donorServices:: Site -> ServerPart Response
 donorServices st = msum [ 
       dir "update"               (post  (check >>= (withBody (U.updateInfo (userInfo st)))))
-    , dir "get"                  (get   (check >>= (U.lookupInfo (userInfo st))))
+    , dir "get"                  (get   (check >>= (U.lookupByOwner (userInfo st))))
     , dir "ls"                   (get   (liftIO $ U.list (userInfo st)))
     , dir "mostInfluential.json" (getf  (U.mostInfluential (userInfo st)))
-    , (getf (lift basename >>=  (U.lookupInfo (userInfo st))))
+    , (getf (lift basename >>= (U.lookupByOwner (userInfo st))))
     ]
     where
         check = (checkUser "auth" (userAccounts st))
@@ -125,15 +126,10 @@ donorServices st = msum [
 charityServices :: Site -> ServerPart Response
 charityServices st = msum [ 
       dir "update" (post (check >>= (withBody (C.updateInfo (charityInfo st)))))
-    , dir "get.json" (get  (check >>= (C.lookupInfo (charityInfo st))))
+    , dir "get.json" (get  (check >>= (C.lookupByOwner (charityInfo st))))
     ]
     where
         check = (checkUser "auth" (userAccounts st))
-
-withBody :: Data t => (t1 -> t -> IO b) -> t1 -> ErrorT SE.ServerError (ServerPartT IO) b
-withBody ff uid = do
-    bd <- getBody
-    liftIO $ ff uid bd
 
 redirect ::  HTTP.Request_String -> ServerPart Response
 redirect req = do
@@ -191,7 +187,7 @@ checkUser name db = do
    liftIO $ Log.debugM "check" 
    cookie <- lift $ getCookieValue name
    liftIO $ Log.debugShow cookie
-   token <- SE.checkMaybe SE.CookieDecode $ cookie 
+   token <- cookie `justOr` SE.cookieDecodeError
    uid <- A.cookieToUser db token
    return uid
 
@@ -240,4 +236,10 @@ rsp msg = do
 
 toS :: B.ByteString -> String
 toS ss = map (chr . fromIntegral) $ B.unpack ss
+
+withBody :: Data t => (t1 -> t -> ErrorT SE.ServerError (ServerPartT IO) b) -> t1 -> ErrorT SE.ServerError (ServerPartT IO) b
+withBody ff uid = do
+    bd <- getBody
+    ff uid bd
+
 

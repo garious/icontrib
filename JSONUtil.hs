@@ -2,7 +2,7 @@
 module JSONUtil where
 
 import Data.Data                             ( Data )
-import Control.Monad.Error                   ( MonadError, throwError, runErrorT )
+import Control.Monad.Error                   ( MonadError, runErrorT )
 import Control.Monad.Identity                ( runIdentity )
 import Data.List                             ( foldl' )
 import qualified Text.JSON.Generic           as JS
@@ -26,7 +26,7 @@ runJsonParse str = runIdentity $ runErrorT $ jsonParse str
 
 jsonParse :: MonadError SE.ServerError m => String -> m JS.JSValue
 jsonParse str = do
-    let check (Left msg) = throwError $ SE.JSONParseError msg
+    let check (Left msg) = SE.jsonParseError msg
         check (Right j)  =  return j
     check $ JSS.runGetJSON JS.readJSValue str
 
@@ -52,5 +52,5 @@ jsonMerge (JS.JSObject old) (JS.JSObject new) =
 jsonMerge _ new = new
 
 checkJS :: MonadError SE.ServerError m => JS.Result a -> m a
-checkJS (JS.Error msg) = throwError $ SE.JSONDecodeError msg
+checkJS (JS.Error msg) = SE.jsonDecodeError msg
 checkJS (JS.Ok x)      = return x

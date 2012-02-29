@@ -55,18 +55,18 @@ logoutUserTest :: IO ()
 logoutUserTest = liftIO $ HTTP.browse $ do
     let user = A.UserLogin "anatoly" "anatoly"
         add = addUser user
-    assertEqM "logout" checkUser (Left SE.CookieDecode)
+    assertEqM "logout" checkUser (Left "CookieDecodeError")
     assertEqM "logout" add (Right "anatoly")
     assertEqM "logout" checkUser (Right "anatoly")
     assertEqM "logout" logoutUser (Right ())
-    assertEqM "logout" checkUser (Left SE.BadCookie)
+    assertEqM "logout" checkUser (Left "BadCookie")
 
 checkUserTest :: IO ()
 checkUserTest = liftIO $ HTTP.browse $ do
     let user = A.UserLogin "anatoly" "anatoly"
         add = addUser user
     --empty server, no cookie in browser
-    assertEqM "check" checkUser (Left SE.CookieDecode)
+    assertEqM "check" checkUser (Left "CookieDecodeError")
     --added new user, which should log us in
     assertEqM "check" add (Right "anatoly")
     --check if we are logged in
@@ -78,7 +78,7 @@ loginUserTest = liftIO $ HTTP.browse $ do
         user = A.UserLogin "anatoly" "anatoly"
         login = loginUser user
         add = addUser user
-    assertEqM "login" login (Left SE.UserDoesntExist)
+    assertEqM "login" login (Left "DoesntExist")
     assertEqM "login" add (Right "anatoly")
     assertEqM "login" login (Right "anatoly")
 
@@ -86,7 +86,7 @@ addUserTest ::  IO ()
 addUserTest = liftIO $ HTTP.browse $ do
     let run = addUser (A.UserLogin "anatoly" "anatoly")
     assertEqM "add" run (Right "anatoly")
-    assertEqM "add" run (Left SE.UserAlreadyExists)
+    assertEqM "add" run (Left "AlreadyExists")
 
 emptyServer :: IO ()
 emptyServer = do

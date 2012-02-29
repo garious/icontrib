@@ -9,7 +9,7 @@ import Data.SafeCopy
 data Fund = Fund { name   :: String 
                  , labels :: [String]
                  }
-          deriving (Show, Typeable, Data, Eq)
+          deriving (Eq, Ord, Show, Data, Typeable)
 
 $(deriveSafeCopy 0 'base ''Fund)
 

@@ -7,19 +7,28 @@ import qualified CharityInfo                 as C
 import qualified Data.CharityInfo            as C
 
 import TestUtil
-import ServerError
 
 lookupTest :: IO ()
 lookupTest = do
     db <- openMemoryState C.empty
-    assertEqErrorT "lookup empty"  (C.lookupInfo db "anatoly")   (Left UserDoesntExist)
+    assertEqM "lookup empty"  (C.lookupByOwner db "anatoly")   []
 
 updateInfoTest :: IO ()
 updateInfoTest = do
     db <- openMemoryState C.empty
-    let ci = C.CharityInfo (C.OrganizationInfo "ein" "name" "website") (C.PointOfContact "first" "last" "phone" "email")
-    C.updateInfo db "anatoly" ci
-    assertEqErrorT "updated"  (C.lookupInfo db "anatoly")   (Right [ci])
+    let ci = C.CharityInfo "anatoly"
+                           "firstname" 
+                           "lastname" 
+                           "phone"
+                           "email"
+                           (C.Ein "ein") 
+                           "name"
+                           "website"
+                           "mission"
+                           (C.CharityID "cid")
+                           "imageurl"
+    assertEqErrorT "update" (C.updateInfo db "anatoly" ci) (Right ())
+    assertEqM "updated" (C.lookupByOwner db "anatoly")   ([ci])
 
 main :: IO ()
 main = do

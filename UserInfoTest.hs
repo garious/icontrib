@@ -7,29 +7,30 @@ import qualified UserInfo                   as U
 import qualified Data.UserInfo              as U
 
 import TestUtil
-import ServerError
 
 lookupTest :: IO ()
 lookupTest = do
     db <- openMemoryState U.empty
-    assertEqErrorT "lookup empty"  (U.lookupInfo db "anatoly")   (Left UserDoesntExist)
+    assertEqErrorT "lookup empty"  (U.lookupByOwner db "anatoly")   (Left "DoesntExist")
 
 updateInfoTest :: IO ()
 updateInfoTest = do
     db <- openMemoryState U.empty
-    let ui = U.UserInfo "anatoly" "anatoly" "yako" "foo" 100 100 [] []
-    U.updateInfo db "anatoly" ui
-    assertEqErrorT "updated"  (U.lookupInfo db "anatoly")   (Right ui)
+    let ui :: U.UserInfo
+        ui = U.UserInfo "anatoly" "first" "last" "imageurl" 100 100 [] [] []
+    assertEqErrorT "update" (U.updateInfo db "anatoly" ui) (Right ())
+    assertEqErrorT "updated"  (U.lookupByOwner db "anatoly")   (Right ui)
     assertEqM "list"  (U.list db )   ["anatoly"]
 
 mostInfluentialTest :: IO ()
 mostInfluentialTest = do
     db <- openMemoryState U.empty
-    assertEqErrorT "mostInfluential empty"  (U.mostInfluential db) (Left UserDoesntExist)
-    let toly = U.UserInfo "anatoly" "anatoly" "yako" "foo" 100 100 [] []
-    U.updateInfo db "anatoly" toly
-    let greg = U.UserInfo "greg" "greg" "fitz" "foo" 200 100 [] []
-    U.updateInfo db "greg" greg
+    assertEqErrorT "mostInfluential empty"  (U.mostInfluential db) (Left "DoesntExist")
+    let toly :: U.UserInfo
+        toly = U.UserInfo "anatoly" "first" "last" "imageurl" 100 100 [] [] []
+    assertEqErrorT "update" (U.updateInfo db "anatoly" toly) (Right ())
+    let greg = U.UserInfo "greg" "greg" "fitz" "foo" 200 100 [] [] []
+    assertEqErrorT "update" (U.updateInfo db "greg" greg) (Right ())
     assertEqErrorT "updated"  (U.mostInfluential db)  (Right "greg")
 
 main :: IO ()

@@ -48,16 +48,16 @@ empty = Database Map.empty Map.empty Map.empty
 
 addUserU :: UserID -> PasswordHash -> Update Database (Either ServerError ())
 addUserU uid phash = runErrorT $ do
-    when (BL.null uid) (throwError BadUsername)
+    when (BL.null uid) (badUsername)
     db <- get
     let mp = (users db)
-    when (isJust (Map.lookup uid mp)) (throwError UserAlreadyExists)
+    when (isJust (Map.lookup uid mp)) (alreadyExists)
     put $ db { users = (Map.insert uid phash mp) }
 
 cookieToUserQ :: Cookie -> Query Database (Either ServerError UserID)
 cookieToUserQ cookie = runErrorT $ do
    db <- ask
-   checkMaybe BadCookie (Map.lookup cookie (cookies db))
+   (Map.lookup cookie (cookies db)) `justOr` badCookie
 
 listUsersQ :: Query Database [UserID]
 listUsersQ = do
@@ -83,10 +83,10 @@ clearUserCookieU uid = do
 checkPasswordQ :: UserID -> Password -> Query Database (Either ServerError ())
 checkPasswordQ uid pwd = runErrorT $ do
    db <- ask
-   let checkPass Nothing = throwError UserDoesntExist
+   let checkPass Nothing = doesntExist
        checkPass (Just (PasswordHash hash salt)) 
          | hash == hashPassword salt pwd = return $ ()
-       checkPass _ = throwError BadPassword
+       checkPass _ = badPassword
    checkPass (Map.lookup uid (users db))
 
 hashPassword :: Salt -> Password -> Hash

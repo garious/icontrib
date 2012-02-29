@@ -17,7 +17,7 @@ main :: IO ()
 main = do
     Log.start
     db <- database
-    runMain True db
+    runMain False db
 
 database :: IO Site
 database = do
@@ -30,7 +30,7 @@ database = do
         A.addUser ua (name) (name)
         ff <- liftIO $ readFile dd
         di <- jsonDecode ff
-        liftIO $ U.updateInfo ui name di
+        U.updateInfo ui name di
     Log.debugM (show errs)
     return (Site ua ci ui)
 

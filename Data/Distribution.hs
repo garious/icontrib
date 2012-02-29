@@ -3,15 +3,15 @@
 module Data.Distribution where
 
 import Data.Data                             ( Typeable, Data )
-
+import Data.CharityInfo
 import Data.SafeCopy
 
 data Distribution = Distribution { name   :: String 
-                                 , url    :: String
+                                 , cid    :: CharityID
                                  , shares :: Int
                                  , labels :: [String]
                                  }
-                   deriving (Show, Typeable, Data, Eq)
+                   deriving (Eq, Ord, Show, Data, Typeable)
 
 $(deriveSafeCopy 0 'base ''Distribution)
 

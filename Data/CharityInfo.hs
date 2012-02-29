@@ -1,38 +1,36 @@
-{-# LANGUAGE FlexibleContexts, MultiParamTypeClasses, FlexibleInstances, TypeSynonymInstances, TypeFamilies, DeriveDataTypeable, TemplateHaskell #-}
+{-# LANGUAGE UndecidableInstances, GeneralizedNewtypeDeriving, FlexibleContexts, MultiParamTypeClasses, FlexibleInstances, TypeSynonymInstances, TypeFamilies, DeriveDataTypeable, TemplateHaskell #-}
 module Data.CharityInfo where
 
 import Data.Data                             ( Data, Typeable )
-import qualified Data.Map                    as Map
 import qualified Account                     as A
+import Data.IxSet
 import Data.SafeCopy
 
-type Ein = String
-data PointOfContact = PointOfContact { firstName :: String 
-                                     , lastName :: String
-                                     , phone :: String
-                                     , email :: String
-                                     }
-                    deriving (Show, Typeable, Data, Eq)
+newtype Ein         = Ein       String    deriving (Eq, Ord, Show, Data, Typeable, SafeCopy)
+newtype CharityID   = CharityID String    deriving (Eq, Ord, Show, Data, Typeable, SafeCopy)
 
-$(deriveSafeCopy 0 'base ''PointOfContact)
-
-data OrganizationInfo = OrganizationInfo { ein :: Ein
-                                         , organizationName :: String
-                                         , companyWebsite :: String
-                                         }
-                             deriving (Show, Typeable, Data, Eq)
-
-$(deriveSafeCopy 0 'base ''OrganizationInfo)
-
-data CharityInfo = CharityInfo { info :: OrganizationInfo 
-                               , poc :: PointOfContact
+data CharityInfo = CharityInfo { owner :: A.UserID
+                               , firstName :: String 
+                               , lastName :: String
+                               , phone :: String
+                               , email :: String
+                               , ein :: Ein
+                               , organizationName :: String
+                               , companyWebsite :: String
+                               , mission :: String
+                               , cid :: CharityID
+                               , imageUrl :: String
                                }
-                 deriving (Show, Typeable, Data, Eq)
+                 deriving (Eq, Ord, Show, Data, Typeable)
 
+
+instance Indexable CharityInfo where
+    empty = ixSet [ ixFun $ \ci -> [ ein ci ]
+                  , ixFun $ \ci -> [ cid ci ]
+                  , ixFun $ \ci -> [ owner ci ]
+                  ]
 $(deriveSafeCopy 0 'base ''CharityInfo)
 
-type CharityMap = Map.Map Ein CharityInfo 
-data Database = Database !(Map.Map A.UserID CharityMap)
+newtype Database = Database (IxSet CharityInfo)
+                 deriving (Data, Typeable)
 $(deriveSafeCopy 0 'base ''Database)
-
-

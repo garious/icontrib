@@ -1,20 +1,15 @@
-module ServerError( catchOnly
-                  , checkMaybe
+module ServerError( justOr
+                  , nothingOr
                   , module Data.ServerError
                   ) where
 
 import Data.ServerError
-import Control.Monad.Error
 
 
-catchOnly :: (MonadError e m, Eq e) => e -> m a -> m a -> m a
-catchOnly ee ra rb = ra `catchError` (\ er -> case(er == ee) of 
-                                                   True -> rb
-                                                   _    -> throwError er)
+justOr :: Monad m => Maybe a -> m a -> m a
+justOr Nothing ee  = ee
+justOr (Just aa) _ = return aa
 
-
-
-checkMaybe :: MonadError e m => e -> Maybe a -> m a
-checkMaybe ee Nothing = throwError ee
-checkMaybe _ (Just aa) = return aa
-
+nothingOr :: Monad m => Maybe a -> m () -> m () 
+nothingOr Nothing _   = return ()
+nothingOr (Just _) ee = ee
