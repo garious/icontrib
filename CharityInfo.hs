@@ -6,7 +6,7 @@ import Control.Monad.State                   ( get, put )
 import Control.Monad.Reader                  ( ask )
 import Control.Monad.Error                   ( runErrorT, MonadError )
 import Control.Monad.IO.Class                ( MonadIO, liftIO )
-import Data.IxSet                            ( (@*) )
+import Data.IxSet                            ( (@*), (@+) )
 import qualified Data.IxSet                  as IxSet
 import Control.Applicative                   ( (<|>), (*>) )
 import qualified Account                     as A
@@ -49,7 +49,7 @@ lookupByOwnerQ uid = do
 lookupByCIDsQ :: [CharityID] -> Query Database [CharityInfo]
 lookupByCIDsQ cids = do
    (Database db) <- ask
-   return $ IxSet.toList $ db @* cids
+   return $ IxSet.toList $ db @+ cids
 
 $(makeAcidic ''Database ['updateU, 'lookupByOwnerQ, 'deleteByEinU, 'lookupByCIDsQ])
 

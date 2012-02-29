@@ -71,5 +71,6 @@ list db = query db (ListQ)
 popularCharities :: MonadIO m => AcidState Database -> m [CharityID]
 popularCharities db = do 
     lst <- liftIO $ query db (ListCharitiesQ)
-    return $ map head $ reverse $ sortBy (compare `on` length) $ group $ sort lst
+    let rv = map head $ reverse $ sortBy (compare `on` length) $ group $ sort lst
+    return $ rv
 
