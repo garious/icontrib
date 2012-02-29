@@ -84,6 +84,9 @@ function onReady(E, L, C) {
     function button(as) {
         var dim = textDimensions({}, as.text);
 
+        var color      = as.loud ? C.red : C.middleColor;
+        var focusColor = as.loud ? C.red : C.lightColor;
+
         var e = E.a({
             href: as.href || '#', 
             style: {
@@ -92,7 +95,7 @@ function onReady(E, L, C) {
                 font: font, 
                 textDecoration: 'none', 
                 textAlign: 'center', 
-                backgroundColor: C.red, 
+                backgroundColor: color, 
                 color: '#fff', 
                 padding: '5px', 
                 borderRadius: '2px'
@@ -100,10 +103,10 @@ function onReady(E, L, C) {
         }, as.text);
 
         e.addEventListener('mouseover', function() {
-            e.style.backgroundColor = C.red;
+            e.style.backgroundColor = focusColor;
         });
         e.addEventListener('mouseout', function() {
-            e.style.backgroundColor = C.red;
+            e.style.backgroundColor = color;
         });
 
         return e;

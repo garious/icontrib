@@ -112,7 +112,7 @@ function onReady(E, DOM, L, CORE, ME) {
                 L.hug([ 
                     L.pillow(250, 0),
                     logo,
-                    L.pillow(400, 0),
+                    L.pillow(450, 0),
                     loginWidget(as)
                 ])
             ])

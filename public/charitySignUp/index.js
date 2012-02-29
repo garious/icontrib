@@ -122,7 +122,7 @@ function onReady(E, L, NAV, CORE, toaHtml, JF, CHARITY) {
         } else {
             buttonText = 'Register!';
         }
-        var register = CORE.button({text: buttonText});
+        var register = CORE.button({text: buttonText, loud: true});
 
         var form = E.form({style: {counterReset: 'fieldsets', width: '800px', height: '720px'}}, [
                 fieldset([legend('Organization Information'), ein, name, url, payAddr ]),

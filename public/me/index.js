@@ -3,10 +3,11 @@ var deps = [
     '/tag/layout1.js', 
     '/ui/nav.js',
     '/ui/core.js',
-    '/ui/chart.js'
+    '/ui/chart.js',
+    '/charity/popular.json'
 ];
 
-function onReady(E, L, NAV, CORE, CHART) { 
+function onReady(E, L, NAV, CORE, CHART, POP) { 
 
     function fundContents(pie) {
         var dist = pie.distribution;
@@ -38,9 +39,9 @@ function onReady(E, L, NAV, CORE, CHART) {
                         }
                     }
                     pie.draw();
-                } else {
+                } //else {
                     // TODO: disable 'Save Changes'
-                }
+                //}
             };
         }
 
@@ -76,9 +77,15 @@ function onReady(E, L, NAV, CORE, CHART) {
 
         var rows = [];
 
+        // TODO: clean up calculation of size of string that wraps over serveral lines
+        var impactHeader = CORE.h6(impactMsg);
+        impactHeader.style.width = '550px';
+        impactHeader.style.height = '50px';
+
         if (alignedUsers.length > 0) {
             rows.push( CORE.h3('My impact') );
-            rows.push( L.hug([L.pillow(30), CORE.h6(impactMsg)]) );
+            //rows.push( L.hug([L.pillow(30), CORE.h6(impactMsg)]) );
+            rows.push( L.hug([L.pillow(30), impactHeader]) );
         }
 
         var pie = CHART.pie(user);
@@ -94,20 +101,32 @@ function onReady(E, L, NAV, CORE, CHART) {
             L.pillow(0, 20),
             L.hug([L.pillow(30, 0), CORE.input({type: 'text', size: 10, value: user.centsDonated / 100.0}), L.pillow(10,0), CORE.h6("dollars per month")]),
             L.pillow(0, 20),
-            L.hug([L.pillow(20,0), CORE.button({href: '#', text: 'Save Changes'})]),
+            L.hug([L.pillow(20,0), CORE.button({href: '#', text: 'Save Changes', loud: true})]),
             L.pillow(0, 20)
         ];
 
         return L.spoon(rows.concat(fundingRows));
     }
 
+    var listItems = [
+        CORE.h2('Recommended Funds'),
+        L.pillow(0, 10)
+    ];
+
+    for (var i = 0; i < POP.length; i += 1) {
+        var x = POP[i];
+        listItems.push( CORE.a({href: '/charity/?id=' + x.id}, x.name) );
+    }
+
     var main = NAV.frame([
         L.spoon([
             L.hug([
-                L.pillow(250),
-                CORE.box([
+                L.pillow(200),
+                CORE.box({width: '600px'}, [
                     dashboard({user: NAV.userInfo()})
-                ])
+                ]),
+                L.pillow(20),
+                CORE.box(L.spoon(listItems))
             ]),
             L.pillow(20) 
         ])
