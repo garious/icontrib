@@ -22,7 +22,7 @@ function onInitialReady(BEST) {
         ];
         for (var i = 0; i < POP.length; i += 1) {
             var x = POP[i];
-            listItems.push( CORE.a({href: '/charity/?id=' + x.id}, x.name) );
+            listItems.push( CORE.a({href: '/charity/?id=' + x.cid}, x.name) );
         }
 
         var body = L.spoon([

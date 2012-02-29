@@ -25,7 +25,7 @@ empty = Database IxSet.empty
 updateU :: UserInfo -> Update Database ()
 updateU ui =  do
     (Database db) <- get
-    put $ Database (IxSet.insert ui db)
+    put $ Database (IxSet.updateIx (owner ui) ui db)
 
 lookupByOwnerQ :: A.UserID -> Query Database (Either ServerError UserInfo)
 lookupByOwnerQ key = runErrorT $ do
@@ -72,5 +72,6 @@ popularCharities :: MonadIO m => AcidState Database -> m [CharityID]
 popularCharities db = do 
     lst <- liftIO $ query db (ListCharitiesQ)
     let rv = map head $ reverse $ sortBy (compare `on` length) $ group $ sort lst
+    liftIO $ print $ rv
     return $ rv
 

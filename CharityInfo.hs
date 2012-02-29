@@ -39,7 +39,7 @@ updateU ci =  runErrorT $ do
         idNotTaken (Just jci) = notExist $ IxSet.getOne $ db @* [cid jci]
         idNotTaken _          = return ()
     (notExist mci) <|> (belongs mci *> (sameID mci <|> idNotTaken mci))
-    put $ Database (IxSet.insert ci db)
+    put $ Database (IxSet.updateIx (ein ci) ci db)
 
 lookupByOwnerQ :: A.UserID -> Query Database [CharityInfo]
 lookupByOwnerQ uid = do
