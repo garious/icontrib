@@ -17,18 +17,15 @@ updateInfoTest :: IO ()
 updateInfoTest = do
     db <- openMemoryState C.empty
     let ci = C.CharityInfo "anatoly"
-                           "firstname" 
-                           "lastname" 
-                           "phone"
-                           "email"
                            (C.Ein "ein") 
                            "name"
                            "website"
-                           "mission"
                            (C.CharityID "cid")
                            "imageurl"
+                           "mission"
     assertEqErrorT "update" (C.updateInfo db "anatoly" ci) (Right ())
     assertEqM "updated" (C.lookupByOwner db "anatoly")   ([ci])
+    assertEqErrorT "update2" (C.updateInfo db "anatoly" ci) (Right ())
 
 main :: IO ()
 main = do

@@ -1,0 +1,26 @@
+{
+   "owner": "greg",
+   "firstName": "Greg",
+   "lastName": "Fitzgerald",
+   "phone": "",
+   "email": "",
+   "imageUrl": "/donor/gregf.jpg",
+   "centsDonated": 10000,
+   "alignedDonated": 10000,
+   "alignedUsers": ["tom", "elisa"],
+   "distribution": [
+       {"name": "UNICEF", "cid": "unicef", "shares": 35, "labels": ["Gregs-General-Fund"]},
+       {"name": "American Red Cross", "cid": "redcross", "shares": 10, "labels": ["Gregs-General-Fund"]},
+       {"name": "La Jolla Playhouse", "cid": "ljp", "shares": 10, "labels": ["Gregs-SanDiego-Fund"]},
+       {"name": "San Diego Foundation", "cid": "sdfoundation", "shares": 10, "labels": ["Gregs-SanDiego-Fund"]},
+       {"name": "Underwater Society of America", "cid": "usoa", "shares": 80, "labels": ["Gregs-Personal-Fund"]},
+       {"name": "LACC", "cid": "lacc", "shares": 20, "labels": ["Gregs-Personal-Fund"]}
+   ],
+   "funds": [
+       {"name": "General Fund", "labels": ["Gregs-General-Fund"]},
+       {"name": "San Diego Fund", "labels": ["Gregs-SanDiego-Fund"]},
+       {"name": "Personal Fund", "labels": ["Gregs-Personal-Fund"]}
+   ]
+}
+
+

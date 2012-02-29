@@ -1,17 +1,11 @@
 import Site                                  ( site, Site(Site), serve, redirectToSSL )
-import Data.Acid.Memory                      ( openMemoryState )
+import Data.Acid    ( openLocalStateFrom )
 import Control.Concurrent                    ( forkIO, killThread )
-import Control.Monad                         ( forM )
-import Control.Monad.Error                   ( runErrorT, liftIO )
-import JSONUtil                              ( jsonDecode )
-import qualified Data.ByteString.Lazy.Char8  as BS
 import qualified Account                     as A
 import qualified CharityInfo                 as C
 import qualified UserInfo                    as U
 import qualified Log                         as Log
 import Happstack.Server.SimpleHTTPS          ( nullTLSConf, tlsPort, tlsCert, tlsKey )
-import System.Path.Glob                      ( glob )
-import System.FilePath                       ( takeBaseName )
 
 main :: IO ()
 main = do
@@ -21,17 +15,9 @@ main = do
 
 database :: IO Site
 database = do
-    ua <- openMemoryState A.empty
-    ci <- openMemoryState C.empty
-    ui <- openMemoryState U.empty
-    donors <- glob "private/donor/*.json"
-    errs <- forM donors $ \ dd -> runErrorT $ do
-        let name = BS.pack $ takeBaseName dd
-        A.addUser ua (name) (name)
-        ff <- liftIO $ readFile dd
-        di <- jsonDecode ff
-        U.updateInfo ui name di
-    Log.debugM (show errs)
+    ua <- openLocalStateFrom "private/db/accounts" A.empty
+    ci <- openLocalStateFrom "private/db/charities" C.empty
+    ui <- openLocalStateFrom "private/db/donors"U.empty
     return (Site ua ci ui)
 
 type WithSSL = Bool

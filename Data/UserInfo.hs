@@ -14,6 +14,8 @@ import Data.Fund
 data UserInfo = UserInfo { owner            :: A.UserID 
                          , firstName        :: String
                          , lastName         :: String
+                         , phone            :: String
+                         , email            :: String
                          , imageUrl         :: String
                          , centsDonated     :: Int
                          , alignedDonated   :: Int

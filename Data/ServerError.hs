@@ -3,6 +3,9 @@ module Data.ServerError where
 
 type ServerError = String
 
+einAlreadyExists :: Monad m => m a
+einAlreadyExists = fail "EinAlreadyExists"
+
 alreadyExists :: Monad m => m a
 alreadyExists = fail "AlreadyExists"
 

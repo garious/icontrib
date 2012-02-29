@@ -10,16 +10,12 @@ newtype Ein         = Ein       String    deriving (Eq, Ord, Show, Data, Typeabl
 newtype CharityID   = CharityID String    deriving (Eq, Ord, Show, Data, Typeable, SafeCopy)
 
 data CharityInfo = CharityInfo { owner :: A.UserID
-                               , firstName :: String 
-                               , lastName :: String
-                               , phone :: String
-                               , email :: String
                                , ein :: Ein
                                , organizationName :: String
                                , companyWebsite :: String
-                               , mission :: String
                                , cid :: CharityID
                                , imageUrl :: String
+                               , mission :: String
                                }
                  deriving (Eq, Ord, Show, Data, Typeable)
 

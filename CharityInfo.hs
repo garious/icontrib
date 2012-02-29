@@ -28,7 +28,7 @@ updateU ci =  runErrorT $ do
     (Database db) <- get
     let 
         mci = IxSet.getOne $ db @* [ein ci]
-        notExist mm = mm `nothingOr` alreadyExists
+        notExist mm = mm `nothingOr` einAlreadyExists
         belongs (Just jci)
             | (owner jci) == (owner ci) = return ()
         belongs _                       = badUsername
@@ -37,7 +37,7 @@ updateU ci =  runErrorT $ do
         sameID _                     = badUsername
         idNotTaken (Just jci) = notExist $ IxSet.getOne $ db @* [cid jci]
         idNotTaken _          = return ()
-    notExist mci <|> (belongs mci *> (sameID mci <|> idNotTaken mci))
+    (notExist mci) <|> (belongs mci *> (sameID mci <|> idNotTaken mci))
     put $ Database (IxSet.insert ci db)
 
 lookupByOwnerQ :: A.UserID -> Query Database [CharityInfo]

@@ -8,9 +8,9 @@ RUN_TESTS := $(wildcard *Test.hs)
 
 o = out
 
-all: test $o/icontrib lint
+all: test $o/icontrib lint $o/import private/static.ok
 
-serve: $o/icontrib
+serve: $o/icontrib private/static.ok
 	$<
 
 libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
@@ -22,6 +22,14 @@ libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
 test: $(patsubst %,$o/%.passed,$(RUN_TESTS))
 
 $o/icontrib: Main.hs Site.hs test libcryptopp.dylib
+	@mkdir -p $(@D)
+	ghc $(GHC_FLAGS) -outputdir $o -o $@ --make $<
+
+private/static.ok: $o/import private/static/*/*
+	@$o/import 
+	@touch private/static.ok
+
+$o/import: import.hs
 	@mkdir -p $(@D)
 	ghc $(GHC_FLAGS) -outputdir $o -o $@ --make $<
 
