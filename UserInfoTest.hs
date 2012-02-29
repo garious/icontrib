@@ -17,7 +17,7 @@ updateInfoTest :: IO ()
 updateInfoTest = do
     db <- openMemoryState U.empty
     let ui :: U.UserInfo
-        ui = U.UserInfo "anatoly" "first" "last" "imageurl" 100 100 [] [] []
+        ui = U.UserInfo "anatoly" "first" "last" "phone" "email" "imageurl" 100 100 [] [] []
     assertEqErrorT "update" (U.updateInfo db "anatoly" ui) (Right ())
     assertEqErrorT "updated"  (U.lookupByOwner db "anatoly")   (Right ui)
     assertEqM "list"  (U.list db )   ["anatoly"]
@@ -27,9 +27,9 @@ mostInfluentialTest = do
     db <- openMemoryState U.empty
     assertEqErrorT "mostInfluential empty"  (U.mostInfluential db) (Left "DoesntExist")
     let toly :: U.UserInfo
-        toly = U.UserInfo "anatoly" "first" "last" "imageurl" 100 100 [] [] []
+        toly = U.UserInfo "anatoly" "first" "last" "phone" "email" "imageurl" 100 100 [] [] []
     assertEqErrorT "update" (U.updateInfo db "anatoly" toly) (Right ())
-    let greg = U.UserInfo "greg" "greg" "fitz" "foo" 200 100 [] [] []
+    let greg = U.UserInfo "greg" "greg" "fitz" "phone" "email" "foo" 200 100 [] [] []
     assertEqErrorT "update" (U.updateInfo db "greg" greg) (Right ())
     assertEqErrorT "updated"  (U.mostInfluential db)  (Right "greg")
 

@@ -11,7 +11,7 @@ newtype CharityID   = CharityID String    deriving (Eq, Ord, Show, Data, Typeabl
 
 data CharityInfo = CharityInfo { owner :: A.UserID
                                , ein :: Ein
-                               , organizationName :: String
+                               , name :: String
                                , companyWebsite :: String
                                , cid :: CharityID
                                , imageUrl :: String

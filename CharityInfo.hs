@@ -13,6 +13,7 @@ import qualified Account                     as A
 import Data.Acid
 import ServerError
 import Data.CharityInfo
+import qualified Data.Popular                as P
 
 empty :: Database
 empty = Database IxSet.empty
@@ -45,7 +46,12 @@ lookupByOwnerQ uid = do
    (Database db) <- ask
    return $ IxSet.toList $ db @* [uid]
 
-$(makeAcidic ''Database ['updateU, 'lookupByOwnerQ, 'deleteByEinU])
+lookupByCIDsQ :: [CharityID] -> Query Database [CharityInfo]
+lookupByCIDsQ cids = do
+   (Database db) <- ask
+   return $ IxSet.toList $ db @* cids
+
+$(makeAcidic ''Database ['updateU, 'lookupByOwnerQ, 'deleteByEinU, 'lookupByCIDsQ])
 
 lookupByOwner :: MonadIO m => AcidState Database -> A.UserID -> m [CharityInfo]
 lookupByOwner db uid = liftIO $ query db (LookupByOwnerQ uid)
@@ -57,4 +63,10 @@ updateInfo db uid ci
 
 deleteByEin :: (MonadIO m, MonadError ServerError m) => AcidState Database -> A.UserID -> Ein -> m ()
 deleteByEin db uid cein = A.rethrow $ update db (DeleteByEinU uid cein)
+
+toPopular :: MonadIO m => AcidState Database -> [CharityID] -> m ([P.Popular])
+toPopular db cids = do
+    infos <- liftIO $ query db (LookupByCIDsQ cids)
+    return $ map (\ ci -> P.Popular (cid ci) (name ci) ) infos
+
 

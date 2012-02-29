@@ -125,11 +125,13 @@ donorServices st = msum [
 
 charityServices :: Site -> ServerPart Response
 charityServices st = msum [ 
-      dir "update" (post (check >>= (withBody (C.updateInfo (charityInfo st)))))
-    , dir "get.json" (get  (check >>= (C.lookupByOwner (charityInfo st))))
+      dir "update"       (post (check >>= (withBody (C.updateInfo (charityInfo st)))))
+    , dir "get.json"     (get  (check >>= (C.lookupByOwner (charityInfo st))))
+    , dir "popular.json" (geta  popular)
     ]
     where
         check = (checkUser "auth" (userAccounts st))
+        popular = (U.popularCharities (userInfo st)) >>= (C.toPopular (charityInfo st))
 
 redirect ::  HTTP.Request_String -> ServerPart Response
 redirect req = do
@@ -151,6 +153,14 @@ getf page = do
    case(rv) of
         (Left ee) -> internalServerError (toResponse $ show ee)
         (Right res) -> rsp $ res 
+
+geta :: (Show a, Data a) => ServerPartT IO a -> ServerPartT IO Response
+geta page = do 
+   method GET
+   rq <- askRq
+   liftIO $ Log.debugShow ("get"::String, (rqUri rq))
+   page' <- page
+   rsp page'
 
 get :: (Show a, Data a) => ErrorT SE.ServerError (ServerPartT IO) a -> ServerPartT IO Response
 get page = do 

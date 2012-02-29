@@ -68,8 +68,8 @@ updateInfo db uid ui
 list :: AcidState Database -> IO ([A.UserID])
 list db = query db (ListQ)
 
-popularCharities :: AcidState Database -> IO [CharityID]
+popularCharities :: MonadIO m => AcidState Database -> m [CharityID]
 popularCharities db = do 
-    lst <- query db (ListCharitiesQ)
+    lst <- liftIO $ query db (ListCharitiesQ)
     return $ map head $ reverse $ sortBy (compare `on` length) $ group $ sort lst
 
