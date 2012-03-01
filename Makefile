@@ -26,7 +26,7 @@ $o/icontrib: Main.hs Site.hs test libcryptopp.dylib
 	ghc $(GHC_FLAGS) -outputdir $o -o $@ --make $<
 
 private/static.ok: $o/import private/static/*/*
-	@$o/import 
+	$o/import 
 	@touch private/static.ok
 
 $o/import: import.hs
