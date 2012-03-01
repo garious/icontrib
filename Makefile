@@ -25,11 +25,11 @@ $o/icontrib: Main.hs Site.hs test libcryptopp.dylib
 	@mkdir -p $(@D)
 	ghc $(GHC_FLAGS) -outputdir $o -o $@ --make $<
 
-private/static.ok: $o/import private/static/*/*
+private/static.ok: $o/import private/static/*/* Data/*.hs
 	$o/import 
 	@touch private/static.ok
 
-$o/import: import.hs
+$o/import: import.hs Data/*.hs
 	@mkdir -p $(@D)
 	ghc $(GHC_FLAGS) -outputdir $o -o $@ --make $<
 
@@ -65,7 +65,7 @@ JS_WHITELIST:= \
 
 JS_FILES:=$(filter-out $(JS_WHITELIST),$(wildcard public/*.js) $(wildcard public/*/*.js))
 
-JSLINT_FILES:=public/yoink/yoink.js
+#JSLINT_FILES:=public/yoink/yoink.js
 
 lint: $(patsubst %,$o/%.ok,$(JS_FILES)) $(patsubst %,$o/%.lint,$(JSLINT_FILES))
 

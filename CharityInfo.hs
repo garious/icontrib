@@ -67,6 +67,6 @@ deleteByEin db uid cein = A.rethrow $ update db (DeleteByEinU uid cein)
 toPopular :: MonadIO m => AcidState Database -> [CharityID] -> m ([P.Popular])
 toPopular db cids = do
     infos <- liftIO $ query db (LookupByCIDsQ cids)
-    return $ map (\ ci -> P.Popular (cid ci) (name ci) ) infos
+    return $ map (\ ci -> P.Popular (cid ci) (organizationName ci) ) infos
 
 
