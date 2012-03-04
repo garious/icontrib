@@ -27,7 +27,7 @@
 var YOINK = (function () {
     'use strict';
 
-    var console = (window && window.console) || {log: function () {}};
+    var console = (typeof window !== 'undefined' && window.console) || {log: function () {}};
 
     var defaultInterpreters = {
         json: function (text) {
@@ -42,7 +42,7 @@ var YOINK = (function () {
     };
 
     // Special handling for Internet Explorer
-    if (window && window.execScript) {
+    if (typeof window !== 'undefined' && window.execScript) {
         defaultInterpreters.js = function (text, require, callback, params) {
             var f_str = '(function (baseUrl, define, require, params) {' + text + '})';
             /*global iesucks: true*/
