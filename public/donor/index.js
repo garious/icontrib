@@ -46,7 +46,7 @@ function onReady(E, L, NAV, CHART, CORE) {
 
             var cols = L.hug([
                 E.div({style: {width: '70px', height: pct.height}}, [pct]),
-                CORE.a({href: x.url}, x.name)
+                CORE.a({href: 'charity/?id=' + x.url}, x.name)
             ]);
             rows.push(cols);
         }

@@ -118,20 +118,25 @@ donorServices st = msum [
     ]
     where
         check = (checkUser "auth" (userAccounts st))
-        isext ee pp
-            | (reverse ee) == (take (length ee) $ reverse pp) = return  (BS.pack $ takeBaseName pp)
-            | otherwise = mzero
-        basename = path $ \ (pp::String) -> isext ".json" pp
 
 charityServices :: Site -> ServerPart Response
 charityServices st = msum [ 
       dir "update"       (post (check >>= (withBody (C.updateInfo (charityInfo st)))))
     , dir "get.json"     (get  (check >>= (C.lookupByOwner (charityInfo st))))
     , dir "popular.json" (geta  popular)
+    , (getf (lift basename >>= (C.lookupByCID (charityInfo st) . C.CharityID . BS.unpack)))
     ]
     where
         check = (checkUser "auth" (userAccounts st))
         popular = (U.popularCharities (userInfo st)) >>= (C.toPopular (charityInfo st))
+
+basename :: ServerPartT IO BS.ByteString
+basename = path $ \ (pp::String) -> isext ".json" pp
+    where
+        isext ee pp
+            | (reverse ee) == (take (length ee) $ reverse pp) = return  (BS.pack $ takeBaseName pp)
+            | otherwise = mzero
+
 
 redirect ::  HTTP.Request_String -> ServerPart Response
 redirect req = do

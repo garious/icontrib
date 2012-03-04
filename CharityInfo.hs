@@ -69,4 +69,12 @@ toPopular db cids = do
     infos <- liftIO $ query db (LookupByCIDsQ cids)
     return $ map (\ ci -> P.Popular (cid ci) (organizationName ci) ) infos
 
+lookupByCID :: (MonadIO m, MonadError ServerError m) 
+            => AcidState Database -> CharityID -> m CharityInfo
+lookupByCID db cc = do
+    infos <- liftIO $ query db (LookupByCIDsQ [cc])
+    let singleton' [a] = return a
+        singleton' _   = fail "BadCharityID"
+    singleton' infos 
+
 
