@@ -26,19 +26,8 @@ function onReady(E, L, NAV, CHART, CORE) {
         return false;
     }
 
-    function fundContents(dist, nm) {
+    function fundContents(xs, total) {
         var rows = [];
-        var xs = [];
-        var total = 0;
-
-        // filter (nm `elem` dist.labels)
-        for (var i = 0; i < dist.length; i++) {
-            if (isMember(dist[i].labels, nm)) {
-                var d = dist[i];
-                total = total + d.shares;
-                xs.push(d);
-            }
-        }
 
         for (var j = 0; j < xs.length; j++) {
             var x = xs[j];
@@ -56,16 +45,31 @@ function onReady(E, L, NAV, CHART, CORE) {
     function distributionTable(user) {
         if (user.funds) {
             var rows = [];
+            var dist = user.distribution;
             for (var i = 0; i < user.funds.length; i++) {
+
+                var fundId = user.funds[i].labels[0];  // TODO: Anatoly, why is this a list?
+                var xs = [];
+                var total = 0;
+
+                // filter (nm `elem` dist.labels)
+                for (var j = 0; j < dist.length; j++) {
+                    if (isMember(dist[j].labels, fundId)) {
+                        var d = dist[j];
+                        total = total + d.shares;
+                        xs.push(d);
+                    }
+                }
+
                 var row = L.spoon([
                     L.hug([
                         CORE.h4(user.funds[i].name),
                         L.pillow(390, 0),
-                        alignButton({id: user.funds[i].labels[0]})
+                        alignButton({id: fundId})
                     ]),
                     L.hug([
-                        CHART.pie1(user),
-                        fundContents(user.distribution, user.funds[i].name)
+                        CHART.pie1({distribution: xs}),  // TODO: display chart filtered by label
+                        fundContents(xs, total)
                     ])
                 ]);
                 rows.push(row);

@@ -36,7 +36,7 @@ function onReady(E, L, CORE, NAV) {
     }
 
     function main(params, nodeReady) {
-        require([params.cid + '.json'], function(u) {
+        require([params.id + '.json'], function(u) {
             nodeReady( NAV.frame([charity({user: u})]) );
         });
     }
