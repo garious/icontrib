@@ -62,10 +62,11 @@ function onReady(E, L, NAV, CHART, CORE) {
                 }
 
                 var row = L.spoon([
-                    L.hug([
+                    E.div({style: {height: '30px'}}, [
                         CORE.h4(user.funds[i].name),
-                        L.pillow(390, 0),
-                        alignButton({id: fundId})
+                        E.div({style: {position: 'absolute', top: '10px', left: '505px'}}, [  // TODO: remove top 10px, which is due to the button falling outside its bounds
+                            alignButton({id: fundId})
+                        ]),
                     ]),
                     L.hug([
                         CHART.pie1({distribution: xs}),  // TODO: display chart filtered by label
@@ -84,7 +85,7 @@ function onReady(E, L, NAV, CHART, CORE) {
         var userInfo = L.hug([
             L.pillow(25, 0), 
             L.spoon([
-                CORE.h3(user.firstName + ' ' + user.lastName),
+                CORE.h3(user.organizationName),
                 E.span({style: {color: 'red'}}, [
                     CORE.h5('Helps raise $' + Math.round(user.alignedDonated / 100) + ' per month')
                 ])
