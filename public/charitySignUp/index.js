@@ -115,7 +115,7 @@ function onReady(E, L, NAV, CORE, toaHtml, JF, CHARITY) {
         }
 
         var buttonText;
-        if(CHARITY.Right) {
+        if (false) { // (CHARITY.Right) {
             inputs = JF.map(schema, CHARITY.Right, inputs, setVal);
             buttonText = 'Update';
         } else {
