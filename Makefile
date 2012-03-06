@@ -6,11 +6,16 @@ GHC_FLAGS+=-Wall -Werror -threaded
 
 RUN_TESTS := $(wildcard *Test.hs)
 
-o = out
+UNAME_S := $(shell uname -s)
 
-all: test $o/icontrib lint $o/import private/static.ok
+TARGET = $(UNAME_S)
+FLAVOR = Debug
 
-serve: $o/icontrib private/static.ok
+V = $(TARGET)_$(FLAVOR)
+
+all: test $V/icontrib lint $V/import private/static.ok
+
+serve: $V/icontrib private/static.ok
 	$<
 
 libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
@@ -19,31 +24,31 @@ libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
 /usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a:
 	brew install cryptopp #for ssl
 
-test: $(patsubst %,$o/%.passed,$(RUN_TESTS))
+test: $(patsubst %,$V/%.passed,$(RUN_TESTS))
 
-$o/icontrib: Main.hs Site.hs test libcryptopp.dylib
+$V/icontrib: Main.hs Site.hs test libcryptopp.dylib
 	@mkdir -p $(@D)
-	ghc $(GHC_FLAGS) -outputdir $o -o $@ --make $<
+	ghc $(GHC_FLAGS) -outputdir $V -o $@ --make $<
 
-private/static.ok: $o/import private/static/*/* Data/*.hs
-	$o/import 
+private/static.ok: $V/import private/static/*/* Data/*.hs
+	$V/import 
 	@touch private/static.ok
 
-$o/import: import.hs Data/*.hs
+$V/import: import.hs Data/*.hs
 	@mkdir -p $(@D)
-	ghc $(GHC_FLAGS) -outputdir $o -o $@ --make $<
+	ghc $(GHC_FLAGS) -outputdir $V -o $@ --make $<
 
 # TODO: Replace this with a proper dependency scanner: "ghc -M"
-$(foreach n,$(RUN_TESTS),$(eval $(patsubst %,$o/%.passed,$n): $n $(patsubst %Test.hs,%.hs,$n)))
+$(foreach n,$(RUN_TESTS),$(eval $(patsubst %,$V/%.passed,$n): $n $(patsubst %Test.hs,%.hs,$n)))
 
-$o/%.passed:
+$V/%.passed:
 	@mkdir -p $(@D)
 	@echo Testing: $<
 	@runghc $(GHC_FLAGS) $<
 	@touch $@
 
 clean:
-	rm -rf $o
+	rm -rf $V
 	rm -rf dist
 
 dist:
@@ -67,14 +72,14 @@ JS_FILES:=$(filter-out $(JS_WHITELIST),$(wildcard public/*.js) $(wildcard public
 
 #JSLINT_FILES:=public/yoink/yoink.js
 
-lint: $(patsubst %,$o/%.ok,$(JS_FILES)) $(patsubst %,$o/%.lint,$(JSLINT_FILES))
+lint: $(patsubst %,$V/%.ok,$(JS_FILES)) $(patsubst %,$V/%.lint,$(JSLINT_FILES))
 
-$o/%.js.ok: %.js
+$V/%.js.ok: %.js
 	jsl -output-format "$*.js:__LINE__:__COL__: __ERROR__" -process $<
 	@mkdir -p $(@D)
 	@touch $@
 
-$o/%.js.lint: %.js
+$V/%.js.lint: %.js
 	node_modules/.bin/jslint --predef=define --predef=require --predef=baseUrl --predef=YOINK $<
 	@mkdir -p $(@D)
 	@touch $@
