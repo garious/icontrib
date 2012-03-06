@@ -142,7 +142,6 @@ function onReady(E, L, NAV, CORE, toaHtml, JF, CHARITY) {
         });
 
         return L.hug([
-            L.pillow(250),
             L.spoon([
                 CORE.box([
                     E.div({style: {width: '800px'}}, [

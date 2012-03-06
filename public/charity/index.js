@@ -28,10 +28,7 @@ function onReady(E, L, CORE, NAV, USER) {
         ]);
 
         return L.spoon([
-           L.hug([
-                L.pillow(220,0),
-                box
-           ]),
+           box,
            L.pillow(30)
         ]);
     }

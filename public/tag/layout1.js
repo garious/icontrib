@@ -67,6 +67,7 @@ function onReady(I, DIM, DOM) {
             var div = document.createElement('div');
             div.style.height = me.height;
             div.style.width = me.width;
+            div.style.position = 'absolute';
     
             // ys = filter (!= pillow) xs
             var xs = me.subelements;

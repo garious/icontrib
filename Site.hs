@@ -103,7 +103,7 @@ authServices st = msum [
       dir "login"  (post    (loginUser  "auth" (userAccounts st)))
     , dir "add"    (post    (addUser    "auth" (userAccounts st)))
     , dir "logout" (post    (check >>= logOut (userAccounts st)))
-    , dir "check"  (get     check)
+    , dir "check.json" (get check)
     ]
     where
         check = (checkUser "auth" (userAccounts st))

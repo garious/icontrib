@@ -28,12 +28,11 @@ function onInitialReady(BEST) {
 
         var body = L.spoon([
             L.hug([
-                L.pillow(200),
                 CORE.box({width: '600px'}, [
                     DONOR.profile({user: USER})
                 ]),
                 sep,
-                CORE.box([
+                CORE.box({width: '340px'}, [
                     L.spoon(listItems)
                 ])
             ]),

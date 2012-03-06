@@ -57,6 +57,8 @@ function onReady(E, L, NAV, CHART, CORE) {
                 }
 
                 var row = L.spoon([
+                    E.hr({style: {height: '1px', width: '570px'}}),
+                    L.pillow(0, 20),
                     E.div({style: {height: '30px'}}, [
                         CORE.h4(user.funds[i].name),
                         E.div({style: {position: 'absolute', top: '10px', left: '505px'}}, [  // TODO: remove top 10px, which is due to the button falling outside its bounds
@@ -68,9 +70,10 @@ function onReady(E, L, NAV, CHART, CORE) {
                         fundContents(xs, total)
                     ])
                 ]);
+
                 rows.push(row);
             }
-            return L.spoon(rows, 20);
+            return L.spoon(rows);
         }
     }
 

@@ -9,7 +9,7 @@ function onReady(E, $, JF) {
     var loginCtor = function(cfg) {
         var logoutUrl = cfg.root + "/logout";
         var loginUrl  = cfg.root + "/login";
-        var checkUrl  = cfg.root + "/check";
+        var checkUrl  = cfg.root + "/check.json";
         var addUrl    = cfg.root + "/add";
         //stupid schema, the 'null' services as a sentinal when i traverse it
         var schema = {

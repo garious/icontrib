@@ -35,7 +35,7 @@ loginUser = post "/auth/login"
 
 --returns the current logged in user id based on the cookie
 checkUser :: HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError A.UserID)
-checkUser = get "/auth/check"
+checkUser = get "/auth/check.json"
 
 --logged out the current user
 logoutUser :: HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError ())

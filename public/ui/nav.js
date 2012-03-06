@@ -1,12 +1,13 @@
 var authDeps = [
-    {path: '/auth/check', interpreter: YOINK.interpreters.json} // TODO: add a '.json' extension to this resource
+    '/auth/check.json'
 ];
 
 var deps = [
     '/tag/tag.js', 
     '/tag/todom.js', 
     '/tag/layout1.js', 
-    'core.js'
+    'core.js',
+    'colors.js'
 ];
 
 // TODO: how to get window.innerHeight in IE 8?
@@ -36,7 +37,7 @@ function post(path, params, callback) {
 
 
 function onAuthReady(AUTH) { 
-function onReady(E, DOM, L, CORE, ME) { 
+function onReady(E, DOM, L, CORE, COLOR, ME) { 
 
     function loginWidget(as) {
         var username = E.input({type: 'text', size: 18});
@@ -64,11 +65,14 @@ function onReady(E, DOM, L, CORE, ME) {
 
             loginButton.addEventListener('click', submit);
 
-            var widget = L.spoon([
-                L.hug([CORE.label('Username'), username]), L.pillow(5),
-                L.hug([CORE.label('Password'), password]), L.pillow(5),
-                badLogin, L.pillow(5),
-                L.hug([L.pillow(135,0), E.div({style: {width: 90}}, [loginButton])])
+            var widget = L.hug([
+                L.spoon([
+                    L.hug([CORE.label('Username'), username]), L.pillow(5),
+                    L.hug([CORE.label('Password'), password]), L.pillow(5),
+                    badLogin,
+                    L.pillow(5)
+                ]),
+                loginButton
             ]);
 
             widget.addEventListener('keyup', function(e) {
@@ -99,20 +103,18 @@ function onReady(E, DOM, L, CORE, ME) {
     function nav(as) {
         as = as || {};
 
-        var logo = E.a({href: '/', style: {width: '129px'}}, [
+        var logo = E.a({href: '/', style: {width: '129px', height: '70px'}}, [
             E.img({src: baseUrl + "/logo.png", alt: "IContrib Home", border: "0"})
         ]);
 
-        return E.div({style: {width: getWindowInnerWidth(), height: '129px'}}, [ 
-            L.spoon([
-                L.pillow(0, 20),
-                L.hug([ 
-                    L.pillow(250, 0),
-                    logo,
-                    L.pillow(450, 0),
-                    loginWidget(as)
-                ])
-            ])
+        return L.spoon([
+            L.pillow(0, 20),
+            L.hug([
+                logo,
+                L.pillow(580, 0),
+                loginWidget(as)
+            ]),
+            E.hr({style: {width: '960px', height: '4px', backgroundColor: COLOR.green, borderWidth: 1}})
         ]);
     }
 
@@ -156,10 +158,10 @@ function onReady(E, DOM, L, CORE, ME) {
         var navbar = nav(as);
         var body = E.div(xs);
 
-        var node = E.div({style: {height: getWindowInnerHeight()}}, [
+        var node = E.div({style: {margin: '0px auto', height: getWindowInnerHeight(), width: '960px'}}, [
             L.spoon([
                 navbar, 
-                L.pillow(20), 
+                L.pillow(50), 
                 body
             ])
         ]);
@@ -174,7 +176,7 @@ function onReady(E, DOM, L, CORE, ME) {
         }
         as.style = as.style || {};
         as.style.bottom = '0px';
-        as.style.width = getWindowInnerWidth();
+        as.style.width = '100%';
         as.style.textAlign = 'center';
 
         return E.div(as, [
