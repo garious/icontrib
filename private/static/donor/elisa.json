@@ -1,0 +1,19 @@
+{
+   "owner": "elisa",
+   "firstName": "Elisa",
+   "lastName": "Rossi",
+   "phone": "",
+   "email": "",
+   "imageUrl": "/donor/elisarossi.jpg",
+   "centsDonated": 1000,
+   "alignedDonated": 1500,
+   "alignedUsers": [],
+   "distribution": [
+       {"name": "Global Fund for Women", "cid": "gffw", "shares": 50, "labels": ["General Fund"]},
+       {"name": "Underwater Society of America", "cid": "usoa", "shares": 50, "labels": ["General Fund"]}
+   ],
+   "funds": [
+       {"name": "General Fund", "labels": ["ElisaRossi-GeneralFund"]}
+   ]
+}
+

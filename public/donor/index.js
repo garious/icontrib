@@ -6,11 +6,6 @@ var deps = [
     '/ui/core.js'
 ];
 
-var defaultUser = {
-   description: 'Align with me to support underwater hockey in the United States!',
-   alignedImageUrl: '/images/friends.png'
-};
-
 function onReady(E, L, NAV, CHART, CORE) {
 
     function alignButton(user) {
@@ -35,7 +30,7 @@ function onReady(E, L, NAV, CHART, CORE) {
 
             var cols = L.hug([
                 E.div({style: {width: '70px', height: pct.height}}, [pct]),
-                CORE.a({href: 'charity/?id=' + x.url}, x.name)
+                CORE.a({href: 'charity/?id=' + x.cid}, x.name)
             ]);
             rows.push(cols);
         }
@@ -66,7 +61,7 @@ function onReady(E, L, NAV, CHART, CORE) {
                         CORE.h4(user.funds[i].name),
                         E.div({style: {position: 'absolute', top: '10px', left: '505px'}}, [  // TODO: remove top 10px, which is due to the button falling outside its bounds
                             alignButton({id: fundId})
-                        ]),
+                        ])
                     ]),
                     L.hug([
                         CHART.pie1({distribution: xs}),  // TODO: display chart filtered by label
@@ -85,7 +80,7 @@ function onReady(E, L, NAV, CHART, CORE) {
         var userInfo = L.hug([
             L.pillow(25, 0), 
             L.spoon([
-                CORE.h3(user.organizationName),
+                CORE.h3(user.firstName + ' ' + user.lastName),
                 E.span({style: {color: 'red'}}, [
                     CORE.h5('Helps raise $' + Math.round(user.alignedDonated / 100) + ' per month')
                 ])
@@ -103,7 +98,6 @@ function onReady(E, L, NAV, CHART, CORE) {
     }
 
     define({
-        title: 'IContrib.org',
         profile: profile,
         alignButton: alignButton
     });

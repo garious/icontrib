@@ -9,8 +9,8 @@
    "alignedDonated": 6500,
    "alignedUsers": [],
    "distribution": [
-       {"name": "Global Fund for Women", "cid": "gffw", "shares": 50, "labels": ["General Fund"]},
-       {"name": "Underwater Society of America", "cid": "usoa", "shares": 5, "labels": ["General Fund"]}
+       {"name": "Global Fund for Women", "cid": "gffw", "shares": 90.91, "labels": ["General Fund"]},
+       {"name": "Underwater Society of America", "cid": "usoa", "shares": 9.09, "labels": ["General Fund"]}
    ],
    "funds": [
        {"name": "General Fund", "labels": ["TomBrown-GeneralFund"]}

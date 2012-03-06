@@ -64,14 +64,11 @@ function onReady(E, DOM, L, CORE, ME) {
 
             loginButton.addEventListener('click', submit);
 
-            var widget = L.hug([
-                L.spoon([
-                    L.hug([CORE.label('Username'), username]), L.pillow(5),
-                    L.hug([CORE.label('Password'), password]), L.pillow(5),
-                    badLogin, L.pillow(5),
-                    L.hug([L.pillow(110,0), E.div({style: {width: 90}}, [loginButton])])
-                ]), L.pillow(30),
-                as.thumbnail
+            var widget = L.spoon([
+                L.hug([CORE.label('Username'), username]), L.pillow(5),
+                L.hug([CORE.label('Password'), password]), L.pillow(5),
+                badLogin, L.pillow(5),
+                L.hug([L.pillow(135,0), E.div({style: {width: 90}}, [loginButton])])
             ]);
 
             widget.addEventListener('keyup', function(e) {
@@ -148,13 +145,13 @@ function onReady(E, DOM, L, CORE, ME) {
         xs = xs || [];
         as = as || {};
 
-        var imageUrl = AUTH.Left && '/donor/anonymous.jpg' || ME.imageUrl;
+        if (AUTH.Right) {
+            var thumbnail = E.a({href: '/me/', style: {width: '110px', height: '110px'}}, [
+                E.img({style: {width: '110px', height: '110px', borderRadius: '5px'}, src: ME.imageUrl, alt: ME.firstName + ' ' + ME.lastName})
+            ]);
 
-        var thumbnail = E.a({href: '/me/', style: {width: '110px', height: '110px'}}, [
-            E.img({style: {width: '110px', height: '110px', borderRadius: '5px'}, src: imageUrl, alt: ME.firstName + ' ' + ME.lastName})
-        ]);
-
-        as.thumbnail = thumbnail;
+            as.thumbnail = thumbnail;
+        }
 
         var navbar = nav(as);
         var body = E.div(xs);
