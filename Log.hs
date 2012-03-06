@@ -12,7 +12,7 @@ app = "icontrib.org"
 start :: IO ()
 start =  do
     updateGlobalLogger app (setLevel DEBUG)
-    h <- fileHandler "out/debug.log" DEBUG >>= \lh -> return $
+    h <- fileHandler "debug.log" DEBUG >>= \lh -> return $
         setFormatter lh (simpleLogFormatter "[$time : $loggername : $prio] $msg")
     updateGlobalLogger app (addHandler h)
 
