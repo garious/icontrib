@@ -10,6 +10,15 @@ var deps = [
     'colors.js'
 ];
 
+// TODO: Find this function a better home.
+function getDimensions(me) {
+    return {
+        width: parseInt(me.style.width, 10),
+        height: parseInt(me.style.height, 10)
+    };
+}
+
+
 // TODO: how to get window.innerHeight in IE 8?
 function getWindowInnerHeight() {
     return window.innerHeight;
@@ -84,18 +93,22 @@ function onReady(E, DOM, L, CORE, COLOR, ME) {
             return widget;
 
         } else {
-            var logoutButton = CORE.a({href: '#'}, 'Sign out');
+            //var logoutButton = CORE.a({href: '#'}, 'Sign out');
+            var logoutButton = E.img({src: baseUrl + '/arrowdown-darkgreen.png', alt: 'settings'});
             logoutButton.addEventListener('click', function(e) {
                 e.preventDefault();
                 post('/auth/logout', {}, function(data) {
-                    window.location.reload();
+                    window.location = '/';
                 });
             });
 
            return L.hug([
                as.thumbnail,
-               L.pillow(30),
-               E.div({style: {width: 100}}, [logoutButton])
+               L.pillow(50, 0),  // TODO: This should be '20', not '50', but there's a bug in calculating the size of the thumbnail
+               L.spoon([
+                   L.pillow(0, 22),
+                   logoutButton
+               ])
            ]);
         }
     }
@@ -148,8 +161,19 @@ function onReady(E, DOM, L, CORE, COLOR, ME) {
         as = as || {};
 
         if (AUTH.Right) {
-            var thumbnail = E.a({href: '/me/', style: {width: '110px', height: '110px'}}, [
-                E.img({style: {width: '110px', height: '110px', borderRadius: '5px'}, src: ME.imageUrl, alt: ME.firstName + ' ' + ME.lastName})
+            var thumbContents = L.hug([
+                E.img({style: {width: '50px', height: '50px'}, src: ME.imageUrl, alt: ME.firstName + ' ' + ME.lastName}),
+                L.pillow(20, 0),
+                L.spoon([
+                    L.pillow(0, 10),
+                    CORE.h3([ME.firstName + ' ' + ME.lastName])
+                ])
+            ]);
+
+            var dim = getDimensions(thumbContents);
+
+            var thumbnail = CORE.a({href: '/me/', style: {width: dim.width, height: dim.height}}, [
+                thumbContents
             ]);
 
             as.thumbnail = thumbnail;

@@ -3,10 +3,11 @@ var deps = [
     '/tag/layout1.js',
     '/ui/nav.js', 
     '/ui/chart.js', 
+    '/ui/colors.js', 
     '/ui/core.js'
 ];
 
-function onReady(E, L, NAV, CHART, CORE) {
+function onReady(E, L, NAV, CHART, COLOR, CORE) {
 
     function alignButton(user) {
         return CORE.button({href: '/me/?donateTo=' + user.id, loud: true, text: 'Donate!'});
@@ -24,12 +25,20 @@ function onReady(E, L, NAV, CHART, CORE) {
     function fundContents(xs, total) {
         var rows = [];
 
+        var colors = [
+            COLOR.green,
+            '#ddffaa'
+        ];
+
         for (var j = 0; j < xs.length; j++) {
             var x = xs[j];
             var pct = CORE.h6(Math.round(1000 * x.shares / total) / 10 + '%');
 
+
             var cols = L.hug([
-                E.div({style: {width: '70px', height: pct.height}}, [pct]),
+                E.div({style: {width: '18px', height: '18px', backgroundColor: colors[j % colors.length]}}),
+                L.pillow(15, 0),
+                E.div({style: {width: '55px', height: pct.height}}, [pct]),
                 CORE.a({href: 'charity/?id=' + x.cid}, x.name)
             ]);
             rows.push(cols);
@@ -57,7 +66,7 @@ function onReady(E, L, NAV, CHART, CORE) {
                 }
 
                 var row = L.spoon([
-                    E.hr({style: {height: '1px', width: '570px'}}),
+                    E.hr({style: {height: '0px', width: '570px'}}),
                     L.pillow(0, 20),
                     E.div({style: {height: '30px'}}, [
                         CORE.h4(user.funds[i].name),

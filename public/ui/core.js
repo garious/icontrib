@@ -153,6 +153,13 @@ function onReady(E, L, C) {
             margin: 0
         };
     }
+
+    function boxTitle(s) {
+        var sty = hStyle(C.h4Size, s);
+        sty.color = C.greenText;
+
+        return E.h4({style: sty}, s);
+    }
     
     function label(s) {
         var dim = textDimensions({}, s);
@@ -195,6 +202,7 @@ function onReady(E, L, C) {
          label: label,
          button: button,
          box: box,
+         boxTitle: boxTitle,
          h1: h1,
          h2: h2,
          h3: h3,

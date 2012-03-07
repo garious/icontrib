@@ -12,14 +12,14 @@ function onReady(E, C, GOOGLE) {
 
 
     // Uses Google visualization library to generate an interactive pie chart
-    function pie(user) {
+    function pie(as) {
         var userChart = E.div({style: {width: '300px', height: '225px'}}, [
             E.img({src: baseUrl + '/ajax-loader.gif', alt: 'Loading...', style: {margin: '0px auto'}})
         ]);
    
         var me = {
             element: userChart,
-            distribution: user.distribution
+            distribution: as.distribution
         };
 
         var chart = null;
@@ -57,14 +57,14 @@ function onReady(E, C, GOOGLE) {
     }
 
     // Uses Google API to generate a simple pie chart image
-    function pie1(user) {
+    function pie1(as) {
         var height = 150;
         var width = 150;
         var chs = height + 'x' + width;
         var chd = 't:';
-        for (var i = 0; i < user.distribution.length; i++) {
-            var x = user.distribution[i]; 
-            if (i != user.distribution.length - 1) {
+        for (var i = 0; i < as.distribution.length; i++) {
+            var x = as.distribution[i]; 
+            if (i != as.distribution.length - 1) {
                chd += x.shares + ','; 
             } else {
                chd += x.shares;

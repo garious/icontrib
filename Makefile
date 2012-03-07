@@ -75,7 +75,8 @@ JS_FILES:=$(filter-out $(JS_WHITELIST),$(wildcard public/*.js) $(wildcard public
 lint: $(patsubst %,$V/%.ok,$(JS_FILES)) $(patsubst %,$V/%.lint,$(JSLINT_FILES))
 
 $V/%.js.ok: %.js
-	jsl -output-format "$*.js:__LINE__:__COL__: __ERROR__" -process $<
+	@echo Linting: $<
+	@jsl -nologo -nofilelisting -nosummary -output-format "$*.js:__LINE__:__COL__: __ERROR__" -process $<
 	@mkdir -p $(@D)
 	@touch $@
 
