@@ -23,7 +23,7 @@ function onReady(E, L, NAV, CHART, COLOR, CORE) {
     }
 
     function fundContents(xs, total) {
-        var rows = [];
+        var rows = [L.pillow(0, 15)];
 
         var colors = [
             COLOR.green,
@@ -75,7 +75,8 @@ function onReady(E, L, NAV, CHART, COLOR, CORE) {
                         ])
                     ]),
                     L.hug([
-                        CHART.pie1({distribution: xs}),  // TODO: display chart filtered by label
+                        CHART.pie1({distribution: xs}),
+                        L.pillow(20, 0),
                         fundContents(xs, total)
                     ])
                 ]);
@@ -93,9 +94,10 @@ function onReady(E, L, NAV, CHART, COLOR, CORE) {
             L.pillow(25, 0), 
             L.spoon([
                 CORE.h3(user.firstName + ' ' + user.lastName),
-                E.span({style: {color: 'red'}}, [
-                    CORE.h5('Helps raise $' + Math.round(user.alignedDonated / 100) + ' per month')
-                ])
+                CORE.h5({
+                    color: 'red',
+                    text: 'Helps raise $' + Math.round(user.alignedDonated / 100) + ' per month'
+                })
             ])
         ]);
 

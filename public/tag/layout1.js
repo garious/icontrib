@@ -17,9 +17,13 @@ var deps = [
 var Tag_TwoDimensional = {
 
     getDimensions: function (me) {
+
+        var width  = parseInt(me.style.width, 10);
+        var height = parseInt(me.style.height, 10);
+
         return {
-            width: parseInt(me.style.width, 10),
-            height: parseInt(me.style.height, 10)
+            width:  isNaN( width) ? 0 : width,
+            height: isNaN(height) ? 0 : height
         };
     },
 

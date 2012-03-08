@@ -15,14 +15,14 @@ function clone(o1) {
     return o2;
 }
 
-function onReady(E, L, C) {
+function onReady(Tag, Layout, Colors) {
 
     var defaultFont = "/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
     var defaultFontSize = 15;
     var font = defaultFontSize + "px" + defaultFont;
 
     function textDimensions(as, s) {
-        var canvas = E.canvas();
+        var canvas = Tag.canvas();
         var fontSize = as.fontSize || defaultFontSize;
 
         if (canvas && canvas.getContext) {
@@ -64,7 +64,7 @@ function onReady(E, L, C) {
         as.style.height = dim.height + 'px';
         as.style.color = 'blue';
 
-        var e = E.a(as, xs);
+        var e = Tag.a(as, xs);
         e.addEventListener('mouseover', function() {
             e.style.textDecoration = 'underline';
         });
@@ -75,7 +75,7 @@ function onReady(E, L, C) {
     }
 
     function input(as) {
-        var e = E.input(as);
+        var e = Tag.input(as);
         e.style.width  = as.width  || e.size * 10 + 'px';
         e.style.height = as.height || 20;
         return e;
@@ -84,10 +84,10 @@ function onReady(E, L, C) {
     function button(as) {
         var dim = textDimensions({}, as.text);
 
-        var color      = as.loud ? C.red : C.middleColor;
-        var focusColor = as.loud ? C.red : C.lightColor;
+        var color      = as.loud ? Colors.red : Colors.middleColor;
+        var focusColor = as.loud ? Colors.red : Colors.lightColor;
 
-        var e = E.a({
+        var e = Tag.a({
             href: as.href || '#', 
             style: {
                 width: dim.width + 'px',
@@ -122,15 +122,15 @@ function onReady(E, L, C) {
         xs = xs || [];
 
         var shadow = '0px 0px 5px 2px #ddd';
-        var space = L.pillow(15);
+        var space = Layout.pillow(15);
 
-        var e = L.spoon([
+        var e = Layout.spoon([
             space, 
-            L.hug([space].concat(xs).concat([space])),
+            Layout.hug([space].concat(xs).concat([space])),
             space
         ]);
 
-        return E.div({
+        return Tag.div({
             style: {
                 border: '2px solid #cfcfcf',
                 shadow: shadow,
@@ -142,6 +142,7 @@ function onReady(E, L, C) {
         }, [e]);
     }
 
+    // Create the style attribute for HTML header elements
     function hStyle(fontSize, s) {
         var dim = textDimensions({fontSize: fontSize}, s);
 
@@ -150,39 +151,41 @@ function onReady(E, L, C) {
             height: dim.height,
             font: font,
             fontSize: fontSize,
-            margin: 0
+            margin: 0,
+            color: Colors.darkColor
         };
     }
 
-    function boxTitle(s) {
-        var sty = hStyle(C.h4Size, s);
-        sty.color = C.greenText;
+    // Create a header constructor.  
+    //
+    // The returned constructor accepts either an attributes object or a string.
+    //
+    //     mkHeader(2)('hello!') === h2('hello!')
+    //     mkHeader(3)('hello!') === h3('hello!')
+    //     mkHeader(3)('hello!') === h3({text: 'hello!'})
+    //
+    function mkHeader(n) {
 
-        return E.h4({style: sty}, s);
+        function header(as) {
+            var s = typeof as === "string" ? as : as.text;
+
+            var sty = hStyle(Colors['h' + n + 'Size'], s); 
+
+            if (typeof as === "object") {
+                sty.color = as.color !== 'undefined' ? as.color : sty.color;
+            }
+
+            return Tag['h' + n]({style: sty}, s);
+        }
+
+        return header;
     }
-    
+
     function label(s) {
         var dim = textDimensions({}, s);
-        return E.label({style: {width: dim.width, height: dim.height, font: font}}, s);
+        return Tag.label({style: {width: dim.width, height: dim.height, font: font}}, s);
     }
-    function h1(s) {
-        return E.h1({style: hStyle(C.h1Size, s)}, s);
-    }
-    function h2(s) {
-        return E.h2({style: hStyle(C.h2Size, s)}, s);
-    }
-    function h3(s) {
-        return E.h3({style: hStyle(C.h3Size, s)}, s);
-    }
-    function h4(s) {
-        return E.h4({style: hStyle(C.h4Size, s)}, s);
-    }
-    function h5(s) {
-        return E.h5({style: hStyle(C.h5Size, s)}, s);
-    }
-    function h6(s) {
-        return E.h6({style: hStyle(C.h6Size, s)}, s);
-    }
+
     function p(as, xs) {
         if (xs === undefined) {
             xs = as;
@@ -193,7 +196,19 @@ function onReady(E, L, C) {
 
         as.style.font = font;
 
-        return E.p(as, xs);
+        return Tag.p(as, xs);
+    }
+
+    function hr(as) {
+        as = as || {};
+
+        var sty = {
+           height: as.height ? as.height + 'px' : 0,
+           width:  as.width  ? as.width  + 'px' : '100%',
+           margin: 0
+        };
+
+        return Tag.hr({style: sty});
     }
 
     define({
@@ -202,14 +217,14 @@ function onReady(E, L, C) {
          label: label,
          button: button,
          box: box,
-         boxTitle: boxTitle,
-         h1: h1,
-         h2: h2,
-         h3: h3,
-         h4: h4,
-         h5: h5,
-         h6: h6,
-         p: p
+         h1: mkHeader(1),
+         h2: mkHeader(2),
+         h3: mkHeader(3),
+         h4: mkHeader(4),
+         h5: mkHeader(5),
+         h6: mkHeader(6),
+         p: p,
+         hr: hr 
     });
 }
 

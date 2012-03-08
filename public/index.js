@@ -5,48 +5,64 @@ var initialDeps = [
 var deps = [
     '/tag/tag.js', 
     '/tag/layout1.js', 
+    '/ui/colors.js', 
     '/ui/nav.js', 
     '/ui/core.js', 
     '/charity/popular.json', 
     '/donor/index.js'
 ];
 
-function onInitialReady(BEST) {
+function onInitialReady(MostInfluentialId) {
 
-    function onReady(E, L, NAV, CORE, POP, DONOR, USER) {
+    function onReady(Tag, Layout, Colors, Nav, Core, PopularCharities, Donor, MostInfluential) {
 
-        var sep = L.pillow(20);
+        var sep = Layout.pillow(20);
 
         var listItems = [
-            CORE.boxTitle('Recommended Funds'),
-            L.pillow(0, 10)
+            Core.h5({
+                color: Colors.greenText,
+                text: 'Recommended Funds'
+            })
         ];
-        for (var i = 0; i < POP.length; i += 1) {
-            var x = POP[i];
-            listItems.push( CORE.a({href: '/charity/?id=' + x.cid}, x.name) );
+
+        var pad = Layout.pillow(0, 10);
+
+        for (var i = 0; i < PopularCharities.length; i += 1) {
+            var x = PopularCharities[i];
+            listItems.push( pad );
+            listItems.push( Core.hr({width: 300}) );
+            listItems.push( pad );
+
+            var e = Layout.hug([
+                Tag.img({src: '/charity/usoa.jpg', style: {width: '50px', height: '50px'}}),  // TODO: use the fund's actual image
+                Layout.pillow(20, 0),
+                Core.a({href: '/charity/?id=' + x.cid}, x.name)
+            ]);
+
+            listItems.push(e);
         }
 
-        var body = L.spoon([
-            L.hug([
-                CORE.box({width: '600px'}, [
-                    DONOR.profile({user: USER})
+        var body = Layout.spoon([
+            Layout.hug([
+                Core.box({width: 600}, [
+                    Donor.profile({user: MostInfluential})
                 ]),
                 sep,
-                CORE.box({width: '340px'}, [
-                    L.spoon(listItems)
+                Core.box({width: 340}, [
+                    Layout.spoon(listItems)
                 ])
             ]),
             sep,
-            NAV.footer([
-                CORE.a({href: 'charitySignUp/'}, 'Charity Registration')
+            Nav.footer([
+                Core.a({href: 'charitySignUp/'}, 'Charity Registration')
             ])
         ]);
 
-        define( NAV.frame([body]) );
+        define( Nav.frame([body]) );
 
     }
 
-    deps.push('/donor/' + BEST + '.json');
+    deps.push('/donor/' + MostInfluentialId + '.json');
     require(deps, onReady);
 }
 

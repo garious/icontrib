@@ -45,12 +45,12 @@ function post(path, params, callback) {
 }
 
 
-function onAuthReady(AUTH) { 
-function onReady(E, DOM, L, CORE, COLOR, ME) { 
+function onAuthReady(Auth) { 
+function onReady(Tag, ToDom, Layout, Core, Color, Me) { 
 
     function loginWidget(as) {
-        var username = E.input({type: 'text', size: 18});
-        var password = E.input({type: 'password', size: 18});
+        var username = Tag.input({type: 'text', size: 18});
+        var password = Tag.input({type: 'password', size: 18});
 
         function submit(e) {
             e.preventDefault();
@@ -68,18 +68,18 @@ function onReady(E, DOM, L, CORE, COLOR, ME) {
             });
         }
 
-        if (AUTH.Left) {
-            var badLogin = E.span({hidden: true, style: {height: 20, width: 200, color: 'red'}}, 'bad username or password');
-            var loginButton = CORE.button({text: 'Log in'});
+        if (Auth.Left) {
+            var badLogin = Tag.span({hidden: true, style: {height: 20, width: 200, color: 'red'}}, 'bad username or password');
+            var loginButton = Core.button({text: 'Log in'});
 
             loginButton.addEventListener('click', submit);
 
-            var widget = L.hug([
-                L.spoon([
-                    L.hug([CORE.label('Username'), username]), L.pillow(5),
-                    L.hug([CORE.label('Password'), password]), L.pillow(5),
+            var widget = Layout.hug([
+                Layout.spoon([
+                    Layout.hug([Core.label('Username'), username]), Layout.pillow(5),
+                    Layout.hug([Core.label('Password'), password]), Layout.pillow(5),
                     badLogin,
-                    L.pillow(5)
+                    Layout.pillow(5)
                 ]),
                 loginButton
             ]);
@@ -93,8 +93,8 @@ function onReady(E, DOM, L, CORE, COLOR, ME) {
             return widget;
 
         } else {
-            //var logoutButton = CORE.a({href: '#'}, 'Sign out');
-            var logoutButton = E.img({src: baseUrl + '/arrowdown-darkgreen.png', alt: 'settings'});
+            //var logoutButton = Core.a({href: '#'}, 'Sign out');
+            var logoutButton = Tag.img({src: baseUrl + '/arrowdown-darkgreen.png', alt: 'settings'});
             logoutButton.addEventListener('click', function(e) {
                 e.preventDefault();
                 post('/auth/logout', {}, function(data) {
@@ -102,12 +102,18 @@ function onReady(E, DOM, L, CORE, COLOR, ME) {
                 });
             });
 
-           return L.hug([
-               as.thumbnail,
-               L.pillow(50, 0),  // TODO: This should be '20', not '50', but there's a bug in calculating the size of the thumbnail
-               L.spoon([
-                   L.pillow(0, 22),
-                   logoutButton
+           return Tag.div({style: {width: '272px', height: '77px', backgroundColor: '#eee', borderRadius: '5px 5px 0px 0px'}}, [
+               Layout.spoon([
+                   Layout.pillow(0, 15),
+                   Layout.hug([
+                       Layout.pillow(20, 0),
+                       as.thumbnail,
+                       Layout.pillow(50, 0),  // TODO: This should be '20', not '50', but there's a bug in calculating the size of the thumbnail
+                       Layout.spoon([
+                           Layout.pillow(0, 22),
+                           logoutButton
+                       ])
+                   ])
                ])
            ]);
         }
@@ -116,18 +122,18 @@ function onReady(E, DOM, L, CORE, COLOR, ME) {
     function nav(as) {
         as = as || {};
 
-        var logo = E.a({href: '/', style: {width: '129px', height: '70px'}}, [
-            E.img({src: baseUrl + "/logo.png", alt: "IContrib Home", border: "0"})
+        var logo = Tag.a({href: '/', style: {width: '129px', height: '70px'}}, [
+            Tag.img({src: baseUrl + "/logo.png", alt: "IContrib Home", border: "0"})
         ]);
 
-        return L.spoon([
-            L.pillow(0, 20),
-            L.hug([
+        return Layout.spoon([
+            Layout.pillow(0, 20),
+            Layout.hug([
                 logo,
-                L.pillow(580, 0),
+                Layout.pillow(560, 0),
                 loginWidget(as)
             ]),
-            E.hr({style: {width: '960px', height: '4px', backgroundColor: COLOR.green, borderWidth: 1}})
+            Tag.hr({style: {width: '960px', height: '4px', margin: 0, backgroundColor: Color.green, borderWidth: 1}})
         ]);
     }
 
@@ -149,7 +155,7 @@ function onReady(E, DOM, L, CORE, COLOR, ME) {
         }
     };
     webpage.interfaces = [
-        {'interface': DOM.ToDom, 'instance': Page_ToDom}
+        {'interface': ToDom.ToDom, 'instance': Page_ToDom}
     ];
 
     function frame(as, xs) {
@@ -160,19 +166,22 @@ function onReady(E, DOM, L, CORE, COLOR, ME) {
         xs = xs || [];
         as = as || {};
 
-        if (AUTH.Right) {
-            var thumbContents = L.hug([
-                E.img({style: {width: '50px', height: '50px'}, src: ME.imageUrl, alt: ME.firstName + ' ' + ME.lastName}),
-                L.pillow(20, 0),
-                L.spoon([
-                    L.pillow(0, 10),
-                    CORE.h3([ME.firstName + ' ' + ME.lastName])
+        if (Auth.Right) {
+            var thumbContents = Layout.hug([
+                Tag.img({style: {width: '50px', height: '50px'}, src: Me.imageUrl, alt: Me.firstName + ' ' + Me.lastName}),
+                Layout.pillow(20, 0),
+                Layout.spoon([
+                    Layout.pillow(0, 10),
+                    Core.h3({
+                        color: Color.greenText,
+                        text: Me.firstName + ' ' + Me.lastName
+                    })
                 ])
             ]);
 
             var dim = getDimensions(thumbContents);
 
-            var thumbnail = CORE.a({href: '/me/', style: {width: dim.width, height: dim.height}}, [
+            var thumbnail = Core.a({href: '/me/', style: {width: dim.width, height: dim.height}}, [
                 thumbContents
             ]);
 
@@ -180,12 +189,12 @@ function onReady(E, DOM, L, CORE, COLOR, ME) {
         }
 
         var navbar = nav(as);
-        var body = E.div(xs);
+        var body = Tag.div(xs);
 
-        var node = E.div({style: {margin: '0px auto', height: getWindowInnerHeight(), width: '960px'}}, [
-            L.spoon([
+        var node = Tag.div({style: {margin: '0px auto', height: getWindowInnerHeight(), width: '960px'}}, [
+            Layout.spoon([
                 navbar, 
-                L.pillow(50), 
+                Layout.pillow(50), 
                 body
             ])
         ]);
@@ -203,15 +212,15 @@ function onReady(E, DOM, L, CORE, COLOR, ME) {
         as.style.width = '100%';
         as.style.textAlign = 'center';
 
-        return E.div(as, [
-            E.hr(),
-            E.div({style: {paddingRight: '20px'}}, xs),
-            E.hr()
+        return Tag.div(as, [
+            Tag.hr(),
+            Tag.div({style: {paddingRight: '20px'}}, xs),
+            Tag.hr()
         ]); 
     }
 
     function userInfo() {
-        return ME;
+        return Me;
     }
 
     define({
@@ -223,7 +232,7 @@ function onReady(E, DOM, L, CORE, COLOR, ME) {
 
 }
 
-var donorId = AUTH.Left && 'anonymous' || AUTH.Right;
+var donorId = Auth.Left && 'anonymous' || Auth.Right;
 var donorUrl = '/donor/' + donorId + '.json';
 deps.push(donorUrl);
 require(deps, onReady);
