@@ -9,7 +9,7 @@ var deps = [
     '/ui/nav.js', 
     '/ui/core.js', 
     '/charity/popular.json', 
-    '/donor/index.js'
+    '/ui/donor.js'
 ];
 
 function onInitialReady(MostInfluentialId) {

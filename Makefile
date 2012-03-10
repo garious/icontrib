@@ -1,4 +1,6 @@
 UNAME:=$(shell uname)
+FLAVOR = Debug
+V = $(UNAME)_$(FLAVOR)
 
 -include $(UNAME).min
 
@@ -6,14 +8,10 @@ GHC_FLAGS+=-Wall -Werror -threaded
 
 RUN_TESTS := $(wildcard *Test.hs)
 
-UNAME_S := $(shell uname -s)
+all: test $V/icontrib client $V/import private/static.ok
 
-TARGET = $(UNAME_S)
-FLAVOR = Debug
-
-V = $(TARGET)_$(FLAVOR)
-
-all: test $V/icontrib lint $V/import private/static.ok
+client:
+	$(MAKE) -C public V=$V
 
 serve: $V/icontrib private/static.ok
 	$<
@@ -58,29 +56,4 @@ dist:
 deps:
 	cabal update
 	cabal install --only-dependencies
-	npm install jslint
 
-deps.Darwin:
-	brew install jslint
-	brew install node
-	brew install npm
-
-JS_WHITELIST:= \
-    public/js/json2.js \
-
-JS_FILES:=$(filter-out $(JS_WHITELIST),$(wildcard public/*.js) $(wildcard public/*/*.js))
-
-#JSLINT_FILES:=public/yoink/yoink.js
-
-lint: $(patsubst %,$V/%.ok,$(JS_FILES)) $(patsubst %,$V/%.lint,$(JSLINT_FILES))
-
-$V/%.js.ok: %.js
-	@echo Linting: $<
-	@jsl -nologo -nofilelisting -nosummary -output-format "$*.js:__LINE__:__COL__: __ERROR__" -process $<
-	@mkdir -p $(@D)
-	@touch $@
-
-$V/%.js.lint: %.js
-	node_modules/.bin/jslint --predef=define --predef=require --predef=baseUrl --predef=YOINK $<
-	@mkdir -p $(@D)
-	@touch $@
