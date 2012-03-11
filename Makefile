@@ -7,13 +7,16 @@ V = $(UNAME)_$(FLAVOR)
 GHC_FLAGS+=-Wall -Werror -threaded
 
 RUN_TESTS := $(wildcard *Test.hs)
+TESTS = $(patsubst %,$V/%.passed,$(RUN_TESTS))
 
-all: test $V/icontrib client $V/import private/static.ok
+all: ship private/static.ok client
+
+ship: $V/ship/icontrib $V/ship/import
 
 client:
 	$(MAKE) -C public V=$V
 
-serve: $V/icontrib private/static.ok
+serve: $V/ship/icontrib private/static.ok
 	$<
 
 libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
@@ -22,17 +25,17 @@ libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
 /usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a:
 	brew install cryptopp #for ssl
 
-test: $(patsubst %,$V/%.passed,$(RUN_TESTS))
 
-$V/icontrib: Main.hs Site.hs test libcryptopp.dylib
+
+$V/ship/icontrib: Main.hs Site.hs $(TESTS) libcryptopp.dylib
 	@mkdir -p $(@D)
 	ghc $(GHC_FLAGS) -outputdir $V -o $@ --make $<
 
-private/static.ok: $V/import private/static/*/* Data/*.hs
-	$V/import 
-	@touch private/static.ok
+private/static.ok: $V/ship/import $(wildcard private/static/*/*) $(wildcard Data/*.hs)
+	$<
+	@touch $@
 
-$V/import: import.hs Data/*.hs
+$V/ship/import: import.hs $(wildcard Data/*.hs)
 	@mkdir -p $(@D)
 	ghc $(GHC_FLAGS) -outputdir $V -o $@ --make $<
 
