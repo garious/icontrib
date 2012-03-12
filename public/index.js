@@ -34,7 +34,7 @@ function onInitialReady(MostInfluentialId) {
             listItems.push( pad );
 
             var e = Layout.hug([
-                Tag.img({src: x.imageUrl, style: {width: '50px', height: '50px'}}),  // TODO: use the fund's actual image
+                Tag.img({src: x.imageUrl, style: {width: '50px', height: '50px'}}),
                 Layout.pillow(20, 0),
                 Core.a({href: '/charity/?id=' + x.cid}, x.name)
             ]);
