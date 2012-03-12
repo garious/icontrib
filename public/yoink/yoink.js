@@ -66,7 +66,7 @@ var YOINK = (function () {
     // Forward-declare mutual recursion
     var mkGetResources;
 
-    function interpret(rsc, url, params, interpreter, interpreters, cache, callback) {
+    function interpret(rsc, url, params, interpreter, interpreters, cache, moduleCache, callback) {
         // Look up an interpreter for the URL's file extension
         if (!interpreter) {
             var ext = url.substring(url.lastIndexOf('.') + 1, url.length).toLowerCase();
@@ -80,7 +80,7 @@ var YOINK = (function () {
             // Provide loaded module with a version of loader that pulls modules 
             // relative to the directory of the url we are currently loading.
             var base = url.substring(0, url.lastIndexOf('/'));
-            var require = mkGetResources(base, cache, interpreters);
+            var require = mkGetResources(base, cache, moduleCache, interpreters);
             require.base = base;
             interpreter(rsc, require, callback, params);
         }
@@ -101,17 +101,10 @@ var YOINK = (function () {
     // System-wide cache of what to do once a resource has been downloaded.
     var plans = {};
 
-    function interpretFile(interpreters, cache, u, str, httpCode) {
-        function callback(rsc) {
-            cache[u.path] = rsc; // Cache the result
-            // Execute the plan
-            var plan = plans[u.path];
-            delete plans[u.path];
-            plan(rsc);
-        }
+    function interpretFile(interpreters, cache, moduleCache, u, str, httpCode, callback) {
         if (httpCode >= 200 && httpCode < 300) {
             console.log("yoink: interpreting '" + u.path + "'");
-            interpret(str, u.path, u.params, u.interpreter, interpreters, cache, callback);
+            interpret(str, u.path, u.params, u.interpreter, interpreters, cache, moduleCache, callback);
         } else if (u.onError) {
             var rsc = u.onError(httpCode);
             callback(rsc);
@@ -120,8 +113,26 @@ var YOINK = (function () {
         }
     }
 
-    function getResource(interpreters, cache, url, onInterpreted) {
+    function evaluateModule(f, url, params, cache, moduleCache, interpreters, callback) {
+        // Provide loaded module with a version of loader that pulls modules 
+        // relative to the directory of the url we are currently loading.
+        var base = url.substring(0, url.lastIndexOf('/'));
+        var require = mkGetResources(base, cache, moduleCache, interpreters);
+        f(base, callback, require, params);
+    }
+
+    function getResource(interpreters, cache, moduleCache, url, onInterpreted) {
         var p = url.path;
+
+        // A new callback that executes the plan created later in this function.
+        function callback(rsc) {
+            cache[p] = rsc; // Cache the result
+            // Execute the plan
+            var plan = plans[p];
+            delete plans[p];
+            plan(rsc);
+        }
+
         var rsc = cache[p];
         if (rsc === undefined) {
             // Is anyone else already downloading this file?
@@ -131,9 +142,16 @@ var YOINK = (function () {
                 plans[p] = function (rsc) {
                     onInterpreted(rsc);
                 };
-                getFile(p, function (str, httpCode) {
-                    interpretFile(interpreters, cache, url, str, httpCode);
-                });
+
+                if (moduleCache[p]) {
+                    // Is this in our module cache?
+                    console.log("yoink: executing preloaded module '" + p + "'");
+                    evaluateModule(moduleCache[p], p, url.params, cache, moduleCache, interpreters, callback);
+                } else {
+                    getFile(p, function (str, httpCode) {
+                        interpretFile(interpreters, cache, moduleCache, url, str, httpCode, callback);
+                    });
+                }
             } else {
                 // Add ourselves to the plan.  The plan is effectively a FIFO queue of actions.
                 plans[p] = function (rsc) {
@@ -159,7 +177,7 @@ var YOINK = (function () {
         return {path: p, params: ps, interpreter: f, onError: url.onError};
     }
 
-    mkGetResources = function (base, cache, interpreters) {
+    mkGetResources = function (base, cache, moduleCache, interpreters) {
 
         function getResources(urls, callback) {
             var len = urls.length; // How many things we need to interpret
@@ -183,7 +201,7 @@ var YOINK = (function () {
             } else {
                 for (i = 0; i < len; i += 1) {
                     var u = resolve(base, urls[i]);
-                    getResource(interpreters, cache, u, mkOnInterpreted(i));
+                    getResource(interpreters, cache, moduleCache, u, mkOnInterpreted(i));
                 }
             }
         }
@@ -192,12 +210,13 @@ var YOINK = (function () {
     };
 
     // Resource Loader constructor
-    function resourceLoader(base, cache, interpreters) {
+    function resourceLoader(base, cache, moduleCache, interpreters) {
         base = base || '';
         cache = cache || {};
+        moduleCache = moduleCache || {};
         interpreters = interpreters || clone(defaultInterpreters);
 
-        return {getResources: mkGetResources(base, cache, interpreters)};
+        return {getResources: mkGetResources(base, cache, moduleCache, interpreters)};
     }
 
     function require(urls, callback) {

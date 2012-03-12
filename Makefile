@@ -27,7 +27,7 @@ libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
 
 
 
-$V/ship/icontrib: Main.hs Site.hs $(TESTS) libcryptopp.dylib
+$V/ship/icontrib: Main.hs Site.hs JsWidget.hs $(TESTS) libcryptopp.dylib
 	@mkdir -p $(@D)
 	ghc $(GHC_FLAGS) -outputdir $V -o $@ --make $<
 

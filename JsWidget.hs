@@ -39,7 +39,7 @@ jsModFile root baseUrl filename = do
       guard b
       ps <- lookPairs
       let ps' = [(s, x) | (s, Right x) <- ps]
-      ok (toResponse (htmlForJsMod baseUrl filename (JS.toJSObject ps')))
+      ok (toResponse (htmlForJsMod baseUrl ('/' : mkPath url) (JS.toJSObject ps')))
    where
       url = baseUrl ++ [filename]
 
@@ -47,12 +47,14 @@ htmlForJsMod :: [String] -> String -> JS.JSObject String -> H.Html
 htmlForJsMod baseUrl filename ps = appTemplate $ do
       H.script ! A.src jsonAttr   ! A.type_ "text/javascript" $ ""
       H.script ! A.src yoinkAttr  ! A.type_ "text/javascript" $ ""
+      H.script ! A.src preloadedAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
   where
       jsonAttr = H.toValue (mkPath (mkRelUrl baseUrl ["js", "json2.js"]))
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
+      preloadedAttr = H.toValue (mkPath (mkRelUrl baseUrl ["Darwin_Debug", "ship", "IContrib.js"]))
 
-      yoink = "\nYOINK.require([\n"
+      yoink = "\nYOINK.resourceLoader('', {}, PRELOADED_MODULES).getResources([\n"
            ++ "    '/tag/interface.js',\n"
            ++ "    '/tag/todom.js',\n"
            ++ "    {path: '" ++ filename ++ "', params: " ++ params ++ "}\n"
