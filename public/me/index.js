@@ -65,7 +65,7 @@ function onReady(E, L, NAV, CORE, CHART, POP) {
     }
 
     function distributionTable(pie) {
-        return L.hug({style: {width: 550}}, [L.pillow(30), fundContents(pie)]);
+        return L.hug({width: 550}, [L.pillow(30), fundContents(pie)]);
     }
 
     function dashboard(as) {
@@ -121,11 +121,11 @@ function onReady(E, L, NAV, CORE, CHART, POP) {
     var main = NAV.frame([
         L.spoon([
             L.hug([
-                CORE.box({width: '600px'}, [
+                CORE.box({width: 600}, [
                     dashboard({user: NAV.userInfo()})
                 ]),
                 L.pillow(20),
-                CORE.box({width: '340px'}, L.spoon(listItems))
+                CORE.box({width: 340}, L.spoon(listItems))
             ]),
             L.pillow(20) 
         ])

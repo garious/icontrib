@@ -45,12 +45,10 @@ jsModFile root baseUrl filename = do
 
 htmlForJsMod :: [String] -> String -> JS.JSObject String -> H.Html
 htmlForJsMod baseUrl filename ps = appTemplate $ do
-      H.script ! A.src jsonAttr   ! A.type_ "text/javascript" $ ""
       H.script ! A.src yoinkAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.src preloadedAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
   where
-      jsonAttr = H.toValue (mkPath (mkRelUrl baseUrl ["js", "json2.js"]))
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
       preloadedAttr = H.toValue (mkPath (mkRelUrl baseUrl ["Darwin_Debug", "ship", "IContrib.js"]))
 
@@ -90,7 +88,7 @@ mkPath = intercalate "/"
 
 appTemplate :: H.Html -> H.Html
 appTemplate body =
-     H.html $ do
+     H.docTypeHtml $ do
        H.head $ do
          H.meta ! A.httpEquiv "Content-Type" ! A.content "text/html;charset=utf-8"
        H.body ! A.style "margin: 0; padding: 0" $ body

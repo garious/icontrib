@@ -49,8 +49,8 @@ function onAuthReady(Auth) {
 function onReady(Tag, ToDom, Layout, Core, Color, Me) { 
 
     function loginWidget(as) {
-        var username = Tag.input({type: 'text', size: 18});
-        var password = Tag.input({type: 'password', size: 18});
+        var username = Core.input({type: 'text', size: 18});
+        var password = Core.input({type: 'password', size: 18});
 
         function submit(e) {
             e.preventDefault();
@@ -69,17 +69,19 @@ function onReady(Tag, ToDom, Layout, Core, Color, Me) {
         }
 
         if (Auth.Left) {
-            var badLogin = Tag.span({hidden: true, style: {height: 20, width: 200, color: 'red'}}, 'bad username or password');
+            var badLogin = Tag.span({hidden: true, style: {height: '20px', width: '200px', color: 'red'}}, 'bad username or password');
             var loginButton = Core.button({text: 'Log in'});
 
             loginButton.addEventListener('click', submit);
 
             var widget = Layout.hug([
                 Layout.spoon([
-                    Layout.hug([Core.label('Username'), username]), Layout.pillow(5),
-                    Layout.hug([Core.label('Password'), password]), Layout.pillow(5),
+                    Layout.hug([Core.label('Username'), Layout.pillow(5, 0), username]),
+                    Layout.pillow(0, 5),
+                    Layout.hug([Core.label('Password'), Layout.pillow(5, 0), password]),
+                    Layout.pillow(0, 5),
                     badLogin,
-                    Layout.pillow(5)
+                    Layout.pillow(0, 5)
                 ]),
                 loginButton
             ]);

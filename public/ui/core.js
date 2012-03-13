@@ -76,8 +76,8 @@ function onReady(Tag, Layout, Colors) {
 
     function input(as) {
         var e = Tag.input(as);
-        e.style.width  = as.width  || e.size * 10 + 'px';
-        e.style.height = as.height || 20;
+        e.style.width  = (as.width  || e.size * 10) + 'px';
+        e.style.height = (as.height || 20) + 'px';
         return e;
     }
 
@@ -136,8 +136,8 @@ function onReady(Tag, Layout, Colors) {
                 shadow: shadow,
                 MozBoxShadow: shadow,
                 WebkitBoxShadow: shadow,
-                width:  as.width  || e.style.width,
-                height: as.height || e.style.height
+                width:  as.width  ? as.width + 'px' : e.style.width,
+                height: as.height ? as.height + 'px' : e.style.height
             }
         }, [e]);
     }
@@ -147,10 +147,10 @@ function onReady(Tag, Layout, Colors) {
         var dim = textDimensions({fontSize: fontSize}, s);
 
         return {
-            width: dim.width,
-            height: dim.height,
+            width: dim.width + 'px',
+            height: dim.height + 'px',
             font: font,
-            fontSize: fontSize,
+            fontSize: fontSize + 'px',
             margin: 0,
             color: Colors.darkColor
         };
@@ -183,7 +183,7 @@ function onReady(Tag, Layout, Colors) {
 
     function label(s) {
         var dim = textDimensions({}, s);
-        return Tag.label({style: {width: dim.width, height: dim.height, font: font}}, s);
+        return Tag.label({style: {width: dim.width + 'px', height: dim.height + 'px', font: font}}, s);
     }
 
     function p(as, xs) {

@@ -69,8 +69,8 @@ function onReady(I, DIM, DOM) {
     var Party_ToDom = {
         toDom: function (me) {
             var div = document.createElement('div');
-            div.style.height = me.height;
-            div.style.width = me.width;
+            div.style.height = me.height + 'px';
+            div.style.width = me.width + 'px';
             div.style.position = 'absolute';
     
             // ys = filter (!= pillow) xs

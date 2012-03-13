@@ -19,7 +19,7 @@ function onReady(E, L, CORE, NAV, USER) {
                     E.img({style: {width: '175px', height: '175px', borderRadius: '5px'}, src: user.imageUrl, alt: user.organizationName}),
                     L.pillow(30),
                     L.spoon([
-                        E.p({style: {height: '100', width: '600'}}, user.mission), 
+                        E.p({style: {height: '100px', width: '600px'}}, user.mission), 
                         L.pillow(20),
                         CORE.button({href: '/me/?donateTo=' + user.id, text: 'Donate!', loud: true})
                     ])
