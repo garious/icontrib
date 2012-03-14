@@ -89,6 +89,8 @@ tohttps hn pn = (seeOther ("https://" ++ hn ++ ":" ++ show pn) (toResponse ()))
 site :: Site -> ServerPart Response
 site st = msum [ 
       JSW.widget root []
+    , fileServer "public/Darwin_Debug/ship"
+    , fileServer "yoink"
     , fileServer root
     , dir "auth"    (authServices st)
     , dir "donor"   (donorServices st)

@@ -2,6 +2,12 @@ var deps = [
      'assert.js'
 ];
 
+// TODO: Start the server
+//var sys = require('sys')
+//var exec = require('child_process').exec;
+//function puts(error, stdout, stderr) { sys.puts(stdout) }
+//exec("ls -la", puts);
+
 function onReady (A) {
 
     var options = {

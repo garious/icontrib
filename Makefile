@@ -15,6 +15,7 @@ ship: $V/ship/icontrib $V/ship/import
 
 client:
 	$(MAKE) -C public V=$V
+	$(MAKE) -C yoink V=$V
 
 serve: $V/ship/icontrib private/static.ok
 	$<
