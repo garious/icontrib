@@ -7,8 +7,8 @@ var Http       = require('http');
 var Subprocess = require('child_process');
 
 // Server configuration
-var serverDir = '../../Darwin_Debug/ship';
-var dbDir = '../../private/db';
+var serverDir = 'Darwin_Debug/ship';
+var dbDir = 'private/db';
 
 
 // A simply assert library
@@ -62,9 +62,11 @@ function onResponse(res) {
     res.on('data', onResponseData);
 }
 
+var triesLeft = 10;
 function onResponseError(e) {
-    if (e.code === 'ECONNREFUSED') {
+    if (e.code === 'ECONNREFUSED' && triesLeft > 0) {
         console.log('Server is not ready yet.  Trying again in 10ms.');
+        triesLeft -= 1;
         setTimeout(onReady, 10);
     } else {
         throw 'Unexpected error: ' + e.message;

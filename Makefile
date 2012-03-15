@@ -9,9 +9,12 @@ GHC_FLAGS+=-Wall -Werror -threaded
 RUN_TESTS := $(wildcard *Test.hs)
 TESTS = $(patsubst %,$V/%.passed,$(RUN_TESTS))
 
+RUN_JS_TESTS := $(wildcard *Test.js)
+JS_TESTS = $(patsubst %,$V/%.passed,$(RUN_JS_TESTS))
+
 all: ship private/static.ok client
 
-ship: $V/ship/icontrib $V/ship/import
+ship: $V/ship/icontrib $V/ship/import $(JS_TESTS)
 
 client:
 	$(MAKE) -C public V=$V
@@ -43,7 +46,7 @@ $V/ship/import: import.hs $(wildcard Data/*.hs)
 # TODO: Replace this with a proper dependency scanner: "ghc -M"
 $(foreach n,$(RUN_TESTS),$(eval $(patsubst %,$V/%.passed,$n): $n $(patsubst %Test.hs,%.hs,$n)))
 
-$V/%.passed:
+$V/%.hs.passed:
 	@mkdir -p $(@D)
 	@echo Testing: $<
 	@runghc $(GHC_FLAGS) $<
@@ -61,3 +64,14 @@ deps:
 	cabal update
 	cabal install --only-dependencies
 
+
+NODE_DIR = node/$V
+
+$V/%.js.passed: %.js
+	@mkdir -p $(@D)
+	@echo Testing: $<
+	@$(NODE_DIR)/node $<
+	@touch $@
+
+clean:
+	rm -rf $V
