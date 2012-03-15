@@ -185,9 +185,6 @@ post page = do
    rv <- (runErrorT page)
    rsp $ rv
 
-homePage :: ServerPart Response
-homePage = serveDirectory DisableBrowsing ["index.html"] "public"
-
 fileServer :: FilePath -> ServerPart Response
 fileServer dd = do 
     addHeaderM "Pragma" "no-cache"
