@@ -24,8 +24,8 @@ client:
 	$(MAKE) -C public V=$V
 	$(MAKE) -C yoink V=$V
 
-serve: $V/ship/icontrib
-	$<
+serve: server private/static.ok client
+	$V/ship/icontrib
 
 libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
 	g++  -fpic -nostartfiles -nostdlib -shared /usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a -o libcryptopp.dylib
