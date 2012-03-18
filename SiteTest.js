@@ -5,27 +5,12 @@
 
 var Http       = require('http');
 var Subprocess = require('child_process');
+var Assert     = require('assert');
 
 // Server configuration
 var serverDir = 'Darwin_Debug/ship';
 var dbDir = 'private/db';
 
-
-// A simply assert library
-function assert(b) {
-    if (!b) {
-        throw "Assertion failed.";
-    }
-}
-function assertEq(actual, expected) {
-    if (actual !== expected) {
-        throw "Assertion failed.\nExpected:\n" + expected + "\nBut got:\n" + actual;
-    }
-}
-var Test = {
-    assertEq: assertEq,
-    assert:   assert
-};
 
 //
 // Test
@@ -42,15 +27,15 @@ function onResponseData (chunk) {
 
     var x = user.distribution[0];
 
-    Test.assert(x.name);  // Assert 'name' field exists
+    Assert.ok(x.name);  // Assert 'name' field exists
 
     // TODO: FIX SERVER!
-    //Test.assert(x.url);   // Assert 'url' field exists
+    //Assert.ok(x.url);   // Assert 'url' field exists
 
     // Verify the fund is tagged with one of the user's labels.
     var fundLabel = 'Gregs-General-Fund';
-    Test.assertEq(x.labels[0],             fundLabel);
-    Test.assertEq(user.funds[0].labels[0], fundLabel);
+    Assert.strictEqual(x.labels[0],             fundLabel);
+    Assert.strictEqual(user.funds[0].labels[0], fundLabel);
 
     // That's it, all tests passed!
     console.log("passed!");
@@ -58,7 +43,7 @@ function onResponseData (chunk) {
 }
 
 function onResponse(res) {
-    Test.assertEq(res.statusCode, 200);
+    Assert.strictEqual(res.statusCode, 200);
     res.on('data', onResponseData);
 }
 
