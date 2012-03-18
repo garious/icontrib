@@ -1,7 +1,7 @@
 import Site                                  ( site, Site(Site), serve, redirectToSSL )
-import Data.Acid    ( openLocalStateFrom )
+import Data.Acid                             ( openLocalStateFrom )
 import Control.Concurrent                    ( forkIO, killThread )
-import qualified Account                     as A
+import qualified Login                       as L
 import qualified CharityInfo                 as C
 import qualified UserInfo                    as U
 import qualified Log                         as Log

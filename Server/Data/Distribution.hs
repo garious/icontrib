@@ -1,10 +1,9 @@
-{-# LANGUAGE FlexibleContexts, MultiParamTypeClasses, FlexibleInstances, TypeSynonymInstances, TypeFamilies, DeriveDataTypeable, TemplateHaskell #-}
-{-# OPTIONS_GHC -fspec-constr-count=2 -fno-warn-orphans #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 module Data.Distribution where
 
 import Data.Data                             ( Typeable, Data )
-import Data.CharityInfo
 import Data.SafeCopy
+import Data.CharityInfo
 
 data Distribution = Distribution { name   :: String 
                                  , cid    :: CharityID

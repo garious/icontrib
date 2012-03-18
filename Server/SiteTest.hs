@@ -1,21 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module SiteTest where
-
-import Site                                  ( site, Site(Site), serve )
-import Data.Acid.Memory                      ( openMemoryState )
+import Site                                  ( site, serve )
 import Control.Concurrent                    ( forkIO, killThread )
 import Control.Monad.Trans                   ( liftIO )
 import Data.Maybe                            ( fromMaybe )
-import qualified Account                     as A
-import qualified CharityInfo                 as C
-import qualified UserInfo                    as U
+import qualified DB                          as DB
 import Text.JSON.Generic                     as JS
 import qualified Network.HTTP                as HTTP
 import qualified Network.Browser             as HTTP
 import qualified Network.URI                 as URI
-import qualified ServerError                 as SE
 import qualified JSONUtil                    as JS
+import qualified Data.JSON                   as J
 import TestUtil
 
 port :: Int
@@ -26,19 +22,19 @@ host = "http://localhost:" ++ (show port)
 
 --interfaces over the browser (HTTP.BrowserAction (HTTP.HandleStream String)) monad
 --adds the user and returns the user id, and sets the cookie value
-addUser :: A.UserLogin ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError A.UserID)
+addUser :: J.UserLogin ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either String J.UserIdentity)
 addUser = post "/auth/add"
 
 --logs in the user, changing the cookie value
-loginUser :: A.UserLogin -> HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError A.UserID)
+loginUser :: J.UserLogin -> HTTP.BrowserAction (HTTP.HandleStream String) (Either String J.UserIdentity)
 loginUser = post "/auth/login"
 
 --returns the current logged in user id based on the cookie
-checkUser :: HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError A.UserID)
+checkUser :: HTTP.BrowserAction (HTTP.HandleStream String) (Either String J.UserIdentity)
 checkUser = get "/auth/check.json"
 
 --logged out the current user
-logoutUser :: HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError ())
+logoutUser :: HTTP.BrowserAction (HTTP.HandleStream String) (Either String ())
 logoutUser = post "/auth/logout" ()
 
 main :: IO ()
@@ -53,7 +49,7 @@ main = do
 
 logoutUserTest :: IO ()
 logoutUserTest = liftIO $ HTTP.browse $ do
-    let user = A.UserLogin "anatoly" "anatoly"
+    let user = J.UserLogin "anatoly" "anatoly"
         add = addUser user
     assertEqM "logout" checkUser (Left "CookieDecodeError")
     assertEqM "logout" add (Right "anatoly")
@@ -63,7 +59,7 @@ logoutUserTest = liftIO $ HTTP.browse $ do
 
 checkUserTest :: IO ()
 checkUserTest = liftIO $ HTTP.browse $ do
-    let user = A.UserLogin "anatoly" "anatoly"
+    let user = J.UserLogin "anatoly" "anatoly"
         add = addUser user
     --empty server, no cookie in browser
     assertEqM "check" checkUser (Left "CookieDecodeError")
@@ -75,7 +71,7 @@ checkUserTest = liftIO $ HTTP.browse $ do
 loginUserTest :: IO ()
 loginUserTest = liftIO $ HTTP.browse $ do
     let 
-        user = A.UserLogin "anatoly" "anatoly"
+        user = J.UserLogin "anatoly" "anatoly"
         login = loginUser user
         add = addUser user
     assertEqM "login" login (Left "DoesntExist")
@@ -84,18 +80,16 @@ loginUserTest = liftIO $ HTTP.browse $ do
 
 addUserTest ::  IO ()
 addUserTest = liftIO $ HTTP.browse $ do
-    let run = addUser (A.UserLogin "anatoly" "anatoly")
+    let run = addUser (J.UserLogin "anatoly" "anatoly")
     assertEqM "add" run (Right "anatoly")
     assertEqM "add" run (Left "AlreadyExists")
 
 emptyServer :: IO ()
 emptyServer = do
-    ua <- openMemoryState A.empty
-    ci <- openMemoryState C.empty
-    ui <- openMemoryState U.empty
-    serve (Right port) (site (Site ua ci ui))
+    db <- DB.emptyMemoryDB
+    serve (Right port) (site db)
 
-post :: (Data b, Data a) => String -> a -> HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError b) 
+post :: (Data b, Data a) => String -> a -> HTTP.BrowserAction (HTTP.HandleStream String) (Either String b) 
 post url msg = do
     let 
             uri = fromMaybe (error $ "parse url: " ++ url) $ URI.parseURI (host ++ url)
@@ -104,7 +98,7 @@ post url msg = do
     (_,hrsp) <- HTTP.request $ req
     return $! JS.jsonDecodeE $ HTTP.rspBody hrsp
 
-get :: (Data b) => String ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either SE.ServerError b) 
+get :: (Data b) => String ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either String b) 
 get url = do
     let req = HTTP.getRequest (host ++ url)
     (_,hrsp) <- HTTP.request $ req

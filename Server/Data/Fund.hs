@@ -1,5 +1,4 @@
-{-# LANGUAGE FlexibleContexts, MultiParamTypeClasses, FlexibleInstances, TypeSynonymInstances, TypeFamilies, DeriveDataTypeable, TemplateHaskell #-}
-{-# OPTIONS_GHC -fspec-constr-count=2 -fno-warn-orphans #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 module Data.Fund where
 
 import Data.Data                             ( Typeable, Data )

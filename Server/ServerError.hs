@@ -1,7 +1,7 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
-module Data.ServerError where
+module ServerError where
 
-type ServerError = String
+import Control.Monad.IO.Class                ( MonadIO, liftIO )
 
 einAlreadyExists :: Monad m => m a
 einAlreadyExists = fail "EinAlreadyExists"
@@ -18,8 +18,8 @@ badUsername = fail "BadUsername"
 badPassword :: Monad m => m a
 badPassword = fail "BadPassword"
 
-badCookie :: Monad m => m a
-badCookie = fail "BadCookie"
+badToken :: Monad m => m a
+badToken = fail "BadToken"
 
 passwordsDontMatch :: Monad m => m a
 passwordsDontMatch  = fail "PasswordsDontMatch"
@@ -42,4 +42,18 @@ missingHTTPBody = fail "MissingHTTPBody"
 internalError :: Monad m => m a
 internalError = fail "InternalError"
 
+justOr :: Monad m => Maybe a -> m a -> m a
+justOr Nothing ee  = ee
+justOr (Just aa) _ = return aa
+
+nothingOr :: Monad m => Maybe a -> m () -> m () 
+nothingOr Nothing _   = return ()
+nothingOr (Just _) ee = ee
+
+failLeftIO :: (MonadIO m) => IO (Either String b) -> m b
+failLeftIO aa = do
+   err <- liftIO aa
+   case(err) of
+      (Left ee)   -> fail ee
+      (Right val) -> return val
 

@@ -1,15 +1,15 @@
 {-# LANGUAGE UndecidableInstances, GeneralizedNewtypeDeriving, FlexibleContexts, MultiParamTypeClasses, FlexibleInstances, TypeSynonymInstances, TypeFamilies, DeriveDataTypeable, TemplateHaskell #-}
 module Data.CharityInfo where
 
+import Data.Login
 import Data.Data                             ( Data, Typeable )
-import qualified Account                     as A
 import Data.IxSet
 import Data.SafeCopy
 
 newtype Ein         = Ein       String    deriving (Eq, Ord, Show, Data, Typeable, SafeCopy)
 newtype CharityID   = CharityID String    deriving (Eq, Ord, Show, Data, Typeable, SafeCopy)
 
-data CharityInfo = CharityInfo { owner :: A.UserID
+data CharityInfo = CharityInfo { owner :: Identity
                                , ein :: Ein
                                , organizationName :: String
                                , companyWebsite :: String
@@ -27,6 +27,4 @@ instance Indexable CharityInfo where
                   ]
 $(deriveSafeCopy 0 'base ''CharityInfo)
 
-newtype Database = Database (IxSet CharityInfo)
-                 deriving (Data, Typeable)
-$(deriveSafeCopy 0 'base ''Database)
+type CharityInfoDB = IxSet CharityInfo

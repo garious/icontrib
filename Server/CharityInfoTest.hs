@@ -1,31 +1,35 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module UserInfoTest where
+module CharityInfoTest where
 
-import Data.Acid.Memory                      ( openMemoryState )
 import qualified CharityInfo                 as C
 import qualified Data.CharityInfo            as C
+import qualified DB                          as DB
+import qualified Data.Login                  as L
 
 import TestUtil
 
+ident :: L.Identity
+ident = (L.Identity "anatoly")
+
 lookupTest :: IO ()
 lookupTest = do
-    db <- openMemoryState C.empty
-    assertEqM "lookup empty"  (C.lookupByOwner db "anatoly")   []
+    db <- DB.emptyMemoryDB
+    assertEqM "lookup empty"  (C.queryByOwner db ident)   []
 
 updateInfoTest :: IO ()
 updateInfoTest = do
-    db <- openMemoryState C.empty
-    let ci = C.CharityInfo "anatoly"
+    db <- DB.emptyMemoryDB
+    let ci = C.CharityInfo ident
                            (C.Ein "ein") 
                            "name"
                            "website"
                            (C.CharityID "cid")
                            "imageurl"
                            "mission"
-    assertEqErrorT "update" (C.updateInfo db "anatoly" ci) (Right ())
-    assertEqM "updated" (C.lookupByOwner db "anatoly")   ([ci])
-    assertEqErrorT "update2" (C.updateInfo db "anatoly" ci) (Right ())
+    assertEqM "update" (C.updateInfo db ident ci) ()
+    assertEqM "updated" (C.queryByOwner db ident)   ([ci])
+    assertEqM "update2" (C.updateInfo db ident ci) ()
 
 main :: IO ()
 main = do

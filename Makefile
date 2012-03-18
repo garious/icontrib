@@ -18,12 +18,6 @@ all: test $V/icontrib lint $V/import private/static.ok
 serve: $V/icontrib private/static.ok
 	$<
 
-libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
-	g++  -fpic -nostartfiles -nostdlib -shared /usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a -o libcryptopp.dylib
-
-/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a:
-	brew install cryptopp #for ssl
-
 test: $(patsubst %,$V/%.passed,$(RUN_TESTS))
 
 $V/icontrib: Main.hs Site.hs test libcryptopp.dylib
