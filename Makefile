@@ -9,18 +9,22 @@ GHC_FLAGS+=-Wall -Werror -threaded
 RUN_TESTS := $(wildcard *Test.hs)
 TESTS = $(patsubst %,$V/%.passed,$(RUN_TESTS))
 
-RUN_JS_TESTS := $(wildcard *Test.js)
+RUN_INTEGRATION_TESTS=IntegrationTest.js
+
+RUN_JS_TESTS := $(filter-out $(RUN_INTEGRATION_TESTS),$(wildcard *Test.js))
 JS_TESTS = $(patsubst %,$V/%.passed,$(RUN_JS_TESTS))
 
-all: ship private/static.ok client
+INTEGRATION_TESTS = $(patsubst %,$V/%.passed,$(RUN_INTEGRATION_TESTS))
 
-ship: $V/ship/icontrib $V/ship/import $(JS_TESTS)
+all: server private/static.ok client $(INTEGRATION_TESTS)
+
+server: $V/ship/icontrib $V/ship/import $(JS_TESTS)
 
 client:
 	$(MAKE) -C public V=$V
 	$(MAKE) -C yoink V=$V
 
-serve: $V/ship/icontrib private/static.ok
+serve: $V/ship/icontrib
 	$<
 
 libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
@@ -67,11 +71,11 @@ deps:
 
 NODE_DIR = node/$V
 
+$V/IntegrationTest.js.passed: public/$V/ship/IContrib.js
+
 $V/%.js.passed: %.js
 	@mkdir -p $(@D)
 	@echo Testing: $<
 	@$(NODE_DIR)/node $<
 	@touch $@
 
-clean:
-	rm -rf $V

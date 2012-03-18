@@ -3,28 +3,32 @@ module Opts where
 import System.Console.GetOpt
 
 data Flag 
- = DbDir String
+ = DbDir FilePath
+ | ModDir FilePath
  | HttpPort Int
    deriving Show
 
 data Options = Options {
-   dbDir :: String,
-   httpPort :: Int
+   dbDir      :: FilePath
+ , modDirs    :: [FilePath]
+ , httpPort   :: Int
 }
    deriving (Show, Eq)
 
 options :: [OptDescr Flag]
 options = [
    Option []        ["dbdir"]   (ReqArg DbDir "DIR")  "directory for database files"
+ , Option []        ["moddir"]  (ReqArg ModDir "DIR")  "directory for frontend files"
  , Option []        ["port"]    (ReqArg (HttpPort . read) "NUM") "HTTP port"
  ]
 
 getOptions :: [String] -> IO Options
 getOptions argv = do
     case getOpt Permute options argv of
-       (o,_,[]  ) -> return $ Options {
-                       dbDir = headDef "private/db" [x | DbDir x <- o]
-                     , httpPort = headDef 8000 [x | HttpPort x <- o]
+       (os,_,[]  ) -> return $ Options {
+                       dbDir = headDef "private/db" [x | DbDir x <- os]
+                     , modDirs = idDef ["public"] [x | ModDir x <- os]
+                     , httpPort = headDef 8000 [x | HttpPort x <- os]
                      }
        (_,_,errs) -> ioError (userError (concat errs ++ usageInfo header options))
 
@@ -32,5 +36,9 @@ getOptions argv = do
      header = "Usage: icontrib [OPTION...] files..."
 
      -- returns either 'head' or a default
-     headDef _ (x:_) = x
      headDef x []    = x
+     headDef _ (x:_) = x
+
+     -- returns either the same list or a singleton list with the default
+     idDef defs [] = defs
+     idDef _ xs    = xs

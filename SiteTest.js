@@ -19,7 +19,7 @@ function assert(b) {
 }
 function assertEq(actual, expected) {
     if (actual !== expected) {
-        throw "Assertion failed.\nExpected:\n" + expected + "But got:\n" + actual;
+        throw "Assertion failed.\nExpected:\n" + expected + "\nBut got:\n" + actual;
     }
 }
 var Test = {
