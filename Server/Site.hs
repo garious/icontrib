@@ -1,6 +1,5 @@
 {-# LANGUAGE FlexibleContexts, OverloadedStrings, ScopedTypeVariables #-}
 module Site where
-
 import Control.Monad.IO.Class                ( MonadIO, liftIO )
 import Data.Data                             ( Data )
 import Control.Monad                         ( liftM )
@@ -94,9 +93,9 @@ site st = msum [
 
 authServices:: DB.Database -> ServerPart Response
 authServices st = msum [ 
-      dir "login"  (post    (loginUser  "auth" st))
-    , dir "add"    (post    (addUser    "auth" st))
-    , dir "logout" (post    (check >>= logOut st))
+      dir "login"  (postF    (loginUser  "auth" st))
+    , dir "add"    (postF    (addUser    "auth" st))
+    , dir "logout" (postF    (check >>= logOut st))
     , dir "check.json" (get check)
     ]
     where
@@ -104,21 +103,21 @@ authServices st = msum [
 
 donorServices:: DB.Database -> ServerPart Response
 donorServices st = msum [ 
-      dir "update"               (post  (check >>= (withBody (U.updateInfo st))))
-    , dir "get"                  (get   (check >>= (U.queryByOwner st)))
-    , dir "ls"                   (get   (liftIO $ U.list st))
-    , dir "mostInfluential.json" (getf  (U.mostInfluential st))
-    , (getf (basename >>= (U.queryByOwner st . L.Identity)))
+      dir "update"               (postF  (check >>= (withBody (U.updateInfo st))))
+    , dir "get"                  (getF   (check >>= (U.queryByOwner st)))
+    , dir "ls"                   (getF   (liftIO $ U.list st))
+    , dir "mostInfluential.json" (get    (U.mostInfluential st))
+    , (get (basename >>= (U.queryByOwner st . L.Identity)))
     ]
     where
         check = (checkUser "auth" st)
 
 charityServices :: DB.Database -> ServerPart Response
 charityServices st = msum [ 
-      dir "update"       (post (check >>= (withBody (C.updateInfo st))))
-    , dir "get.json"     (get  (check >>= (C.queryByOwner st)))
-    , dir "popular.json" (geta  popular)
-    , (getf (basename >>= (C.queryByCID st . C.CharityID . BS.unpack)))
+      dir "update"       (postF (check >>= (withBody (C.updateInfo st))))
+    , dir "get.json"     (getF  (check >>= (C.queryByOwner st)))
+    , dir "popular.json" (get  popular)
+    , (get (basename >>= (C.queryByCID st . C.CharityID . BS.unpack)))
     ]
     where
         check :: ServerPartT IO L.Identity
@@ -141,39 +140,31 @@ redirect req = do
    return $ toResponse $ HTTP.rspBody hrsp
    where
       fromCode (x,y,z) = x * 100 + y * 10 + z
-      check (Left err)  = error (show err) 
+      check (Left ee)  = error (show ee) 
       check (Right rr)  = rr
-
-getf :: (Show a, Data a) => ServerPartT IO a -> ServerPartT IO Response
-getf page = do 
-   method GET
-   rq <- askRq
-   liftIO $ Log.debugShow ("get"::String, (rqUri rq))
-   rv <- page
-   rsp $ rv
-
-geta :: (Show a, Data a) => ServerPartT IO a -> ServerPartT IO Response
-geta page = do 
-   method GET
-   rq <- askRq
-   liftIO $ Log.debugShow ("get"::String, (rqUri rq))
-   page' <- page
-   rsp page'
 
 get :: (Show a, Data a) => ServerPartT IO a -> ServerPartT IO Response
 get page = do 
    method GET
    rq <- askRq
    liftIO $ Log.debugShow ("get"::String, (rqUri rq))
-   rv <- page
+   page' <- page
+   rsp page'
+
+getF :: (Show a, Data a) => ServerPartT IO a -> ServerPartT IO Response
+getF page = do 
+   method GET
+   rq <- askRq
+   liftIO $ Log.debugShow ("get"::String, (rqUri rq))
+   rv <- SE.catchFail page
    rsp $ rv 
 
-post :: (Show a, Data a) => ServerPartT IO a -> ServerPartT IO Response
-post page = do 
+postF :: (Show a, Data a) => ServerPartT IO a -> ServerPartT IO Response
+postF page = do 
    method POST
    rq <- askRq
    liftIO $ Log.debugShow ("post"::String, (rqUri rq))
-   rv <- page
+   rv <- SE.catchFail page
    rsp $ rv
 
 homePage :: ServerPart Response

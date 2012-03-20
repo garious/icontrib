@@ -1,7 +1,9 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
 module ServerError where
 
-import Control.Monad.IO.Class                ( MonadIO, liftIO )
+import Control.Monad.IO.Class             ( MonadIO, liftIO )
+import Control.Monad.Error                ( MonadError, catchError )
+import Control.Monad                      ( liftM )
 
 einAlreadyExists :: Monad m => m a
 einAlreadyExists = fail "EinAlreadyExists"
@@ -56,4 +58,7 @@ failLeftIO aa = do
    case(err) of
       (Left ee)   -> fail ee
       (Right val) -> return val
+
+catchFail :: (MonadError a m, Show a) => m a1 -> m (Either String a1)
+catchFail page = (liftM Right $ page) `catchError` (\ ee -> (return $ Left (show ee)))
 
