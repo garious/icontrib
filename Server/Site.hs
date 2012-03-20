@@ -93,9 +93,9 @@ site st = msum [
 
 authServices:: DB.Database -> ServerPart Response
 authServices st = msum [ 
-      dir "login"  (postF    (loginUser  "auth" st))
-    , dir "add"    (postF    (addUser    "auth" st))
-    , dir "logout" (postF    (check >>= logOut st))
+      dir "login"  (post (SE.catchFail $ loginUser  "auth" st))
+    , dir "add"    (post (SE.catchFail $ addUser    "auth" st))
+    , dir "logout" (post (SE.catchFail $ check >>= logOut st))
     , dir "check.json" (get check)
     ]
     where
@@ -103,10 +103,10 @@ authServices st = msum [
 
 donorServices:: DB.Database -> ServerPart Response
 donorServices st = msum [ 
-      dir "update"               (postF  (check >>= (withBody (U.updateInfo st))))
-    , dir "get"                  (getF   (check >>= (U.queryByOwner st)))
-    , dir "ls"                   (getF   (liftIO $ U.list st))
-    , dir "mostInfluential.json" (get    (U.mostInfluential st))
+      dir "update"               (post (SE.catchFail $ check >>= (withBody (U.updateInfo st))))
+    , dir "get"                  (get  (SE.catchFail $ check >>= (U.queryByOwner st)))
+    , dir "ls"                   (get  (SE.catchFail $ liftIO $ U.list st))
+    , dir "mostInfluential.json" (get  (U.mostInfluential st))
     , (get (basename >>= (U.queryByOwner st . L.Identity)))
     ]
     where
@@ -114,8 +114,8 @@ donorServices st = msum [
 
 charityServices :: DB.Database -> ServerPart Response
 charityServices st = msum [ 
-      dir "update"       (postF (check >>= (withBody (C.updateInfo st))))
-    , dir "get.json"     (getF  (check >>= (C.queryByOwner st)))
+      dir "update"       (post (SE.catchFail $ check >>= (withBody (C.updateInfo st))))
+    , dir "get.json"     (get  (SE.catchFail $ check >>= (C.queryByOwner st)))
     , dir "popular.json" (get  popular)
     , (get (basename >>= (C.queryByCID st . C.CharityID . BS.unpack)))
     ]
@@ -148,23 +148,15 @@ get page = do
    method GET
    rq <- askRq
    liftIO $ Log.debugShow ("get"::String, (rqUri rq))
-   page' <- page
-   rsp page'
+   rv <- page
+   rsp rv
 
-getF :: (Show a, Data a) => ServerPartT IO a -> ServerPartT IO Response
-getF page = do 
-   method GET
-   rq <- askRq
-   liftIO $ Log.debugShow ("get"::String, (rqUri rq))
-   rv <- SE.catchFail page
-   rsp $ rv 
-
-postF :: (Show a, Data a) => ServerPartT IO a -> ServerPartT IO Response
-postF page = do 
+post :: (Show a, Data a) => ServerPartT IO a -> ServerPartT IO Response
+post page = do 
    method POST
    rq <- askRq
    liftIO $ Log.debugShow ("post"::String, (rqUri rq))
-   rv <- SE.catchFail page
+   rv <- page
    rsp $ rv
 
 homePage :: ServerPart Response
