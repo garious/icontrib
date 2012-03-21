@@ -186,17 +186,9 @@ function onReady(Tag, Layout, Colors) {
         return Tag.label({style: {width: dim.width + 'px', height: dim.height + 'px', font: font}}, s);
     }
 
-    function p(as, xs) {
-        if (xs === undefined) {
-            xs = as;
-            as = null;
-        }
-        as = as && clone(as) || {};
-        as.style = as.style && clone(as.style) || {};
-
-        as.style.font = font;
-
-        return Tag.p(as, xs);
+    function p(s) {
+        var dim = textDimensions({}, s);
+        return Tag.p({style: {width: dim.width + 'px', height: dim.height + 'px', font: font, margin: '0px'}}, s);
     }
 
     function hr(as) {
@@ -224,7 +216,8 @@ function onReady(Tag, Layout, Colors) {
          h5: mkHeader(5),
          h6: mkHeader(6),
          p: p,
-         hr: hr 
+         hr: hr,
+         defaultFont: font
     });
 }
 

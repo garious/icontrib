@@ -1,16 +1,15 @@
 var deps = [
     '/tag/tag.js', 
     '/tag/layout1.js',
-    '/ui/nav.js', 
     '/ui/chart.js', 
     '/ui/colors.js', 
     '/ui/core.js'
 ];
 
-function onReady(E, L, NAV, CHART, COLOR, CORE) {
+function onReady(Tag, Layout, Chart, Colors, Core) {
 
     function alignButton(user) {
-        return CORE.button({href: '/me/?donateTo=' + user.id, loud: true, text: 'Donate!'});
+        return Core.button({href: '/me/?donateTo=' + user.id, loud: true, text: 'Donate!'});
     }
 
     function isMember(xs, x) {
@@ -23,27 +22,27 @@ function onReady(E, L, NAV, CHART, COLOR, CORE) {
     }
 
     function fundContents(xs, total) {
-        var rows = [L.pillow(0, 15)];
+        var rows = [Layout.pillow(0, 15)];
 
         var colors = [
-            COLOR.green,
+            Colors.green,
             '#ddffaa'
         ];
 
         for (var j = 0; j < xs.length; j++) {
             var x = xs[j];
-            var pct = CORE.h6(Math.round(1000 * x.shares / total) / 10 + '%');
+            var pct = Core.h6(Math.round(1000 * x.shares / total) / 10 + '%');
 
 
-            var cols = L.hug([
-                E.div({style: {width: '18px', height: '18px', backgroundColor: colors[j % colors.length]}}),
-                L.pillow(15, 0),
-                E.div({style: {width: '55px', height: pct.height}}, [pct]),
-                CORE.a({href: 'charity/?id=' + x.cid}, x.name)
+            var cols = Layout.hug([
+                Tag.div({style: {width: '18px', height: '18px', backgroundColor: colors[j % colors.length]}}),
+                Layout.pillow(15, 0),
+                Tag.div({style: {width: '55px', height: pct.height}}, [pct]),
+                Core.a({href: 'charity/?id=' + x.cid}, x.name)
             ]);
             rows.push(cols);
         }
-        return L.spoon(rows);
+        return Layout.spoon(rows);
     }
 
     function distributionTable(user) {
@@ -65,48 +64,48 @@ function onReady(E, L, NAV, CHART, COLOR, CORE) {
                     }
                 }
 
-                var row = L.spoon([
-                    E.hr({style: {height: '0px', width: '570px'}}),
-                    L.pillow(0, 20),
-                    E.div({style: {height: '30px'}}, [
-                        CORE.h4(user.funds[i].name),
-                        E.div({style: {position: 'absolute', top: '10px', left: '505px'}}, [  // TODO: remove top 10px, which is due to the button falling outside its bounds
+                var row = Layout.spoon([
+                    Tag.hr({style: {height: '0px', width: '570px'}}),
+                    Layout.pillow(0, 20),
+                    Tag.div({style: {height: '30px'}}, [
+                        Core.h4(user.funds[i].name),
+                        Tag.div({style: {position: 'absolute', top: '10px', left: '505px'}}, [  // TODO: remove top 10px, which is due to the button falling outside its bounds
                             alignButton({id: fundId})
                         ])
                     ]),
-                    L.hug([
-                        CHART.pie1({distribution: xs}),
-                        L.pillow(20, 0),
+                    Layout.hug([
+                        Chart.pie1({distribution: xs}),
+                        Layout.pillow(20, 0),
                         fundContents(xs, total)
                     ])
                 ]);
 
                 rows.push(row);
             }
-            return L.spoon(rows);
+            return Layout.spoon(rows);
         }
     }
 
     function profile(as) {
         as = as || {};
         var user = as.user || {};
-        var userInfo = L.hug([
-            L.pillow(25, 0), 
-            L.spoon([
-                CORE.h3(user.firstName + ' ' + user.lastName),
-                CORE.h5({
+        var userInfo = Layout.hug([
+            Layout.pillow(25, 0), 
+            Layout.spoon([
+                Core.h3(user.firstName + ' ' + user.lastName),
+                Core.h5({
                     color: 'red',
                     text: 'Helps raise $' + Math.round(user.alignedDonated / 100) + ' per month'
                 })
             ])
         ]);
 
-        return L.spoon([
-            L.hug([
-                E.img({style: {width: '70px', height: '90px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
+        return Layout.spoon([
+            Layout.hug([
+                Tag.img({style: {width: '90px', height: '90px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
 	        userInfo
             ]),
-            L.pillow(0, 20),
+            Layout.pillow(0, 10),
             distributionTable(user)
         ]);
     }

@@ -1,13 +1,12 @@
 var deps = [
     'nav.js',
-    'core.js',
-    '/tag/tag.js'
+    'core.js'
 ];
 
-function onReady(NAV, CORE, E) {
+function onReady(Nav, Core) {
 
-    var node = NAV.footer({style: {backgroundColor: '#EEE'}}, [
-        CORE.a({href: '#'}, 'blah')
+    var node = Nav.footer({style: {backgroundColor: '#EEE'}}, [
+        Core.a({href: '#'}, 'blah')
     ]);
 
     define(node);

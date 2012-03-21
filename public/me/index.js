@@ -7,7 +7,7 @@ var deps = [
     '/charity/popular.json'
 ];
 
-function onReady(E, L, NAV, CORE, CHART, POP) { 
+function onReady(Tag, Layout, Nav, Core, Chart, Popular) { 
 
     function fundContents(pie) {
         var dist = pie.distribution;
@@ -49,23 +49,23 @@ function onReady(E, L, NAV, CORE, CHART, POP) {
             var x = dist[j];
 
             var pct = Math.round(x.shares / total * 1000) / 10;
-            var e = CORE.input({type: 'text', size: 4, value: pct});
+            var e = Core.input({type: 'text', size: 4, value: pct});
             e.addEventListener('keyup', mkHandler(e, j));
 
             inputs.push(e);
-            var cols = L.hug([
+            var cols = Layout.hug([
                 e,
-                L.pillow(10, 0),
-                CORE.a({href: x.url}, x.name)
+                Layout.pillow(10, 0),
+                Core.a({href: x.url}, x.name)
             ]);
             rows.push(cols);
-            rows.push(L.pillow(0,15));
+            rows.push(Layout.pillow(0,15));
         }
-        return L.spoon(rows);
+        return Layout.spoon(rows);
     }
 
     function distributionTable(pie) {
-        return L.hug({width: 550}, [L.pillow(30), fundContents(pie)]);
+        return Layout.hug({width: 550}, [Layout.pillow(30), fundContents(pie)]);
     }
 
     function dashboard(as) {
@@ -78,56 +78,56 @@ function onReady(E, L, NAV, CORE, CHART, POP) {
         var rows = [];
 
         // TODO: clean up calculation of size of string that wraps over serveral lines
-        var impactHeader = CORE.h6(impactMsg);
+        var impactHeader = Core.h6(impactMsg);
         impactHeader.style.width = '550px';
         impactHeader.style.height = '50px';
 
         if (alignedUsers.length > 0) {
-            rows.push( CORE.h3('My impact') );
-            //rows.push( L.hug([L.pillow(30), CORE.h6(impactMsg)]) );
-            rows.push( L.hug([L.pillow(30), impactHeader]) );
+            rows.push( Core.h3('My impact') );
+            //rows.push( Layout.hug([Layout.pillow(30), Core.h6(impactMsg)]) );
+            rows.push( Layout.hug([Layout.pillow(30), impactHeader]) );
         }
 
-        var pie = CHART.pie(user);
+        var pie = Chart.pie(user);
 
         if (user.distribution.length > 0) {
-            rows.push( CORE.h3('My charitable distribution') );
-            rows.push( L.hug([L.pillow(100), pie.element]) );
+            rows.push( Core.h3('My charitable distribution') );
+            rows.push( Layout.hug([Layout.pillow(100), pie.element]) );
         }
 
         var fundingRows = [
             distributionTable(pie),
-            CORE.h3('My funding'),
-            L.pillow(0, 20),
-            L.hug([L.pillow(30, 0), CORE.input({type: 'text', size: 10, value: user.centsDonated / 100.0}), L.pillow(10,0), CORE.h6("dollars per month")]),
-            L.pillow(0, 20),
-            L.hug([L.pillow(20,0), CORE.button({href: '#', text: 'Save Changes', loud: true})]),
-            L.pillow(0, 20)
+            Core.h3('My funding'),
+            Layout.pillow(0, 20),
+            Layout.hug([Layout.pillow(30, 0), Core.input({type: 'text', size: 10, value: user.centsDonated / 100.0}), Layout.pillow(10,0), Core.h6("dollars per month")]),
+            Layout.pillow(0, 20),
+            Layout.hug([Layout.pillow(20,0), Core.button({href: '#', text: 'Save Changes', loud: true})]),
+            Layout.pillow(0, 20)
         ];
 
-        return L.spoon(rows.concat(fundingRows));
+        return Layout.spoon(rows.concat(fundingRows));
     }
 
     var listItems = [
-        CORE.h2('Recommended Funds'),
-        L.pillow(0, 10)
+        Core.h2('Recommended Funds'),
+        Layout.pillow(0, 10)
     ];
 
-    for (var i = 0; i < POP.length; i += 1) {
-        var x = POP[i];
-        listItems.push( CORE.a({href: '/charity/?id=' + x.cid}, x.name) );
+    for (var i = 0; i < Popular.length; i += 1) {
+        var x = Popular[i];
+        listItems.push( Core.a({href: '/charity/?id=' + x.cid}, x.name) );
     }
 
-    var main = NAV.frame([
-        L.spoon([
-            L.hug([
-                CORE.box({width: 600}, [
-                    dashboard({user: NAV.userInfo()})
+    var main = Nav.frame([
+        Layout.spoon([
+            Layout.hug([
+                Core.box({width: 600}, [
+                    dashboard({user: Nav.userInfo()})
                 ]),
-                L.pillow(20),
-                CORE.box({width: 340}, L.spoon(listItems))
+                Layout.pillow(20),
+                Core.box({width: 340}, Layout.spoon(listItems))
             ]),
-            L.pillow(20) 
+            Layout.pillow(20) 
         ])
     ]);
 

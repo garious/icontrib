@@ -6,34 +6,34 @@ var deps = [
     params.id + '.json'
 ];
 
-function onReady(E, L, CORE, NAV, USER) {
+function onReady(Tag, Layout, Core, Nav, User) {
     
     function charity(as) {
         as = as || {};
         var user = as.user;
-	var box = CORE.box([
-            L.spoon([
-	        E.div({style: {height: '30px'}}, [CORE.h2(user.organizationName)]),
-                L.pillow(20),
-                L.hug([
-                    E.img({style: {width: '175px', height: '175px', borderRadius: '5px'}, src: user.imageUrl, alt: user.organizationName}),
-                    L.pillow(30),
-                    L.spoon([
-                        E.p({style: {height: '100px', width: '600px'}}, user.mission), 
-                        L.pillow(20),
-                        CORE.button({href: '/me/?donateTo=' + user.id, text: 'Donate!', loud: true})
+	var box = Core.box([
+            Layout.spoon([
+	        Tag.div({style: {height: '30px'}}, [Core.h2(user.organizationName)]),
+                Layout.pillow(20),
+                Layout.hug([
+                    Tag.img({style: {width: '175px', height: '175px', borderRadius: '5px'}, src: user.imageUrl, alt: user.organizationName}),
+                    Layout.pillow(30),
+                    Layout.spoon([
+                        Tag.p({style: {height: '100px', width: '600px'}}, user.mission), 
+                        Layout.pillow(20),
+                        Core.button({href: '/me/?donateTo=' + user.id, text: 'Donate!', loud: true})
                     ])
                 ])
             ])
         ]);
 
-        return L.spoon([
+        return Layout.spoon([
            box,
-           L.pillow(30)
+           Layout.pillow(30)
         ]);
     }
 
-    var main = NAV.frame([charity({user: USER})]);
+    var main = Nav.frame([charity({user: User})]);
 
     define(main);
 
