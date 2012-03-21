@@ -46,7 +46,7 @@ function post(path, params, callback) {
 
 
 function onAuthReady(Auth) { 
-function onReady(Tag, ToDom, Layout, Core, Color, Me) { 
+function onReady(Tag, ToDom, Layout, Core, Colors, Me) { 
 
     function loginWidget(as) {
         var username = Core.input({type: 'text', size: 18});
@@ -104,7 +104,7 @@ function onReady(Tag, ToDom, Layout, Core, Color, Me) {
                 });
             });
 
-           return Tag.div({style: {width: '272px', height: '77px', backgroundColor: '#eee', borderRadius: '5px 5px 0px 0px'}}, [
+           return Tag.div({style: {width: '270px', height: '77px', backgroundColor: '#eee', borderRadius: '5px 5px 0px 0px', border: '1px solid', borderColor: Colors.lightColor}}, [
                Layout.spoon([
                    Layout.pillow(0, 15),
                    Layout.hug([
@@ -135,7 +135,7 @@ function onReady(Tag, ToDom, Layout, Core, Color, Me) {
                 Layout.pillow(560, 0),
                 loginWidget(as)
             ]),
-            Tag.hr({style: {width: '960px', height: '4px', margin: 0, backgroundColor: Color.green, borderWidth: 1}})
+            Tag.hr({style: {width: '960px', height: '4px', margin: 0, backgroundColor: Colors.green, borderWidth: 1}})
         ]);
     }
 
@@ -175,7 +175,7 @@ function onReady(Tag, ToDom, Layout, Core, Color, Me) {
                 Layout.spoon([
                     Layout.pillow(0, 10),
                     Core.h3({
-                        color: Color.greenText,
+                        color: Colors.greenText,
                         text: Me.firstName + ' ' + Me.lastName
                     })
                 ])
