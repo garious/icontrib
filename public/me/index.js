@@ -121,11 +121,15 @@ function onReady(Tag, Layout, Nav, Core, Chart, Popular) {
     var main = Nav.frame([
         Layout.spoon([
             Layout.hug([
-                Core.box({width: 600}, [
-                    dashboard({user: Nav.userInfo()})
-                ]),
+                Core.box({
+                    width: 600,
+                    contents: dashboard({user: Nav.userInfo()})
+                }),
                 Layout.pillow(20),
-                Core.box({width: 340}, Layout.spoon(listItems))
+                Core.box({
+                    width: 340,
+                    contents: Layout.spoon(listItems)
+                })
             ]),
             Layout.pillow(20) 
         ])

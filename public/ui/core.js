@@ -112,32 +112,20 @@ function onReady(Tag, Layout, Colors) {
         return e;
     }
 
-    function box(as, xs) {
-        if (xs === undefined) {
-            xs = as;
-            as = null; 
-        }
-        
-        as = as || {};
-        xs = xs || [];
-
+    function box(as) {
         var shadow = '0px 0px 5px 2px #ddd';
-        var space = Layout.pillow(15);
+        var e = as.contents;
 
-        var e = Layout.spoon([
-            space, 
-            Layout.hug([space].concat(xs).concat([space])),
-            space
-        ]);
-
+        var padding = 15;
         return Tag.div({
             style: {
                 border: '2px solid #cfcfcf',
                 shadow: shadow,
                 MozBoxShadow: shadow,
                 WebkitBoxShadow: shadow,
-                width:  as.width  ? as.width + 'px' : e.style.width,
-                height: as.height ? as.height + 'px' : e.style.height
+                width:  as.width  ? (as.width - 2 * padding - 4) + 'px' : e.style.width,
+                height: as.height ? (as.height - 2 * padding - 4) + 'px' : e.style.height,
+                padding: padding + 'px'
             }
         }, [e]);
     }

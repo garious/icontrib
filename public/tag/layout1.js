@@ -16,14 +16,31 @@ var deps = [
 // TODO: Move this into Tag
 var Tag_TwoDimensional = {
 
+    // Calculate outer width of a DOM element
     getDimensions: function (me) {
+        var sty = me.style;
 
-        var width  = parseInt(me.style.width, 10);
-        var height = parseInt(me.style.height, 10);
+        var width  = parseInt(sty.width,  10) || 0;
+        var height = parseInt(sty.height, 10) || 0;
+
+        width  += parseInt(sty.marginLeft,   10) || 0;
+        width  += parseInt(sty.marginRight,  10) || 0;
+        height += parseInt(sty.marginTop,    10) || 0;
+        height += parseInt(sty.marginBottom, 10) || 0;
+
+        width  += parseInt(sty.paddingLeft,   10) || 0;
+        width  += parseInt(sty.paddingRight,  10) || 0;
+        height += parseInt(sty.paddingTop,    10) || 0;
+        height += parseInt(sty.paddingBottom, 10) || 0;
+
+        width  += parseInt(sty.borderLeftWidth,   10) || 0;
+        width  += parseInt(sty.borderRightWidth,  10) || 0;
+        height += parseInt(sty.borderTopWidth,    10) || 0;
+        height += parseInt(sty.borderBottomWidth, 10) || 0;
 
         return {
-            width:  isNaN( width) ? 0 : width,
-            height: isNaN(height) ? 0 : height
+            width:  width,
+            height: height
         };
     },
 

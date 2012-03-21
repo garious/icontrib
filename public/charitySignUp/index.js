@@ -145,11 +145,12 @@ function onReady(Tag, Layout, Nav, Core, toaHtml, JsonForm, Charity) {
 
         return Layout.hug([
             Layout.spoon([
-                Core.box({width: 800}, [
-                    Core.p('Register your organization to recieve recurring contributions from IContrib.org donors.')
-                ]),
+                Core.box({
+                    width: 800,
+                    contents: Core.p('Register your organization to recieve recurring contributions from IContrib.org donors.')
+                }),
                 Layout.pillow(30),
-                Core.box([form]),
+                Core.box({contents: form}),
                 Layout.pillow(30)
             ])
         ]);

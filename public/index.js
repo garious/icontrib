@@ -44,13 +44,15 @@ function onInitialReady(MostInfluentialId) {
 
         var body = Layout.spoon([
             Layout.hug([
-                Core.box({width: 600}, [
-                    Donor.profile({user: MostInfluential})
-                ]),
+                Core.box({
+                    width: 600,
+                    contents: Donor.profile({user: MostInfluential})
+                }),
                 sep,
-                Core.box({width: 340}, [
-                    Layout.spoon(listItems)
-                ])
+                Core.box({
+                    width: 340,
+                    contents: Layout.spoon(listItems)
+                })
             ]),
             sep,
             Nav.footer([

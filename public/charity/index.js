@@ -11,8 +11,8 @@ function onReady(Tag, Layout, Core, Nav, User) {
     function charity(as) {
         as = as || {};
         var user = as.user;
-	var box = Core.box([
-            Layout.spoon([
+	var box = Core.box({
+            contents: Layout.spoon([
 	        Tag.div({style: {height: '30px'}}, [Core.h2(user.organizationName)]),
                 Layout.pillow(20),
                 Layout.hug([
@@ -25,7 +25,7 @@ function onReady(Tag, Layout, Core, Nav, User) {
                     ])
                 ])
             ])
-        ]);
+        });
 
         return Layout.spoon([
            box,

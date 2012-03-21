@@ -30,7 +30,7 @@ function onReady(Core, Tag) {
                 row('a',      Tag.a({href: '#'}, ['Tag.a']), Core.a({href: '#'}, ['Core.a'])),
                 row('label',  Tag.label('Tag.label'),        Core.label('Core.label')),
                 row('button', Tag.button('Tag.button'),      Core.button({href: '#', text: 'Core.button'})),
-                row('box',    Tag.div([Tag.p(['Tag.div'])]), Core.box())
+                row('box',    Tag.div([Tag.p(['Tag.div'])]), Core.box({contents: Core.p('Core.box')}))
             ])
         ]);
 
