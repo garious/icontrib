@@ -172,7 +172,11 @@ function onReady(Tag, Layout, Colors) {
         var sty = {
            height: as.height ? as.height + 'px' : '1px',
            width:  as.width  ? as.width  + 'px' : '100%',
-           margin: 0,
+           margin: as.margin ? as.margin + 'px' : 0,
+           marginLeft:   as.marginLeft   ? as.marginLeft   + 'px' : 0,
+           marginRight:  as.marginRight  ? as.marginRight  + 'px' : 0,
+           marginTop:    as.marginTop    ? as.marginTop    + 'px' : 0,
+           marginBottom: as.marginBottom ? as.marginBottom + 'px' : 0,
            borderWidth: 0,
            backgroundColor: as.color
         };

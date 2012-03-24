@@ -112,6 +112,8 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
 
     function recommendedFunds(as) {
 
+        var width = as.width || 340;
+
         var listItems = [
             Core.h5({
                 color: Colors.greenText,
@@ -124,7 +126,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
         for (var i = 0; i < as.funds.length; i += 1) {
             var x = as.funds[i];
             listItems.push( pad );
-            listItems.push( Core.hr({width: 300}) );
+            listItems.push( Core.hr({width: width - 4, marginLeft: -15}) );
             listItems.push( pad );
 
             var e = Layout.hug([
@@ -137,7 +139,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
         }
 
         return Core.box({
-            width: 340,
+            width: width,
             contents: Layout.spoon(listItems)
         });
     }
