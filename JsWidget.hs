@@ -52,7 +52,7 @@ htmlForJsMod baseUrl filename ps = appTemplate $ do
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink.js"]))
       preloadedAttr = H.toValue (mkPath (mkRelUrl baseUrl ["IContrib.js"]))
 
-      yoink = "\nYOINK.resourceLoader('', {}, PRELOADED_MODULES).getResources([\n"
+      yoink = "\nYOINK.resourceLoader('', {}, window.PRELOADED_MODULES).getResources([\n"
            ++ "    '/tag/interface.js',\n"
            ++ "    '/tag/todom.js',\n"
            ++ "    {path: '" ++ filename ++ "', params: " ++ params ++ "}\n"
