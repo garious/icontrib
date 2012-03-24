@@ -5,7 +5,6 @@ var initialDeps = [
 var deps = [
     '/tag/tag.js', 
     '/tag/layout1.js', 
-    '/ui/colors.js', 
     '/ui/nav.js', 
     '/ui/core.js', 
     '/charity/popular.json', 
@@ -14,49 +13,24 @@ var deps = [
 
 function onInitialReady(MostInfluentialId) {
 
-    function onReady(Tag, Layout, Colors, Nav, Core, PopularCharities, Donor, MostInfluential) {
+    function onReady(Tag, Layout, Nav, Core, PopularCharities, Donor, MostInfluential) {
+
+        var mostInfluential = Core.box({
+            width: 600,
+            contents: Donor.profile({user: MostInfluential})
+        });
 
         var sep = Layout.pillow(20);
 
-        var listItems = [
-            Core.h5({
-                color: Colors.greenText,
-                text: 'Recommended Funds'
-            })
-        ];
-
-        var pad = Layout.pillow(0, 10);
-
-        for (var i = 0; i < PopularCharities.length; i += 1) {
-            var x = PopularCharities[i];
-            listItems.push( pad );
-            listItems.push( Core.hr({width: 300}) );
-            listItems.push( pad );
-
-            var e = Layout.hug([
-                Tag.img({src: x.imageUrl, style: {width: '50px', height: '50px'}}),
-                Layout.pillow(20, 0),
-                Core.a({href: '/charity/?id=' + x.cid}, x.name)
-            ]);
-
-            listItems.push(e);
-        }
-
         var body = Layout.spoon([
             Layout.hug([
-                Core.box({
-                    width: 600,
-                    contents: Donor.profile({user: MostInfluential})
-                }),
+                mostInfluential,
                 sep,
-                Core.box({
-                    width: 340,
-                    contents: Layout.spoon(listItems)
-                })
+                Donor.recommendedFunds({funds: PopularCharities})
             ]),
             sep,
             Nav.footer([
-                Core.a({href: 'charitySignUp/'}, 'Charity Registration')
+                Core.hyperlink({url: 'charitySignUp/', text: 'Charity Registration'})
             ])
         ]);
 

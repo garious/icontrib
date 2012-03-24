@@ -27,7 +27,7 @@ function onReady(Core, Tag) {
                 row('h5',     Tag.h5('Tag.h5'),              Core.h5('Core.h5')),
                 row('h6',     Tag.h6('Tag.h6'),              Core.h6('Core.h6')),
                 row('p',      Tag.p('Tag.p'),                Core.p('Core.p')),
-                row('a',      Tag.a({href: '#'}, ['Tag.a']), Core.a({href: '#'}, ['Core.a'])),
+                row('a',      Tag.a({href: '#'}, ['Tag.a']), Core.hyperlink({url: '#', text: 'Core.hyperlink'})),
                 row('label',  Tag.label('Tag.label'),        Core.label('Core.label')),
                 row('button', Tag.button('Tag.button'),      Core.button({href: '#', text: 'Core.button'})),
                 row('box',    Tag.div([Tag.p(['Tag.div'])]), Core.box({contents: Core.p('Core.box')}))

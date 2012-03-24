@@ -3,11 +3,12 @@ var deps = [
     '/tag/layout1.js', 
     '/ui/nav.js',
     '/ui/core.js',
+    '/ui/donor.js',
     '/ui/chart.js',
     '/charity/popular.json'
 ];
 
-function onReady(Tag, Layout, Nav, Core, Chart, Popular) { 
+function onReady(Tag, Layout, Nav, Core, Donor, Chart, Popular) { 
 
     function fundContents(pie) {
         var dist = pie.distribution;
@@ -56,7 +57,7 @@ function onReady(Tag, Layout, Nav, Core, Chart, Popular) {
             var cols = Layout.hug([
                 e,
                 Layout.pillow(10, 0),
-                Core.a({href: x.url}, x.name)
+                Core.hyperlink({url: x.url, text: x.name})
             ]);
             rows.push(cols);
             rows.push(Layout.pillow(0,15));
@@ -108,16 +109,6 @@ function onReady(Tag, Layout, Nav, Core, Chart, Popular) {
         return Layout.spoon(rows.concat(fundingRows));
     }
 
-    var listItems = [
-        Core.h2('Recommended Funds'),
-        Layout.pillow(0, 10)
-    ];
-
-    for (var i = 0; i < Popular.length; i += 1) {
-        var x = Popular[i];
-        listItems.push( Core.a({href: '/charity/?id=' + x.cid}, x.name) );
-    }
-
     var main = Nav.frame([
         Layout.spoon([
             Layout.hug([
@@ -126,10 +117,7 @@ function onReady(Tag, Layout, Nav, Core, Chart, Popular) {
                     contents: dashboard({user: Nav.userInfo()})
                 }),
                 Layout.pillow(20),
-                Core.box({
-                    width: 340,
-                    contents: Layout.spoon(listItems)
-                })
+                Donor.recommendedFunds({funds: Popular})
             ]),
             Layout.pillow(20) 
         ])

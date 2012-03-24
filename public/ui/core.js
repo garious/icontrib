@@ -47,30 +47,27 @@ function onReady(Tag, Layout, Colors) {
         }
     }
 
-    function a(as, xs) {
-        if (xs === undefined) {
-            xs = as;
-            as = null;
-        }
-        as = as && clone(as) || {};
-        as.style = as.style && clone(as.style) || {};
+    function hyperlink(as) {
+        var dim = textDimensions({}, as.text);
 
-        var s = typeof xs === 'string' && xs || xs[0];
-        var dim = textDimensions({}, s);
+        var sty = {
+            textDecoration: 'none',
+            font: font,
+            width: dim.width + 'px',
+            height: dim.height + 'px',
+            color: 'blue' 
+        };
 
-        as.style.textDecoration = 'none';
-        as.style.font = font;
-        as.style.width = dim.width + 'px';
-        as.style.height = dim.height + 'px';
-        as.style.color = 'blue';
+        var e = Tag.a({style: sty, href: as.url}, [as.text]);
 
-        var e = Tag.a(as, xs);
         e.addEventListener('mouseover', function() {
             e.style.textDecoration = 'underline';
         });
+
         e.addEventListener('mouseout', function() {
             e.style.textDecoration = 'none';
         });
+
         return e;
     }
 
@@ -183,16 +180,18 @@ function onReady(Tag, Layout, Colors) {
         as = as || {};
 
         var sty = {
-           height: as.height ? as.height + 'px' : 0,
+           height: as.height ? as.height + 'px' : '1px',
            width:  as.width  ? as.width  + 'px' : '100%',
-           margin: 0
+           margin: 0,
+           borderWidth: 0,
+           backgroundColor: as.color
         };
 
-        return Tag.hr({style: sty});
+        return Tag.hr({style: sty, noshade: true, size: 1});
     }
 
     define({
-         a: a,
+         hyperlink: hyperlink,
          input: input,
          label: label,
          button: button,

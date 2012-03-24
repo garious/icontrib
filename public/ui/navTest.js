@@ -6,7 +6,7 @@ var deps = [
 function onReady(Nav, Core) {
 
     var node = Nav.footer({style: {backgroundColor: '#EEE'}}, [
-        Core.a({href: '#'}, 'blah')
+        Core.hyperlink({url: '#', text: 'blah'})
     ]);
 
     define(node);

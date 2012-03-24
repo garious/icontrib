@@ -95,7 +95,7 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
             return widget;
 
         } else {
-            //var logoutButton = Core.a({href: '#'}, 'Sign out');
+            //var logoutButton = Core.hyperlink({url: '#', text: 'Sign out'});
             var logoutButton = Tag.img({src: baseUrl + '/arrowdown-darkgreen.png', alt: 'settings'});
             logoutButton.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -104,13 +104,13 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
                 });
             });
 
-           return Tag.div({style: {width: '270px', height: '77px', backgroundColor: '#eee', borderRadius: '5px 5px 0px 0px', border: '1px solid', borderColor: Colors.lightColor}}, [
+           return Tag.div({style: {width: '270px', height: '77px', backgroundColor: '#eee', borderRadius: '5px 5px 0px 0px', border: '1px solid', borderBottomWidth: '0px', borderColor: Colors.lightColor}}, [
                Layout.spoon([
                    Layout.pillow(0, 15),
                    Layout.hug([
                        Layout.pillow(20, 0),
                        as.thumbnail,
-                       Layout.pillow(50, 0),  // TODO: This should be '20', not '50', but there's a bug in calculating the size of the thumbnail
+                       Layout.pillow(20, 0),
                        Layout.spoon([
                            Layout.pillow(0, 22),
                            logoutButton
@@ -132,10 +132,10 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
             Layout.pillow(0, 20),
             Layout.hug([
                 logo,
-                Layout.pillow(560, 0),
+                Layout.pillow(559, 0),
                 loginWidget(as)
             ]),
-            Tag.hr({style: {width: '960px', height: '4px', margin: 0, backgroundColor: Colors.green, borderWidth: 1}})
+            Core.hr({width: 960, height: 4, color: Colors.green})
         ]);
     }
 
@@ -183,7 +183,7 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
 
             var dim = getDimensions(thumbContents);
 
-            var thumbnail = Core.a({href: '/me/', style: {width: dim.width, height: dim.height}}, [
+            var thumbnail = Tag.a({href: '/me/', style: {width: dim.width + 'px', height: dim.height + 'px', textDecoration: 'none'}}, [
                 thumbContents
             ]);
 
@@ -194,7 +194,7 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
         var body = Tag.div(xs);
 
         var node = Tag.div({style: {margin: '0px auto', height: getWindowInnerHeight(), width: '960px'}}, [
-            Layout.spoon([
+            Layout.spoon({width: 960}, [
                 navbar, 
                 Layout.pillow(50), 
                 body
@@ -215,9 +215,8 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
         as.style.textAlign = 'center';
 
         return Tag.div(as, [
-            Tag.hr(),
-            Tag.div({style: {paddingRight: '20px'}}, xs),
-            Tag.hr()
+            Core.hr(),
+            Tag.div({style: {paddingRight: '20px'}}, xs)
         ]); 
     }
 

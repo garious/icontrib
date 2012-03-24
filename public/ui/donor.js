@@ -38,7 +38,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
                 Tag.div({style: {width: '18px', height: '18px', backgroundColor: colors[j % colors.length]}}),
                 Layout.pillow(15, 0),
                 Tag.div({style: {width: '55px', height: pct.height}}, [pct]),
-                Core.a({href: 'charity/?id=' + x.cid}, x.name)
+                Core.hyperlink({url: 'charity/?id=' + x.cid, text: x.name})
             ]);
             rows.push(cols);
         }
@@ -65,7 +65,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
                 }
 
                 var row = Layout.spoon([
-                    Tag.hr({style: {height: '0px', width: '570px'}}),
+                    Core.hr({width: 570}),
                     Layout.pillow(0, 20),
                     Tag.div({style: {height: '30px'}}, [
                         Core.h4(user.funds[i].name),
@@ -110,8 +110,41 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
         ]);
     }
 
+    function recommendedFunds(as) {
+
+        var listItems = [
+            Core.h5({
+                color: Colors.greenText,
+                text: 'Recommended Funds'
+            })
+        ];
+
+        var pad = Layout.pillow(0, 10);
+
+        for (var i = 0; i < as.funds.length; i += 1) {
+            var x = as.funds[i];
+            listItems.push( pad );
+            listItems.push( Core.hr({width: 300}) );
+            listItems.push( pad );
+
+            var e = Layout.hug([
+                Tag.img({src: x.imageUrl, style: {width: '50px', height: '50px'}}),
+                Layout.pillow(20, 0),
+                Core.hyperlink({url: '/charity/?id=' + x.cid, text: x.name})
+            ]);
+
+            listItems.push(e);
+        }
+
+        return Core.box({
+            width: 340,
+            contents: Layout.spoon(listItems)
+        });
+    }
+
     define({
         profile: profile,
+        recommendedFunds: recommendedFunds,
         alignButton: alignButton
     });
 }
