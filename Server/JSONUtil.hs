@@ -2,12 +2,11 @@
 module JSONUtil where
 
 import Data.Data                             ( Data )
-import Control.Monad.Error                   ( runErrorT )
 import Control.Monad.Identity                ( runIdentity )
 import Data.List                             ( foldl' )
 import qualified Text.JSON.Generic           as JS
-import qualified ServerError                 as SE
 import qualified Text.JSON.String            as JSS
+import SiteError
 
 
 runJsonDecode :: Data b => String -> Either String b
@@ -16,7 +15,7 @@ runJsonDecode str = runIdentity $ runErrorT $ jsonDecode str
 jsonDecodeE :: Data b => String -> b
 jsonDecodeE str = JS.decodeJSON str
 
-jsonDecode :: (Monad m, Data b) => String -> m b
+jsonDecode :: (MonadError String m, Data b) => String -> m b
 jsonDecode str = do 
     val <- jsonParse str 
     checkJS $ JS.fromJSON $ val 
@@ -24,16 +23,22 @@ jsonDecode str = do
 runJsonParse :: String -> Either String JS.JSValue
 runJsonParse str = runIdentity $ runErrorT $ jsonParse str
 
-jsonParse :: Monad m => String -> m JS.JSValue
+jsonParse :: (MonadError String m) => String -> m JS.JSValue
 jsonParse str = do
-    let check (Left msg) = SE.jsonParseError msg
+    let check (Left msg) = jsonParseError msg
         check (Right j)  =  return j
     check $ JSS.runGetJSON JS.readJSValue str
+
+jsonParseError :: MonadError String m => String -> m a
+jsonParseError str  = fail ("JSONParseError: " ++ str)
+
+jsonDecodeError :: MonadError String m => String -> m a
+jsonDecodeError str = fail ("JSONDecodeError: " ++ str)
 
 jsonEncode :: Data a => a -> String 
 jsonEncode = JS.encodeJSON
 
-jsonUpdate :: (Monad m, Data b, Data a) => a -> String -> m b 
+jsonUpdate :: (MonadError String m, Data b, Data a) => a -> String -> m b 
 jsonUpdate val str = do
     jd <- jsonParse str
     let ov = JS.toJSON val
@@ -51,6 +56,6 @@ jsonMerge (JS.JSObject old) (JS.JSObject new) =
             (Just oldval)  -> replace key (jsonMerge oldval newval) oldlist
 jsonMerge _ new = new
 
-checkJS :: Monad m => JS.Result a -> m a
-checkJS (JS.Error msg) = SE.jsonDecodeError msg
+checkJS :: MonadError String m => JS.Result a -> m a
+checkJS (JS.Error msg) = jsonDecodeError msg
 checkJS (JS.Ok x)      = return x

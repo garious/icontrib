@@ -27,9 +27,9 @@ updateInfoTest = do
                            (C.CharityID "cid")
                            "imageurl"
                            "mission"
-    assertEqM "update" (C.updateInfo db ident ci) ()
+    assertEqErrorT "update" (C.updateInfo db ident ci) (Right ())
     assertEqM "updated" (C.queryByOwner db ident)   ([ci])
-    assertEqM "update2" (C.updateInfo db ident ci) ()
+    assertEqErrorT "update2" (C.updateInfo db ident ci) (Right ())
 
 main :: IO ()
 main = do

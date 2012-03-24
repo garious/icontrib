@@ -3,12 +3,11 @@ module Query.CharityInfo where
 
 import Control.Monad.State                   ( get, put, MonadState )
 import Control.Monad.Reader                  ( ask, MonadReader )
-import Control.Monad.Error                   ( runErrorT )
 import Data.IxSet                            ( (@*), (@+) )
 import qualified Data.IxSet                  as IxSet
 import Control.Applicative                   ( (<|>), (*>) )
 import Data.Acid
-import ServerError
+import SiteError
 import Data.DB
 import Data.Login
 import Data.CharityInfo
@@ -29,6 +28,7 @@ deleteCharityByEinU uid cien = runErrorT $ replace $ \ db -> do
     cis <- (IxSet.getOne $ db @* [uid] @* [cien]) `justOr` doesntExist
     return $ IxSet.delete cis db
 
+
 charityInfoU :: CharityInfo -> Update DB (Either String ())
 charityInfoU ci =  runErrorT $ replace $ \ db -> do
     let
@@ -44,6 +44,9 @@ charityInfoU ci =  runErrorT $ replace $ \ db -> do
         idNotTaken _          = return ()
     (notExist mci) <|> (belongs mci *> (sameID mci <|> idNotTaken mci))
     return $ IxSet.updateIx (ein ci) ci db
+
+einAlreadyExists :: MonadError String m => m a
+einAlreadyExists = fail "EinAlreadyExists"
 
 charityByOwnerQ :: Identity -> Query DB [CharityInfo]
 charityByOwnerQ uid = use $ \ db -> return $ IxSet.toList $ db @* [uid]

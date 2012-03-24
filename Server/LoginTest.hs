@@ -19,23 +19,29 @@ uid = L.Identity "hello"
 
 addIdentityTests :: DB.Database -> IO ()
 addIdentityTests db = do
-    assertEqM   "listIdentities"    (L.listIdentities db)                       []              -- No users
-    assertFailM "login empty"       (L.loginToToken db uid "world")           ("DoesntExist")   -- User doesn't exist
-    assertFailM "add bad user"      (L.addIdentity db (L.Identity "") "")     ("BadUsername")   -- Bad user name
-    assertEqM   "added user"        (L.addIdentity db uid "world")            ()                -- Add user named 'hello'
+    assertEqM   "listIdentities"    (L.listIdentities db)                     []              -- No users
+    assertL     "login empty"       (L.loginToToken db uid "world")           ("DoesntExist")   -- User doesn't exist
+    assertL     "add bad user"      (L.addIdentity db (L.Identity "") "")     ("BadUsername")   -- Bad user name
+    assertR   "added user"        (L.addIdentity db uid "world")              ()                -- Add user named 'hello'
     assertEqM   "listIdentities2"   (L.listIdentities db)                     [uid]             -- User in DB 
-    assertFailM "added user"        (L.addIdentity db uid "again")            ("AlreadyExists") -- User 'hello' already exists
+    assertL     "added user"        (L.addIdentity db uid "again")            ("AlreadyExists") -- User 'hello' already exists
 
 cookieTests :: DB.Database -> IO ()
 cookieTests db = do
-    assertFailM "login bad password" (L.loginToToken db uid "badpassword") ("BadPassword")   -- Bad password for existing user
+    -- Bad password for existing user
+    assertL "login bad password" (L.loginToToken db uid "badpassword") ("BadPassword")
 
-    goodcookie <- (L.loginToToken db uid "world")  -- Good password for existing user
+    -- Good password for existing user
+    goodcookie <- assertRightErrorT "login existing" $ L.loginToToken db uid "world"
 
-    assertFailM "tokenToIdentity bad cookie"  (L.tokenToIdentity db (L.Token "randomnonsense")) ("BadToken")  -- User lookup with bad cookie
-    assertEqM   "tokenToIdentity good cookie" (L.tokenToIdentity db goodcookie)                 (uid)         -- User lookup with good cookie
+    -- User lookup with bad cookie
+    assertL "tokenToIdentity bad cookie"  (L.tokenToIdentity db (L.Token "randomnonsense")) ("BadToken")  
+    -- User lookup with good cookie
+    assertR "tokenToIdentity good cookie" (L.tokenToIdentity db goodcookie) (uid)
 
-    L.clearIdentityTokens db uid                                                                        -- Remove cookie
-    assertFailM "tokenToIdentity good cookie" (L.tokenToIdentity db goodcookie)       ("BadToken")      -- User lookup after cookie removed
+    -- Remove cookie
+    L.clearIdentityTokens db uid
 
+    -- User lookup after cookie removed
+    assertL "tokenToIdentity good cookie" (L.tokenToIdentity db goodcookie)       ("BadToken")      
 

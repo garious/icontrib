@@ -1,14 +1,14 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Login where
 import Data.Char                             ( ord )
-import Control.Monad.IO.Class                ( MonadIO, liftIO )
-import Control.Monad                         ( when, liftM )
-import ServerError                           ( badUsername, badPassword, failLeftIO )
+import Control.Monad                         ( when )
 import Random                                ( randomIO, Random, random, randomR )
 import Data.Word                             ( Word8 )
 
 import qualified Data.ByteString.Lazy        as BL
 import qualified Data.ByteString             as BS
 
+import SiteError
 import Query.DB
 import Query.Login                           ( hashPassword )
 import Data.Login
@@ -32,25 +32,25 @@ toBL str = BL.pack (map (fromIntegral . ord) str)
 listIdentities :: Database ->  IO [Identity]
 listIdentities db = query db ListIdentitiesQ
 
-addIdentity :: MonadIO m => Database -> Identity -> Password -> m ()
+addIdentity :: (MonadError String m, MonadIO m) => Database -> Identity -> Password -> m ()
 addIdentity db uid@(Identity uidstr) pwd = do
    salt <- liftIO $ newSalt
    when (BL.null uidstr) (badUsername)
    when (BL.null pwd) (badPassword)
-   failLeftIO $ update db (AddIdentityU uid (PasswordHash (hashPassword salt pwd) salt))
+   throwLeft $ update db (AddIdentityU uid (PasswordHash (hashPassword salt pwd) salt))
 
-checkPassword :: MonadIO m => Database -> Identity -> Password -> m ()
-checkPassword db uid pwd = failLeftIO $ query db (CheckPasswordQ uid pwd)
+checkPassword :: (MonadError String m, MonadIO m) => Database -> Identity -> Password -> m ()
+checkPassword db uid pwd = throwLeft $ query db (CheckPasswordQ uid pwd)
   
-loginToToken :: MonadIO m => Database -> Identity -> Password -> m Token
+loginToToken :: (MonadError String m, MonadIO m) => Database -> Identity -> Password -> m Token
 loginToToken db uid pwd = do
    checkPassword db uid pwd
    token <- liftM Token $ liftIO $ newToken
    _ <- liftIO $ update db (AddIdentityTokenU uid token)
    return token
 
-tokenToIdentity :: MonadIO m => Database -> Token -> m Identity
-tokenToIdentity db token = failLeftIO $ query db (TokenToIdentityQ token)
+tokenToIdentity :: (MonadError String m, MonadIO m) => Database -> Token -> m Identity
+tokenToIdentity db token = throwLeft $ query db (TokenToIdentityQ token)
 
 clearIdentityTokens :: Database -> Identity -> IO ()
 clearIdentityTokens db uid = update db (ClearIdentityTokensU uid)

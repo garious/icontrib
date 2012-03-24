@@ -1,17 +1,15 @@
 {-# LANGUAGE TypeFamilies, TemplateHaskell, DeriveDataTypeable, FlexibleContexts #-}
 module Query.Login where
 
-import Control.Monad                         ( liftM )
 import Control.Monad.State                   ( get, put, MonadState )
 import Control.Monad.Reader                  ( ask, MonadReader )
-import Control.Monad.Error                   ( runErrorT )
 import qualified Data.IxSet                  as IxSet
 import Data.IxSet                            ( (@*) )
 import qualified Crypto.Hash.SHA512          as SHA512
 import qualified Data.ByteString.Lazy        as BL
 import qualified Data.ByteString             as BS
 import Data.Acid
-import ServerError
+import SiteError
 import Data.Login
 import Data.DB
 
@@ -41,12 +39,12 @@ listIdentitiesQ = use $ \ db -> do
     return $ map ident $ IxSet.toList $ db
 
 addIdentityTokenU :: Identity -> Token -> Update DB ()
-addIdentityTokenU uid tok = replace $ \ db -> do
+addIdentityTokenU uid tok = runErrorT_ $ replace $ \ db -> do
     ll@(Login _ phash tts) <- (IxSet.getOne $ db @* [uid]) `justOr` doesntExist 
     return $ IxSet.insert (Login uid phash (tok:tts)) $ IxSet.delete ll db
 
 clearIdentityTokensU :: Identity -> Update DB ()
-clearIdentityTokensU uid =  replace $ \ db -> do
+clearIdentityTokensU uid = runErrorT_ $ replace $ \ db -> do
     ll@(Login _ phash _) <- (IxSet.getOne $ db @* [uid]) `justOr` doesntExist 
     return $ IxSet.insert (Login uid phash []) $ IxSet.delete ll db
 

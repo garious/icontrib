@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module SiteTest where
+import qualified Log                         as Log
 import Site                                  ( site, serve )
 import Control.Concurrent                    ( forkIO, killThread )
 import Control.Monad.Trans                   ( liftIO )
@@ -13,6 +14,7 @@ import qualified Network.URI                 as URI
 import qualified JSONUtil                    as JS
 import qualified Data.JSON                   as J
 import TestUtil
+import Control.Concurrent.Chan               ( newChan, writeChan, readChan, Chan )
 
 port :: Int
 port = 8888
@@ -39,7 +41,10 @@ logoutUser = post "/auth/logout" ()
 
 main :: IO ()
 main = do
-    let run tt = do tid <- forkIO emptyServer
+    let run tt = do 
+                    chan <- newChan
+                    tid <- forkIO (emptyServer chan)
+                    _ <- readChan chan
                     _ <- tt
                     killThread tid
     run addUserTest
@@ -84,9 +89,12 @@ addUserTest = liftIO $ HTTP.browse $ do
     assertEqM "add" run (Right "anatoly")
     assertEqM "add" run (Left "AlreadyExists")
 
-emptyServer :: IO ()
-emptyServer = do
+emptyServer :: Chan () -> IO ()
+emptyServer chan = do
+    Log.start
+    Log.debugM  "server running"
     db <- DB.emptyMemoryDB
+    writeChan chan ()
     serve (Right port) (site db)
 
 post :: (Data b, Data a) => String -> a -> HTTP.BrowserAction (HTTP.HandleStream String) (Either String b) 

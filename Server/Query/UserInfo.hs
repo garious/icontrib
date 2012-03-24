@@ -3,7 +3,6 @@ module Query.UserInfo where
 
 import Control.Monad.State                   ( get, put, MonadState )
 import Control.Monad.Reader                  ( ask, MonadReader )
-import Control.Monad.Error                   ( runErrorT )
 import Data.Function                         ( on )
 import Data.List                             ( sortBy )
 import Data.Generics                         ( listify )
@@ -15,7 +14,7 @@ import Data.IxSet                            ( (@*) )
 import qualified Data.IxSet                  as IxSet
 
 import Data.Acid
-import ServerError
+import SiteError
 import Data.UserInfo
 import Data.DB
 

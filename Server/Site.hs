@@ -3,30 +3,21 @@ module Site where
 import Control.Monad.IO.Class                ( MonadIO, liftIO )
 import Data.Data                             ( Data )
 import Control.Monad                         ( liftM )
-import Happstack.Server.Monads               ( ServerPartT )
-import System.FilePath                       ( takeBaseName )
-import Control.Applicative                   ( (<|>) )
-import JSONUtil                              ( jsonEncode, jsonDecode )
-import qualified Data.ByteString.Lazy        as B
+import JSONUtil                              ( jsonEncode )
 import qualified Data.ByteString.Lazy.Char8  as BS
-import qualified Codec.Binary.Url            as Url
-import qualified ServerError                 as SE
-import ServerError                           ( justOr )
-import qualified Login                       as L
 import qualified Data.Login                  as L
-import qualified Data.JSON                   as J
 import qualified CharityInfo                 as C
 import qualified Data.CharityInfo            as C
 import qualified UserInfo                    as U
 import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP
 import qualified DB                          as DB
-import Monad                                 ( msum, mzero )
+import Monad                                 ( msum )
 import Happstack.Server.SimpleHTTPS          ( simpleHTTPS, TLSConf, tlsPort )
+import Control.Monad.Error                   ( runErrorT )
+import Happstack.Server.Monads               ( ServerPartT )
 import Happstack.Server                      ( ServerPart
                                              , Response
-                                             , path
-                                             , lookPairs
                                              , ok
                                              , toResponse
                                              , askRq
@@ -39,10 +30,6 @@ import Happstack.Server                      ( ServerPart
                                              , method
                                              , Method(GET, POST)
                                              , addHeaderM
-                                             , lookCookieValue
-                                             , mkCookie
-                                             , addCookies
-                                             , CookieLife(Session)
                                              , simpleHTTP
                                              , nullConf
                                              , port
@@ -51,6 +38,9 @@ import Happstack.Server                      ( ServerPart
                                              , seeOther
                                              )
 import qualified Log as Log
+import Site.Utils
+import Site.Login
+
 
 serve :: Either TLSConf Int -> ServerPart Response -> IO ()
 serve (Right pn) part =
@@ -73,7 +63,7 @@ serve (Left tlsconf) part =
 
 redirectToSSL :: TLSConf -> String -> Int -> IO ()
 redirectToSSL tlsconf hn pn = simpleHTTP (nullConf { port = pn }) $ do
-    liftIO $ Log.debugM "redirecting to ssl" 
+    Log.debugM "redirecting to ssl" 
     tohttps hn (tlsPort tlsconf)
 
 tohttps :: String -> Int -> ServerPart Response
@@ -93,44 +83,41 @@ site st = msum [
 
 authServices:: DB.Database -> ServerPart Response
 authServices st = msum [ 
-      dir "login"  (post (SE.catchFail $ loginUser  "auth" st))
-    , dir "add"    (post (SE.catchFail $ addUser    "auth" st))
-    , dir "logout" (post (SE.catchFail $ check >>= logOut st))
-    , dir "check.json" (get check)
+      dir "login"      (post (runErrorT $ loginUser  st))
+    , dir "add"        (post (runErrorT $ addUser    st))
+    , dir "logout"     (post (runErrorT $ check >>= (logOut st)))
+    , dir "check.json" (get  (runErrorT $ check))
     ]
     where
-        check = (checkUser "auth" st)
+        check = (checkUser st)
+
 
 donorServices:: DB.Database -> ServerPart Response
 donorServices st = msum [ 
-      dir "update"               (post (SE.catchFail $ check >>= (withBody (U.updateInfo st))))
-    , dir "get"                  (get  (SE.catchFail $ check >>= (U.queryByOwner st)))
-    , dir "ls"                   (get  (SE.catchFail $ liftIO $ U.list st))
-    , dir "mostInfluential.json" (get  (U.mostInfluential st))
-    , (get (basename >>= (U.queryByOwner st . L.Identity)))
+      dir "update"               (post (runErrorT $ check >>= (withBody (U.updateInfo st))))
+    , dir "get"                  (get  (runErrorT $ check >>= (U.queryByOwner st)))
+    , dir "ls"                   (get  (U.list st))
+    , dir "mostInfluential.json" (get  (runErrorT $ U.mostInfluential st))
+    , (get (basename >>= (runErrorT . U.queryByOwner st . L.Identity)))
     ]
     where
-        check = (checkUser "auth" st)
+        withBody ff uid = do 
+            bd <- getBody
+            ff uid bd
+        check = (checkUser st)
+
 
 charityServices :: DB.Database -> ServerPart Response
 charityServices st = msum [ 
-      dir "update"       (post (SE.catchFail $ check >>= (withBody (C.updateInfo st))))
-    , dir "get.json"     (get  (SE.catchFail $ check >>= (C.queryByOwner st)))
+      dir "update"       (post (runErrorT $ check >>= (withBody (C.updateInfo st))))
+    , dir "get.json"     (get  (runErrorT $ check >>= (C.queryByOwner st)))
     , dir "popular.json" (get  popular)
-    , (get (basename >>= (C.queryByCID st . C.CharityID . BS.unpack)))
+    , (get (basename >>= (runErrorT . C.queryByCID st . C.CharityID . BS.unpack)))
     ]
     where
-        check :: ServerPartT IO L.Identity
-        check = (checkUser "auth" st)
+        withBody ff uid = do bd <- getBody; ff uid bd
+        check = (checkUser st)
         popular = (U.popularCharities st) >>= (C.toPopular st)
-
-basename :: ServerPartT IO BS.ByteString
-basename = path $ \ (pp::String) -> isext ".json" pp
-    where
-        isext ee pp
-            | (reverse ee) == (take (length ee) $ reverse pp) = return  (BS.pack $ takeBaseName pp)
-            | otherwise = mzero
-
 
 redirect ::  HTTP.Request_String -> ServerPart Response
 redirect req = do
@@ -145,19 +132,21 @@ redirect req = do
 
 get :: (Show a, Data a) => ServerPartT IO a -> ServerPartT IO Response
 get page = do 
-   method GET
-   rq <- askRq
-   liftIO $ Log.debugShow ("get"::String, (rqUri rq))
-   rv <- page
-   rsp rv
+    method GET
+    rq <- askRq
+    liftIO $ Log.debugShow ("get"::String, (rqUri rq))
+    rv <- page
+    liftIO $ Log.debugShow ("get response"::String, (show rv))
+    rsp rv
 
 post :: (Show a, Data a) => ServerPartT IO a -> ServerPartT IO Response
 post page = do 
-   method POST
-   rq <- askRq
-   liftIO $ Log.debugShow ("post"::String, (rqUri rq))
-   rv <- page
-   rsp $ rv
+    method POST
+    rq <- askRq
+    liftIO $ Log.debugShow ("post"::String, (rqUri rq))
+    rv <- page
+    liftIO $ Log.debugShow ("post response"::String, (show rv))
+    rsp rv
 
 homePage :: ServerPart Response
 homePage = serveDirectory DisableBrowsing ["index.html"] "public"
@@ -167,67 +156,12 @@ fileServer dd = do
     addHeaderM "Pragma" "no-cache"
     serveDirectory DisableBrowsing [] dd
 
-logOut :: MonadIO m => DB.Database -> L.Identity -> m ()
-logOut db uid = do 
-    liftIO $ Log.debugM $ "logout: " ++ (show uid)
-    liftIO $ L.clearIdentityTokens db uid
-    liftIO $ Log.debugM "cleared cookies" 
 
-checkUser :: String -> DB.Database -> ServerPartT IO L.Identity
-checkUser name db = do 
-   liftIO $ Log.debugM "check" 
-   cookie <- getCookieValue name
-   liftIO $ Log.debugShow cookie
-   token <- cookie `justOr` SE.cookieDecodeError
-   uid <- L.tokenToIdentity db (L.Token token)
-   return uid
-
-getCookieValue :: String -> ServerPartT IO (Maybe B.ByteString)
-getCookieValue name = do { val <- lookCookieValue name
-                         ; return $ liftM B.pack $ Url.decode val
-                         }
-                     <|> return Nothing
-
-loginUser :: String -> DB.Database -> ServerPartT IO String
-loginUser name db = do 
-   liftIO $ Log.debugM "login" 
-   (J.UserLogin uid pwd) <- getBody
-   token <- L.loginToToken db (L.toIdentity uid) (L.toPassword pwd)
-   liftIO $ Log.debugM (show uid)
-   let cookie = mkCookie name (Url.encode (L.tokenUnpack token))
-   addCookies [(Session, cookie)]
-   return $ uid
-
-addUser :: String -> DB.Database -> ServerPartT IO String
-addUser name db = do 
-   liftIO $ Log.debugM "add" 
-   (J.UserLogin uid pwd) <- getBody
-   L.addIdentity db (L.toIdentity uid) (L.toPassword pwd)
-   loginUser name db
-
-getBody :: (Data b) => ServerPartT IO b
-getBody = do   
-    liftIO $ Log.debugM "getBody"
-    bd <- lookPairs
-    let 
-            --GIANT FREAKING HACK :)
-            --wtf cant i get the request body
-            from (name, (Right ss)) = name ++ ss
-            from (_, (Left _)) = []
-            bd' :: String
-            bd' = concatMap from bd
-    liftIO $ Log.debugShow ("body"::String, bd')
-    jsonDecode $ bd'
-
-rsp :: (Show a, Data a) => a -> ServerPart Response
+rsp :: (Show a, Data a, MonadIO m) => a -> ServerPartT m Response
 rsp msg = do
     let json = jsonEncode msg
-    liftIO (Log.debugShow json)
+    (Log.debugShow json)
     ok $ toResponse $ json
 
-withBody :: Data t => (t1 -> t -> ServerPartT IO b) -> t1 -> ServerPartT IO b
-withBody ff uid = do
-    bd <- getBody
-    ff uid bd
 
 
