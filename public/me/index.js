@@ -22,9 +22,9 @@ function onReady(Tag, Layout, Nav, Core, Donor, Chart, Popular) {
         var rows = [];
         var inputs = [];
 
-        function mkHandler(e, j) {
+        function mkHandler(j) {
             return function(evt) {
-                var n = parseFloat(e.value);
+                var n = parseFloat(evt.target.value);
                 if (n !== NaN && n > 0 && n < 100) {
                     var old = pie.distribution[j].shares;
                     var diff = n - old;
@@ -50,8 +50,7 @@ function onReady(Tag, Layout, Nav, Core, Donor, Chart, Popular) {
             var x = dist[j];
 
             var pct = Math.round(x.shares / total * 1000) / 10;
-            var e = Core.input({type: 'text', size: 4, value: pct});
-            e.addEventListener('keyup', mkHandler(e, j));
+            var e = Core.input({type: 'text', size: 4, value: pct, onKeyUp: mkHandler(j)});
 
             inputs.push(e);
             var cols = Layout.hug([

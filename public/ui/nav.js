@@ -52,8 +52,8 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
         var username = Core.input({type: 'text', size: 18});
         var password = Core.input({type: 'password', size: 18});
 
-        function submit(e) {
-            e.preventDefault();
+        function submit(evt) {
+            evt.preventDefault();
             var formValues = {
                 email: username.value,
                 password: password.value 
@@ -70,9 +70,6 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
 
         if (Auth.Left) {
             var badLogin = Tag.span({hidden: true, style: {height: '20px', width: '200px', color: 'red'}}, 'bad username or password');
-            var loginButton = Core.button({text: 'Log in'});
-
-            loginButton.addEventListener('click', submit);
 
             var widget = Layout.hug([
                 Layout.spoon([
@@ -83,41 +80,54 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
                     badLogin,
                     Layout.pillow(0, 5)
                 ]),
-                loginButton
+                Core.button({text: 'Log in', onClick: submit})
             ]);
 
-            widget.addEventListener('keyup', function(e) {
-                if (e.keyCode === 13) {
-                   submit(e);
+            widget.addEventListener('keyup', function(evt) {
+                if (evt.keyCode === 13) {
+                   submit(evt);
                 }
             });
 
             return widget;
 
         } else {
-            //var logoutButton = Core.hyperlink({url: '#', text: 'Sign out'});
-            var logoutButton = Tag.img({src: baseUrl + '/arrowdown-darkgreen.png', alt: 'settings'});
-            logoutButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                post('/auth/logout', {}, function(data) {
-                    window.location = '/';
-                });
-            });
+            var handlers = {
+                click: function(evt) {
+                    evt.preventDefault();
+                    post('/auth/logout', {}, function(data) {
+                        window.location = '/';
+                    });
+                }
+            };
 
-           return Tag.div({style: {width: '270px', height: '77px', backgroundColor: '#eee', borderRadius: '5px 5px 0px 0px', border: '1px solid', borderBottomWidth: '0px', borderColor: Colors.lightColor}}, [
-               Layout.spoon([
-                   Layout.pillow(0, 15),
-                   Layout.hug([
-                       Layout.pillow(20, 0),
-                       as.thumbnail,
-                       Layout.pillow(20, 0),
-                       Layout.spoon([
-                           Layout.pillow(0, 22),
-                           logoutButton
-                       ])
-                   ])
-               ])
-           ]);
+            //var logoutButton = Core.hyperlink({url: '#', text: 'Sign out'});
+            var logoutButton = Tag.img({src: baseUrl + '/arrowdown-darkgreen.png', alt: 'settings'}, null, handlers);
+
+            return Tag.div({
+                style: {
+                    width: '270px',
+                    height: '77px',
+                    backgroundColor: '#eee',
+                    borderRadius: '5px 5px 0px 0px',
+                    border: '1px solid',
+                    borderBottomWidth: '0px',
+                    borderColor: Colors.lightColor
+                }
+            }, [
+                Layout.spoon([
+                    Layout.pillow(0, 15),
+                    Layout.hug([
+                        Layout.pillow(20, 0),
+                        as.thumbnail,
+                        Layout.pillow(20, 0),
+                        Layout.spoon([
+                            Layout.pillow(0, 22),
+                            logoutButton
+                        ])
+                    ])
+                ])
+            ]);
         }
     }
 
@@ -194,7 +204,7 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
         var body = Tag.div(xs);
 
         var node = Tag.div({style: {margin: '0px auto', height: getWindowInnerHeight(), width: '960px'}}, [
-            Layout.spoon({width: 960}, [
+            Layout.spoon([
                 navbar, 
                 Layout.pillow(50), 
                 body

@@ -11,6 +11,7 @@ function tag(nm, as, xs, es) {
         as = null;
     }
 
+    // Add attributes
     var e = document.createElement(nm); 
     var k;
     if (as) {
@@ -27,6 +28,8 @@ function tag(nm, as, xs, es) {
             }
         }
     }
+
+    // Add children
     if (xs) {
         if (typeof xs === 'string') {
             e.appendChild(text(xs));
@@ -41,16 +44,11 @@ function tag(nm, as, xs, es) {
         }
     }
 
-    function mkEventHandler (func) {
-        return function () {
-            return func(e);
-        };
-    }
-
+    // Add event handlers
     if (typeof es === 'object') {
         for (k in es) {
             if (es.hasOwnProperty(k)) {
-                e.addEventListener(k, mkEventHandler(es[k]));
+                e.addEventListener(k, es[k]);
             }
         }
     }
@@ -64,7 +62,7 @@ function mkTag(nm) {
     };
 }
 
-var TAG = {
+var Tag = {
     tag:        tag,
     mkTag:      mkTag,
     text:       text
@@ -81,9 +79,9 @@ var tags = [
 
 for (var i = 0; i < tags.length; i++) {
     var nm = tags[i];
-    TAG[nm] = mkTag(nm);
+    Tag[nm] = mkTag(nm);
 }
 
-define(TAG);
+define(Tag);
 
 

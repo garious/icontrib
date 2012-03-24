@@ -343,9 +343,9 @@ function onReady(Tag, Layout, Nav, Core, Donor, Chart, Popular) {
         var rows = [];
         var inputs = [];
 
-        function mkHandler(e, j) {
+        function mkHandler(j) {
             return function(evt) {
-                var n = parseFloat(e.value);
+                var n = parseFloat(evt.target.value);
                 if (n !== NaN && n > 0 && n < 100) {
                     var old = pie.distribution[j].shares;
                     var diff = n - old;
@@ -371,8 +371,7 @@ function onReady(Tag, Layout, Nav, Core, Donor, Chart, Popular) {
             var x = dist[j];
 
             var pct = Math.round(x.shares / total * 1000) / 10;
-            var e = Core.input({type: 'text', size: 4, value: pct});
-            e.addEventListener('keyup', mkHandler(e, j));
+            var e = Core.input({type: 'text', size: 4, value: pct, onKeyUp: mkHandler(j)});
 
             inputs.push(e);
             var cols = Layout.hug([
@@ -786,6 +785,7 @@ function tag(nm, as, xs, es) {
         as = null;
     }
 
+    // Add attributes
     var e = document.createElement(nm); 
     var k;
     if (as) {
@@ -802,6 +802,8 @@ function tag(nm, as, xs, es) {
             }
         }
     }
+
+    // Add children
     if (xs) {
         if (typeof xs === 'string') {
             e.appendChild(text(xs));
@@ -816,16 +818,11 @@ function tag(nm, as, xs, es) {
         }
     }
 
-    function mkEventHandler (func) {
-        return function () {
-            return func(e);
-        };
-    }
-
+    // Add event handlers
     if (typeof es === 'object') {
         for (k in es) {
             if (es.hasOwnProperty(k)) {
-                e.addEventListener(k, mkEventHandler(es[k]));
+                e.addEventListener(k, es[k]);
             }
         }
     }
@@ -839,7 +836,7 @@ function mkTag(nm) {
     };
 }
 
-var TAG = {
+var Tag = {
     tag:        tag,
     mkTag:      mkTag,
     text:       text
@@ -856,10 +853,10 @@ var tags = [
 
 for (var i = 0; i < tags.length; i++) {
     var nm = tags[i];
-    TAG[nm] = mkTag(nm);
+    Tag[nm] = mkTag(nm);
 }
 
-define(TAG);
+define(Tag);
 
 
 
@@ -1067,18 +1064,27 @@ function onReady(Tag, Layout, Colors) {
         };
 
         var handlers = {
-            mouseover: function(e) { e.style.textDecoration = 'underline'; },
-            mouseout:  function(e) { e.style.textDecoration = 'none'; }
+            mouseover: function(evt) { evt.target.style.textDecoration = 'underline'; },
+            mouseout:  function(evt) { evt.target.style.textDecoration = 'none'; }
         };
 
         return Tag.a({style: sty, href: as.url}, [as.text], handlers);
     }
 
     function input(as) {
-        var e = Tag.input(as);
-        e.style.width  = (as.width  || e.size * 10) + 'px';
-        e.style.height = (as.height || 20) + 'px';
-        return e;
+        var width  = (as.width  || as.size * 10) + 'px';
+        var height = (as.height || 20) + 'px';
+
+        var attrs = {type: as.type, size: as.size, style: {height: height, width: width}};
+
+        // Special handling for 'value' attribute, which will awkwardly write the text "undefined".
+        if (as.value !== undefined) {
+            attrs.value = as.value;
+        }
+
+        var handlers = {keyup: as.onKeyUp};
+
+        return Tag.input(attrs, null, handlers);
     }
 
     function button(as) {
@@ -1087,7 +1093,13 @@ function onReady(Tag, Layout, Colors) {
         var color      = as.loud ? Colors.red : Colors.middleColor;
         var focusColor = as.loud ? Colors.red : Colors.lightColor;
 
-        var e = Tag.a({
+        var handlers = {
+            mouseover: function(evt) { evt.target.style.backgroundColor = focusColor; },
+            mouseout:  function(evt) { evt.target.style.backgroundColor = color; },
+            click: as.onClick
+        };
+
+        return Tag.a({
             href: as.href || '#', 
             style: {
                 width: dim.width + 'px',
@@ -1100,16 +1112,7 @@ function onReady(Tag, Layout, Colors) {
                 padding: '5px', 
                 borderRadius: '2px'
             }
-        }, as.text);
-
-        e.addEventListener('mouseover', function() {
-            e.style.backgroundColor = focusColor;
-        });
-        e.addEventListener('mouseout', function() {
-            e.style.backgroundColor = color;
-        });
-
-        return e;
+        }, as.text, handlers);
     }
 
     function box(as) {
@@ -1426,8 +1429,8 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
         var username = Core.input({type: 'text', size: 18});
         var password = Core.input({type: 'password', size: 18});
 
-        function submit(e) {
-            e.preventDefault();
+        function submit(evt) {
+            evt.preventDefault();
             var formValues = {
                 email: username.value,
                 password: password.value 
@@ -1444,9 +1447,6 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
 
         if (Auth.Left) {
             var badLogin = Tag.span({hidden: true, style: {height: '20px', width: '200px', color: 'red'}}, 'bad username or password');
-            var loginButton = Core.button({text: 'Log in'});
-
-            loginButton.addEventListener('click', submit);
 
             var widget = Layout.hug([
                 Layout.spoon([
@@ -1457,41 +1457,54 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
                     badLogin,
                     Layout.pillow(0, 5)
                 ]),
-                loginButton
+                Core.button({text: 'Log in', onClick: submit})
             ]);
 
-            widget.addEventListener('keyup', function(e) {
-                if (e.keyCode === 13) {
-                   submit(e);
+            widget.addEventListener('keyup', function(evt) {
+                if (evt.keyCode === 13) {
+                   submit(evt);
                 }
             });
 
             return widget;
 
         } else {
-            //var logoutButton = Core.hyperlink({url: '#', text: 'Sign out'});
-            var logoutButton = Tag.img({src: baseUrl + '/arrowdown-darkgreen.png', alt: 'settings'});
-            logoutButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                post('/auth/logout', {}, function(data) {
-                    window.location = '/';
-                });
-            });
+            var handlers = {
+                click: function(evt) {
+                    evt.preventDefault();
+                    post('/auth/logout', {}, function(data) {
+                        window.location = '/';
+                    });
+                }
+            };
 
-           return Tag.div({style: {width: '270px', height: '77px', backgroundColor: '#eee', borderRadius: '5px 5px 0px 0px', border: '1px solid', borderBottomWidth: '0px', borderColor: Colors.lightColor}}, [
-               Layout.spoon([
-                   Layout.pillow(0, 15),
-                   Layout.hug([
-                       Layout.pillow(20, 0),
-                       as.thumbnail,
-                       Layout.pillow(20, 0),
-                       Layout.spoon([
-                           Layout.pillow(0, 22),
-                           logoutButton
-                       ])
-                   ])
-               ])
-           ]);
+            //var logoutButton = Core.hyperlink({url: '#', text: 'Sign out'});
+            var logoutButton = Tag.img({src: baseUrl + '/arrowdown-darkgreen.png', alt: 'settings'}, null, handlers);
+
+            return Tag.div({
+                style: {
+                    width: '270px',
+                    height: '77px',
+                    backgroundColor: '#eee',
+                    borderRadius: '5px 5px 0px 0px',
+                    border: '1px solid',
+                    borderBottomWidth: '0px',
+                    borderColor: Colors.lightColor
+                }
+            }, [
+                Layout.spoon([
+                    Layout.pillow(0, 15),
+                    Layout.hug([
+                        Layout.pillow(20, 0),
+                        as.thumbnail,
+                        Layout.pillow(20, 0),
+                        Layout.spoon([
+                            Layout.pillow(0, 22),
+                            logoutButton
+                        ])
+                    ])
+                ])
+            ]);
         }
     }
 
@@ -1568,7 +1581,7 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
         var body = Tag.div(xs);
 
         var node = Tag.div({style: {margin: '0px auto', height: getWindowInnerHeight(), width: '960px'}}, [
-            Layout.spoon({width: 960}, [
+            Layout.spoon([
                 navbar, 
                 Layout.pillow(50), 
                 body

@@ -48,18 +48,27 @@ function onReady(Tag, Layout, Colors) {
         };
 
         var handlers = {
-            mouseover: function(e) { e.style.textDecoration = 'underline'; },
-            mouseout:  function(e) { e.style.textDecoration = 'none'; }
+            mouseover: function(evt) { evt.target.style.textDecoration = 'underline'; },
+            mouseout:  function(evt) { evt.target.style.textDecoration = 'none'; }
         };
 
         return Tag.a({style: sty, href: as.url}, [as.text], handlers);
     }
 
     function input(as) {
-        var e = Tag.input(as);
-        e.style.width  = (as.width  || e.size * 10) + 'px';
-        e.style.height = (as.height || 20) + 'px';
-        return e;
+        var width  = (as.width  || as.size * 10) + 'px';
+        var height = (as.height || 20) + 'px';
+
+        var attrs = {type: as.type, size: as.size, style: {height: height, width: width}};
+
+        // Special handling for 'value' attribute, which will awkwardly write the text "undefined".
+        if (as.value !== undefined) {
+            attrs.value = as.value;
+        }
+
+        var handlers = {keyup: as.onKeyUp};
+
+        return Tag.input(attrs, null, handlers);
     }
 
     function button(as) {
@@ -68,7 +77,13 @@ function onReady(Tag, Layout, Colors) {
         var color      = as.loud ? Colors.red : Colors.middleColor;
         var focusColor = as.loud ? Colors.red : Colors.lightColor;
 
-        var e = Tag.a({
+        var handlers = {
+            mouseover: function(evt) { evt.target.style.backgroundColor = focusColor; },
+            mouseout:  function(evt) { evt.target.style.backgroundColor = color; },
+            click: as.onClick
+        };
+
+        return Tag.a({
             href: as.href || '#', 
             style: {
                 width: dim.width + 'px',
@@ -81,16 +96,7 @@ function onReady(Tag, Layout, Colors) {
                 padding: '5px', 
                 borderRadius: '2px'
             }
-        }, as.text);
-
-        e.addEventListener('mouseover', function() {
-            e.style.backgroundColor = focusColor;
-        });
-        e.addEventListener('mouseout', function() {
-            e.style.backgroundColor = color;
-        });
-
-        return e;
+        }, as.text, handlers);
     }
 
     function box(as) {
