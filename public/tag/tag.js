@@ -4,22 +4,26 @@ function text(s) {
     return document.createTextNode(s);
 }
 
-function tag(nm, as, xs) {
+function tag(nm, as, xs, es) {
     if (typeof as === 'string' || as && as.constructor === Array) {
+        es = xs;
         xs = as;
         as = null;
     }
 
     var e = document.createElement(nm); 
+    var k;
     if (as) {
-        for (var k in as) {
-            if (k === 'style') {
-                var style = as[k];
-                for (var s in style) {
-                    e.style[s] = style[s];
+        for (k in as) {
+            if (as.hasOwnProperty(k)) {
+                if (k === 'style') {
+                    var style = as[k];
+                    for (var s in style) {
+                        e.style[s] = style[s];
+                    }
+                } else {
+                    e.setAttribute(k, as[k]);
                 }
-            } else {
-                e.setAttribute(k, as[k]);
             }
         }
     }
@@ -36,12 +40,27 @@ function tag(nm, as, xs) {
             }
         }
     }
+
+    function mkEventHandler (func) {
+        return function () {
+            return func(e);
+        };
+    }
+
+    if (typeof es === 'object') {
+        for (k in es) {
+            if (es.hasOwnProperty(k)) {
+                e.addEventListener(k, mkEventHandler(es[k]));
+            }
+        }
+    }
+
     return e;
 }
 
 function mkTag(nm) {
-    return function(as, xs) {
-        return tag(nm, as, xs);
+    return function(as, xs, es) {
+        return tag(nm, as, xs, es);
     };
 }
 

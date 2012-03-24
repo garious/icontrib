@@ -4,17 +4,6 @@ var deps = [
     'colors.js'
 ];
 
-function clone(o1) {
-    var o2 = {};
-    var k;
-    for (k in o1) {
-        if (o1.hasOwnProperty(k)) {
-            o2[k] = o1[k];
-        }
-    }
-    return o2;
-}
-
 function onReady(Tag, Layout, Colors) {
 
     var defaultFont = "/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
@@ -55,20 +44,15 @@ function onReady(Tag, Layout, Colors) {
             font: font,
             width: dim.width + 'px',
             height: dim.height + 'px',
-            color: 'blue' 
+            color: 'blue'
         };
 
-        var e = Tag.a({style: sty, href: as.url}, [as.text]);
+        var handlers = {
+            mouseover: function(e) { e.style.textDecoration = 'underline'; },
+            mouseout:  function(e) { e.style.textDecoration = 'none'; }
+        };
 
-        e.addEventListener('mouseover', function() {
-            e.style.textDecoration = 'underline';
-        });
-
-        e.addEventListener('mouseout', function() {
-            e.style.textDecoration = 'none';
-        });
-
-        return e;
+        return Tag.a({style: sty, href: as.url}, [as.text], handlers);
     }
 
     function input(as) {
