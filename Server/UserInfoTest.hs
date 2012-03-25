@@ -2,36 +2,44 @@
 
 module UserInfoTest where
 
-import Data.Acid.Memory                      ( openMemoryState )
+import qualified DB                         as DB
 import qualified UserInfo                   as U
 import qualified Data.UserInfo              as U
+import qualified Data.Login                 as L
 
 import TestUtil
 
+toly :: L.Identity
+toly = (L.Identity "anatoly")
+
+tolyi :: U.UserInfo
+tolyi = U.UserInfo toly "first" "last" "phone" "email" "imageurl" 100 100 [] [] []
+
+greg :: L.Identity
+greg = (L.Identity "greg")
+
+gregi :: U.UserInfo
+gregi = U.UserInfo greg "greg" "fitz" "phone" "email" "foo" 200 100 [] [] []
+
 lookupTest :: IO ()
 lookupTest = do
-    db <- openMemoryState U.empty
-    assertEqErrorT "lookup empty"  (U.lookupByOwner db "anatoly")   (Left "DoesntExist")
+    db <- DB.emptyMemoryDB
+    assertEqErrorT "lookup empty"  (U.queryByOwner db toly)   (Left "DoesntExist")
 
 updateInfoTest :: IO ()
 updateInfoTest = do
-    db <- openMemoryState U.empty
-    let ui :: U.UserInfo
-        ui = U.UserInfo "anatoly" "first" "last" "phone" "email" "imageurl" 100 100 [] [] []
-    assertEqErrorT "update" (U.updateInfo db "anatoly" ui) (Right ())
-    assertEqErrorT "updated"  (U.lookupByOwner db "anatoly")   (Right ui)
-    assertEqM "list"  (U.list db )   ["anatoly"]
+    db <- DB.emptyMemoryDB
+    assertEqErrorT "update"     (U.updateInfo db toly tolyi)   (Right ())
+    assertEqErrorT "updated"    (U.queryByOwner db toly)       (Right tolyi)
+    assertEqM       "list"      (U.list db )                   [toly]
 
 mostInfluentialTest :: IO ()
 mostInfluentialTest = do
-    db <- openMemoryState U.empty
+    db <- DB.emptyMemoryDB
     assertEqErrorT "mostInfluential empty"  (U.mostInfluential db) (Left "DoesntExist")
-    let toly :: U.UserInfo
-        toly = U.UserInfo "anatoly" "first" "last" "phone" "email" "imageurl" 100 100 [] [] []
-    assertEqErrorT "update" (U.updateInfo db "anatoly" toly) (Right ())
-    let greg = U.UserInfo "greg" "greg" "fitz" "phone" "email" "foo" 200 100 [] [] []
-    assertEqErrorT "update" (U.updateInfo db "greg" greg) (Right ())
-    assertEqErrorT "updated"  (U.mostInfluential db)  (Right "greg")
+    assertEqErrorT "update" (U.updateInfo db toly tolyi) (Right ())
+    assertEqErrorT "update" (U.updateInfo db greg gregi) (Right ())
+    assertEqErrorT "updated"  (U.mostInfluential db)  (Right greg)
 
 main :: IO ()
 main = do

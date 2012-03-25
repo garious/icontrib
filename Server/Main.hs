@@ -1,28 +1,18 @@
-import Site                                  ( site, Site(Site), serve, redirectToSSL )
-import Data.Acid                             ( openLocalStateFrom )
+import Site                                  ( site, serve, redirectToSSL )
 import Control.Concurrent                    ( forkIO, killThread )
-import qualified Login                       as L
-import qualified CharityInfo                 as C
-import qualified UserInfo                    as U
 import qualified Log                         as Log
+import qualified DB                          as DB
 import Happstack.Server.SimpleHTTPS          ( nullTLSConf, tlsPort, tlsCert, tlsKey )
 
 main :: IO ()
 main = do
     Log.start
-    db <- database
+    db <- DB.newFromFile
     runMain False db
-
-database :: IO Site
-database = do
-    ua <- openLocalStateFrom "private/db/accounts" A.empty
-    ci <- openLocalStateFrom "private/db/charities" C.empty
-    ui <- openLocalStateFrom "private/db/donors"U.empty
-    return (Site ua ci ui)
 
 type WithSSL = Bool
 
-runMain :: WithSSL -> Site -> IO ()
+runMain :: WithSSL -> DB.Database -> IO ()
 runMain False db = do
     tid <- forkIO $ do 
         Log.debugM  "Web server running. Press <enter> to exit."

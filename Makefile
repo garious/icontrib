@@ -20,17 +20,23 @@ serve: $V/icontrib private/static.ok
 
 test: $(patsubst %,$V/%.passed,$(RUN_TESTS))
 
-$V/icontrib: Main.hs Site.hs test libcryptopp.dylib
+$V/icontrib:Server/$V/icontrib
 	@mkdir -p $(@D)
-	ghc $(GHC_FLAGS) -outputdir $V -o $@ --make $<
+	@cp Server/$V/icontrib $V/icontrib
 
-private/static.ok: $V/import private/static/*/* Data/*.hs
+Server/$V/icontrib:
+	make -C Server
+
+Server/$V/import:
+	make -C Server
+
+private/static.ok: $V/import private/static/*/*
 	$V/import 
 	@touch private/static.ok
 
-$V/import: import.hs Data/*.hs
+$V/import:
 	@mkdir -p $(@D)
-	ghc $(GHC_FLAGS) -outputdir $V -o $@ --make $<
+	@cp Server/$V/import $V/import
 
 # TODO: Replace this with a proper dependency scanner: "ghc -M"
 $(foreach n,$(RUN_TESTS),$(eval $(patsubst %,$V/%.passed,$n): $n $(patsubst %Test.hs,%.hs,$n)))
