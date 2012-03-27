@@ -58,7 +58,7 @@ htmlForJsMod baseUrl filename ps = appTemplate $ do
            \    '/tag/todom.js',\n\
            \    {path: '" ++ filename ++ "', params: " ++ params ++ "}\n\
            \], function(Iface, Dom, widget) {\n\
-           \    var iface = Iface.getInterface(widget, Dom.ToDom);\n\
+           \    var iface = Iface.getInterface(widget, Dom.ToDomId);\n\
            \    var nd;\n\
            \    if (iface) {\n\
            \        nd = iface.toDom(widget);\n\

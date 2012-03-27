@@ -12,70 +12,6 @@ function onReady(I, Dim, Dom) {
         return document.createTextNode(s);
     }
     
-    var Tag_TwoDimensional = {
-    
-        // Calculate outer width of a DOM element
-        getDimensions: function (me) {
-            var sty = me.style;
-    
-            var width  = parseInt(sty.width,  10) || 0;
-            var height = parseInt(sty.height, 10) || 0;
-    
-            width  += parseInt(sty.marginLeft,   10) || 0;
-            width  += parseInt(sty.marginRight,  10) || 0;
-            height += parseInt(sty.marginTop,    10) || 0;
-            height += parseInt(sty.marginBottom, 10) || 0;
-    
-            width  += parseInt(sty.paddingLeft,   10) || 0;
-            width  += parseInt(sty.paddingRight,  10) || 0;
-            height += parseInt(sty.paddingTop,    10) || 0;
-            height += parseInt(sty.paddingBottom, 10) || 0;
-    
-            width  += parseInt(sty.borderLeftWidth,   10) || 0;
-            width  += parseInt(sty.borderRightWidth,  10) || 0;
-            height += parseInt(sty.borderTopWidth,    10) || 0;
-            height += parseInt(sty.borderBottomWidth, 10) || 0;
-    
-            return {
-                width:  width,
-                height: height
-            };
-        },
-    
-        setPosition: function (me, pos) {
-            me.style.position = 'absolute';
-    
-            if (pos.top !== undefined) {
-                me.style.top = pos.top + 'px';
-            }
-    
-            if (pos.left !== undefined) {
-                me.style.left = pos.left + 'px';
-            }
-    
-            if (pos.bottom !== undefined) {
-                me.style.bottom = pos.bottom + 'px';
-            }
-    
-            if (pos.right !== undefined) {
-                me.style.right = pos.right + 'px';
-            }
-    
-            return me;
-        }
-        
-    };
-    
-    var Tag_ToDom = {
-        toDom: function (me) {
-            return me;
-        },
-        getTitle: function (me) {
-            return undefined;
-        }
-    };
-    
-    
     function tag(nm, as, xs, es) {
         if (typeof as === 'string' || as && as.constructor === Array) {
             es = xs;
@@ -131,10 +67,72 @@ function onReady(I, Dim, Dom) {
         return e;
     }
 
-    tag.interfaces = [
-        {'interface': Dom.ToDom, instance: Tag_ToDom},
-        {'interface': Dim.TwoDimensional, instance: Tag_TwoDimensional}
-    ];
+    tag.interfaces = {};
+
+    tag.interfaces[Dim.TwoDimensionalId] = {
+    
+        // Calculate outer width of a DOM element
+        getDimensions: function (me) {
+            var sty = me.style;
+    
+            var width  = parseInt(sty.width,  10) || 0;
+            var height = parseInt(sty.height, 10) || 0;
+    
+            width  += parseInt(sty.marginLeft,   10) || 0;
+            width  += parseInt(sty.marginRight,  10) || 0;
+            height += parseInt(sty.marginTop,    10) || 0;
+            height += parseInt(sty.marginBottom, 10) || 0;
+    
+            width  += parseInt(sty.paddingLeft,   10) || 0;
+            width  += parseInt(sty.paddingRight,  10) || 0;
+            height += parseInt(sty.paddingTop,    10) || 0;
+            height += parseInt(sty.paddingBottom, 10) || 0;
+    
+            width  += parseInt(sty.borderLeftWidth,   10) || 0;
+            width  += parseInt(sty.borderRightWidth,  10) || 0;
+            height += parseInt(sty.borderTopWidth,    10) || 0;
+            height += parseInt(sty.borderBottomWidth, 10) || 0;
+    
+            return {
+                width:  width,
+                height: height
+            };
+        },
+    
+        setPosition: function (me, pos) {
+            me.style.position = 'absolute';
+    
+            if (pos.top !== undefined) {
+                me.style.top = pos.top + 'px';
+            }
+    
+            if (pos.left !== undefined) {
+                me.style.left = pos.left + 'px';
+            }
+    
+            if (pos.bottom !== undefined) {
+                me.style.bottom = pos.bottom + 'px';
+            }
+    
+            if (pos.right !== undefined) {
+                me.style.right = pos.right + 'px';
+            }
+    
+            return me;
+        }
+        
+    };
+    
+    tag.interfaces[Dom.ToDomId] = {
+        toDom: function (me) {
+            return me;
+        },
+        getTitle: function (me) {
+            return undefined;
+        }
+    };
+    
+    
     
     function mkTag(nm) {
         return function(as, xs, es) {
