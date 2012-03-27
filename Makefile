@@ -16,9 +16,9 @@ JS_TESTS = $(patsubst %,$V/%.passed,$(RUN_JS_TESTS))
 
 INTEGRATION_TESTS = $(patsubst %,$V/%.passed,$(RUN_INTEGRATION_TESTS))
 
-all: server private/static.ok client #$(INTEGRATION_TESTS)
+all: server private/static.ok client $(INTEGRATION_TESTS)
 
-server: $V/ship/import $V/ship/icontrib $V/ship/libcryptopp.dylib #$(JS_TESTS)
+server: $V/ship/import $V/ship/icontrib $V/ship/libcryptopp.dylib $(JS_TESTS)
 
 client:
 	$(MAKE) -C public V=$V
