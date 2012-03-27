@@ -94,11 +94,9 @@ authServices st = msum [
 
 donorServices:: DB.Database -> ServerPart Response
 donorServices st = msum [ 
-      dir "update"               (post (runErrorT $ check >>= (withBody (U.updateInfo st))))
-    , dir "get"                  (get  (runErrorT $ check >>= (U.queryByOwner st)))
-    , dir "ls"                   (get  (U.list st))
+      dir "update"               (post (runErrorT  $ check >>= (withBody (U.updateInfo st))))
     , dir "mostInfluential.json" (get  (failErrorT $ U.mostInfluential st))
-    , (get (basename >>= (runErrorT . U.queryByOwner st . L.Identity)))
+    , (get (basename >>= (failErrorT . U.queryByOwner st . L.Identity)))
     ]
     where
         withBody ff uid = do 
