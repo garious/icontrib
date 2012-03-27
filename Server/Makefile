@@ -13,15 +13,11 @@ FLAVOR = Debug
 
 V = $(TARGET)_$(FLAVOR)
 CRYPTO=/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
-all: $V/ship/icontrib $V/ship/libcryptopp.dylib $V/ship/import
+all: $V/ship/icontrib $V/ship/import
 
 $V/ship/icontrib: Main.hs Site.hs test
 	@mkdir -p $(@D)
 	ghc $(GHC_FLAGS) -outputdir $V -o $@ --make $< $(CRYPTO)
-
-$V/ship/libcryptopp.dylib:libcryptopp.dylib
-	@mkdir -p $(@D)
-	cp $< $@
 
 libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
 	@mkdir -p $(@D)
