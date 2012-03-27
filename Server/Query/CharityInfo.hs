@@ -48,8 +48,8 @@ charityInfoU ci =  runErrorT $ replace $ \ db -> do
 einAlreadyExists :: MonadError String m => m a
 einAlreadyExists = fail "EinAlreadyExists"
 
-charityByOwnerQ :: Identity -> Query DB [CharityInfo]
-charityByOwnerQ uid = use $ \ db -> return $ IxSet.toList $ db @* [uid]
+charityByOwnerQ :: Identity -> Query DB (IxSet.IxSet CharityInfo)
+charityByOwnerQ uid = use $ \ db -> return $ db @* [uid]
 
 charityByIDQ :: [CharityID] -> Query DB [CharityInfo]
 charityByIDQ cids = use $ \ db -> return $ IxSet.toList $ db @+ cids
