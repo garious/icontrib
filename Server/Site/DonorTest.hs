@@ -21,7 +21,7 @@ addUserInfo :: U.UserInfo ->  HTTP.BrowserAction (HTTP.HandleStream String) (Eit
 addUserInfo = post 200 "/donor/update"
 
 --returns the current logged in user id based on the cookie
-mostInfluential :: HTTP.BrowserAction (HTTP.HandleStream String) (Either String J.UserIdentity)
+mostInfluential :: HTTP.BrowserAction (HTTP.HandleStream String) (J.UserIdentity)
 mostInfluential = get 200 "/donor/mostInfluential.json"
 
 main :: IO ()
@@ -35,10 +35,10 @@ mostInfluentialTest = liftIO $ HTTP.browse $ do
         toly = (L.Identity "anatoly")
         ui = U.UserInfo toly "first" "last" "phone" "email" "imageurl" 100 100 [] [] []
     --added new user, which should log us in
-    assertEqM "addUser" (addUser user)   (Right "anatoly")
-    assertEqM "addUserInfo" (addUserInfo ui) (Right "")
+    assertEqM "addUser"     (addUser user)      (Right "anatoly")
+    assertEqM "addUserInfo" (addUserInfo ui)    (Right "")
     --check if we are logged in
-    assertEqM "mostInfluential" mostInfluential (Right "anatoly")
+    assertEqM "mostInfluential" mostInfluential ("anatoly")
 
 
 

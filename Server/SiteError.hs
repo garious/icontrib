@@ -6,6 +6,7 @@ module SiteError(MonadError
                 ,lift
                 ,liftM
                 ,runErrorT
+                ,failErrorT
                 ,ErrorT
                 ,SiteErrorT
                 ,throwLeft
@@ -75,8 +76,17 @@ throwLeft aa = do
       (Left ee)   -> throwError ee
       (Right val) -> return val
 
+
 runErrorT_ :: Monad m => ErrorT e m a -> m ()
 runErrorT_ aa = do
     _ <- runErrorT aa
     return ()
 
+failErrorT :: Monad m => ErrorT String m b -> m b
+failErrorT aa = do
+    rv <- runErrorT aa
+    failLeft rv
+
+failLeft :: Monad m => Either String a -> m a
+failLeft (Left ee) = fail ee
+failLeft (Right aa) = return aa

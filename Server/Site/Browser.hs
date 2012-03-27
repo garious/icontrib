@@ -25,7 +25,7 @@ run tt = do
     _ <- tt
     killThread tid
 
-post :: (Data b, Data a) => Int -> String -> a -> HTTP.BrowserAction (HTTP.HandleStream String) (Either String b) 
+post :: (Data b, Data a) => Int -> String -> a -> HTTP.BrowserAction (HTTP.HandleStream String) (b) 
 post code url msg = do
     let 
             uri = fromMaybe (error $ "parse url: " ++ url) $ URI.parseURI (host ++ url)
@@ -35,7 +35,7 @@ post code url msg = do
     when ((toCode $ HTTP.rspCode hrsp) /= code) $ error "site.browser.post: unexpected response code" 
     return $! JS.jsonDecodeE $ HTTP.rspBody hrsp
 
-get :: (Data b) => Int -> String ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either String b) 
+get :: (Data b) => Int -> String ->  HTTP.BrowserAction (HTTP.HandleStream String) (b) 
 get code url = do
     let req = HTTP.getRequest (host ++ url)
     (_,hrsp) <- HTTP.request $ req

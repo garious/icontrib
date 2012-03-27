@@ -14,7 +14,6 @@ import qualified Network.HTTP                as HTTP
 import qualified DB                          as DB
 import Monad                                 ( msum )
 import Happstack.Server.SimpleHTTPS          ( simpleHTTPS, TLSConf, tlsPort )
-import Control.Monad.Error                   ( runErrorT )
 import Happstack.Server.Monads               ( ServerPartT )
 import Happstack.Server                      ( ServerPart
                                              , Response
@@ -39,6 +38,7 @@ import Happstack.Server                      ( ServerPart
                                              )
 import qualified Log as Log
 import qualified Site.Login as SL
+import SiteError                             ( runErrorT, failErrorT )
 import Site.Utils
 
 
@@ -97,7 +97,7 @@ donorServices st = msum [
       dir "update"               (post (runErrorT $ check >>= (withBody (U.updateInfo st))))
     , dir "get"                  (get  (runErrorT $ check >>= (U.queryByOwner st)))
     , dir "ls"                   (get  (U.list st))
-    , dir "mostInfluential.json" (get  (runErrorT $ U.mostInfluential st))
+    , dir "mostInfluential.json" (get  (failErrorT $ U.mostInfluential st))
     , (get (basename >>= (runErrorT . U.queryByOwner st . L.Identity)))
     ]
     where
