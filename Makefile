@@ -18,7 +18,7 @@ INTEGRATION_TESTS = $(patsubst %,$V/%.passed,$(RUN_INTEGRATION_TESTS))
 
 all: server private/static.ok client $(INTEGRATION_TESTS)
 
-server: server_install $(JS_TESTS)
+server: $V/ship/import $V/ship/icontrib $V/ship/libcryptopp.dylib $(JS_TESTS)
 
 client:
 	$(MAKE) -C public V=$V
@@ -57,14 +57,12 @@ $V/%.js.passed: %.js
 	@$(NODE_DIR)/node $<
 	@touch $@
 
-server_install $V/ship/import $V/ship/icontrib $V/ship/libcryptopp.dylib:Server/$V/ship/import Server/$V/ship/icontrib Server/$V/ship/libcryptopp.dylib
+$V/ship/import $V/ship/icontrib $V/ship/libcryptopp.dylib:Server/$V/ship/import Server/$V/ship/icontrib Server/$V/ship/libcryptopp.dylib
 	@mkdir -p $(@D)
-	@cp Server/$V/ship/import  $V/ship/import
-	@cp Server/$V/ship/icontrib  $V/ship/icontrib
-	@cp Server/$V/ship/libcryptopp.dylib $V/ship/libcryptopp.dylib
+	@cp $< $@
 
-Server/$V/ship/import Server/$V/ship/icontrib Server/$V/ship/libcryptopp.dylib:
-	$(MAKE) -C Server V=$V
+Server/%:
+	$(MAKE) -C Server V=$V $*
 
 .PHONY:Server/$V/ship/import Server/$V/ship/icontrib Server/$V/ship/libcryptopp.dylib
 
