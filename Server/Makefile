@@ -13,9 +13,11 @@ FLAVOR = Debug
 
 V = $(TARGET)_$(FLAVOR)
 CRYPTO=/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
-all: $V/ship/icontrib $V/ship/import
+all: $V/ship/icontrib $V/ship/import test
 
-$V/ship/icontrib: Main.hs Site.hs test
+HS=$(wildcard *.hs) $(wildcard */*.hs)
+
+$V/ship/icontrib: Main.hs $(HS)
 	@mkdir -p $(@D)
 	ghc $(GHC_FLAGS) -outputdir $V -o $@ --make $< $(CRYPTO)
 
@@ -27,9 +29,10 @@ libcryptopp.dylib:/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
 	brew install cryptopp #for ssl
 
 # TODO: Replace this with a proper dependency scanner: "ghc -M"
-$(foreach n,$(RUN_TESTS),$(eval $(patsubst %,$V/%.passed,$n): $n libcryptopp.dylib))
+$(foreach n,$(RUN_TESTS),$(eval $(patsubst %,$V/%.passed,$n): $n $(HS) libcryptopp.dylib))
 
 test: $(patsubst %,$V/%.passed,$(RUN_TESTS))
+
 
 $V/%.passed:
 	@mkdir -p $(@D)
