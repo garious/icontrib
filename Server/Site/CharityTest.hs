@@ -52,6 +52,7 @@ main :: IO ()
 main = do
     Log.start
     run readInfoTest
+    run registerTest
 
 readInfoTest :: IO ()
 readInfoTest = liftIO $ HTTP.browse $ do

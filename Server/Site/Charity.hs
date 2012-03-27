@@ -12,7 +12,7 @@ import qualified Log                         as Log
 import qualified Data.IxSet                  as IxSet
 import Data.IxSet                            ( (@*), getOne )
 import Site.Utils                            ( basename, getBody', post, get )
-import JSONUtil                              ( jsonUpdate, jsonEncode )
+import JSONUtil                              ( jsonUpdate )
 import Monad                                 ( msum )
 import Happstack.Server                      ( ServerPart
                                              , Response
@@ -33,9 +33,10 @@ updateOwners :: DB.Database -> SiteErrorT ()
 updateOwners db = do 
     Log.debugM "trying to update registration" 
     ident <- SL.checkUser db 
-    let empty = jsonEncode (C.empty { C.owner = ident })
+    let empty = (C.empty { C.owner = ident })
     body <- getBody'
     test <- jsonUpdate empty body
+    Log.debugM $ "merged" ++ (show test)
     owners <- C.queryByOwner db ident
     mine <-         (getOne $ owners @* [C.cid test]) 
            `justOr` (getOne $ owners @* [C.ein test])
