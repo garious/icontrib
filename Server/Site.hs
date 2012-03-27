@@ -39,7 +39,7 @@ import Happstack.Server                      ( ServerPart
 import qualified Log as Log
 import qualified Site.Login as SL
 import SiteError                             ( runErrorT, failErrorT )
-import Site.Utils
+import Site.Utils                            ( getBody, basename )
 
 
 serve :: Either TLSConf Int -> ServerPart Response -> IO ()
