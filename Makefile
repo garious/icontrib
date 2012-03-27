@@ -51,6 +51,8 @@ NODE_DIR = node/$V
 
 $V/IntegrationTest.js.passed: public/$V/ship/IContrib.js
 
+$V/SiteTest.js.passed: private/static.ok
+
 $V/%.js.passed: %.js
 	@mkdir -p $(@D)
 	@echo Testing: $<
