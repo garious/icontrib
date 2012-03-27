@@ -16,9 +16,9 @@ JS_TESTS = $(patsubst %,$V/%.passed,$(RUN_JS_TESTS))
 
 INTEGRATION_TESTS = $(patsubst %,$V/%.passed,$(RUN_INTEGRATION_TESTS))
 
-all: server private/static.ok client $(INTEGRATION_TESTS)
+all: server private/static.ok client #$(INTEGRATION_TESTS)
 
-server: $V/ship/import $V/ship/icontrib $V/ship/libcryptopp.dylib $(JS_TESTS)
+server: $V/ship/import $V/ship/icontrib $V/ship/libcryptopp.dylib #$(JS_TESTS)
 
 client:
 	$(MAKE) -C public V=$V
@@ -27,8 +27,8 @@ client:
 serve: server private/static.ok client
 	$V/ship/icontrib
 
-private/static.ok: $V/ship/import $(wildcard private/static/*/*) $(wildcard Data/*.hs)
-	$<
+private/static.ok: $V/ship/import $(wildcard private/static/*/*) $(wildcard Server/Data/*.hs)
+	@$<
 	@touch $@
 
 # TODO: Replace this with a proper dependency scanner: "ghc -M"
@@ -57,13 +57,9 @@ $V/%.js.passed: %.js
 	@$(NODE_DIR)/node $<
 	@touch $@
 
-$V/ship/import $V/ship/icontrib $V/ship/libcryptopp.dylib:Server/$V/ship/import Server/$V/ship/icontrib Server/$V/ship/libcryptopp.dylib
+$V/ship/%:Server/$V/ship/%
 	@mkdir -p $(@D)
-	@cp $< $@
+	cp $< $@
 
 Server/%:
 	$(MAKE) -C Server V=$V $*
-
-.PHONY:Server/$V/ship/import Server/$V/ship/icontrib Server/$V/ship/libcryptopp.dylib
-
-
