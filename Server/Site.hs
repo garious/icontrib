@@ -104,13 +104,12 @@ donorServices st = msum [
             ff uid bd
         check = (SL.checkUser st)
 
-
 charityServices :: DB.Database -> ServerPart Response
 charityServices st = msum [ 
       dir "update"       (post (runErrorT $ check >>= (withBody (C.updateInfo st))))
     , dir "get.json"     (get  (runErrorT $ check >>= (C.queryByOwner st)))
     , dir "popular.json" (get  popular)
-    , (get (basename >>= (runErrorT . C.queryByCID st . C.CharityID . BS.unpack)))
+    , (get (basename >>= (failErrorT . C.queryByCID st . C.CharityID . BS.unpack)))
     ]
     where
         withBody ff uid = do bd <- getBody; ff uid bd
@@ -154,12 +153,9 @@ fileServer dd = do
     addHeaderM "Pragma" "no-cache"
     serveDirectory DisableBrowsing [] dd
 
-
 rsp :: (Show a, Data a, MonadIO m) => a -> ServerPartT m Response
 rsp msg = do
     let json = jsonEncode msg
     (Log.debugShow json)
     ok $ toResponse $ json
-
-
 

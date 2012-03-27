@@ -20,8 +20,8 @@ addUser = post 200 "/auth/add"
 addUserInfo :: U.UserInfo ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either String ())
 addUserInfo = post 200 "/donor/update"
 
-getUserInfo :: J.UserIdentity ->  HTTP.BrowserAction (HTTP.HandleStream String) (U.UserInfo)
-getUserInfo ident = get 200 $ "/donor/" ++ ident ++ ".json"
+readUserInfo :: J.UserIdentity ->  HTTP.BrowserAction (HTTP.HandleStream String) (U.UserInfo)
+readUserInfo ident = get 200 $ "/donor/" ++ ident ++ ".json"
 
 mostInfluential :: HTTP.BrowserAction (HTTP.HandleStream String) (J.UserIdentity)
 mostInfluential = get 200 "/donor/mostInfluential.json"
@@ -38,9 +38,9 @@ getInfoTest = liftIO $ HTTP.browse $ do
         toly = (L.Identity "anatoly")
         ui = U.UserInfo toly "first" "last" "phone" "email" "imageurl" 100 100 [] [] []
     --added new user, which should log us in
-    assertEqM "addUser"     (addUser user)             (Right "anatoly")
-    assertEqM "addUserInfo" (addUserInfo ui)           (Right ())
-    assertEqM "getUserInfo" (getUserInfo "anatoly")    (ui)
+    assertEqM "addUser"      (addUser user)             (Right "anatoly")
+    assertEqM "addUserInfo"  (addUserInfo ui)           (Right ())
+    assertEqM "readUserInfo" (readUserInfo "anatoly")    (ui)
 
 mostInfluentialTest :: IO ()
 mostInfluentialTest = liftIO $ HTTP.browse $ do
