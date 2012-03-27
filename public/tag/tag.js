@@ -44,10 +44,8 @@ function onReady(I, Dim, Dom) {
             } else {
                 for (var i = 0; i < xs.length; i++) {
                     var x = xs[i];
-                    if (typeof x === 'string') {
-                       x = text(x);
-                    }
-                    e.appendChild(x);
+                    var iface = I.getInterface(x, Dom.ToDomId);
+                    e.appendChild(iface ? iface.toDom(x) : x);
                 }
             }
         }
