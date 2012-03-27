@@ -56,19 +56,18 @@ htmlForJsMod baseUrl filename ps = appTemplate $ do
            \YOINK.resourceLoader('', {}, window.PRELOADED_MODULES).getResources([\n\
            \    '/tag/interface.js',\n\
            \    '/tag/todom.js',\n\
+           \    '/tag/Webpage.js',\n\
            \    {path: '" ++ filename ++ "', params: " ++ params ++ "}\n\
-           \], function(Iface, Dom, widget) {\n\
-           \    var iface = Iface.getInterface(widget, Dom.ToDomId);\n\
-           \    var nd;\n\
-           \    if (iface) {\n\
-           \        nd = iface.toDom(widget);\n\
-           \        var title = iface.getTitle(widget);\n\
+           \], function(Iface, Dom, Webpage, widget) {\n\
+           \    var page = Iface.getInterface(widget, Webpage.WebpageId);\n\
+           \    if (page) {\n\
+           \        var title = page.getTitle(widget);\n\
            \        if (title) {\n\
            \            document.title = title;\n\
            \        }\n\
-           \    } else {\n\
-           \        nd = widget;\n\
            \    }\n\
+           \    var iface = Iface.getInterface(widget, Dom.ToDomId);\n\
+           \    var nd = iface ? iface.toDom(widget) : widget;\n\
            \    document.body.appendChild(nd);\n\
            \});\n"
 

@@ -126,13 +126,8 @@ function onReady(I, Dim, Dom) {
     tag.interfaces[Dom.ToDomId] = {
         toDom: function (me) {
             return me;
-        },
-        getTitle: function (me) {
-            return undefined;
         }
     };
-    
-    
     
     function mkTag(nm) {
         return function(as, xs, es) {

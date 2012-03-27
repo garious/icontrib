@@ -52,9 +52,6 @@ function onReady(Tag, I, Dim, Dom) {
                 }
             }
             return div;
-        },
-        getTitle: function (me) {
-            return undefined;
         }
     };
     
