@@ -52,24 +52,25 @@ htmlForJsMod baseUrl filename ps = appTemplate $ do
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink.js"]))
       preloadedAttr = H.toValue (mkPath (mkRelUrl baseUrl ["IContrib.js"]))
 
-      yoink = "\nYOINK.resourceLoader('', {}, PRELOADED_MODULES).getResources([\n"
-           ++ "    '/tag/interface.js',\n"
-           ++ "    '/tag/todom.js',\n"
-           ++ "    {path: '" ++ filename ++ "', params: " ++ params ++ "}\n"
-           ++ "], function(Iface, Dom, widget) {\n"
-           ++ "    var iface = Iface.getInterface(widget, Dom.ToDom);\n"
-           ++ "    var nd;\n"
-           ++ "    if (iface) {\n"
-           ++ "        nd = iface.toDom(widget);\n"
-           ++ "        var title = iface.getTitle(widget);\n"
-           ++ "        if (title) {\n"
-           ++ "            document.title = title;\n"
-           ++ "        }\n"
-           ++ "    } else {\n"
-           ++ "        nd = widget;\n"
-           ++ "    }\n"
-           ++ "    document.body.appendChild(nd);\n"
-           ++ "});\n"
+      yoink = "\n\
+           \YOINK.resourceLoader('', {}, window.PRELOADED_MODULES).getResources([\n\
+           \    '/tag/interface.js',\n\
+           \    '/tag/todom.js',\n\
+           \    {path: '" ++ filename ++ "', params: " ++ params ++ "}\n\
+           \], function(Iface, Dom, widget) {\n\
+           \    var iface = Iface.getInterface(widget, Dom.ToDom);\n\
+           \    var nd;\n\
+           \    if (iface) {\n\
+           \        nd = iface.toDom(widget);\n\
+           \        var title = iface.getTitle(widget);\n\
+           \        if (title) {\n\
+           \            document.title = title;\n\
+           \        }\n\
+           \    } else {\n\
+           \        nd = widget;\n\
+           \    }\n\
+           \    document.body.appendChild(nd);\n\
+           \});\n"
 
       params = JS.encode ps
 

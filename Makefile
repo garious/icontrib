@@ -45,6 +45,7 @@ dist:
 deps:
 	cabal update
 	cabal install --only-dependencies
+	npm install zombie
 
 
 NODE_DIR = node/$V
