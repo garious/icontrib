@@ -44,10 +44,8 @@ function onReady(I, Dim, Dom) {
             } else {
                 for (var i = 0; i < xs.length; i++) {
                     var x = xs[i];
-                    if (typeof x === 'string') {
-                       x = text(x);
-                    }
-                    e.appendChild(x);
+                    var iface = I.getInterface(x, Dom.ToDomId);
+                    e.appendChild(iface ? iface.toDom(x) : x);
                 }
             }
         }
@@ -126,13 +124,8 @@ function onReady(I, Dim, Dom) {
     tag.interfaces[Dom.ToDomId] = {
         toDom: function (me) {
             return me;
-        },
-        getTitle: function (me) {
-            return undefined;
         }
     };
-    
-    
     
     function mkTag(nm) {
         return function(as, xs, es) {

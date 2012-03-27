@@ -1,7 +1,6 @@
-// Definition of the 2D interface
+// Definition of the 2D interface ID
 
 define({
-    TwoDimensional: {},
     TwoDimensionalId: baseUrl + '/2d.js'
 });
 

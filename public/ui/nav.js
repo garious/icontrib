@@ -5,6 +5,7 @@ var authDeps = [
 var deps = [
     '/tag/tag.js', 
     '/tag/todom.js', 
+    '/tag/Webpage.js', 
     '/tag/layout1.js', 
     'core.js',
     'colors.js'
@@ -46,7 +47,7 @@ function post(path, params, callback) {
 
 
 function onAuthReady(Auth) { 
-function onReady(Tag, ToDom, Layout, Core, Colors, Me) { 
+function onReady(Tag, ToDom, Webpage, Layout, Core, Colors, Me) { 
 
     function loginWidget(as) {
 
@@ -142,9 +143,12 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
     webpage.interfaces[ToDom.ToDomId] = {
         toDom: function (me) {
             return me.domNode;
-        },
+        }
+    };
+
+    webpage.interfaces[Webpage.WebpageId] = {
         getTitle: function (me) {
-            return "IContrib.org";
+            return 'IContrib.org';
         }
     };
 
