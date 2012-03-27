@@ -23,7 +23,6 @@ addUserInfo = post 200 "/donor/update"
 getUserInfo :: J.UserIdentity ->  HTTP.BrowserAction (HTTP.HandleStream String) (U.UserInfo)
 getUserInfo ident = get 200 $ "/donor/" ++ ident ++ ".json"
 
---returns the current logged in user id based on the cookie
 mostInfluential :: HTTP.BrowserAction (HTTP.HandleStream String) (J.UserIdentity)
 mostInfluential = get 200 "/donor/mostInfluential.json"
 
@@ -51,5 +50,4 @@ mostInfluentialTest = liftIO $ HTTP.browse $ do
     --added new user, which should log us in
     assertEqM "addUser"     (addUser user)      (Right "anatoly")
     assertEqM "addUserInfo" (addUserInfo ui)    (Right ())
-    --check if we are logged in
     assertEqM "mostInfluential" mostInfluential ("anatoly")
