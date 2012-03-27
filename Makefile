@@ -25,7 +25,7 @@ client:
 	$(MAKE) -C yoink V=$V
 
 serve: server private/static.ok client
-	$V/ship/icontrib
+	@$V/ship/icontrib
 
 private/static.ok: $V/ship/import $(wildcard private/static/*/*) $(wildcard Server/Data/*.hs)
 	@$<
