@@ -38,8 +38,8 @@ import Happstack.Server                      ( ServerPart
                                              , seeOther
                                              )
 import qualified Log as Log
+import qualified Site.Login as SL
 import Site.Utils
-import Site.Login
 
 
 serve :: Either TLSConf Int -> ServerPart Response -> IO ()
@@ -83,13 +83,13 @@ site st = msum [
 
 authServices:: DB.Database -> ServerPart Response
 authServices st = msum [ 
-      dir "login"      (post (runErrorT $ loginUser  st))
-    , dir "add"        (post (runErrorT $ addUser    st))
-    , dir "logout"     (post (runErrorT $ check >>= (logOut st)))
+      dir "login"      (post (runErrorT $ SL.loginUser  st))
+    , dir "add"        (post (runErrorT $ SL.addUser    st))
+    , dir "logout"     (post (runErrorT $ check >>= (SL.logOut st)))
     , dir "check.json" (get  (runErrorT $ check))
     ]
     where
-        check = (checkUser st)
+        check = (SL.checkUser st)
 
 
 donorServices:: DB.Database -> ServerPart Response
@@ -104,7 +104,7 @@ donorServices st = msum [
         withBody ff uid = do 
             bd <- getBody
             ff uid bd
-        check = (checkUser st)
+        check = (SL.checkUser st)
 
 
 charityServices :: DB.Database -> ServerPart Response
@@ -116,7 +116,7 @@ charityServices st = msum [
     ]
     where
         withBody ff uid = do bd <- getBody; ff uid bd
-        check = (checkUser st)
+        check = (SL.checkUser st)
         popular = (U.popularCharities st) >>= (C.toPopular st)
 
 redirect ::  HTTP.Request_String -> ServerPart Response
