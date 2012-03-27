@@ -11,7 +11,7 @@ function onReady(Tag, Layout, Colors) {
     var font = defaultFontSize + "px" + defaultFont;
 
     function textDimensions(as, s) {
-        var canvas = Tag.canvas();
+        var canvas = Tag.tag('canvas');
         var fontSize = as.fontSize || defaultFontSize;
 
         if (canvas && canvas.getContext) {
@@ -52,7 +52,16 @@ function onReady(Tag, Layout, Colors) {
             mouseout:  function(evt) { evt.target.style.textDecoration = 'none'; }
         };
 
-        return Tag.a({style: sty, href: as.url}, [as.text], handlers);
+        return Tag.tag('a', {style: sty, href: as.url}, [as.text], handlers);
+    }
+
+    function image(as) {
+        var sty = {
+            width:  as.width  && as.width  + 'px',
+            height: as.height && as.height + 'px'
+        };
+
+        return Tag.tag('img', {style: sty, src: as.url, alt: as.text}, null, {click: as.onClick});
     }
 
     function input(as) {
@@ -68,7 +77,7 @@ function onReady(Tag, Layout, Colors) {
 
         var handlers = {keyup: as.onKeyUp};
 
-        return Tag.input(attrs, null, handlers);
+        return Tag.tag('input', attrs, null, handlers);
     }
 
     function button(as) {
@@ -83,7 +92,7 @@ function onReady(Tag, Layout, Colors) {
             click: as.onClick
         };
 
-        return Tag.a({
+        return Tag.tag('a', {
             href: as.href || '#', 
             style: {
                 width: dim.width + 'px',
@@ -104,7 +113,7 @@ function onReady(Tag, Layout, Colors) {
         var e = as.contents;
 
         var padding = 15;
-        return Tag.div({
+        return Tag.tag('div', {
             style: {
                 border: '2px solid #cfcfcf',
                 shadow: shadow,
@@ -150,7 +159,7 @@ function onReady(Tag, Layout, Colors) {
                 sty.color = as.color !== 'undefined' ? as.color : sty.color;
             }
 
-            return Tag['h' + n]({style: sty}, s);
+            return Tag.tag('h' + n, {style: sty}, s);
         }
 
         return header;
@@ -158,12 +167,12 @@ function onReady(Tag, Layout, Colors) {
 
     function label(s) {
         var dim = textDimensions({}, s);
-        return Tag.label({style: {width: dim.width + 'px', height: dim.height + 'px', font: font}}, s);
+        return Tag.tag('label', {style: {width: dim.width + 'px', height: dim.height + 'px', font: font}}, s);
     }
 
     function p(s) {
         var dim = textDimensions({}, s);
-        return Tag.p({style: {width: dim.width + 'px', height: dim.height + 'px', font: font, margin: '0px'}}, s);
+        return Tag.tag('p', {style: {width: dim.width + 'px', height: dim.height + 'px', font: font, margin: '0px'}}, s);
     }
 
     function hr(as) {
@@ -181,11 +190,12 @@ function onReady(Tag, Layout, Colors) {
            backgroundColor: as.color
         };
 
-        return Tag.hr({style: sty, noshade: true, size: 1});
+        return Tag.tag('hr', {style: sty, noshade: true, size: 1});
     }
 
     define({
          hyperlink: hyperlink,
+         image: image,
          input: input,
          label: label,
          button: button,
