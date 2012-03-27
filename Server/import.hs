@@ -8,13 +8,17 @@ import Control.Monad                         ( forM )
 import Control.Monad.Error                   ( runErrorT, liftIO )
 import JSONUtil                              ( jsonDecode )
 import Control.Applicative                   ( (<|>) )
+import System.Environment                    ( getArgs )
+import Opts                                  ( getOptions, dbDir )
 
 import qualified Login                       as L
 import qualified Data.Login                  as L
 import qualified DB                          as DB
 main :: IO ()
 main = do
-    db <- DB.newFromFile
+    args <- getArgs
+    opts <- getOptions args
+    db <- DB.newFromFile (dbDir opts)
     let errorLeft (Left ee) = error ee
         errorLeft (Right _) = return ()
     donors <- glob "private/static/donor/*.json"

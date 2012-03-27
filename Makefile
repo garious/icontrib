@@ -57,9 +57,8 @@ $V/%.js.passed: %.js
 	@$(NODE_DIR)/node $<
 	@touch $@
 
-server_install:Server/$V/ship/import Server/$V/ship/icontrib Server/$V/ship/libcryptopp.dylib
+server_install $V/ship/import $V/ship/icontrib $V/ship/libcryptopp.dylib:Server/$V/ship/import Server/$V/ship/icontrib Server/$V/ship/libcryptopp.dylib
 	@mkdir -p $(@D)
-	$(MAKE) -C Server V=$V
 	@cp Server/$V/ship/import  $V/ship/import
 	@cp Server/$V/ship/icontrib  $V/ship/icontrib
 	@cp Server/$V/ship/libcryptopp.dylib $V/ship/libcryptopp.dylib
