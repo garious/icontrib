@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-}
-module CharityInfo where
+module DB.CharityInfo where
 
 import Data.CharityInfo
 import Data.Login                            ( Identity )

@@ -1,7 +1,7 @@
 import Data.Acid    ( createCheckpoint )
-import qualified CharityInfo                 as C
+import qualified DB.CharityInfo              as C
 import qualified Data.CharityInfo            as C
-import qualified UserInfo                    as U
+import qualified DB.UserInfo                 as U
 import qualified Data.UserInfo               as U
 import System.Path.Glob                      ( glob )
 import Control.Monad                         ( forM )
@@ -11,9 +11,9 @@ import Control.Applicative                   ( (<|>) )
 import System.Environment                    ( getArgs )
 import Opts                                  ( getOptions, dbDir )
 
-import qualified Login                       as L
+import qualified DB.Login                    as L
 import qualified Data.Login                  as L
-import qualified DB                          as DB
+import qualified DB.DB                       as DB
 main :: IO ()
 main = do
     args <- getArgs

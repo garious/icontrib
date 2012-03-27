@@ -3,8 +3,8 @@ module Site.Login where
 
 import qualified Log                         as Log
 import qualified JSON.UserLogin              as J
-import qualified DB                          as DB
-import qualified Login                       as L
+import qualified DB.DB                       as DB
+import qualified DB.Login                    as L
 import qualified Data.Login                  as L
 import qualified Happstack.Server            as H
 import qualified Codec.Binary.Url            as Url

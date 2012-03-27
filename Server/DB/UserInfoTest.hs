@@ -2,8 +2,8 @@
 
 module UserInfoTest where
 
-import qualified DB                         as DB
-import qualified UserInfo                   as U
+import qualified DB.DB                      as DB
+import qualified DB.UserInfo                as U
 import qualified Data.UserInfo              as U
 import qualified Data.Login                 as L
 

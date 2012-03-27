@@ -5,7 +5,7 @@ import Control.Monad                         ( when )
 import Site                                  ( site, serve )
 import Control.Concurrent                    ( forkIO, killThread, threadDelay )
 import Data.Maybe                            ( fromMaybe )
-import qualified DB                          as DB
+import qualified DB.DB                       as DB
 import Text.JSON.Generic                     as JS
 import qualified Network.HTTP                as HTTP
 import qualified Network.Browser             as HTTP

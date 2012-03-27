@@ -2,9 +2,9 @@
 
 module CharityInfoTest where
 
-import qualified CharityInfo                 as C
+import qualified DB.CharityInfo              as C
 import qualified Data.CharityInfo            as C
-import qualified DB                          as DB
+import qualified DB.DB                       as DB
 import qualified Data.Login                  as L
 
 import TestUtil

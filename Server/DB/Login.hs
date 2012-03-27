@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-}
-module Login where
+module DB.Login where
 import Data.Char                             ( ord )
 import Control.Monad                         ( when )
 import Random                                ( randomIO, Random, random, randomR )

@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-}
-module UserInfo where
+module DB.UserInfo where
 
 import Data.Acid                             ( query, update )
 import Data.List                             ( sortBy, group, sort )

@@ -1,7 +1,7 @@
 import Site                                  ( site, serve, redirectToSSL )
 import Control.Concurrent                    ( forkIO, killThread )
 import qualified Log                         as Log
-import qualified DB                          as DB
+import qualified DB.DB                       as DB
 import Happstack.Server.SimpleHTTPS          ( nullTLSConf, tlsPort, tlsCert, tlsKey )
 import Opts                                  ( getOptions, dbDir, httpPort )
 import System.Environment                    ( getArgs )

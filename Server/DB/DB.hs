@@ -1,9 +1,9 @@
 {-# LANGUAGE TypeFamilies, TemplateHaskell, DeriveDataTypeable #-}
-module DB( Database
-         , emptyDB
-         , newFromFile
-         , emptyMemoryDB
-         ) where
+module DB.DB( Database
+            , emptyDB
+            , newFromFile
+            , emptyMemoryDB
+            ) where
 
 import Data.DB
 import qualified Data.IxSet                  as IxSet

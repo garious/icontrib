@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Main where
+module LoginTest where
 
-import qualified Login                       as L
+import qualified DB.Login                    as L
 import qualified Data.Login                  as L
-import qualified DB                          as DB
+import qualified DB.DB                       as DB
 
 import TestUtil
 

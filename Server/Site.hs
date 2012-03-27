@@ -6,12 +6,12 @@ import Control.Monad                         ( liftM )
 import JSONUtil                              ( jsonEncode )
 import qualified Data.ByteString.Lazy.Char8  as BS
 import qualified Data.Login                  as L
-import qualified CharityInfo                 as C
+import qualified DB.CharityInfo              as C
 import qualified Data.CharityInfo            as C
-import qualified UserInfo                    as U
+import qualified DB.UserInfo                 as U
 import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP
-import qualified DB                          as DB
+import qualified DB.DB                       as DB
 import Monad                                 ( msum )
 import Happstack.Server.SimpleHTTPS          ( simpleHTTPS, TLSConf, tlsPort )
 import Happstack.Server.Monads               ( ServerPartT )
