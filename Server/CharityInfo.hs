@@ -22,7 +22,7 @@ deleteByEin db uid cein = throwLeft $ update db (DeleteCharityByEinU uid cein)
 toPopular :: MonadIO m => Database -> [CharityID] -> m ([Popular])
 toPopular db cids = do
     infos <- liftIO $ query db (CharityByIDQ cids)
-    return $ map (\ ci -> Popular (cid ci) (organizationName ci) ) infos
+    return $ map (\ ci -> Popular (cid ci) (organizationName ci) (imageUrl ci)) infos
 
 queryByCID :: (MonadError String m, MonadIO m) => Database -> CharityID -> m CharityInfo
 queryByCID db cc = do

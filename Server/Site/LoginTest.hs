@@ -5,26 +5,26 @@ import qualified Log                         as Log
 import Control.Monad.Trans                   ( liftIO )
 import qualified Network.HTTP                as HTTP
 import qualified Network.Browser             as HTTP
-import qualified Data.JSON                   as J
+import qualified JSON.UserLogin              as J
 import TestUtil
 
 
 --interfaces over the browser (HTTP.BrowserAction (HTTP.HandleStream String)) monad
 --adds the user and returns the user id, and sets the cookie value
 addUser :: J.UserLogin ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either String J.UserIdentity)
-addUser = post "/auth/add"
+addUser = post 200 "/auth/add"
 
 --logs in the user, changing the cookie value
 loginUser :: J.UserLogin -> HTTP.BrowserAction (HTTP.HandleStream String) (Either String J.UserIdentity)
-loginUser = post "/auth/login"
+loginUser = post 200 "/auth/login"
 
 --returns the current logged in user id based on the cookie
 checkUser :: HTTP.BrowserAction (HTTP.HandleStream String) (Either String J.UserIdentity)
-checkUser = get "/auth/check.json"
+checkUser = get 200 "/auth/check.json"
 
 --logged out the current user
 logoutUser :: HTTP.BrowserAction (HTTP.HandleStream String) (Either String ())
-logoutUser = post "/auth/logout" ()
+logoutUser = post 200 "/auth/logout" ()
 
 main :: IO ()
 main = do

@@ -8,13 +8,13 @@ var deps = [
     {path: '/mirror/google/jsapi', interpreter: exportGoogle}
 ];
 
-function onReady(E, C, GOOGLE) {
+function onReady(Tag, Colors, Google) {
 
 
     // Uses Google visualization library to generate an interactive pie chart
     function pie(as) {
-        var userChart = E.div({style: {width: '300px', height: '225px'}}, [
-            E.img({src: baseUrl + '/ajax-loader.gif', alt: 'Loading...', style: {margin: '0px auto'}})
+        var userChart = Tag.div({style: {width: '300px', height: '225px'}}, [
+            Tag.img({src: baseUrl + '/ajax-loader.gif', alt: 'Loading...', style: {margin: '0px auto'}})
         ]);
    
         var me = {
@@ -25,7 +25,7 @@ function onReady(E, C, GOOGLE) {
         var chart = null;
         var data = null;
         var options = {width: 300, height: 225, tooltip: {trigger: 'none'}, legend: {position: 'none'}};
-        options.colors = [C.darkColor, C.middleColor, C.lightColor];
+        options.colors = [Colors.darkColor, Colors.middleColor, Colors.lightColor];
 
         function draw() {
             if (data && chart) {
@@ -41,14 +41,14 @@ function onReady(E, C, GOOGLE) {
         }
 
         function createChart() {
-            chart = new GOOGLE.visualization.PieChart(userChart);
-            data = new GOOGLE.visualization.DataTable();
+            chart = new Google.visualization.PieChart(userChart);
+            data = new Google.visualization.DataTable();
             data.addColumn('string', 'Charity');
             data.addColumn('number', 'Percentage');
             draw();
         }
 
-        GOOGLE.load('visualization', '1.0', {packages:['corechart'], callback: createChart});
+        Google.load('visualization', '1.0', {packages:['corechart'], callback: createChart});
 
         // expose the draw function to the caller
         me.draw = draw;
@@ -71,7 +71,7 @@ function onReady(E, C, GOOGLE) {
             }
         }
 
-        return E.img({
+        return Tag.img({
             src: 'https://chart.googleapis.com/chart?cht=p&chco=a7d322&chs=' + chs + '&chd=' + chd,
             alt: 'Chart',
             style: {width: width + 'px', height: height + 'px'}

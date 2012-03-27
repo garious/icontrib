@@ -39,34 +39,34 @@ jsModFile root baseUrl filename = do
       guard b
       ps <- lookPairs
       let ps' = [(s, x) | (s, Right x) <- ps]
-      ok (toResponse (htmlForJsMod baseUrl filename (JS.toJSObject ps')))
+      ok (toResponse (htmlForJsMod baseUrl ('/' : mkPath url) (JS.toJSObject ps')))
    where
       url = baseUrl ++ [filename]
 
 htmlForJsMod :: [String] -> String -> JS.JSObject String -> H.Html
 htmlForJsMod baseUrl filename ps = appTemplate $ do
-      H.script ! A.src jsonAttr   ! A.type_ "text/javascript" $ ""
       H.script ! A.src yoinkAttr  ! A.type_ "text/javascript" $ ""
+      H.script ! A.src preloadedAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
   where
-      jsonAttr = H.toValue (mkPath (mkRelUrl baseUrl ["js", "json2.js"]))
-      yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink", "yoink.js"]))
+      yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink.js"]))
+      preloadedAttr = H.toValue (mkPath (mkRelUrl baseUrl ["IContrib.js"]))
 
-      yoink = "\nYOINK.require([\n"
+      yoink = "\nYOINK.resourceLoader('', {}, PRELOADED_MODULES).getResources([\n"
            ++ "    '/tag/interface.js',\n"
            ++ "    '/tag/todom.js',\n"
            ++ "    {path: '" ++ filename ++ "', params: " ++ params ++ "}\n"
-           ++ "], function(IFACE, DOM, WIDGET) {\n"
-           ++ "    var iface = IFACE.getInterface(WIDGET, DOM.ToDom);\n"
+           ++ "], function(Iface, Dom, widget) {\n"
+           ++ "    var iface = Iface.getInterface(widget, Dom.ToDom);\n"
            ++ "    var nd;\n"
            ++ "    if (iface) {\n"
-           ++ "        nd = iface.toDom(WIDGET);\n"
-           ++ "        var title = iface.getTitle(WIDGET);\n"
+           ++ "        nd = iface.toDom(widget);\n"
+           ++ "        var title = iface.getTitle(widget);\n"
            ++ "        if (title) {\n"
            ++ "            document.title = title;\n"
            ++ "        }\n"
            ++ "    } else {\n"
-           ++ "        nd = WIDGET;\n"
+           ++ "        nd = widget;\n"
            ++ "    }\n"
            ++ "    document.body.appendChild(nd);\n"
            ++ "});\n"
@@ -88,7 +88,7 @@ mkPath = intercalate "/"
 
 appTemplate :: H.Html -> H.Html
 appTemplate body =
-     H.html $ do
+     H.docTypeHtml $ do
        H.head $ do
          H.meta ! A.httpEquiv "Content-Type" ! A.content "text/html;charset=utf-8"
        H.body ! A.style "margin: 0; padding: 0" $ body

@@ -4,17 +4,6 @@ var deps = [
     'colors.js'
 ];
 
-function clone(o1) {
-    var o2 = {};
-    var k;
-    for (k in o1) {
-        if (o1.hasOwnProperty(k)) {
-            o2[k] = o1[k];
-        }
-    }
-    return o2;
-}
-
 function onReady(Tag, Layout, Colors) {
 
     var defaultFont = "/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
@@ -47,38 +36,39 @@ function onReady(Tag, Layout, Colors) {
         }
     }
 
-    function a(as, xs) {
-        if (xs === undefined) {
-            xs = as;
-            as = null;
-        }
-        as = as && clone(as) || {};
-        as.style = as.style && clone(as.style) || {};
+    function hyperlink(as) {
+        var dim = textDimensions({}, as.text);
 
-        var s = typeof xs === 'string' && xs || xs[0];
-        var dim = textDimensions({}, s);
+        var sty = {
+            textDecoration: 'none',
+            font: font,
+            width: dim.width + 'px',
+            height: dim.height + 'px',
+            color: 'blue'
+        };
 
-        as.style.textDecoration = 'none';
-        as.style.font = font;
-        as.style.width = dim.width + 'px';
-        as.style.height = dim.height + 'px';
-        as.style.color = 'blue';
+        var handlers = {
+            mouseover: function(evt) { evt.target.style.textDecoration = 'underline'; },
+            mouseout:  function(evt) { evt.target.style.textDecoration = 'none'; }
+        };
 
-        var e = Tag.a(as, xs);
-        e.addEventListener('mouseover', function() {
-            e.style.textDecoration = 'underline';
-        });
-        e.addEventListener('mouseout', function() {
-            e.style.textDecoration = 'none';
-        });
-        return e;
+        return Tag.a({style: sty, href: as.url}, [as.text], handlers);
     }
 
     function input(as) {
-        var e = Tag.input(as);
-        e.style.width  = as.width  || e.size * 10 + 'px';
-        e.style.height = as.height || 20;
-        return e;
+        var width  = (as.width  || as.size * 10) + 'px';
+        var height = (as.height || 20) + 'px';
+
+        var attrs = {type: as.type, size: as.size, style: {height: height, width: width}};
+
+        // Special handling for 'value' attribute, which will awkwardly write the text "undefined".
+        if (as.value !== undefined) {
+            attrs.value = as.value;
+        }
+
+        var handlers = {keyup: as.onKeyUp};
+
+        return Tag.input(attrs, null, handlers);
     }
 
     function button(as) {
@@ -87,7 +77,13 @@ function onReady(Tag, Layout, Colors) {
         var color      = as.loud ? Colors.red : Colors.middleColor;
         var focusColor = as.loud ? Colors.red : Colors.lightColor;
 
-        var e = Tag.a({
+        var handlers = {
+            mouseover: function(evt) { evt.target.style.backgroundColor = focusColor; },
+            mouseout:  function(evt) { evt.target.style.backgroundColor = color; },
+            click: as.onClick
+        };
+
+        return Tag.a({
             href: as.href || '#', 
             style: {
                 width: dim.width + 'px',
@@ -100,44 +96,23 @@ function onReady(Tag, Layout, Colors) {
                 padding: '5px', 
                 borderRadius: '2px'
             }
-        }, as.text);
-
-        e.addEventListener('mouseover', function() {
-            e.style.backgroundColor = focusColor;
-        });
-        e.addEventListener('mouseout', function() {
-            e.style.backgroundColor = color;
-        });
-
-        return e;
+        }, as.text, handlers);
     }
 
-    function box(as, xs) {
-        if (xs === undefined) {
-            xs = as;
-            as = null; 
-        }
-        
-        as = as || {};
-        xs = xs || [];
-
+    function box(as) {
         var shadow = '0px 0px 5px 2px #ddd';
-        var space = Layout.pillow(15);
+        var e = as.contents;
 
-        var e = Layout.spoon([
-            space, 
-            Layout.hug([space].concat(xs).concat([space])),
-            space
-        ]);
-
+        var padding = 15;
         return Tag.div({
             style: {
                 border: '2px solid #cfcfcf',
                 shadow: shadow,
                 MozBoxShadow: shadow,
                 WebkitBoxShadow: shadow,
-                width:  as.width  || e.style.width,
-                height: as.height || e.style.height
+                width:  as.width  ? (as.width - 2 * padding - 4) + 'px' : e.style.width,
+                height: as.height ? (as.height - 2 * padding - 4) + 'px' : e.style.height,
+                padding: padding + 'px'
             }
         }, [e]);
     }
@@ -147,10 +122,10 @@ function onReady(Tag, Layout, Colors) {
         var dim = textDimensions({fontSize: fontSize}, s);
 
         return {
-            width: dim.width,
-            height: dim.height,
+            width: dim.width + 'px',
+            height: dim.height + 'px',
             font: font,
-            fontSize: fontSize,
+            fontSize: fontSize + 'px',
             margin: 0,
             color: Colors.darkColor
         };
@@ -183,36 +158,34 @@ function onReady(Tag, Layout, Colors) {
 
     function label(s) {
         var dim = textDimensions({}, s);
-        return Tag.label({style: {width: dim.width, height: dim.height, font: font}}, s);
+        return Tag.label({style: {width: dim.width + 'px', height: dim.height + 'px', font: font}}, s);
     }
 
-    function p(as, xs) {
-        if (xs === undefined) {
-            xs = as;
-            as = null;
-        }
-        as = as && clone(as) || {};
-        as.style = as.style && clone(as.style) || {};
-
-        as.style.font = font;
-
-        return Tag.p(as, xs);
+    function p(s) {
+        var dim = textDimensions({}, s);
+        return Tag.p({style: {width: dim.width + 'px', height: dim.height + 'px', font: font, margin: '0px'}}, s);
     }
 
     function hr(as) {
         as = as || {};
 
         var sty = {
-           height: as.height ? as.height + 'px' : 0,
+           height: as.height ? as.height + 'px' : '1px',
            width:  as.width  ? as.width  + 'px' : '100%',
-           margin: 0
+           margin: as.margin ? as.margin + 'px' : 0,
+           marginLeft:   as.marginLeft   ? as.marginLeft   + 'px' : 0,
+           marginRight:  as.marginRight  ? as.marginRight  + 'px' : 0,
+           marginTop:    as.marginTop    ? as.marginTop    + 'px' : 0,
+           marginBottom: as.marginBottom ? as.marginBottom + 'px' : 0,
+           borderWidth: 0,
+           backgroundColor: as.color
         };
 
-        return Tag.hr({style: sty});
+        return Tag.hr({style: sty, noshade: true, size: 1});
     }
 
     define({
-         a: a,
+         hyperlink: hyperlink,
          input: input,
          label: label,
          button: button,
@@ -224,7 +197,8 @@ function onReady(Tag, Layout, Colors) {
          h5: mkHeader(5),
          h6: mkHeader(6),
          p: p,
-         hr: hr 
+         hr: hr,
+         defaultFont: font
     });
 }
 

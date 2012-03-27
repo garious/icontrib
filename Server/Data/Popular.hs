@@ -6,6 +6,7 @@ import Data.CharityInfo              ( CharityID )
 
 data Popular = Popular { cid :: CharityID
                        , name :: String
+                       , imageUrl :: String
                        }
              deriving (Eq, Ord, Show, Data, Typeable)
 

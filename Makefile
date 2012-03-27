@@ -1,51 +1,38 @@
 UNAME:=$(shell uname)
+FLAVOR = Debug
+V = $(UNAME)_$(FLAVOR)
 
 -include $(UNAME).min
 
 GHC_FLAGS+=-Wall -Werror -threaded
 
 RUN_TESTS := $(wildcard *Test.hs)
+TESTS = $(patsubst %,$V/%.passed,$(RUN_TESTS))
 
-UNAME_S := $(shell uname -s)
+RUN_INTEGRATION_TESTS=IntegrationTest.js
 
-TARGET = $(UNAME_S)
-FLAVOR = Debug
+RUN_JS_TESTS := $(filter-out $(RUN_INTEGRATION_TESTS),$(wildcard *Test.js))
+JS_TESTS = $(patsubst %,$V/%.passed,$(RUN_JS_TESTS))
 
-V = $(TARGET)_$(FLAVOR)
+INTEGRATION_TESTS = $(patsubst %,$V/%.passed,$(RUN_INTEGRATION_TESTS))
 
-all: test $V/icontrib lint $V/import private/static.ok
+all: server private/static.ok client $(INTEGRATION_TESTS)
 
-serve: $V/icontrib private/static.ok
+server: server_install $(JS_TESTS)
+
+client:
+	$(MAKE) -C public V=$V
+	$(MAKE) -C yoink V=$V
+
+serve: server private/static.ok client
+	$V/ship/icontrib
+
+private/static.ok: $V/ship/import $(wildcard private/static/*/*) $(wildcard Data/*.hs)
 	$<
-
-test: $(patsubst %,$V/%.passed,$(RUN_TESTS))
-
-$V/icontrib:Server/$V/icontrib
-	@mkdir -p $(@D)
-	@cp Server/$V/icontrib $V/icontrib
-
-Server/$V/icontrib:
-	make -C Server
-
-Server/$V/import:
-	make -C Server
-
-private/static.ok: $V/import private/static/*/*
-	$V/import 
-	@touch private/static.ok
-
-$V/import:
-	@mkdir -p $(@D)
-	@cp Server/$V/import $V/import
+	@touch $@
 
 # TODO: Replace this with a proper dependency scanner: "ghc -M"
 $(foreach n,$(RUN_TESTS),$(eval $(patsubst %,$V/%.passed,$n): $n $(patsubst %Test.hs,%.hs,$n)))
-
-$V/%.passed:
-	@mkdir -p $(@D)
-	@echo Testing: $<
-	@runghc $(GHC_FLAGS) $<
-	@touch $@
 
 clean:
 	rm -rf $V
@@ -58,29 +45,28 @@ dist:
 deps:
 	cabal update
 	cabal install --only-dependencies
-	npm install jslint
 
-deps.Darwin:
-	brew install jslint
-	brew install node
-	brew install npm
 
-JS_WHITELIST:= \
-    public/js/json2.js \
+NODE_DIR = node/$V
 
-JS_FILES:=$(filter-out $(JS_WHITELIST),$(wildcard public/*.js) $(wildcard public/*/*.js))
+$V/IntegrationTest.js.passed: public/$V/ship/IContrib.js
 
-#JSLINT_FILES:=public/yoink/yoink.js
-
-lint: $(patsubst %,$V/%.ok,$(JS_FILES)) $(patsubst %,$V/%.lint,$(JSLINT_FILES))
-
-$V/%.js.ok: %.js
-	@echo Linting: $<
-	@jsl -nologo -nofilelisting -nosummary -output-format "$*.js:__LINE__:__COL__: __ERROR__" -process $<
+$V/%.js.passed: %.js
 	@mkdir -p $(@D)
+	@echo Testing: $<
+	@$(NODE_DIR)/node $<
 	@touch $@
 
-$V/%.js.lint: %.js
-	node_modules/.bin/jslint --predef=define --predef=require --predef=baseUrl --predef=YOINK $<
+server_install:Server/$V/ship/import Server/$V/ship/icontrib Server/$V/ship/libcryptopp.dylib
 	@mkdir -p $(@D)
-	@touch $@
+	$(MAKE) -C Server V=$V
+	@cp Server/$V/ship/import  $V/ship/import
+	@cp Server/$V/ship/icontrib  $V/ship/icontrib
+	@cp Server/$V/ship/libcryptopp.dylib $V/ship/libcryptopp.dylib
+
+Server/$V/ship/import Server/$V/ship/icontrib Server/$V/ship/libcryptopp.dylib:
+	$(MAKE) -C Server V=$V
+
+.PHONY:Server/$V/ship/import Server/$V/ship/icontrib Server/$V/ship/libcryptopp.dylib
+
+

@@ -15,8 +15,8 @@ import Query.DB                              ( Database )
 emptyDB :: DB
 emptyDB = DB IxSet.empty IxSet.empty IxSet.empty
 
-newFromFile :: IO Database
-newFromFile = openLocalStateFrom "private/db/" emptyDB
+newFromFile :: FilePath -> IO Database
+newFromFile fp = openLocalStateFrom fp emptyDB
 
 emptyMemoryDB :: IO Database
 emptyMemoryDB = openMemoryState emptyDB

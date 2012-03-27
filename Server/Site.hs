@@ -72,6 +72,8 @@ tohttps hn pn = (seeOther ("https://" ++ hn ++ ":" ++ show pn) (toResponse ()))
 site :: DB.Database -> ServerPart Response
 site st = msum [ 
       JSW.widget root []
+    , fileServer "public/Darwin_Debug/ship"
+    , fileServer "yoink"
     , fileServer root
     , dir "auth"    (authServices st)
     , dir "donor"   (donorServices st)
@@ -144,9 +146,6 @@ post page = do
     rv <- page
     liftIO $ Log.debugShow ("post response"::String, (show rv))
     rsp rv
-
-homePage :: ServerPart Response
-homePage = serveDirectory DisableBrowsing ["index.html"] "public"
 
 fileServer :: FilePath -> ServerPart Response
 fileServer dd = do 

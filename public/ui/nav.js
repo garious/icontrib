@@ -46,14 +46,14 @@ function post(path, params, callback) {
 
 
 function onAuthReady(Auth) { 
-function onReady(Tag, ToDom, Layout, Core, Color, Me) { 
+function onReady(Tag, ToDom, Layout, Core, Colors, Me) { 
 
     function loginWidget(as) {
-        var username = Tag.input({type: 'text', size: 18});
-        var password = Tag.input({type: 'password', size: 18});
+        var username = Core.input({type: 'text', size: 18});
+        var password = Core.input({type: 'password', size: 18});
 
-        function submit(e) {
-            e.preventDefault();
+        function submit(evt) {
+            evt.preventDefault();
             var formValues = {
                 email: username.value,
                 password: password.value 
@@ -69,53 +69,65 @@ function onReady(Tag, ToDom, Layout, Core, Color, Me) {
         }
 
         if (Auth.Left) {
-            var badLogin = Tag.span({hidden: true, style: {height: 20, width: 200, color: 'red'}}, 'bad username or password');
-            var loginButton = Core.button({text: 'Log in'});
-
-            loginButton.addEventListener('click', submit);
+            var badLogin = Tag.span({hidden: true, style: {height: '20px', width: '200px', color: 'red'}}, 'bad username or password');
 
             var widget = Layout.hug([
                 Layout.spoon([
-                    Layout.hug([Core.label('Username'), username]), Layout.pillow(5),
-                    Layout.hug([Core.label('Password'), password]), Layout.pillow(5),
+                    Layout.hug([Core.label('Username'), Layout.pillow(5, 0), username]),
+                    Layout.pillow(0, 5),
+                    Layout.hug([Core.label('Password'), Layout.pillow(5, 0), password]),
+                    Layout.pillow(0, 5),
                     badLogin,
-                    Layout.pillow(5)
+                    Layout.pillow(0, 5)
                 ]),
-                loginButton
+                Core.button({text: 'Log in', onClick: submit})
             ]);
 
-            widget.addEventListener('keyup', function(e) {
-                if (e.keyCode === 13) {
-                   submit(e);
+            widget.addEventListener('keyup', function(evt) {
+                if (evt.keyCode === 13) {
+                   submit(evt);
                 }
             });
 
             return widget;
 
         } else {
-            //var logoutButton = Core.a({href: '#'}, 'Sign out');
-            var logoutButton = Tag.img({src: baseUrl + '/arrowdown-darkgreen.png', alt: 'settings'});
-            logoutButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                post('/auth/logout', {}, function(data) {
-                    window.location = '/';
-                });
-            });
+            var handlers = {
+                click: function(evt) {
+                    evt.preventDefault();
+                    post('/auth/logout', {}, function(data) {
+                        window.location = '/';
+                    });
+                }
+            };
 
-           return Tag.div({style: {width: '272px', height: '77px', backgroundColor: '#eee', borderRadius: '5px 5px 0px 0px'}}, [
-               Layout.spoon([
-                   Layout.pillow(0, 15),
-                   Layout.hug([
-                       Layout.pillow(20, 0),
-                       as.thumbnail,
-                       Layout.pillow(50, 0),  // TODO: This should be '20', not '50', but there's a bug in calculating the size of the thumbnail
-                       Layout.spoon([
-                           Layout.pillow(0, 22),
-                           logoutButton
-                       ])
-                   ])
-               ])
-           ]);
+            //var logoutButton = Core.hyperlink({url: '#', text: 'Sign out'});
+            var logoutButton = Tag.img({src: baseUrl + '/arrowdown-darkgreen.png', alt: 'settings'}, null, handlers);
+
+            return Tag.div({
+                style: {
+                    width: '270px',
+                    height: '77px',
+                    backgroundColor: '#eee',
+                    borderRadius: '5px 5px 0px 0px',
+                    border: '1px solid',
+                    borderBottomWidth: '0px',
+                    borderColor: Colors.lightColor
+                }
+            }, [
+                Layout.spoon([
+                    Layout.pillow(0, 15),
+                    Layout.hug([
+                        Layout.pillow(20, 0),
+                        as.thumbnail,
+                        Layout.pillow(20, 0),
+                        Layout.spoon([
+                            Layout.pillow(0, 22),
+                            logoutButton
+                        ])
+                    ])
+                ])
+            ]);
         }
     }
 
@@ -130,10 +142,10 @@ function onReady(Tag, ToDom, Layout, Core, Color, Me) {
             Layout.pillow(0, 20),
             Layout.hug([
                 logo,
-                Layout.pillow(560, 0),
+                Layout.pillow(559, 0),
                 loginWidget(as)
             ]),
-            Tag.hr({style: {width: '960px', height: '4px', margin: 0, backgroundColor: Color.green, borderWidth: 1}})
+            Core.hr({width: 960, height: 4, color: Colors.green})
         ]);
     }
 
@@ -173,7 +185,7 @@ function onReady(Tag, ToDom, Layout, Core, Color, Me) {
                 Layout.spoon([
                     Layout.pillow(0, 10),
                     Core.h3({
-                        color: Color.greenText,
+                        color: Colors.greenText,
                         text: Me.firstName + ' ' + Me.lastName
                     })
                 ])
@@ -181,7 +193,7 @@ function onReady(Tag, ToDom, Layout, Core, Color, Me) {
 
             var dim = getDimensions(thumbContents);
 
-            var thumbnail = Core.a({href: '/me/', style: {width: dim.width, height: dim.height}}, [
+            var thumbnail = Tag.a({href: '/me/', style: {width: dim.width + 'px', height: dim.height + 'px', textDecoration: 'none'}}, [
                 thumbContents
             ]);
 
@@ -213,9 +225,8 @@ function onReady(Tag, ToDom, Layout, Core, Color, Me) {
         as.style.textAlign = 'center';
 
         return Tag.div(as, [
-            Tag.hr(),
-            Tag.div({style: {paddingRight: '20px'}}, xs),
-            Tag.hr()
+            Core.hr(),
+            Tag.div({style: {paddingRight: '20px'}}, xs)
         ]); 
     }
 
