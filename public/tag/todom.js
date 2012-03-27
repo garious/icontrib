@@ -9,9 +9,14 @@ var ToDom = {
     getTitle: function (me) {}
 };
 
+var ToDomId = baseUrl + '/ToDom.js';
+
 
 // ToDom instance for strings
-var String_ToDom = {
+
+String.interfaces = String.interfaces || {};
+
+String.interfaces[ToDomId] = {
     toDom: function (me) {
         return document.createTextNode(me);
     },
@@ -20,12 +25,8 @@ var String_ToDom = {
     }
 };
 
-String.interfaces = String.interfaces || [
-    {'interface': ToDom, 'instance': String_ToDom}
-];
-
-
 define({
-    ToDom: ToDom
+    ToDom: ToDom,
+    ToDomId: ToDomId
 });
 

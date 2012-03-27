@@ -136,7 +136,10 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
             domNode: domNode
         };
     }
-    var Page_ToDom = {
+
+    webpage.interfaces = {};
+
+    webpage.interfaces[ToDom.ToDomId] = {
         toDom: function (me) {
             return me.domNode;
         },
@@ -144,9 +147,6 @@ function onReady(Tag, ToDom, Layout, Core, Colors, Me) {
             return "IContrib.org";
         }
     };
-    webpage.interfaces = [
-        {'interface': ToDom.ToDom, 'instance': Page_ToDom}
-    ];
 
     function frame(as, xs) {
         if (as && as.constructor === Array) {
