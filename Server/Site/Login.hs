@@ -2,7 +2,7 @@
 module Site.Login where
 
 import qualified Log                         as Log
-import qualified Data.JSON                   as J
+import qualified JSON.UserLogin              as J
 import qualified DB                          as DB
 import qualified Login                       as L
 import qualified Data.Login                  as L
