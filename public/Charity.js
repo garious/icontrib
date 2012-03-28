@@ -1,25 +1,25 @@
 var deps = [
-    '/tag/tag.js', 
-    '/tag/layout1.js', 
-    '/ui/core.js', 
-    '/ui/nav.js',
+    '/Tag/Tag.js', 
+    '/Tag/Layout.js', 
+    '/Skin/Core.js', 
+    '/Skin/Frame.js',
     '/charity/' + params.id + '.json'
 ];
 
-function onReady(Tag, Layout, Core, Nav, User) {
+function onReady(Tag, Layout, Core, Frame, User) {
     
     function charity(as) {
         as = as || {};
         var user = as.user;
 	var box = Core.box({
             contents: Layout.spoon([
-	        Tag.div({style: {height: '30px'}}, [Core.h2(user.organizationName)]),
+	        Core.h2(user.organizationName),
                 Layout.pillow(20),
                 Layout.hug([
-                    Tag.img({style: {width: '175px', height: '175px', borderRadius: '5px'}, src: user.imageUrl, alt: user.organizationName}),
+                    Core.image({width: 175, height: 175, borderRadius: 5, url: user.imageUrl, text: user.organizationName}),
                     Layout.pillow(30),
                     Layout.spoon([
-                        Tag.p({style: {height: '100px', width: '600px'}}, user.mission), 
+                        Tag.p({style: {font: Core.defaultFont, height: '150px', width: '600px'}}, user.mission), 
                         Layout.pillow(20),
                         Core.button({href: '/Me?donateTo=' + user.cid, text: 'Donate!', loud: true})
                     ])
@@ -33,7 +33,7 @@ function onReady(Tag, Layout, Core, Nav, User) {
         ]);
     }
 
-    var main = Nav.frame(charity({user: User}));
+    var main = Frame.frame(charity({user: User}));
 
     define(main);
 

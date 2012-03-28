@@ -3,17 +3,17 @@ var initialDeps = [
 ];
 
 var deps = [
-    '/tag/tag.js', 
-    '/tag/layout1.js', 
-    '/ui/nav.js', 
-    '/ui/core.js', 
+    '/Tag/Tag.js', 
+    '/Tag/Layout.js', 
+    '/Skin/Frame.js', 
+    '/Skin/Core.js', 
     '/charity/popular.json', 
-    '/ui/donor.js'
+    '/Skin/Donor.js'
 ];
 
 function onInitialReady(MostInfluentialId) {
 
-    function onReady(Tag, Layout, Nav, Core, PopularCharities, Donor, MostInfluential) {
+    function onReady(Tag, Layout, Frame, Core, PopularCharities, Donor, MostInfluential) {
 
         var mostInfluential = Core.box({
             width: 600,
@@ -29,12 +29,12 @@ function onInitialReady(MostInfluentialId) {
                 Donor.recommendedFunds({funds: PopularCharities})
             ]),
             sep,
-            Nav.footer([
+            Frame.footer([
                 Core.hyperlink({url: 'Registration', text: 'Charity Registration'})
             ])
         ]);
 
-        define( Nav.frame(body) );
+        define( Frame.frame(body) );
 
     }
 

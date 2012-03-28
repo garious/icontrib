@@ -1,9 +1,9 @@
 var deps = [
-    '/tag/tag.js', 
-    '/tag/layout1.js',
-    '/ui/chart.js', 
-    '/ui/colors.js', 
-    '/ui/core.js'
+    '/Tag/Tag.js', 
+    '/Tag/Layout.js',
+    '/Skin/Chart.js', 
+    '/Skin/Colors.js', 
+    '/Skin/Core.js'
 ];
 
 function onReady(Tag, Layout, Chart, Colors, Core) {

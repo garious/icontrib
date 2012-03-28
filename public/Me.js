@@ -1,14 +1,14 @@
 var deps = [
-    '/tag/tag.js', 
-    '/tag/layout1.js', 
-    '/ui/nav.js',
-    '/ui/core.js',
-    '/ui/donor.js',
-    '/ui/chart.js',
+    '/Tag/Tag.js', 
+    '/Tag/Layout.js', 
+    '/Skin/Frame.js',
+    '/Skin/Core.js',
+    '/Skin/Donor.js',
+    '/Skin/Chart.js',
     '/charity/popular.json'
 ];
 
-function onReady(Tag, Layout, Nav, Core, Donor, Chart, Popular) { 
+function onReady(Tag, Layout, Frame, Core, Donor, Chart, Popular) { 
 
     function fundContents(pie) {
         var dist = pie.distribution;
@@ -108,12 +108,12 @@ function onReady(Tag, Layout, Nav, Core, Donor, Chart, Popular) {
         return Layout.spoon(rows.concat(fundingRows));
     }
 
-    var main = Nav.frame(
+    var main = Frame.frame(
         Layout.spoon([
             Layout.hug([
                 Core.box({
                     width: 600,
-                    contents: dashboard({user: Nav.userInfo()})
+                    contents: dashboard({user: Frame.userInfo()})
                 }),
                 Layout.pillow(20),
                 Donor.recommendedFunds({funds: Popular})

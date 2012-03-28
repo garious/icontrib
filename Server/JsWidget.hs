@@ -25,12 +25,12 @@ widget root baseUrl = msum [
     , path (\p -> widget root (baseUrl ++ [p]))
     ]
 
--- Is there a javascript file named 'index.js' within this directory?
+-- Is there a javascript file named 'Index.js' within this directory?
 jsMod :: FilePath -> [String] -> ServerPart Response
 jsMod root baseUrl = do
       nullDir
       trailingSlash
-      jsModFile root baseUrl "index.js"
+      jsModFile root baseUrl "Index.js"
 
 -- Is there a javascript file here? 
 jsModFile :: FilePath -> [String] -> FilePath -> ServerPart Response
@@ -55,9 +55,9 @@ htmlForJsMod baseUrl filename ps = appTemplate $ do
 
       yoink = "\n\
            \YOINK.resourceLoader('', {}, window.PRELOADED_MODULES).getResources([\n\
-           \    '/tag/interface.js',\n\
-           \    '/tag/todom.js',\n\
-           \    '/tag/Webpage.js',\n\
+           \    '/Tag/Interface.js',\n\
+           \    '/Tag/ToDom.js',\n\
+           \    '/Tag/Webpage.js',\n\
            \    {path: '" ++ filename ++ "', params: " ++ params ++ "}\n\
            \], function(Iface, Dom, Webpage, widget) {\n\
            \    var page = Iface.getInterface(widget, Webpage.webpageId);\n\

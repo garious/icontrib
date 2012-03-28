@@ -1,11 +1,11 @@
 var deps = [
-    '/tag/tag.js', 
-    '/tag/layout1.js', 
-    '/ui/core.js',
-    '/ui/nav.js'
+    '/Tag/Tag.js', 
+    '/Tag/Layout.js', 
+    '/Skin/Core.js',
+    '/Skin/Frame.js'
 ];
 
-function onReady(Tag, Layout, Core, Nav) {
+function onReady(Tag, Layout, Core, Frame) {
 
     var logo = Tag.a({href: '/', style: {width: '129px', height: '70px'}}, [
         Core.image({url: '/ui/logo.png', text: 'IContrib Home'})
@@ -22,7 +22,7 @@ function onReady(Tag, Layout, Core, Nav) {
             email: email.value,
             password: password.value 
         };
-        Nav.post('/auth/login', formValues, function(dat) {
+        Frame.post('/auth/login', formValues, function(dat) {
             var data = JSON.parse(dat);
             if(data.Left) {
                 badLogin.hidden = false;
@@ -62,7 +62,7 @@ function onReady(Tag, Layout, Core, Nav) {
         main
     ]);
 
-    define( Nav.webpage(node) );
+    define( Frame.webpage(node) );
 }
  
 require(deps, onReady);

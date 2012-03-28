@@ -1,9 +1,9 @@
 // Create a DOM element from a name, attributes object, and array of children.
 
 var deps = [
-    'interface.js',
-    '2d.js',
-    'todom.js'
+    'Interface.js',
+    'TwoDimensional.js',
+    'ToDom.js'
 ];
 
 function onReady(I, Dim, Dom) {

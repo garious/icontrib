@@ -8,10 +8,10 @@
 // spoon(['a','b','c'])       === 'a\nb\nc'
 
 var deps = [
-    'tag.js',
-    'interface.js',
-    '2d.js',
-    'todom.js'
+    'Tag.js',
+    'Interface.js',
+    'TwoDimensional.js',
+    'ToDom.js'
 ];
 
 function onReady(Tag, I, Dim, Dom) {

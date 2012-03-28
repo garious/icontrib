@@ -1,8 +1,8 @@
 var deps = [
-    '/tag/tag.js', 
-    '/tag/layout1.js', 
-    '/ui/nav.js', 
-    '/ui/core.js', 
+    '/Tag/Tag.js', 
+    '/Tag/Layout.js', 
+    '/Skin/Frame.js', 
+    '/Skin/Core.js', 
     'toa.html',
     '/js/jsonform.js',
     '/charity/get.json'
@@ -26,7 +26,7 @@ function post(path, params, callback) {
 }
 
 
-function onReady(Tag, Layout, Nav, Core, toaHtml, JsonForm, Charity) {
+function onReady(Tag, Layout, Frame, Core, toaHtml, JsonForm, Charity) {
 
     function inputField(input, as, xs) {
 
@@ -156,7 +156,7 @@ function onReady(Tag, Layout, Nav, Core, toaHtml, JsonForm, Charity) {
         ]);
     }
 
-    define( Nav.frame(body()) );
+    define( Frame.frame(body()) );
 }
 
 require(deps, onReady);

@@ -3,8 +3,8 @@ function exportGoogle(text, require, callback) {
 }
 
 var deps = [
-    '/tag/tag.js',
-    'colors.js',
+    '/Tag/Tag.js',
+    'Colors.js',
     {path: '/mirror/google/jsapi', interpreter: exportGoogle}
 ];
 

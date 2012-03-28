@@ -1,10 +1,10 @@
 var deps = [
-    '/tag/tag.js'
+    '/Tag/Tag.js'
 ];
 
-function onReady(E) {
+function onReady(Tag) {
 
-    var canvas = E.canvas({width: 150, height: 250});
+    var canvas = Tag.canvas({width: 150, height: 250});
 
     var ctx = canvas.getContext('2d');  
 

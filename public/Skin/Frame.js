@@ -3,12 +3,12 @@ var authDeps = [
 ];
 
 var deps = [
-    '/tag/tag.js', 
-    '/tag/todom.js', 
-    '/tag/Webpage.js', 
-    '/tag/layout1.js', 
-    'core.js',
-    'colors.js'
+    '/Tag/Tag.js', 
+    '/Tag/ToDom.js', 
+    '/Tag/Webpage.js', 
+    '/Tag/Layout.js', 
+    'Core.js',
+    'Colors.js'
 ];
 
 // TODO: Find this function a better home.

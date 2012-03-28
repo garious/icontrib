@@ -1,7 +1,7 @@
 var deps = [
-    '/tag/tag.js',
-    '/tag/layout1.js',
-    'colors.js'
+    '/Tag/Tag.js',
+    '/Tag/Layout.js',
+    'Colors.js'
 ];
 
 function onReady(Tag, Layout, Colors) {
@@ -170,9 +170,12 @@ function onReady(Tag, Layout, Colors) {
         return Tag.tag('label', {style: {width: dim.width + 'px', height: dim.height + 'px', font: font}}, s);
     }
 
-    function p(s) {
-        var dim = textDimensions({}, s);
-        return Tag.tag('p', {style: {width: dim.width + 'px', height: dim.height + 'px', font: font, margin: '0px'}}, s);
+    function p(as) {
+        if (typeof as === 'string') {
+            as = {text: as};
+        }
+        var dim = textDimensions({width: as.width}, as.text);
+        return Tag.tag('p', {style: {width: dim.width + 'px', height: dim.height + 'px', font: font, margin: '0px'}}, as.text);
     }
 
     function hr(as) {

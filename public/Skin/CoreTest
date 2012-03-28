@@ -1,6 +1,6 @@
 var deps = [
-    'core.js',
-    '/tag/tag.js'
+    'Core.js',
+    '/Tag/Tag.js'
 ];
 
 function onReady(Core, Tag) {
