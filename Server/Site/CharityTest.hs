@@ -22,8 +22,7 @@ ci = C.CharityInfo (L.Identity "greg")
                     "charity/gffw.jpg"
                     "blah blah blah"
                     "payment info"
-
-data PartialCI = PartialCI { ein :: C.Ein
+data PartialCI = PartialCI { ein :: String
                            , organizationName :: String
                            , companyWebsite :: String
                            , paymentAddress :: String
@@ -31,7 +30,7 @@ data PartialCI = PartialCI { ein :: C.Ein
                            deriving (Eq, Ord, Show, Data, Typeable)
 
 mci :: PartialCI
-mci = PartialCI (C.Ein "10001")
+mci = PartialCI ("10001")
                 "Global Fund for Women"
                 "http://gffw.com"
                 "payment info"

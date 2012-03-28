@@ -8,6 +8,8 @@ import qualified Text.JSON.Generic           as JS
 import qualified Text.JSON.String            as JSS
 import SiteError
 
+toJSON :: (Data a) => a -> JS.JSValue
+toJSON = JS.toJSON
 
 runJsonDecode :: Data b => String -> Either String b
 runJsonDecode str = runIdentity $ runErrorT $ jsonDecode str
