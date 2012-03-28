@@ -15,7 +15,7 @@ V = $(TARGET)_$(FLAVOR)
 CRYPTO=/usr/local/Cellar/cryptopp/5.6.1/lib/libcryptopp.a
 all: $V/ship/icontrib $V/ship/import test
 
-HS=$(wildcard *.hs) $(wildcard */*.hs)
+HS=$(filter-out $(RUN_TESTS),$(wildcard *.hs) $(wildcard */*.hs))
 
 $V/ship/icontrib: Main.hs $(HS)
 	@mkdir -p $(@D)

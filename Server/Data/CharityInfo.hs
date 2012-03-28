@@ -1,4 +1,4 @@
-{-# LANGUAGE UndecidableInstances, GeneralizedNewtypeDeriving, FlexibleContexts, MultiParamTypeClasses, FlexibleInstances, TypeSynonymInstances, TypeFamilies, DeriveDataTypeable, TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings, GeneralizedNewtypeDeriving, DeriveDataTypeable, TemplateHaskell #-}
 module Data.CharityInfo where
 
 import Data.Login
@@ -16,8 +16,12 @@ data CharityInfo = CharityInfo { owner :: Identity
                                , cid :: CharityID
                                , imageUrl :: String
                                , mission :: String
+                               , paymentAddress :: String
                                }
                  deriving (Eq, Ord, Show, Data, Typeable)
+
+empty :: CharityInfo
+empty = CharityInfo (Identity "") (Ein "") "" "" (CharityID "") "" "" ""
 
 
 instance Indexable CharityInfo where

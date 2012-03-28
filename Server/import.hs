@@ -21,24 +21,22 @@ main = do
     db <- DB.newFromFile (dbDir opts)
     let errorLeft (Left ee) = error ee
         errorLeft (Right _) = return ()
+    putStrLn "importing..."
+    putStrLn $ "if you see an error you might need to : rm -rf " ++ (dbDir opts)
     donors <- glob "private/static/donor/*.json"
     e1 <- forM donors $ \ dd -> runErrorT $ do
         ff <- liftIO $ readFile dd
-        liftIO $ print dd
         di <- jsonDecode ff
-        liftIO $ print di
         let ident@(L.Identity name) = (U.owner di)
         (L.addIdentity db ident name) <|> return ()
         U.updateInfo db ident di
     mapM_ errorLeft e1
-    print "done donors"
+    putStrLn "done importing donors"
     charities <- glob "private/static/charity/*.json"
     e2 <- forM charities $ \ dd -> runErrorT $ do
         ff <- liftIO $ readFile dd
-        liftIO $ print dd
         di <- jsonDecode ff
-        liftIO $ print di
         C.updateInfo db (C.owner di) di
     mapM_ errorLeft e2
-    print "done charities"
+    putStrLn "done importing charities"
     createCheckpoint db

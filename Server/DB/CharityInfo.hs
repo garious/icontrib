@@ -7,8 +7,9 @@ import Data.Acid                             ( query, update )
 import SiteError
 import Data.Popular                          ( Popular(Popular) )
 import Query.DB
+import qualified Data.IxSet                  as IxSet
 
-queryByOwner :: MonadIO m => Database -> Identity -> m [CharityInfo]
+queryByOwner :: MonadIO m => Database -> Identity -> m (IxSet.IxSet CharityInfo)
 queryByOwner db uid = liftIO $ query db (CharityByOwnerQ uid)
 
 updateInfo :: (MonadError String m, MonadIO m) => Database -> Identity -> CharityInfo -> m () 
@@ -30,3 +31,4 @@ queryByCID db cc = do
     let singleton' [a] = return a
         singleton' _   = badCharityID
     singleton' infos 
+

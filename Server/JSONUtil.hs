@@ -8,6 +8,8 @@ import qualified Text.JSON.Generic           as JS
 import qualified Text.JSON.String            as JSS
 import SiteError
 
+toJSON :: (Data a) => a -> JS.JSValue
+toJSON = JS.toJSON
 
 runJsonDecode :: Data b => String -> Either String b
 runJsonDecode str = runIdentity $ runErrorT $ jsonDecode str
@@ -18,7 +20,10 @@ jsonDecodeE str = JS.decodeJSON str
 jsonDecode :: (MonadError String m, Data b) => String -> m b
 jsonDecode str = do 
     val <- jsonParse str 
-    checkJS $ JS.fromJSON $ val 
+    fromJson val 
+
+fromJson :: (MonadError String m, Data b) => JS.JSValue -> m b
+fromJson val = checkJS $ JS.fromJSON $ val 
 
 runJsonParse :: String -> Either String JS.JSValue
 runJsonParse str = runIdentity $ runErrorT $ jsonParse str
@@ -42,7 +47,7 @@ jsonUpdate :: (MonadError String m, Data b, Data a) => a -> String -> m b
 jsonUpdate val str = do
     jd <- jsonParse str
     let ov = JS.toJSON val
-    checkJS $ JS.fromJSON $ jsonMerge ov jd
+    fromJson $ jsonMerge ov jd
 
 jsonMerge :: JS.JSValue -> JS.JSValue -> JS.JSValue
 jsonMerge (JS.JSObject old) (JS.JSObject new) =

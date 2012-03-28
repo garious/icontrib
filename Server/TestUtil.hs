@@ -26,6 +26,13 @@ assertEqM msg actualM expected = do
     actual <- actualM
     assert (msg ++ ": " ++ (show actual) ++ " /= " ++ (show expected)) (actual == expected)
 
+-- Assert a monadic returns the expected value
+assertMEq :: (Eq a, Show a, Monad m) => String -> a -> m a ->  m ()
+assertMEq msg expected actualM = do
+    actual <- actualM
+    assert (msg ++ ": " ++ (show actual) ++ " /= " ++ (show expected)) (actual == expected)
+
+
 -- Assert the argument is true or bail out with the given error message
 assert :: Monad m => String -> Bool -> m ()
 assert msg False = error msg

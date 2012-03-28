@@ -5,5 +5,6 @@
    "companyWebsite": "http://usoa.com",
    "cid": "usoa",
    "imageUrl": "/charity/usoa.jpg",
-   "mission": "The Underwater Society of America keeps divers, councils and clubs aware of the issues affecting them."
+   "mission": "The Underwater Society of America keeps divers, councils and clubs aware of the issues affecting them.",
+   "paymentAddress": "usoa@icontrib.org"
 }
