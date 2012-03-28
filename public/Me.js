@@ -108,7 +108,7 @@ function onReady(Tag, Layout, Nav, Core, Donor, Chart, Popular) {
         return Layout.spoon(rows.concat(fundingRows));
     }
 
-    var main = Nav.frame([
+    var main = Nav.frame(
         Layout.spoon([
             Layout.hug([
                 Core.box({
@@ -119,8 +119,7 @@ function onReady(Tag, Layout, Nav, Core, Donor, Chart, Popular) {
                 Donor.recommendedFunds({funds: Popular})
             ]),
             Layout.pillow(20) 
-        ])
-    ]);
+        ]));
 
     define(main);
 }

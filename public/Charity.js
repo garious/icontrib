@@ -33,7 +33,7 @@ function onReady(Tag, Layout, Core, Nav, User) {
         ]);
     }
 
-    var main = Nav.frame([charity({user: User})]);
+    var main = Nav.frame(charity({user: User}));
 
     define(main);
 

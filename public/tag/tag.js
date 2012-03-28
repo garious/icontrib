@@ -44,7 +44,7 @@ function onReady(I, Dim, Dom) {
             } else {
                 for (var i = 0; i < xs.length; i++) {
                     var x = xs[i];
-                    var iface = I.getInterface(x, Dom.ToDomId);
+                    var iface = I.getInterface(x, Dom.toDomId);
                     e.appendChild(iface ? iface.toDom(x) : x);
                 }
             }
@@ -67,7 +67,7 @@ function onReady(I, Dim, Dom) {
 
     tag.interfaces = {};
 
-    tag.interfaces[Dim.TwoDimensionalId] = {
+    tag.interfaces[Dim.twoDimensionalId] = {
     
         // Calculate outer width of a DOM element
         getDimensions: function (me) {
@@ -121,7 +121,7 @@ function onReady(I, Dim, Dom) {
         
     };
     
-    tag.interfaces[Dom.ToDomId] = {
+    tag.interfaces[Dom.toDomId] = {
         toDom: function (me) {
             return me;
         }

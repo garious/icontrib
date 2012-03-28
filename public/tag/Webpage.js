@@ -6,6 +6,6 @@
 // function Webpage.getTitle (me)
 
 define({
-    WebpageId: baseUrl + '/Webpage.js'
+    webpageId: baseUrl + '/Webpage.js'
 });
 

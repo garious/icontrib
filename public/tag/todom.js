@@ -3,20 +3,20 @@
 // Returns a DOM node for this object
 // function ToDom.toDom (me)
 
-var ToDomId = baseUrl + '/ToDom.js';
+var toDomId = baseUrl + '/ToDom.js';
 
 
 // ToDom instance for strings
 
 String.interfaces = String.interfaces || {};
 
-String.interfaces[ToDomId] = {
+String.interfaces[toDomId] = {
     toDom: function (me) {
         return document.createTextNode(me);
     }
 };
 
 define({
-    ToDomId: ToDomId
+    toDomId: toDomId
 });
 

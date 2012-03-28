@@ -60,14 +60,14 @@ htmlForJsMod baseUrl filename ps = appTemplate $ do
            \    '/tag/Webpage.js',\n\
            \    {path: '" ++ filename ++ "', params: " ++ params ++ "}\n\
            \], function(Iface, Dom, Webpage, widget) {\n\
-           \    var page = Iface.getInterface(widget, Webpage.WebpageId);\n\
+           \    var page = Iface.getInterface(widget, Webpage.webpageId);\n\
            \    if (page) {\n\
            \        var title = page.getTitle(widget);\n\
            \        if (title) {\n\
            \            document.title = title;\n\
            \        }\n\
            \    }\n\
-           \    var iface = Iface.getInterface(widget, Dom.ToDomId);\n\
+           \    var iface = Iface.getInterface(widget, Dom.toDomId);\n\
            \    var nd = iface ? iface.toDom(widget) : widget;\n\
            \    document.body.appendChild(nd);\n\
            \});\n"

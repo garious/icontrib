@@ -34,7 +34,7 @@ function onInitialReady(MostInfluentialId) {
             ])
         ]);
 
-        define( Nav.frame([body]) );
+        define( Nav.frame(body) );
 
     }
 

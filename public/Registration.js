@@ -156,7 +156,7 @@ function onReady(Tag, Layout, Nav, Core, toaHtml, JsonForm, Charity) {
         ]);
     }
 
-    define( Nav.frame([body()]) );
+    define( Nav.frame(body()) );
 }
 
 require(deps, onReady);

@@ -45,7 +45,7 @@ function onReady(Tag, I, Dim, Dom) {
             var xs = me.subelements;
             for (var i = 0; i < xs.length; i += 1) {
                 var x = xs[i];
-                var iface = I.getInterface(x, Dom.ToDomId);
+                var iface = I.getInterface(x, Dom.toDomId);
                 x = iface && iface.toDom(x) || x;
                 if (x.constructor !== pillow) {  // Since DOM elements to not implement ToDom, we unfortunately have to pull pillows explicitly.
                     div.appendChild(x);
@@ -71,7 +71,7 @@ function onReady(Tag, I, Dim, Dom) {
     }
     
     pillow.interfaces = {};
-    pillow.interfaces[Dim.TwoDimensionalId] = Pillow_TwoDimensional;
+    pillow.interfaces[Dim.twoDimensionalId] = Pillow_TwoDimensional;
     
     // party(attrs, subelements)
     //
@@ -87,8 +87,8 @@ function onReady(Tag, I, Dim, Dom) {
     }
     
     party.interfaces = {};
-    party.interfaces[Dom.ToDomId] = Party_ToDom;
-    party.interfaces[Dim.TwoDimensionalId] = Party_TwoDimensional;
+    party.interfaces[Dom.toDomId] = Party_ToDom;
+    party.interfaces[Dim.twoDimensionalId] = Party_TwoDimensional;
     
     // Concatenate elements
     function cat(as, xs, setPos) {
@@ -105,7 +105,7 @@ function onReady(Tag, I, Dim, Dom) {
     
     // Set the horizontal position of a 2D element
     function setHPos(x, dim) {
-        var iface = I.getInterface(x, Dim.TwoDimensionalId);
+        var iface = I.getInterface(x, Dim.twoDimensionalId);
         iface.setPosition(x, {'top': 0, left: dim.width});
     
         var d = iface.getDimensions(x);
@@ -116,7 +116,7 @@ function onReady(Tag, I, Dim, Dom) {
     }
 
     function setHPosBottom(x, dim) {
-        var iface = I.getInterface(x, Dim.TwoDimensionalId);
+        var iface = I.getInterface(x, Dim.twoDimensionalId);
         iface.setPosition(x, {'bottom': 0, left: dim.width});
     
         var d = iface.getDimensions(x);
@@ -138,7 +138,7 @@ function onReady(Tag, I, Dim, Dom) {
     
     // Set the vertical position of a 2D element
     function setVPos(x, dim) {
-        var iface = I.getInterface(x, Dim.TwoDimensionalId);
+        var iface = I.getInterface(x, Dim.twoDimensionalId);
         iface.setPosition(x, {'top': dim.height, left: 0});
 
         var d = iface.getDimensions(x);
@@ -149,7 +149,7 @@ function onReady(Tag, I, Dim, Dom) {
     }
 
     function setVPosRight(x, dim) {
-        var iface = I.getInterface(x, Dim.TwoDimensionalId);
+        var iface = I.getInterface(x, Dim.twoDimensionalId);
         iface.setPosition(x, {'top': dim.height, right: 0});
 
         var d = iface.getDimensions(x);
@@ -172,14 +172,14 @@ function onReady(Tag, I, Dim, Dom) {
     // Concatenate elements horizontally and wrap in a DOM element
     function hug(as, xs) {
         var b = hcat(as, xs);
-        var iface = I.getInterface(b, Dom.ToDomId);
+        var iface = I.getInterface(b, Dom.toDomId);
         return iface.toDom(b);
     }
     
     // Concatenate elements vertically and wrap in a DOM element
     function spoon(as, xs) {
         var b = vcat(as, xs);
-        var iface = I.getInterface(b, Dom.ToDomId);
+        var iface = I.getInterface(b, Dom.toDomId);
         return iface.toDom(b);
     }
     

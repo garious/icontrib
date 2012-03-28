@@ -140,25 +140,20 @@ function onReady(Tag, ToDom, Webpage, Layout, Core, Colors, Me) {
 
     webpage.interfaces = {};
 
-    webpage.interfaces[ToDom.ToDomId] = {
+    webpage.interfaces[ToDom.toDomId] = {
         toDom: function (me) {
             return me.domNode;
         }
     };
 
-    webpage.interfaces[Webpage.WebpageId] = {
+    webpage.interfaces[Webpage.webpageId] = {
         getTitle: function (me) {
             return 'IContrib.org';
         }
     };
 
-    function frame(as, xs) {
-        if (as && as.constructor === Array) {
-            xs = as;
-            as = null;
-        }
-        xs = xs || [];
-        as = as || {};
+    function frame(contents) {
+        var as = {};
 
         if (Auth.Right) {
             var thumbContents = Layout.hug([
@@ -182,8 +177,8 @@ function onReady(Tag, ToDom, Webpage, Layout, Core, Colors, Me) {
             as.thumbnail = thumbnail;
         }
 
-        var navbar = nav(as);
-        var body = Tag.div(xs);
+        var navbar = nav({thumbnail: thumbnail});
+        var body = Tag.div([contents]);
 
         var node = Tag.div({style: {margin: '0px auto', height: getWindowInnerHeight(), width: '960px'}}, [
             Layout.spoon([
