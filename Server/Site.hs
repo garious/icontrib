@@ -61,7 +61,7 @@ tohttps hn pn = (seeOther ("https://" ++ hn ++ ":" ++ show pn) (toResponse ()))
 site :: DB.Database -> ServerPart Response
 site st = msum [ 
       JSW.widget root []
-    , fileServer "public/Darwin_Debug/ship"
+    , fileServer "Client/Darwin_Debug/ship"
     , fileServer "yoink"
     , fileServer root
     , fileServer "private/images"
@@ -71,7 +71,7 @@ site st = msum [
     , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "http://www.google.com/jsapi"))
     ]
   where
-    root = "public"
+    root = "Client"
 
 authServices:: DB.Database -> ServerPart Response
 authServices st = msum [ 
