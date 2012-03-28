@@ -58,7 +58,8 @@ function onReady(Tag, Layout, Colors) {
     function image(as) {
         var sty = {
             width:  as.width  && as.width  + 'px',
-            height: as.height && as.height + 'px'
+            height: as.height && as.height + 'px',
+            borderRadius: as.borderRadius && as.borderRadius + 'px'
         };
 
         return Tag.tag('img', {style: sty, src: as.url, alt: as.text}, null, {click: as.onClick});
