@@ -29,9 +29,6 @@ function onResponseData (chunk) {
 
     Assert.ok(x.name);  // Assert 'name' field exists
 
-    // TODO: FIX SERVER!
-    //Assert.ok(x.url);   // Assert 'url' field exists
-
     // Verify the fund is tagged with one of the user's labels.
     var fundLabel = 'Gregs-General-Fund';
     Assert.strictEqual(x.labels[0],             fundLabel);
