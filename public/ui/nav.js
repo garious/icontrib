@@ -175,7 +175,7 @@ function onReady(Tag, ToDom, Webpage, Layout, Core, Colors, Me) {
 
             var dim = getDimensions(thumbContents);
 
-            var thumbnail = Tag.a({href: '/Me/', style: {width: dim.width + 'px', height: dim.height + 'px', textDecoration: 'none'}}, [
+            var thumbnail = Tag.a({href: '/Me', style: {width: dim.width + 'px', height: dim.height + 'px', textDecoration: 'none'}}, [
                 thumbContents
             ]);
 

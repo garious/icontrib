@@ -3,7 +3,7 @@ var deps = [
     '/tag/layout1.js', 
     '/ui/core.js', 
     '/ui/nav.js',
-    params.id + '.json'
+    '/charity/' + params.id + '.json'
 ];
 
 function onReady(Tag, Layout, Core, Nav, User) {
@@ -21,7 +21,7 @@ function onReady(Tag, Layout, Core, Nav, User) {
                     Layout.spoon([
                         Tag.p({style: {height: '100px', width: '600px'}}, user.mission), 
                         Layout.pillow(20),
-                        Core.button({href: '/me/?donateTo=' + user.id, text: 'Donate!', loud: true})
+                        Core.button({href: '/Me?donateTo=' + user.cid, text: 'Donate!', loud: true})
                     ])
                 ])
             ])

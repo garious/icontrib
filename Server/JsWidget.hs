@@ -35,6 +35,7 @@ jsMod root baseUrl = do
 -- Is there a javascript file here? 
 jsModFile :: FilePath -> [String] -> FilePath -> ServerPart Response
 jsModFile root baseUrl filename = do
+      nullDir
       b <- liftIO (doesFileExist (joinPath (root : url)))
       guard b
       ps <- lookPairs

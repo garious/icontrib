@@ -2,7 +2,7 @@
 // Interface-oriented programming for JavaScript
 //
 function getInterface(obj, iid) {
-     return obj && obj.constructor && obj.constructor.interfaces && obj.constructor.interfaces[iid];
+     return obj.constructor.interfaces && obj.constructor.interfaces[iid];
 }
 
 //  //
@@ -10,13 +10,18 @@ function getInterface(obj, iid) {
 //  //
 //  // Note: This is considerably more expensive than using the interface implementation directly
 //  //
+//
+//  function bind(f, o) {
+//      return function () {
+//          return f(o, arguments);
+//      };
+//  }
+//
 //  function bindInterface(obj, iface) {
 //      var ifaceObj = {};
 //      for (var k in iface) {
 //          if (iface.hasOwnProperty(k)) {
-//              ifaceObj[k] = function () {
-//                  return iface[k](obj, arguments);
-//              };
+//              ifaceObj[k] = bind(iface[k], obj);
 //          }
 //      }
 //      return ifaceObj;

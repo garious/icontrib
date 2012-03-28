@@ -9,7 +9,7 @@ var deps = [
 function onReady(Tag, Layout, Chart, Colors, Core) {
 
     function alignButton(user) {
-        return Core.button({href: '/me/?donateTo=' + user.id, loud: true, text: 'Donate!'});
+        return Core.button({href: '/Me?donateTo=' + user.id, loud: true, text: 'Donate!'});
     }
 
     function isMember(xs, x) {
@@ -38,7 +38,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
                 Tag.div({style: {width: '18px', height: '18px', backgroundColor: colors[j % colors.length]}}),
                 Layout.pillow(15, 0),
                 Tag.div({style: {width: '55px', height: pct.height}}, [pct]),
-                Core.hyperlink({url: 'charity/?id=' + x.cid, text: x.name})
+                Core.hyperlink({url: 'Charity?id=' + x.cid, text: x.name})
             ]);
             rows.push(cols);
         }
@@ -132,7 +132,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
             var e = Layout.hug([
                 Tag.img({src: x.imageUrl, style: {width: '50px', height: '50px'}}),
                 Layout.pillow(20, 0),
-                Core.hyperlink({url: '/charity/?id=' + x.cid, text: x.name})
+                Core.hyperlink({url: '/Charity?id=' + x.cid, text: x.name})
             ]);
 
             listItems.push(e);

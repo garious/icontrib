@@ -30,7 +30,7 @@ function onInitialReady(MostInfluentialId) {
             ]),
             sep,
             Nav.footer([
-                Core.hyperlink({url: 'charitySignUp/', text: 'Charity Registration'})
+                Core.hyperlink({url: 'Registration', text: 'Charity Registration'})
             ])
         ]);
 

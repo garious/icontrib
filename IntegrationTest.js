@@ -58,9 +58,9 @@ pingServer();
 // Pages to test
 var pages = [
     {path: '/'},
-    {path: '/charitySignUp'},
-    {path: '/charity/?id=usoa'},
-    {path: '/me'},
+    {path: '/Registration'},
+    {path: '/Charity?id=usoa'},
+    {path: '/Me'},
 ];
 
 function onServerReady() {
