@@ -8,7 +8,7 @@ var deps = [
 function onReady(Tag, Layout, Core, Frame) {
 
     var logo = Tag.a({href: '/', style: {width: '129px', height: '70px'}}, [
-        Core.image({url: '/ui/logo.png', text: 'IContrib Home'})
+        Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
     ]);
 
     var badLogin = Tag.span({hidden: true, style: {height: '20px', width: '200px', color: 'red'}}, 'bad username or password');

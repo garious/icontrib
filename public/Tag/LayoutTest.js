@@ -3,41 +3,41 @@
 //
 
 var deps = [
-    'tag.js',
-    'layout1.js'
+    'Tag.js',
+    'Layout.js'
 ];
 
-function onReady(E, L) {
+function onReady(Tag, Layout) {
 
     function testImg() {
-        return E.img({src: '/ui/logo.png', style: {border: 'solid 1px', padding: '5px', borderRadius: '5px', width: '112px', height: '100px'}});
+        return Tag.img({src: '/Skin/logo.png', style: {border: 'solid 1px', padding: '5px', borderRadius: '5px', width: '112px', height: '100px'}});
     }
 
     function hugTest() {
-        return L.hug([
-            E.span({style: {height: '20px', width: '70px'}}, 'hello'), 
-            L.pillow(10),
-            E.span({style: {height: '20px', width: '70px'}}, 'world')
+        return Layout.hug([
+            Tag.span({style: {height: '20px', width: '70px'}}, 'hello'), 
+            Layout.pillow(10),
+            Tag.span({style: {height: '20px', width: '70px'}}, 'world')
         ]);
     }
 
     function test() {
-        var pad = L.pillow(10);
-        var separator = L.pillow(30);
+        var pad = Layout.pillow(10);
+        var separator = Layout.pillow(30);
 
         function label(s, e) {
-            return L.hug([E.p({style: {width: '70px'}}, s), pad, e]);
+            return Layout.hug([Tag.p({style: {width: '70px'}}, s), pad, e]);
         }
 
-        return L.hug([
+        return Layout.hug([
             pad,
-            L.spoon([
+            Layout.spoon([
                 pad,
-                L.spoon([
-                    label('hug',   L.hug(  [testImg(), pad, testImg(), pad, testImg()])), separator,
-                    label('kiss',  L.hug(  [testImg(),      testImg(),      testImg()])), separator,
-                    label('spoon', L.spoon([testImg(), pad, testImg(), pad, testImg()])), separator,
-                    label('love',  L.spoon([testImg(),      testImg(),      testImg()]))
+                Layout.spoon([
+                    label('hug',   Layout.hug(  [testImg(), pad, testImg(), pad, testImg()])), separator,
+                    label('kiss',  Layout.hug(  [testImg(),      testImg(),      testImg()])), separator,
+                    label('spoon', Layout.spoon([testImg(), pad, testImg(), pad, testImg()])), separator,
+                    label('love',  Layout.spoon([testImg(),      testImg(),      testImg()]))
                 ]),
                 pad 
             ]),
