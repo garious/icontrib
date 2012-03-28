@@ -64,6 +64,7 @@ site st = msum [
     , fileServer "public/Darwin_Debug/ship"
     , fileServer "yoink"
     , fileServer root
+    , fileServer "private/images"
     , dir "auth"    (authServices st)
     , dir "donor"   (donorServices st)
     , dir "charity" (C.charityServices st)
