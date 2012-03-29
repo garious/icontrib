@@ -12,7 +12,7 @@ define({
     green:         '#a7d322',
     redText:       '#ff4e00',
     red:           '#ff4e00',
-    grey:          '#d7d7d7',
+    gray:          '#d7d7d7',
     h1Size:        10 + smallestHeader,
     h2Size:         8 + smallestHeader,
     h3Size:         6 + smallestHeader,
