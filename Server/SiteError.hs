@@ -26,7 +26,7 @@ import Control.Monad.Error                ( MonadError, ErrorT, throwError, runE
 import Control.Monad.Trans                ( lift )
 import Control.Monad                      ( liftM )
 import Happstack.Server.Monads            ( ServerPartT )
-
+import qualified Log                      as Log
 type SiteErrorT a = ErrorT String (ServerPartT IO) a
 
 badUsername :: MonadError String m => m a
@@ -82,11 +82,13 @@ runErrorT_ aa = do
     _ <- runErrorT aa
     return ()
 
-failErrorT :: Monad m => ErrorT String m b -> m b
+failErrorT :: MonadIO m => ErrorT [Char] m b -> m b
 failErrorT aa = do
     rv <- runErrorT aa
     failLeft rv
 
-failLeft :: Monad m => Either String a -> m a
-failLeft (Left ee) = fail ee
+failLeft :: MonadIO m => Either [Char] b -> m b
+failLeft (Left ee) = do 
+    Log.debugM $ "failLeft: exceptable failure: " ++ ee
+    fail ee
 failLeft (Right aa) = return aa

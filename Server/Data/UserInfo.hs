@@ -1,9 +1,9 @@
-{-# LANGUAGE FlexibleContexts, MultiParamTypeClasses, FlexibleInstances, TypeSynonymInstances, TypeFamilies, DeriveDataTypeable, TemplateHaskell #-}
-{-# OPTIONS_GHC -fspec-constr-count=2 -fno-warn-orphans #-}
+{-# LANGUAGE OverloadedStrings, GeneralizedNewtypeDeriving, DeriveDataTypeable, TemplateHaskell #-}
 module Data.UserInfo where
 
 import Data.Data                             ( Typeable, Data )
 import Data.Login
+import qualified Data.ByteString.Lazy        as BL
 
 import Data.IxSet
 import Data.SafeCopy
@@ -15,7 +15,7 @@ data UserInfo = UserInfo { owner            :: Identity
                          , firstName        :: String
                          , lastName         :: String
                          , phone            :: String
-                         , email            :: String
+                         , email            :: BL.ByteString
                          , imageUrl         :: String
                          , centsDonated     :: Int
                          , alignedDonated   :: Int
@@ -25,6 +25,8 @@ data UserInfo = UserInfo { owner            :: Identity
                          }
               deriving (Eq, Ord, Show, Data, Typeable)
 
+empty :: UserInfo
+empty = UserInfo (Identity "") "" "" "" "" "" 0 0 [] [] []
 
 instance Indexable UserInfo where
     empty = ixSet [ ixFun $ \ci -> [ owner ci ]
