@@ -61,9 +61,10 @@ loginUserTest = liftIO $ HTTP.browse $ do
         user = J.UserLogin "anatoly" "anatoly"
         login = loginUser user
         add = addUser user
-    assertEqM "login" login (Left "DoesntExist")
-    assertEqM "login" add   (Right "anatoly")
-    assertEqM "login" login (Right "anatoly")
+    assertEqM "login empty"     login       (Left "DoesntExist")
+    assertEqM "login new"       add         (Right "anatoly")
+    assertEqM "login logout"    logoutUser  (Right ())
+    assertEqM "login new"       login       (Right "anatoly")
 
 addUserTest ::  IO ()
 addUserTest = liftIO $ HTTP.browse $ do

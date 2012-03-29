@@ -17,8 +17,8 @@ import TestUtil
 addUser :: J.UserLogin ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either String J.UserIdentity)
 addUser = post 200 "/auth/add"
 
-addUserInfo :: U.UserInfo ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either String ())
-addUserInfo = post 200 "/donor/update"
+updateUserInfo :: U.UserInfo ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either String ())
+updateUserInfo = post 200 "/donor/update"
 
 readUserInfo :: J.UserIdentity ->  HTTP.BrowserAction (HTTP.HandleStream String) (U.UserInfo)
 readUserInfo ident = get 200 $ "/donor/" ++ ident ++ ".json"
@@ -30,24 +30,33 @@ main :: IO ()
 main = do
     Log.start
     run getInfoTest
+    run updateInfoTest
     run mostInfluentialTest
 
+--make sure adding a login adds a user as well
 getInfoTest :: IO ()
 getInfoTest = liftIO $ HTTP.browse $ do
     let user = J.UserLogin "anatoly" "anatoly"
         toly = (L.Identity "anatoly")
-        ui = U.UserInfo toly "first" "last" "phone" "email" "imageurl" 100 100 [] [] []
+        ui = U.UserInfo toly "" "" "" "anatoly" "" 0 0 [] [] []
     --added new user, which should log us in
     assertEqM "addUser"      (addUser user)             (Right "anatoly")
-    assertEqM "addUserInfo"  (addUserInfo ui)           (Right ())
     assertEqM "readUserInfo" (readUserInfo "anatoly")    (ui)
 
-mostInfluentialTest :: IO ()
-mostInfluentialTest = liftIO $ HTTP.browse $ do
+--testing updating user info
+updateInfoTest :: IO ()
+updateInfoTest = liftIO $ HTTP.browse $ do
     let user = J.UserLogin "anatoly" "anatoly"
         toly = (L.Identity "anatoly")
         ui = U.UserInfo toly "first" "last" "phone" "email" "imageurl" 100 100 [] [] []
     --added new user, which should log us in
-    assertEqM "addUser"     (addUser user)      (Right "anatoly")
-    assertEqM "addUserInfo" (addUserInfo ui)    (Right ())
-    assertEqM "mostInfluential" mostInfluential ("anatoly")
+    assertEqM "addUser"         (addUser user)              (Right "anatoly")
+    assertEqM "updateUserInfo"  (updateUserInfo ui)         (Right ())
+    assertEqM "readUserInfo"    (readUserInfo "anatoly")    (ui)
+
+mostInfluentialTest :: IO ()
+mostInfluentialTest = liftIO $ HTTP.browse $ do
+    let user = J.UserLogin "anatoly" "anatoly"
+    --added new user, which should log us in
+    assertEqM "addUser"         (addUser user)      (Right "anatoly")
+    assertEqM "mostInfluential" mostInfluential     ("anatoly")

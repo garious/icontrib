@@ -3,6 +3,8 @@ module Query.Login where
 
 import Control.Monad.State                   ( get, put, MonadState )
 import Control.Monad.Reader                  ( ask, MonadReader )
+import Query.UserInfo                        ( userInfoU )
+import qualified Data.UserInfo               as U
 import qualified Data.IxSet                  as IxSet
 import Data.IxSet                            ( (@*) )
 import qualified Crypto.Hash.SHA512          as SHA512
@@ -17,7 +19,8 @@ replace :: MonadState DB m => (LoginDB -> m LoginDB) -> m ()
 replace ff = do
     db <- get
     ll <- ff (logins db)
-    put $ db { logins = ll }
+    db' <- get
+    put $ db' { logins = ll }
 
 use :: MonadReader DB m => (LoginDB -> m b) -> m b
 use ff = do
@@ -25,9 +28,10 @@ use ff = do
     ff (logins db)
 
 addIdentityU :: Identity -> PasswordHash -> Update DB (Either String ())
-addIdentityU uid phash = runErrorT $ replace $ \ db -> do
+addIdentityU uid@(Identity email) phash = runErrorT $ replace $ \ db -> do
     let notExist mm = mm `nothingOr` alreadyExists
     notExist $ IxSet.getOne $ db @* [uid]
+    lift $ userInfoU $ U.empty { U.owner = uid, U.email = email }
     return $ IxSet.insert (Login uid phash []) db
 
 tokenToIdentityQ :: Token -> Query DB (Either String Identity)
