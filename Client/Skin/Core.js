@@ -67,9 +67,25 @@ function onReady(Tag, Layout, Colors) {
 
     function input(as) {
         var width  = (as.width  || as.size * 10) + 'px';
-        var height = (as.height || 20) + 'px';
+        var height = (as.height || 30) + 'px';
 
-        var attrs = {type: as.type, size: as.size, style: {height: height, width: width}};
+        var sty = {
+            height: height,
+            width: width,
+            border: '2px solid',
+            borderColor: Colors.gray,
+            borderRadius: '2px',
+            font: font,
+            paddingLeft: '10px',
+            paddingRight: '10px'
+        };
+
+        var attrs = {
+            type: as.type,
+            size: as.size,
+            placeholder: as.placeholder || '',
+            style: sty
+        };
 
         // Special handling for 'value' attribute, which will awkwardly write the text "undefined".
         if (as.value !== undefined) {
@@ -84,7 +100,7 @@ function onReady(Tag, Layout, Colors) {
     function button(as) {
         var dim = textDimensions({}, as.text);
 
-        var color      = as.loud ? Colors.red : Colors.middleColor;
+        var color      = as.loud ? Colors.red : Colors.gray;
         var focusColor = as.loud ? Colors.red : Colors.lightColor;
 
         var handlers = {
@@ -96,8 +112,8 @@ function onReady(Tag, Layout, Colors) {
         return Tag.tag('a', {
             href: as.href || '#', 
             style: {
-                width: dim.width + 'px',
-                height: dim.height + 'px',
+                width:  (as.width  !== undefined ? as.width : dim.width)  + 'px',
+                height: (as.height !== undefined ? as.width : dim.height) + 'px',
                 font: font, 
                 textDecoration: 'none', 
                 textAlign: 'center', 
@@ -124,7 +140,9 @@ function onReady(Tag, Layout, Colors) {
                 height: as.height ? (as.height - 2 * padding - 4) + 'px' : e.style.height,
                 padding: padding + 'px'
             }
-        }, [e]);
+        }, [e], {
+            keyup: as.onKeyUp
+        });
     }
 
     // Create the style attribute for HTML header elements

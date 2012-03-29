@@ -1,20 +1,23 @@
 var deps = [
+    '/Tag/Interface.js',
+    '/Tag/TwoDimensional.js',
     '/Tag/Tag.js', 
     '/Tag/Layout.js', 
     '/Skin/Core.js',
-    '/Skin/Frame.js'
+    '/Skin/Frame.js',
+    '/Skin/Colors.js'
 ];
 
-function onReady(Tag, Layout, Core, Frame) {
+function onReady(Iface, TwoDim, Tag, Layout, Core, Frame, Colors) {
 
-    var logo = Tag.a({href: '/', style: {width: '129px', height: '70px'}}, [
+    var logo = Tag.a({href: '/', tabindex: -1, style: {width: '129px', height: '70px'}}, [
         Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
     ]);
 
-    var badLogin = Tag.span({hidden: true, style: {height: '20px', width: '200px', color: 'red'}}, 'bad username or password');
+    var badLogin = Tag.span({hidden: true, style: {height: '20px', width: '200px', color: Colors.red}}, 'bad username or password');
 
-    var email = Core.input({type: 'text', size: 18, width: 300});
-    var password = Core.input({type: 'password', size: 18, width: 300});
+    var email = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Email'});
+    var password = Core.input({type: 'password', size: 18, width: 300, placeholder: 'Password'});
 
     function submit(evt) {
         evt.preventDefault();
@@ -27,39 +30,41 @@ function onReady(Tag, Layout, Core, Frame) {
             if(data.Left) {
                 badLogin.hidden = false;
             } else {
-                window.location = '/Me/';
+                window.location = '/Me';
             }
         });
     }
 
-    var widget = Layout.spoon([
-        email,
-        Layout.pillow(0, 30),
-        password,
-        Layout.pillow(0, 30),
-        Core.button({text: 'Log in', onClick: submit})
-    ]);
-
-    widget.addEventListener('keyup', function(evt) {
+    function onKeyUp (evt) {
         if (evt.keyCode === 13) {
            submit(evt);
         }
-    });
+    }
 
-    var box = Core.box({
-        width: 340,
-        contents: widget
-    });
-
-    var main = Layout.spoon([
-       Layout.pillow(0, 20),
-       logo,
-       Layout.pillow(0, 30),
-       box 
+    var widget = Layout.spoon([
+        email,
+        Layout.pillow(0, 15),
+        password,
+        badLogin,
+        //Layout.pillow(0, 15),
+        Core.button({text: 'Log in', onClick: submit, width: 314})
     ]);
 
-    var node = Tag.div({style: {margin: '0px auto', height: '100%', width: '460px'}}, [
-        main
+    var box = Core.box({
+        width: 355,
+        contents: widget,
+        onKeyUp: onKeyUp
+    });
+
+    var iface = Iface.getInterface(box, TwoDim.twoDimensionalId);
+    var dim = iface.getDimensions(box);
+
+    var node = Tag.div({style: {margin: '0px auto', height: '100%', width: dim.width + 'px', textAlign: 'center'}}, [
+        Tag.br(),
+        logo,
+        Tag.br(),
+        Tag.br(),
+        box
     ]);
 
     define( Frame.webpage(node) );
