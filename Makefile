@@ -20,6 +20,7 @@ all: server private/static.ok client $(INTEGRATION_TESTS)
 
 server: $V/ship/import $V/ship/icontrib $(JS_TESTS)
 
+.PHONY: client
 client:
 	$(MAKE) -C Client V=$V
 	$(MAKE) -C yoink V=$V
@@ -50,7 +51,7 @@ deps:
 
 NODE_DIR = node/$V
 
-$V/IntegrationTest.js.passed: Client/$V/ship/IContrib.js
+$V/IntegrationTest.js.passed: client server
 
 $V/SiteTest.js.passed: private/static.ok
 
