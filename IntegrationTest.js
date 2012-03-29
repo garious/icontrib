@@ -15,7 +15,7 @@ var Zombie     = require('zombie');
 var Assert     = require('assert');
 
 // Server configuration
-var serverDir = 'Darwin_Debug/ship';
+var serverDir = 'Server/Darwin_Debug/ship';
 var dbDir = 'private/db';
 
 

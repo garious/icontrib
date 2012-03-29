@@ -18,17 +18,33 @@ INTEGRATION_TESTS = $(patsubst %,$V/%.passed,$(RUN_INTEGRATION_TESTS))
 
 all: server private/static.ok client $(INTEGRATION_TESTS)
 
-server: $V/ship/import $V/ship/icontrib $(JS_TESTS)
 
-.PHONY: client
+
+.PHONY: server client
+tree: server client
+
+server:
+	$(MAKE) -C Server V=$V
+
 client:
 	$(MAKE) -C Client V=$V
 	$(MAKE) -C yoink V=$V
 
-serve: server private/static.ok client
-	@$V/ship/icontrib
+tree_%:
+	$(MAKE) -C Server V=$V $(patsubst tree_%,%,$@)
+	$(MAKE) -C Client V=$V $(patsubst tree_%,%,$@)
+	$(MAKE) -C yoink V=$V $(patsubst tree_%,%,$@)
+	$(MAKE) V=$V $(patsubst tree_%,%,$@)
 
-private/static.ok: $V/ship/import $(wildcard private/static/*/*) $(wildcard Server/Data/*.hs)
+Client/$V/ship/IContrib.js: client
+
+Server/$V/ship/icontrib: server
+Server/$V/ship/import: server
+
+serve: Server/$V/ship/icontrib private/static.ok client
+	@$<
+
+private/static.ok: Server/$V/ship/import $(wildcard private/static/*/*) $(wildcard Server/Data/*.hs)
 	@$<
 	@touch $@
 
@@ -51,7 +67,7 @@ deps:
 
 NODE_DIR = node/$V
 
-$V/IntegrationTest.js.passed: client server
+$V/IntegrationTest.js.passed: Client/$V/ship/IContrib.js Server/$V/ship/icontrib
 
 $V/SiteTest.js.passed: private/static.ok
 
@@ -61,9 +77,3 @@ $V/%.js.passed: %.js
 	@$(NODE_DIR)/node $<
 	@touch $@
 
-$V/ship/%:Server/$V/ship/%
-	@mkdir -p $(@D)
-	cp $< $@
-
-Server/%:
-	$(MAKE) -C Server V=$V $*
