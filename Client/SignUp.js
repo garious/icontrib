@@ -23,7 +23,7 @@ function onReady(Iface, TwoDim, Tag, Layout, Core, Frame, Colors) {
     function submit(evt) {
         evt.preventDefault();
      
-        if (password.value !== '' || (password.value !== confirmPassword.value)) {
+        if (password.value === '' || (password.value !== confirmPassword.value)) {
             alert('Passwords do not match!');
         } else {
             var formValues = {
@@ -35,7 +35,32 @@ function onReady(Iface, TwoDim, Tag, Layout, Core, Frame, Colors) {
                 if(data.Left) {
                     badLogin.hidden = false;
                 } else {
-                    window.location = '/Me';
+                    // TODO: This should all be automatic after posting to /auth/add
+                    var i = email.value.indexOf('@');
+                    var owner = email.value.substring(0, i > 0 ? i : undefined);
+                    Frame.post('/donor/update', {
+                        owner: owner,
+                        email: email.value,
+
+                        // TODO: This can all be optional
+                        firstName: '',
+                        lastName: '',
+                        phone: '',
+                        imageUrl: '',
+                        centsDonated: 0,
+                        alignedDonated: 0,
+                        alignedUsers: [],
+                        distribution: [],
+                        funds: []
+
+                    }, function(dat) {
+                        var data = JSON.parse(dat);
+                        if(data.Left) {
+                            alert('error: ' + data.Left);
+                        } else {
+                            window.location = '/Me';
+                        }
+                    });
                 }
             });
         }
