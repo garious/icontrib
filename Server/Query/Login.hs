@@ -10,7 +10,6 @@ import Data.IxSet                            ( (@*) )
 import qualified Crypto.Hash.SHA512          as SHA512
 import qualified Data.ByteString.Lazy        as BL
 import qualified Data.ByteString             as BS
-import qualified Log                         as Log
 import Data.Acid
 import SiteError
 import Data.Login
