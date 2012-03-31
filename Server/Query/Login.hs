@@ -14,7 +14,6 @@ import Data.Acid
 import SiteError
 import Data.Login
 import Data.DB
-
 replace :: MonadState DB m => (LoginDB -> m LoginDB) -> m ()
 replace ff = do
     db <- get
