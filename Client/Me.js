@@ -77,14 +77,10 @@ function onReady(Tag, Layout, Frame, Core, Donor, Chart, Popular) {
 
         var rows = [];
 
-        // TODO: clean up calculation of size of string that wraps over serveral lines
-        var impactHeader = Core.h6(impactMsg);
-        impactHeader.style.width = '550px';
-        impactHeader.style.height = '50px';
+        var impactHeader = Core.h6({text: impactMsg, maxWidth: 550});
 
         if (alignedUsers.length > 0) {
             rows.push( Core.h3('My impact') );
-            //rows.push( Layout.hug([Layout.pillow(30), Core.h6(impactMsg)]) );
             rows.push( Layout.hug([Layout.pillow(30), impactHeader]) );
         }
 

@@ -23,10 +23,12 @@ function onReady(Iface, TwoDim, Tag, Layout, Colors) {
             ctx.fontSize = fontSize;
 
             var dim = ctx.measureText(s);
+            var maxWidth = as.maxWidth !== undefined ? as.maxWidth : dim.width;
+            var height = (fontSize + 6) * Math.ceil(dim.width / maxWidth); // TODO: Might be more lines if words do not fall on maxWidth boundaries.
 
             return {
-                width: dim.width,
-                height: fontSize + 6
+                width: dim.width > maxWidth ? maxWidth : dim.width,
+                height: height
             };
 
         } else {
@@ -150,14 +152,14 @@ function onReady(Iface, TwoDim, Tag, Layout, Colors) {
     }
 
     // Create the style attribute for HTML header elements
-    function hStyle(fontSize, s) {
-        var dim = textDimensions({fontSize: fontSize}, s);
+    function hStyle(as, s) {
+        var dim = textDimensions(as, s);
 
         return {
             width: dim.width + 'px',
             height: dim.height + 'px',
             font: font,
-            fontSize: fontSize + 'px',
+            fontSize: as.fontSize + 'px',
             margin: 0,
             color: Colors.darkColor
         };
@@ -174,12 +176,12 @@ function onReady(Iface, TwoDim, Tag, Layout, Colors) {
     function mkHeader(n) {
 
         function header(as) {
-            var s = typeof as === "string" ? as : as.text;
+            var s = typeof as === 'string' ? as : as.text;
 
-            var sty = hStyle(Colors['h' + n + 'Size'], s); 
+            var sty = hStyle({fontSize: Colors['h' + n + 'Size'], maxWidth: as.maxWidth}, s); 
 
-            if (typeof as === "object") {
-                sty.color = as.color !== 'undefined' ? as.color : sty.color;
+            if (typeof as === 'object') {
+                sty.color = as.color !== undefined ? as.color : sty.color;
             }
 
             return Tag.tag('h' + n, {style: sty}, s);

@@ -122,7 +122,18 @@ function onReady(Tag, Layout, Frame, Core, toaHtml, JsonForm, Charity) {
         } else {
             buttonText = 'Register!';
         }
-        var register = Core.button({text: buttonText, loud: true});
+
+        function onRegister (evt) {
+            evt.preventDefault();
+            var values = JsonForm.map(schema, inputs, {}, JsonForm.toVal);
+            var dataString = JSON.stringify(values);
+            post('/charity/update', dataString, function(data) {
+                var dataString = JSON.stringify(data);
+                console.log(dataString);
+            });
+        }
+
+        var register = Core.button({text: buttonText, loud: true, onClick: onRegister});
 
         var form = Tag.form({style: {counterReset: 'fieldsets', width: '800px', height: '720px'}}, [
                 fieldset([legend('Organization Information'), ein, name, url, payAddr ]),
@@ -131,17 +142,6 @@ function onReady(Tag, Layout, Frame, Core, toaHtml, JsonForm, Charity) {
                 fieldset([legend(['Terms of Agreement']), toaDiv/*, checkbox*/ ]),
                 register
         ]);
-
-        register.addEventListener('click', function (e) {
-            e.preventDefault();
-            var values = JsonForm.map(schema, inputs, {}, JsonForm.toVal);
-            var dataString = JSON.stringify(values);
-            post('/charity/update', dataString, function(data) {
-                var dataString = JSON.stringify(data);
-                console.log(dataString);
-            });
-        });
-
 
         return Layout.hug([
             Layout.spoon([

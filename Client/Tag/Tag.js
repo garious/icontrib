@@ -161,7 +161,7 @@ function onReady(I, Dim, Dom) {
         },
     
         setPosition: function (me, pos) {
-            return tag.interfaces[Dim.twoDimensionalId].setPosition(me.attributes);
+            return tag.interfaces[Dim.twoDimensionalId].setPosition(me.attributes, pos);
         }
         
     };
