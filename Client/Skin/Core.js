@@ -1,10 +1,12 @@
 var deps = [
+    '/Tag/Interface.js',
+    '/Tag/TwoDimensional.js',
     '/Tag/Tag.js',
     '/Tag/Layout.js',
     'Colors.js'
 ];
 
-function onReady(Tag, Layout, Colors) {
+function onReady(Iface, TwoDim, Tag, Layout, Colors) {
 
     var defaultFont = "/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
     var defaultFontSize = 15;
@@ -128,6 +130,8 @@ function onReady(Tag, Layout, Colors) {
     function box(as) {
         var shadow = '0px 0px 5px 2px #ddd';
         var e = as.contents;
+        var iface = Iface.getInterface(e, TwoDim.twoDimensionalId);
+        var dim = iface.getDimensions(e);
 
         var padding = 15;
         return Tag.tag('div', {
@@ -136,8 +140,8 @@ function onReady(Tag, Layout, Colors) {
                 shadow: shadow,
                 MozBoxShadow: shadow,
                 WebkitBoxShadow: shadow,
-                width:  as.width  ? (as.width - 2 * padding - 4) + 'px' : e.style.width,
-                height: as.height ? (as.height - 2 * padding - 4) + 'px' : e.style.height,
+                width:  (as.width  ? as.width - 2 * padding - 4 : dim.width) + 'px',
+                height: (as.height ? as.height - 2 * padding - 4 : dim.height) + 'px',
                 padding: padding + 'px'
             }
         }, [e], {

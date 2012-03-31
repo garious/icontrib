@@ -11,7 +11,7 @@ function onReady(I, Dim, Dom) {
     function text(s) {
         return document.createTextNode(s);
     }
-    
+
     function tag(nm, as, xs, es) {
         if (typeof as === 'string' || as && as.constructor === Array) {
             es = xs;
@@ -124,6 +124,51 @@ function onReady(I, Dim, Dom) {
     tag.interfaces[Dom.toDomId] = {
         toDom: function (me) {
             return me;
+        }
+    };
+    
+
+    function tag1(nm, as, xs, es) {
+        if (typeof as === 'string' || as && as.constructor === Array) {
+            es = xs;
+            xs = as;
+            as = null;
+        }
+
+        // Normalize attributes
+        // Note: clone(as)?
+        as = as || {};
+        as.style = as.style || {};
+
+        // TODO: if margin, padding or border is set, parse it and break it up into Left/Right/Top/Bottom.
+
+        return {
+            constructor: tag1,
+            name: nm,
+            attributes: as,
+            subelements: xs,
+            handlers: es
+        };
+    }
+
+    tag1.interfaces = {};
+
+    tag1.interfaces[Dim.twoDimensionalId] = {
+    
+        // Calculate outer width of a DOM element
+        getDimensions: function (me) {
+            return tag.interfaces[Dim.twoDimensionalId].getDimensions(me.attributes);
+        },
+    
+        setPosition: function (me, pos) {
+            return tag.interfaces[Dim.twoDimensionalId].setPosition(me.attributes);
+        }
+        
+    };
+    
+    tag1.interfaces[Dom.toDomId] = {
+        toDom: function (me) {
+            return tag(me.name, me.attributes, me.subelements, me.handlers);
         }
     };
     
