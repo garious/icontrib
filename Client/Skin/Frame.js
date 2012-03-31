@@ -125,10 +125,10 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
     //
     // Web Page object
     //
-    function webpage(domNode) {
+    function webpage(domable) {
         return {
             constructor: webpage,
-            domNode: domNode
+            domable: domable
         };
     }
 
@@ -136,7 +136,8 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
 
     webpage.interfaces[ToDom.toDomId] = {
         toDom: function (me) {
-            return me.domNode;
+            var iface = Iface.getInterface(me.domable, ToDom.toDomId);
+            return iface !== undefined ? iface.toDom(me.domable) : me.domable;
         }
     };
 
