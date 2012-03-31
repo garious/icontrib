@@ -28,7 +28,7 @@ function post(path, params, callback) {
 
 function onReady(Tag, Layout, Frame, Core, toaHtml, JsonForm, Charity) {
 
-    function inputField(input, as, xs) {
+    function inputField(as, xs) {
 
         var fieldStyle = {
             listStyle: 'none',
@@ -51,15 +51,16 @@ function onReady(Tag, Layout, Frame, Core, toaHtml, JsonForm, Charity) {
             WebkitBorderRadius: '2px',
             MozBorderRadius: '2px'
         };
-        input['type'] = as.type;
-        input.name = as.name;
-        input.autofocus = 'autofocus';
-        input.syte = inputStyle;
-        input.placeholder = as.placeholder || '';
 
         return Tag.div({style: fieldStyle}, [
             Tag.label({'for': as.name, style: labelStyle}, as.label), 
-            input
+            Tag.input({
+                type: as.type,
+                name: as.name,
+                autofocus: 'autofocus',
+                style: inputStyle,
+                placeholder: as.placeholder || ''
+            })
         ]);
     }
 
@@ -98,17 +99,23 @@ function onReady(Tag, Layout, Frame, Core, toaHtml, JsonForm, Charity) {
         var schema = info;
         //now i have an object with a bunch of empty inputs, whose layout matches my schema
         //i can traverse the schema in parallel with the object and reference the input fields
-        var inputs = JsonForm.map(schema, schema, {}, JsonForm.toInput);
         //var pc = inputs.poc;
-        var name        = inputField(inputs.organizationName, {label: 'Organization Name', type: 'text', name: 'name'});
-        var ein         = inputField(inputs.ein,              {label: 'EIN', type: 'text', name: 'ein', required: 'required'});
-        var url         = inputField(inputs.companyWebsite,   {label: 'Website URL', type: 'url', name: 'url', placeholder: 'http://'});
-        var payAddr     = inputField(inputs.paymentAddress,   {label: 'PayPal address', type: 'email', name: 'payAddr', placeholder: 'donations@charity.org'});
+        var name        = inputField({label: 'Organization Name', type: 'text', name: 'name'});
+        var ein         = inputField({label: 'EIN', type: 'text', name: 'ein', required: 'required'});
+        var url         = inputField({label: 'Website URL', type: 'url', name: 'url', placeholder: 'http://'});
+        var payAddr     = inputField({label: 'PayPal address', type: 'email', name: 'payAddr', placeholder: 'donations@charity.org'});
         //var firstName   = inputField(pc.firstName,        {label: 'First Name', type: 'text', name: 'firstName', required: 'required'});
         //var lastName    = inputField(pc.lastName,         {label: 'Last Name', type: 'text', name: 'lastName', required: 'required'});
         //var phoneNumber = inputField(pc.phone,            {label: 'Phone Number', type: 'text', name: 'phoneNumber', placeholder: '(xxx) xxx-xxxx'});
         //var email       = inputField(pc.email,            {label: 'Email', type: 'email', name: 'email', placeholder: 'abc@charity.org'});
         //var checkbox    = Core.input({type: 'checkbox', width: 200}, 'I agree to the terms above');
+
+        var inputs = {
+            organizationName: name,
+            ein: ein,
+            companyWebsite: url,
+            paymentAddress: payAddr
+        };
 
         function setVal (name, value, rv) { 
             rv.value = value; 
@@ -122,7 +129,18 @@ function onReady(Tag, Layout, Frame, Core, toaHtml, JsonForm, Charity) {
         } else {
             buttonText = 'Register!';
         }
-        var register = Core.button({text: buttonText, loud: true});
+
+        function onRegister (evt) {
+            evt.preventDefault();
+            var values = JsonForm.map(schema, inputs, {}, JsonForm.toVal);
+            var dataString = JSON.stringify(values);
+            post('/charity/update', dataString, function(data) {
+                var dataString = JSON.stringify(data);
+                console.log(dataString);
+            });
+        }
+
+        var register = Core.button({text: buttonText, loud: true, onClick: onRegister});
 
         var form = Tag.form({style: {counterReset: 'fieldsets', width: '800px', height: '720px'}}, [
                 fieldset([legend('Organization Information'), ein, name, url, payAddr ]),
@@ -131,17 +149,6 @@ function onReady(Tag, Layout, Frame, Core, toaHtml, JsonForm, Charity) {
                 fieldset([legend(['Terms of Agreement']), toaDiv/*, checkbox*/ ]),
                 register
         ]);
-
-        register.addEventListener('click', function (e) {
-            e.preventDefault();
-            var values = JsonForm.map(schema, inputs, {}, JsonForm.toVal);
-            var dataString = JSON.stringify(values);
-            post('/charity/update', dataString, function(data) {
-                var dataString = JSON.stringify(data);
-                console.log(dataString);
-            });
-        });
-
 
         return Layout.hug([
             Layout.spoon([

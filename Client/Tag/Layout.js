@@ -36,22 +36,19 @@ function onReady(Tag, I, Dim, Dom) {
     // a ToDom instance for the Party class
     var Party_ToDom = {
         toDom: function (me) {
-            var div = Tag.tag('div');
-            div.style.height = me.height + 'px';
-            div.style.width = me.width + 'px';
-            div.style.position = 'absolute';
-    
             // ys = filter (!= pillow) xs
             var xs = me.subelements;
+            var ys = [];
             for (var i = 0; i < xs.length; i += 1) {
                 var x = xs[i];
                 var iface = I.getInterface(x, Dom.toDomId);
                 x = iface && iface.toDom(x) || x;
                 if (x.constructor !== pillow) {  // Since DOM elements to not implement ToDom, we unfortunately have to pull pillows explicitly.
-                    div.appendChild(x);
+                    ys.push(x);
                 }
             }
-            return div;
+            return Tag.tag('div', {style: {height: me.height + 'px', width: me.width + 'px', position: 'absolute'}}, ys);
+    
         }
     };
     

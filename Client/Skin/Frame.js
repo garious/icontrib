@@ -3,21 +3,15 @@ var authDeps = [
 ];
 
 var deps = [
+    '/Tag/Interface.js', 
     '/Tag/Tag.js', 
+    '/Tag/TwoDimensional.js', 
     '/Tag/ToDom.js', 
     '/Tag/Webpage.js', 
     '/Tag/Layout.js', 
     'Core.js',
     'Colors.js'
 ];
-
-// TODO: Find this function a better home.
-function getDimensions(me) {
-    return {
-        width: parseInt(me.style.width, 10),
-        height: parseInt(me.style.height, 10)
-    };
-}
 
 
 // TODO: how to get window.innerHeight in IE 8?
@@ -47,7 +41,7 @@ function post(path, params, callback) {
 
 
 function onAuthReady(Auth) { 
-function onReady(Tag, ToDom, Webpage, Layout, Core, Colors, Me) { 
+function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) { 
 
     function loginWidget(as) {
 
@@ -131,10 +125,10 @@ function onReady(Tag, ToDom, Webpage, Layout, Core, Colors, Me) {
     //
     // Web Page object
     //
-    function webpage(domNode) {
+    function webpage(domable) {
         return {
             constructor: webpage,
-            domNode: domNode
+            domable: domable
         };
     }
 
@@ -142,7 +136,8 @@ function onReady(Tag, ToDom, Webpage, Layout, Core, Colors, Me) {
 
     webpage.interfaces[ToDom.toDomId] = {
         toDom: function (me) {
-            return me.domNode;
+            var iface = Iface.getInterface(me.domable, ToDom.toDomId);
+            return iface !== undefined ? iface.toDom(me.domable) : me.domable;
         }
     };
 
@@ -168,7 +163,8 @@ function onReady(Tag, ToDom, Webpage, Layout, Core, Colors, Me) {
                 ])
             ]);
 
-            var dim = getDimensions(thumbContents);
+            var iface = Iface.getInterface(thumbContents, TwoDim.twoDimensionalId);
+            var dim = iface.getDimensions(thumbContents);
 
             var thumbnail = Tag.a({href: '/Me', style: {width: dim.width + 'px', height: dim.height + 'px', textDecoration: 'none'}}, [
                 thumbContents

@@ -1,10 +1,12 @@
 var deps = [
+    '/Tag/Interface.js',
+    '/Tag/TwoDimensional.js',
     '/Tag/Tag.js',
     '/Tag/Layout.js',
     'Colors.js'
 ];
 
-function onReady(Tag, Layout, Colors) {
+function onReady(Iface, TwoDim, Tag, Layout, Colors) {
 
     var defaultFont = "/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
     var defaultFontSize = 15;
@@ -21,10 +23,12 @@ function onReady(Tag, Layout, Colors) {
             ctx.fontSize = fontSize;
 
             var dim = ctx.measureText(s);
+            var maxWidth = as.maxWidth !== undefined ? as.maxWidth : dim.width;
+            var height = (fontSize + 6) * Math.ceil(dim.width / maxWidth); // TODO: Might be more lines if words do not fall on maxWidth boundaries.
 
             return {
-                width: dim.width,
-                height: fontSize + 6
+                width: dim.width > maxWidth ? maxWidth : dim.width,
+                height: height
             };
 
         } else {
@@ -128,6 +132,8 @@ function onReady(Tag, Layout, Colors) {
     function box(as) {
         var shadow = '0px 0px 5px 2px #ddd';
         var e = as.contents;
+        var iface = Iface.getInterface(e, TwoDim.twoDimensionalId);
+        var dim = iface.getDimensions(e);
 
         var padding = 15;
         return Tag.tag('div', {
@@ -136,8 +142,8 @@ function onReady(Tag, Layout, Colors) {
                 shadow: shadow,
                 MozBoxShadow: shadow,
                 WebkitBoxShadow: shadow,
-                width:  as.width  ? (as.width - 2 * padding - 4) + 'px' : e.style.width,
-                height: as.height ? (as.height - 2 * padding - 4) + 'px' : e.style.height,
+                width:  (as.width  ? as.width - 2 * padding - 4 : dim.width) + 'px',
+                height: (as.height ? as.height - 2 * padding - 4 : dim.height) + 'px',
                 padding: padding + 'px'
             }
         }, [e], {
@@ -146,14 +152,14 @@ function onReady(Tag, Layout, Colors) {
     }
 
     // Create the style attribute for HTML header elements
-    function hStyle(fontSize, s) {
-        var dim = textDimensions({fontSize: fontSize}, s);
+    function hStyle(as, s) {
+        var dim = textDimensions(as, s);
 
         return {
             width: dim.width + 'px',
             height: dim.height + 'px',
             font: font,
-            fontSize: fontSize + 'px',
+            fontSize: as.fontSize + 'px',
             margin: 0,
             color: Colors.darkColor
         };
@@ -170,12 +176,12 @@ function onReady(Tag, Layout, Colors) {
     function mkHeader(n) {
 
         function header(as) {
-            var s = typeof as === "string" ? as : as.text;
+            var s = typeof as === 'string' ? as : as.text;
 
-            var sty = hStyle(Colors['h' + n + 'Size'], s); 
+            var sty = hStyle({fontSize: Colors['h' + n + 'Size'], maxWidth: as.maxWidth}, s); 
 
-            if (typeof as === "object") {
-                sty.color = as.color !== 'undefined' ? as.color : sty.color;
+            if (typeof as === 'object') {
+                sty.color = as.color !== undefined ? as.color : sty.color;
             }
 
             return Tag.tag('h' + n, {style: sty}, s);
