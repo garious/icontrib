@@ -16,20 +16,30 @@ function onReady(Iface, TwoDim, Tag, Layout, Core, Frame, Colors) {
 
     var badLogin = Tag.span({hidden: true, style: {height: '20px', width: '200px', color: Colors.red}}, 'bad username or password');
 
-    var email = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Email'});
-    var password = Core.input({type: 'password', size: 18, width: 300, placeholder: 'Password'});
-    var confirmPassword = Core.input({type: 'password', size: 18, width: 300, placeholder: 'Confirm Password'});
+
+    var formValues = {password: ''};
+
+    function onEmailChanged(evt) {
+        formValues.email = evt.target.value;
+    }
+    function onPasswordChanged(evt) {
+        formValues.password = evt.target.value;
+    }
+    function onConfirmPasswordChanged(evt) {
+        formValues.confirmPassword = evt.target.value;
+    }
+
+    var email = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Email', onChange: onEmailChanged});
+    var password = Core.input({type: 'password', size: 18, width: 300, placeholder: 'Password', onChange: onPasswordChanged});
+
+    var confirmPassword = Core.input({type: 'password', size: 18, width: 300, placeholder: 'Confirm Password', onChange: onConfirmPasswordChanged});
 
     function submit(evt) {
         evt.preventDefault();
      
-        if (password.value === '' || (password.value !== confirmPassword.value)) {
+        if (formValues.password !== '' && (formValues.password !== formValues.confirmPassword)) {
             alert('Passwords do not match!');
         } else {
-            var formValues = {
-                email: email.value,
-                password: password.value
-            };
             Frame.post('/auth/add', formValues, function(dat) {
                 var data = JSON.parse(dat);
                 if(data.Left) {

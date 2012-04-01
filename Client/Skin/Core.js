@@ -96,7 +96,7 @@ function onReady(Iface, TwoDim, Tag, Layout, Colors) {
             attrs.value = as.value;
         }
 
-        var handlers = {keyup: as.onKeyUp};
+        var handlers = {keyup: as.onKeyUp, change: as.onChange};
 
         return Tag.tag('input', attrs, null, handlers);
     }
