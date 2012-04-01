@@ -10,7 +10,7 @@ var deps = [
 function onReady(Tag, Layout) {
 
     function testImg() {
-        return Tag.img({src: '/Skin/logo.png', style: {border: 'solid 1px', padding: '5px', borderRadius: '5px', width: '112px', height: '100px'}});
+        return Tag.img({src: '/Skin/logo.png', style: {border: '1px solid', padding: '5px', borderRadius: '5px', width: '112px', height: '100px'}});
     }
 
     function hugTest() {

@@ -8,24 +8,6 @@ var deps = [
     '/charity/get.json'
 ];
 
-// TODO: Move this to a shared location
-function post(path, params, callback) {
-    var req = new XMLHttpRequest();
-    req.onreadystatechange = function () {
-        if (req.readyState === 4) {
-            callback(req.responseText);
-        }
-    };
-
-    var body = JSON.stringify(params);
-
-    req.open('POST', path, true);
-    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-    req.send(body);
-}
-
-
 function onReady(Tag, Layout, Frame, Core, toaHtml, JsonForm, Charity) {
 
     function inputField(as, xs) {
@@ -84,31 +66,16 @@ function onReady(Tag, Layout, Frame, Core, toaHtml, JsonForm, Charity) {
 
         var toaDiv = Tag.div({style: {margin: '15px', height: '230px', overflow: 'auto', font: Core.defaultFont}});
         toaDiv.innerHTML = toaHtml;
-        var info = { ein: null,
+        var schema = { ein: null,
                      organizationName: null,
                      companyWebsite: null,
                      paymentAddress: null
                    };
-        //var poc = { firstName: null,
-        //            lastName: null,
-        //            phone: null,
-        //            email: null
-        //          };
-        //stupid schema, the 'null' services as a sentinal when i traverse it
-        //var schema = { info: info, poc: poc };
-        var schema = info;
-        //now i have an object with a bunch of empty inputs, whose layout matches my schema
-        //i can traverse the schema in parallel with the object and reference the input fields
-        //var pc = inputs.poc;
+
         var name        = inputField({label: 'Organization Name', type: 'text', name: 'name'});
         var ein         = inputField({label: 'EIN', type: 'text', name: 'ein', required: 'required'});
         var url         = inputField({label: 'Website URL', type: 'url', name: 'url', placeholder: 'http://'});
         var payAddr     = inputField({label: 'PayPal address', type: 'email', name: 'payAddr', placeholder: 'donations@charity.org'});
-        //var firstName   = inputField(pc.firstName,        {label: 'First Name', type: 'text', name: 'firstName', required: 'required'});
-        //var lastName    = inputField(pc.lastName,         {label: 'Last Name', type: 'text', name: 'lastName', required: 'required'});
-        //var phoneNumber = inputField(pc.phone,            {label: 'Phone Number', type: 'text', name: 'phoneNumber', placeholder: '(xxx) xxx-xxxx'});
-        //var email       = inputField(pc.email,            {label: 'Email', type: 'email', name: 'email', placeholder: 'abc@charity.org'});
-        //var checkbox    = Core.input({type: 'checkbox', width: 200}, 'I agree to the terms above');
 
         var inputs = {
             organizationName: name,
@@ -134,7 +101,7 @@ function onReady(Tag, Layout, Frame, Core, toaHtml, JsonForm, Charity) {
             evt.preventDefault();
             var values = JsonForm.map(schema, inputs, {}, JsonForm.toVal);
             var dataString = JSON.stringify(values);
-            post('/charity/update', dataString, function(data) {
+            Frame.post('/charity/update', dataString, function(data) {
                 var dataString = JSON.stringify(data);
                 console.log(dataString);
             });

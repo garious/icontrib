@@ -140,7 +140,56 @@ function onReady(I, Dim, Dom) {
         as = as || {};
         as.style = as.style || {};
 
-        // TODO: if margin, padding or border is set, parse it and break it up into Left/Right/Top/Bottom.
+        var sty = as.style;
+        var w;
+
+        if (sty.margin !== undefined && String(sty.margin).search('auto') === -1)  {
+             w = parseInt(sty.margin, 10) + 'px';
+             if (sty.marginLeft === undefined) {
+                 sty.marginLeft = w;
+             }
+             if (sty.marginRight === undefined) {
+                 sty.marginRight = w;
+             }
+             if (sty.marginTop === undefined) {
+                 sty.marginTop = w;
+             }
+             if (sty.marginBottom === undefined) {
+                 sty.marginBottom = w;
+             }
+        }
+
+        if (sty.padding !== undefined)  {
+             w = parseInt(sty.padding, 10) + 'px';
+             if (sty.paddingLeft === undefined) {
+                 sty.paddingLeft = w;
+             }
+             if (sty.paddingRight === undefined) {
+                 sty.paddingRight = w;
+             }
+             if (sty.paddingTop === undefined) {
+                 sty.paddingTop = w;
+             }
+             if (sty.paddingBottom === undefined) {
+                 sty.paddingBottom = w;
+             }
+        }
+
+        if (sty.border !== undefined)  {
+             w = parseInt(sty.border, 10) + 'px';
+             if (sty.borderLeftWidth === undefined) {
+                 sty.borderLeftWidth = w;
+             }
+             if (sty.borderRightWidth === undefined) {
+                 sty.borderRightWidth = w;
+             }
+             if (sty.borderTopWidth === undefined) {
+                 sty.borderTopWidth = w;
+             }
+             if (sty.borderBottomWidth === undefined) {
+                 sty.borderBottomWidth = w;
+             }
+        }
 
         return {
             constructor: tag1,

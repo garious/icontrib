@@ -1,8 +1,13 @@
 //
 // Interface-oriented programming for JavaScript
 //
+
+// Prototype:
+//    getInterface(obj : {}, iid : String) : {Function(obj, ...)}
+//
 function getInterface(obj, iid) {
-     return obj.constructor.interfaces && obj.constructor.interfaces[iid];
+     var x = obj.constructor.interfaces;
+     return x && x[iid];
 }
 
 //  //
