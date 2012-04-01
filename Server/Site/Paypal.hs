@@ -16,6 +16,7 @@ incomingIPN db = logError $ runErrorT $ do
     urlstr <- H.getURL
     Log.debugShow ("incomingIPN", urlstr)
     url <- importURL urlstr `justOr` throwError "couldn't parse URL"
+    storeIPNMessage (url_params params)
     payment <- toIPN (url_params params)
     when ((reciever_email payment) /= myemail) $ throwError $ show ("incoming ipn had unexpected reciever_email", url, payment)
     validate_host = <- importURL current `justOr` throwError "couldn't parase validate host url"
