@@ -37,6 +37,8 @@ function onReady(Tag, Layout, Frame, Core, Donor, Chart, Popular) {
                             d.shares = v;
                             var pct = Math.round(v * 100) / 100;
                             inputs[i].value = pct; 
+
+                            // TODO: obs.set(inputs[i], pct); 
                         }
                     }
                     pie.draw();

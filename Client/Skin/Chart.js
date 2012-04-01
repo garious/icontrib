@@ -3,12 +3,14 @@ function exportGoogle(text, require, callback) {
 }
 
 var deps = [
+    '/Tag/Interface.js',
+    '/Tag/ToDom.js',
     '/Tag/Tag.js',
     'Colors.js',
     {path: '/mirror/google/jsapi', interpreter: exportGoogle}
 ];
 
-function onReady(Tag, Colors, Google) {
+function onReady(Iface, ToDom, Tag, Colors, Google) {
 
 
     // Uses Google visualization library to generate an interactive pie chart
@@ -16,9 +18,12 @@ function onReady(Tag, Colors, Google) {
         var userChart = Tag.div({style: {width: '300px', height: '225px'}}, [
             Tag.img({src: baseUrl + '/ajax-loader.gif', alt: 'Loading...', style: {margin: '0px auto'}})
         ]);
+
+        var iface = Iface.getInterface(userChart, ToDom.toDomId);
+        var chartDiv = iface.toDom(userChart);
    
         var me = {
-            element: userChart,
+            element: chartDiv,
             distribution: as.distribution
         };
 
@@ -41,7 +46,7 @@ function onReady(Tag, Colors, Google) {
         }
 
         function createChart() {
-            chart = new Google.visualization.PieChart(userChart);
+            chart = new Google.visualization.PieChart(chartDiv);
             data = new Google.visualization.DataTable();
             data.addColumn('string', 'Charity');
             data.addColumn('number', 'Percentage');
