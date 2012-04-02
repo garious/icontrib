@@ -32,23 +32,26 @@ function onReady(Tag, I, Dim, Dom) {
     
     // a TwoDimensional instance for the Party class
     var Party_TwoDimensional = Pillow_TwoDimensional;
+
+    function wrapUpParty (me) {
+        // ys = filter (!= pillow) xs
+        var xs = me.subelements;
+        var ys = [];
+        for (var i = 0; i < xs.length; i += 1) {
+            var x = xs[i];
+            if (x.constructor !== pillow) {  // Since DOM elements to not implement ToDom, we have to pull out pillows.
+                ys.push(x);
+            }
+        }
+        return Tag.tag('div', {style: {height: me.height + 'px', width: me.width + 'px', position: 'absolute'}}, ys);
+    }
     
     // a ToDom instance for the Party class
     var Party_ToDom = {
         toDom: function (me) {
-            // ys = filter (!= pillow) xs
-            var xs = me.subelements;
-            var ys = [];
-            for (var i = 0; i < xs.length; i += 1) {
-                var x = xs[i];
-                var iface = I.getInterface(x, Dom.toDomId);
-                x = iface && iface.toDom(x) || x;
-                if (x.constructor !== pillow) {  // Since DOM elements to not implement ToDom, we unfortunately have to pull pillows explicitly.
-                    ys.push(x);
-                }
-            }
-            return Tag.tag('div', {style: {height: me.height + 'px', width: me.width + 'px', position: 'absolute'}}, ys);
-    
+            var e = wrapUpParty(me);
+            var methods = I.getInterface(e, Dom.toDomId);
+            return methods.toDom(e);
         }
     };
     
@@ -103,7 +106,6 @@ function onReady(Tag, I, Dim, Dom) {
     // Set the horizontal position of a 2D element
     function setHPos(x, dim) {
         var iface = I.getInterface(x, Dim.twoDimensionalId);
-if (!iface) {console.log(x);}
         iface.setPosition(x, {'top': 0, left: dim.width});
     
         var d = iface.getDimensions(x);
@@ -169,16 +171,12 @@ if (!iface) {console.log(x);}
     
     // Concatenate elements horizontally and wrap in a DOM element
     function hug(as, xs) {
-        var b = hcat(as, xs);
-        var iface = I.getInterface(b, Dom.toDomId);
-        return iface.toDom(b);
+        return wrapUpParty( hcat(as, xs) );
     }
     
     // Concatenate elements vertically and wrap in a DOM element
     function spoon(as, xs) {
-        var b = vcat(as, xs);
-        var iface = I.getInterface(b, Dom.toDomId);
-        return iface.toDom(b);
+        return wrapUpParty( vcat(as, xs) );
     }
     
     define({

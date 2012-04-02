@@ -15,7 +15,7 @@ function onReady (Iface, Observable, Assert) {
     var y = Observable.observe(6);
 
     // Peek at what's inside
-    Assert.assertEq(x, {value: 5, constructor: Observable.observe, set: x.set});
+    Assert.assertEq(x, {value: 5, set: x.set});
 
     var methods = Iface.getInterface(x, Observable.observableId);
     Assert.assertEq(methods.get(x), 5);
