@@ -23,7 +23,7 @@ $V/%.js.ok: %.js
 	@mkdir -p $(@D)
 	@touch $@
 
-$V/ship/IContrib.js: JsCache.lua $(filter-out yoink/%.js,$(filter-out test/%.js,$(filter-out %Test.js,$(JS_FILES))))
+$V/ship/IContrib.js: JsCache.lua $(filter-out Tag/YoinkAdapter.js Tag/Assert.js,$(filter-out test/%.js,$(filter-out %Test.js,$(JS_FILES))))
 	@mkdir -p $(@D)
 	$(LUA_DIR)/lua JsCache.lua -o $@ $(filter-out $<,$^)
 

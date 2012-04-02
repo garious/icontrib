@@ -1,4 +1,5 @@
 var deps = [
+    '/Tag/Interface.js', 
     '/Tag/Tag.js', 
     '/Tag/Layout.js', 
     '/Tag/Observable.js', 
@@ -9,27 +10,17 @@ var deps = [
     '/charity/popular.json'
 ];
 
-function onReady(Tag, Layout, Observable, Frame, Core, Donor, Chart, Popular) { 
+function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Popular) { 
 
-    function fundContents(pie) {
-        var dist = pie.distribution;
-
-        var total = 0;
-        for (var i = 0; i < dist.length; i++) {
-            var d = dist[i];
-            total = total + d.shares;
-        }
-
+    function fundContents(dist, inputs) {
         var rows = [];
-        var inputs = [];
-
         function mkHandler(j) {
             return function(evt) {
                 var n = parseFloat(evt.target.value);
                 if (n !== NaN && n > 0 && n < 100) {
-                    var old = pie.distribution[j].shares;
+                    var old = dist[j].shares;
                     var diff = n - old;
-                    pie.distribution[j].shares = n;
+                    dist[j].shares = n;
 
                     for (var i = 0; i < inputs.length; i += 1) {
                         if (i !== j) {
@@ -41,7 +32,6 @@ function onReady(Tag, Layout, Observable, Frame, Core, Donor, Chart, Popular) {
                             inputs[i].set(pct);
                         }
                     }
-                    pie.draw();
                 } //else {
                     // TODO: disable 'Save Changes'
                 //}
@@ -50,11 +40,7 @@ function onReady(Tag, Layout, Observable, Frame, Core, Donor, Chart, Popular) {
 
         for (var j = 0; j < dist.length; j += 1) {
             var x = dist[j];
-
-            var pct = Math.round(x.shares / total * 1000) / 10;
-
-            var obs = Observable.observe(pct);
-            inputs.push(obs);
+            var obs = inputs[j];
 
             var cols = Layout.hug([
                 Core.input({type: 'text', size: 4, value: obs, onKeyUp: mkHandler(j)}),
@@ -64,11 +50,12 @@ function onReady(Tag, Layout, Observable, Frame, Core, Donor, Chart, Popular) {
             rows.push(cols);
             rows.push(Layout.pillow(0,15));
         }
+
         return Layout.spoon(rows);
     }
 
-    function distributionTable(pie) {
-        return Layout.hug({width: 550}, [Layout.pillow(30), fundContents(pie)]);
+    function distributionTable(dist, inputs) {
+        return Layout.hug({width: 550}, [Layout.pillow(30), fundContents(dist, inputs)]);
     }
 
     function dashboard(as) {
@@ -87,15 +74,31 @@ function onReady(Tag, Layout, Observable, Frame, Core, Donor, Chart, Popular) {
             rows.push( Layout.hug([Layout.pillow(30), impactHeader]) );
         }
 
-        var pie = Chart.pie(user);
+        var inputs = [];
+        var dist = user.distribution;
+
+        var total = 0;
+        for (var i = 0; i < dist.length; i++) {
+            var d = dist[i];
+            total = total + d.shares;
+        }
+
+        for (var j = 0; j < dist.length; j += 1) {
+            var x = dist[j];
+            var pct = Math.round(x.shares / total * 1000) / 10;
+            var obs = Observable.observe(pct);
+            inputs.push(obs);
+        }
+
+        var pie = Chart.pie(user, inputs);
 
         if (user.distribution.length > 0) {
             rows.push( Core.h3('My charitable distribution') );
-            rows.push( Layout.hug([Layout.pillow(100), pie.element]) );
+            rows.push( Layout.hug([Layout.pillow(100), pie]) );
         }
 
         var fundingRows = [
-            distributionTable(pie),
+            distributionTable(user.distribution, inputs),
             Core.h3('My funding'),
             Layout.pillow(0, 20),
             Layout.hug([Layout.pillow(30, 0), Core.input({type: 'text', size: 10, value: user.centsDonated / 100.0}), Layout.pillow(10,0), Core.h6("dollars per month")]),

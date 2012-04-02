@@ -27,8 +27,6 @@
 var YOINK = (function () {
     'use strict';
 
-    var console = (typeof window !== 'undefined' && window.console) || {log: function () {}};
-
     var defaultInterpreters = {
         json: function (text) {
             return JSON.parse(text);
