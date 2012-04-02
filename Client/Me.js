@@ -1,6 +1,7 @@
 var deps = [
     '/Tag/Tag.js', 
     '/Tag/Layout.js', 
+    '/Tag/Observable.js', 
     '/Skin/Frame.js',
     '/Skin/Core.js',
     '/Skin/Donor.js',
@@ -8,7 +9,7 @@ var deps = [
     '/charity/popular.json'
 ];
 
-function onReady(Tag, Layout, Frame, Core, Donor, Chart, Popular) { 
+function onReady(Tag, Layout, Observable, Frame, Core, Donor, Chart, Popular) { 
 
     function fundContents(pie) {
         var dist = pie.distribution;
@@ -36,9 +37,8 @@ function onReady(Tag, Layout, Frame, Core, Donor, Chart, Popular) {
                             var v = d.shares - diff * d.shares/(100 - old);
                             d.shares = v;
                             var pct = Math.round(v * 100) / 100;
-                            inputs[i].value = pct; 
 
-                            // TODO: obs.set(inputs[i], pct); 
+                            inputs[i].set(pct);
                         }
                     }
                     pie.draw();
@@ -52,11 +52,12 @@ function onReady(Tag, Layout, Frame, Core, Donor, Chart, Popular) {
             var x = dist[j];
 
             var pct = Math.round(x.shares / total * 1000) / 10;
-            var e = Core.input({type: 'text', size: 4, value: pct, onKeyUp: mkHandler(j)});
 
-            inputs.push(e);
+            var obs = Observable.observe(pct);
+            inputs.push(obs);
+
             var cols = Layout.hug([
-                e,
+                Core.input({type: 'text', size: 4, value: obs, onKeyUp: mkHandler(j)}),
                 Layout.pillow(10, 0),
                 Core.hyperlink({url: x.url, text: x.name})
             ]);

@@ -3,10 +3,11 @@
 var deps = [
     'Interface.js',
     'TwoDimensional.js',
-    'ToDom.js'
+    'ToDom.js',
+    'Observable.js'
 ];
 
-function onReady(I, Dim, Dom) {
+function onReady(I, Dim, Dom, Observable) {
 
     function text(s) {
         return document.createTextNode(s);
@@ -21,6 +22,13 @@ function onReady(I, Dim, Dom) {
     
         // Add attributes
         var e = document.createElement(nm); 
+
+        function mkSetAttribute(k, getter) {
+            return function (obs) {
+                e.setAttribute(k, getter(obs));
+            };
+        }
+
         var k;
         if (as) {
             for (k in as) {
@@ -28,10 +36,18 @@ function onReady(I, Dim, Dom) {
                     if (k === 'style') {
                         var style = as[k];
                         for (var s in style) {
-                            e.style[s] = style[s];
+                            if (style.hasOwnProperty(s)) {
+                                e.style[s] = style[s];
+                            }
                         }
-                    } else {
-                        e.setAttribute(k, as[k]);
+                    } else if (as[k] !== undefined) {
+                        var methods = I.getInterface(as[k], Observable.observableId);
+                        if (methods) {
+                            e.setAttribute(k, methods.get(as[k]));
+                            methods.subscribe(as[k], mkSetAttribute(k, methods.get));
+                        } else {
+                            e.setAttribute(k, as[k]);
+                        }
                     }
                 }
             }
