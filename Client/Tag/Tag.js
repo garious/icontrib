@@ -75,10 +75,7 @@ function onReady(I, Dim, Dom, Observable) {
             }
         }
 
-        // Override constructor so that we can support interfaces
-        e.constructor = tag;
-    
-        return e;
+        return {domNode: e, constructor: tag};
     }
 
     tag.interfaces = {};
@@ -87,7 +84,7 @@ function onReady(I, Dim, Dom, Observable) {
     
         // Calculate outer width of a DOM element
         getDimensions: function (me) {
-            var sty = me.style;
+            var sty = me.domNode.style;
     
             var width  = parseInt(sty.width,  10) || 0;
             var height = parseInt(sty.height, 10) || 0;
@@ -114,22 +111,24 @@ function onReady(I, Dim, Dom, Observable) {
         },
     
         setPosition: function (me, pos) {
-            me.style.position = 'absolute';
+            var sty = me.domNode.style;
+
+            sty.position = 'absolute';
     
             if (pos.top !== undefined) {
-                me.style.top = pos.top + 'px';
+                sty.top = pos.top + 'px';
             }
     
             if (pos.left !== undefined) {
-                me.style.left = pos.left + 'px';
+                sty.left = pos.left + 'px';
             }
     
             if (pos.bottom !== undefined) {
-                me.style.bottom = pos.bottom + 'px';
+                sty.bottom = pos.bottom + 'px';
             }
     
             if (pos.right !== undefined) {
-                me.style.right = pos.right + 'px';
+                sty.right = pos.right + 'px';
             }
     
             return me;
@@ -139,7 +138,7 @@ function onReady(I, Dim, Dom, Observable) {
     
     tag.interfaces[Dom.toDomId] = {
         toDom: function (me) {
-            return me;
+            return me.domNode;
         }
     };
     
@@ -222,29 +221,29 @@ function onReady(I, Dim, Dom, Observable) {
     
         // Calculate outer width of a DOM element
         getDimensions: function (me) {
-            return tag.interfaces[Dim.twoDimensionalId].getDimensions(me.attributes);
+            return tag.interfaces[Dim.twoDimensionalId].getDimensions({domNode: me.attributes});
         },
     
         setPosition: function (me, pos) {
-            return tag.interfaces[Dim.twoDimensionalId].setPosition(me.attributes, pos);
+            return tag.interfaces[Dim.twoDimensionalId].setPosition({domNode: me.attributes}, pos);
         }
         
     };
     
     tag1.interfaces[Dom.toDomId] = {
         toDom: function (me) {
-            return tag(me.name, me.attributes, me.subelements, me.handlers);
+            return tag(me.name, me.attributes, me.subelements, me.handlers).domNode;
         }
     };
     
     function mkTag(nm) {
         return function(as, xs, es) {
-            return tag(nm, as, xs, es);
+            return tag1(nm, as, xs, es);
         };
     }
     
     var Tag = {
-        tag:        tag,
+        tag:        tag1,
         mkTag:      mkTag,
         text:       text
     };

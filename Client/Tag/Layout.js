@@ -103,6 +103,7 @@ function onReady(Tag, I, Dim, Dom) {
     // Set the horizontal position of a 2D element
     function setHPos(x, dim) {
         var iface = I.getInterface(x, Dim.twoDimensionalId);
+if (!iface) {console.log(x);}
         iface.setPosition(x, {'top': 0, left: dim.width});
     
         var d = iface.getDimensions(x);

@@ -23,7 +23,8 @@ function onReady(Iface, ToDom, Tag, Colors, Google) {
         var chartDiv = iface.toDom(userChart);
    
         var me = {
-            element: chartDiv,
+            element: Tag.div({style: {width: '300px', height: '225px'}}, [chartDiv]),
+            //element: chartDiv,
             distribution: as.distribution
         };
 
