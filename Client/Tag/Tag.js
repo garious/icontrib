@@ -9,10 +9,6 @@ var deps = [
 
 function onReady(I, Dim, Dom, Observable) {
 
-    function text(s) {
-        return document.createTextNode(s);
-    }
-
     function tag(nm, as, xs, es) {
         if (typeof as === 'string' || as && as.constructor === Array) {
             es = xs;
@@ -56,7 +52,7 @@ function onReady(I, Dim, Dom, Observable) {
         // Add children
         if (xs) {
             if (typeof xs === 'string') {
-                e.appendChild(text(xs));
+                e.appendChild(document.createTextNode(xs));
             } else {
                 for (var i = 0; i < xs.length; i++) {
                     var x = xs[i];
@@ -244,8 +240,7 @@ function onReady(I, Dim, Dom, Observable) {
     
     var Tag = {
         tag:        tag1,
-        mkTag:      mkTag,
-        text:       text
+        mkTag:      mkTag
     };
     
     var tags = [

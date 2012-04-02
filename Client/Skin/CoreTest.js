@@ -7,7 +7,7 @@ function onReady(Core, Tag) {
 
     function row(nm, a, b) {
         return Tag.tr([
-            Tag.td([Tag.text(nm)]),
+            Tag.td([nm]),
             Tag.td([a]),
             Tag.td([b])
         ]);
