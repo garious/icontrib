@@ -67,12 +67,8 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
                 var row = Layout.spoon([
                     Core.hr({width: 570}),
                     Layout.pillow(0, 20),
-                    Tag.div({style: {height: '30px'}}, [
-                        Core.h4(user.funds[i].name),
-                        Tag.div({style: {position: 'absolute', top: '10px', left: '505px'}}, [  // TODO: remove top 10px, which is due to the button falling outside its bounds
-                            alignButton({id: fundId})
-                        ])
-                    ]),
+                    Core.h4(user.funds[i].name),
+                    alignButton({id: fundId}),
                     Layout.hug([
                         Chart.pie1({distribution: xs}),
                         Layout.pillow(20, 0),
@@ -121,13 +117,11 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
             })
         ];
 
-        var pad = Layout.pillow(0, 10);
-
         for (var i = 0; i < as.funds.length; i += 1) {
             var x = as.funds[i];
-            listItems.push( pad );
+            listItems.push( Layout.pillow(0, 10) );
             listItems.push( Core.hr({width: width - 4, marginLeft: -15}) );
-            listItems.push( pad );
+            listItems.push( Layout.pillow(0, 10) );
 
             var e = Layout.hug([
                 Tag.img({src: x.imageUrl, style: {width: '50px', height: '50px'}}),

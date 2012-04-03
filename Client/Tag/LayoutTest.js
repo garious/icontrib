@@ -10,7 +10,7 @@ var deps = [
 function onReady(Tag, Layout) {
 
     function testImg() {
-        return Tag.img({src: '/Skin/logo.png', style: {border: '1px solid', padding: '5px', borderRadius: '5px', width: '112px', height: '100px'}});
+        return Tag.img({src: '/Skin/logo.png', style: {border: '1px solid', padding: '5px', borderRadius: '5px'}});
     }
 
     function hugTest() {
@@ -22,26 +22,25 @@ function onReady(Tag, Layout) {
     }
 
     function test() {
-        var pad = Layout.pillow(10);
         var separator = Layout.pillow(30);
 
         function label(s, e) {
-            return Layout.hug([Tag.p({style: {width: '70px'}}, s), pad, e]);
+            return Layout.hug([Tag.p({style: {width: '70px'}}, s), Layout.pillow(10), e]);
         }
 
         return Layout.hug([
-            pad,
+            Layout.pillow(10),
             Layout.spoon([
-                pad,
+                Layout.pillow(10),
                 Layout.spoon([
-                    label('hug',   Layout.hug(  [testImg(), pad, testImg(), pad, testImg()])), separator,
+                    label('hug',   Layout.hug(  [testImg(), Layout.pillow(10), testImg(), Layout.pillow(10), testImg()])), separator,
                     label('kiss',  Layout.hug(  [testImg(),      testImg(),      testImg()])), separator,
-                    label('spoon', Layout.spoon([testImg(), pad, testImg(), pad, testImg()])), separator,
+                    label('spoon', Layout.spoon([testImg(), Layout.pillow(10), testImg(), Layout.pillow(10), testImg()])), separator,
                     label('love',  Layout.spoon([testImg(),      testImg(),      testImg()]))
                 ]),
-                pad 
+                Layout.pillow(10) 
             ]),
-            pad
+            Layout.pillow(10)
         ]);
     }
 

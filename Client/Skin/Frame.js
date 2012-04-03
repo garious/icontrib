@@ -56,14 +56,11 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
                 window.location = '/SignUp';
             };
 
-            return Layout.hug([
-                Layout.pillow(210, 0),
-                Layout.spoon({align: 'right'}, [
-                    Core.button({text: 'Log in', onClick: onLogin}),
-                    Layout.pillow(0, 5),
-                    Core.button({text: 'Sign up', onClick: onSignup}),
-                    Layout.pillow(0, 15)
-                ])
+            return Layout.spoon({align: 'right'}, [
+                Core.button({text: 'Log in', onClick: onLogin}),
+                Layout.pillow(0, 5),
+                Core.button({text: 'Sign up', onClick: onSignup}),
+                Layout.pillow(0, 15)
             ]);
 
         } else {
@@ -85,19 +82,17 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
                     borderRadius: '5px 5px 0px 0px',
                     border: '1px solid',
                     borderBottomWidth: '0px',
-                    borderColor: Colors.lightColor
+                    borderColor: Colors.lightColor,
+                    padding: '20px 15px',
+                    'float': 'right'
                 }
             }, [
-                Layout.spoon([
-                    Layout.pillow(0, 15),
-                    Layout.hug([
-                        Layout.pillow(20, 0),
-                        as.thumbnail,
-                        Layout.pillow(20, 0),
-                        Layout.spoon([
-                            Layout.pillow(0, 22),
-                            logoutButton
-                        ])
+                Layout.hug([
+                    as.thumbnail,
+                    Layout.pillow(20, 0),
+                    Layout.spoon([
+                        Layout.pillow(0, 22),
+                        logoutButton
                     ])
                 ])
             ]);
@@ -107,17 +102,14 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
     function nav(as) {
         as = as || {};
 
-        var logo = Tag.a({href: '/', style: {width: '129px', height: '70px'}}, [
+        var logo = Tag.a({href: '/'}, [
             Core.image({url: baseUrl + '/logo.png', text: 'IContrib Home'})
         ]);
 
-        return Layout.spoon([
+        return Tag.div([
             Layout.pillow(0, 20),
-            Layout.hug([ // TODO: Create a z-stack
-                logo,
-                Layout.pillow(559, 0),
-                loginWidget(as)
-            ]),
+            logo,
+            loginWidget(as),
             Core.hr({width: 960, height: 4, color: Colors.green})
         ]);
     }
@@ -163,10 +155,7 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
                 ])
             ]);
 
-            var iface = Iface.getInterface(thumbContents, TwoDim.twoDimensionalId);
-            var dim = iface.getDimensions(thumbContents);
-
-            var thumbnail = Tag.a({href: '/Me', style: {width: dim.width + 'px', height: dim.height + 'px', textDecoration: 'none'}}, [
+            var thumbnail = Tag.a({href: '/Me', style: {textDecoration: 'none'}}, [
                 thumbContents
             ]);
 
@@ -176,7 +165,7 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
         var navbar = nav({thumbnail: thumbnail});
         var body = Tag.div([contents]);
 
-        var node = Tag.div({style: {margin: '0px auto', height: getWindowInnerHeight(), width: '960px'}}, [
+        var node = Tag.div({style: {margin: 'auto', width: '960px'}}, [
             Layout.spoon([
                 navbar, 
                 Layout.pillow(50), 

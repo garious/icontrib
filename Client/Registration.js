@@ -96,7 +96,7 @@ function onReady(Tag, Layout, Frame, Core, toaHtml, Charity) {
         var form = Tag.form({style: {counterReset: 'fieldsets', width: '800px', height: '720px'}}, [
                 fieldset([legend('Organization Information'), ein, name, url, payAddr ]),
                 //fieldset([legend('Point of Contact'), firstName, lastName, phoneNumber, email ]),
-                fieldset([legend('Interchange Fee'), Tag.div({style: {left: '30px', position: 'absolute'}}, [Core.h4('3.9%')])]),
+                fieldset([legend('Interchange Fee'), Tag.div({style: {left: '30px'}}, [Core.h4('3.9%')])]),
                 fieldset([legend(['Terms of Agreement']), toaDiv/*, checkbox*/ ]),
                 register
         ]);

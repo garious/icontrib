@@ -133,7 +133,6 @@ function onReady(Iface, TwoDim, Tag, Layout, Colors) {
         var shadow = '0px 0px 5px 2px #ddd';
         var e = as.contents;
         var iface = Iface.getInterface(e, TwoDim.twoDimensionalId);
-        var dim = iface.getDimensions(e);
 
         var padding = 15;
         return Tag.tag('div', {
@@ -142,8 +141,8 @@ function onReady(Iface, TwoDim, Tag, Layout, Colors) {
                 shadow: shadow,
                 MozBoxShadow: shadow,
                 WebkitBoxShadow: shadow,
-                width:  (as.width  ? as.width - 2 * padding - 4 : dim.width) + 'px',
-                height: (as.height ? as.height - 2 * padding - 4 : dim.height) + 'px',
+                width:  as.width && (as.width - 2 * padding - 4) + 'px',
+                height: as.height && (as.height - 2 * padding - 4) + 'px',
                 padding: padding + 'px'
             }
         }, [e], {

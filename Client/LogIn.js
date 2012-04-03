@@ -3,18 +3,21 @@ var deps = [
     '/Tag/TwoDimensional.js',
     '/Tag/Tag.js', 
     '/Tag/Layout.js', 
+    '/Tag/Observable.js', 
     '/Skin/Core.js',
     '/Skin/Frame.js',
     '/Skin/Colors.js'
 ];
 
-function onReady(Iface, TwoDim, Tag, Layout, Core, Frame, Colors) {
+function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
 
     var logo = Tag.a({href: '/', tabindex: -1, style: {width: '129px', height: '70px'}}, [
         Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
     ]);
 
-    var badLogin = Tag.span({hidden: true, style: {height: '20px', width: '200px', color: Colors.red}}, 'bad username or password');
+    //var hidden = Observable.observe('hidden');
+
+    var badLogin = Tag.span({style: {visibility: 'hidden', color: Colors.red}}, 'bad username or password');
 
     var formValues = {};
 
@@ -33,7 +36,8 @@ function onReady(Iface, TwoDim, Tag, Layout, Core, Frame, Colors) {
         Frame.post('/auth/login', formValues, function(dat) {
             var data = JSON.parse(dat);
             if(data.Left) {
-                badLogin.hidden = false;
+                'noop';
+                //hidden.set('visible');
             } else {
                 window.location = '/Me';
             }
@@ -51,20 +55,16 @@ function onReady(Iface, TwoDim, Tag, Layout, Core, Frame, Colors) {
         Layout.pillow(0, 15),
         password,
         badLogin,
-        //Layout.pillow(0, 15),
+        Layout.pillow(0, 15),
         Core.button({text: 'Log in', onClick: submit, width: 314})
     ]);
 
     var box = Core.box({
-        width: 355,
         contents: widget,
         onKeyUp: onKeyUp
     });
 
-    var iface = Iface.getInterface(box, TwoDim.twoDimensionalId);
-    var dim = iface.getDimensions(box);
-
-    var node = Tag.div({style: {margin: '0px auto', height: '100%', width: dim.width + 'px', textAlign: 'center'}}, [
+    var node = Tag.div({style: {margin: 'auto', width: '355px', textAlign: 'center'}}, [
         Tag.br(),
         logo,
         Tag.br(),

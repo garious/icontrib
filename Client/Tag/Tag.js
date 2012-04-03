@@ -78,53 +78,15 @@ function onReady(I, Dim, Dom, Observable) {
 
     tag.interfaces[Dim.twoDimensionalId] = {
     
-        // Calculate outer width of a DOM element
-        getDimensions: function (me) {
-            var sty = me.domNode.style;
-    
-            var width  = parseInt(sty.width,  10) || 0;
-            var height = parseInt(sty.height, 10) || 0;
-    
-            width  += parseInt(sty.marginLeft,   10) || 0;
-            width  += parseInt(sty.marginRight,  10) || 0;
-            height += parseInt(sty.marginTop,    10) || 0;
-            height += parseInt(sty.marginBottom, 10) || 0;
-    
-            width  += parseInt(sty.paddingLeft,   10) || 0;
-            width  += parseInt(sty.paddingRight,  10) || 0;
-            height += parseInt(sty.paddingTop,    10) || 0;
-            height += parseInt(sty.paddingBottom, 10) || 0;
-    
-            width  += parseInt(sty.borderLeftWidth,   10) || 0;
-            width  += parseInt(sty.borderRightWidth,  10) || 0;
-            height += parseInt(sty.borderTopWidth,    10) || 0;
-            height += parseInt(sty.borderBottomWidth, 10) || 0;
-    
-            return {
-                width:  width,
-                height: height
-            };
-        },
-    
         setPosition: function (me, pos) {
             var sty = me.domNode.style;
 
-            sty.position = 'absolute';
-    
-            if (pos.top !== undefined) {
-                sty.top = pos.top + 'px';
+            if (pos['float'] !== undefined) {
+                sty['float'] = pos['float'];
             }
-    
-            if (pos.left !== undefined) {
-                sty.left = pos.left + 'px';
-            }
-    
-            if (pos.bottom !== undefined) {
-                sty.bottom = pos.bottom + 'px';
-            }
-    
-            if (pos.right !== undefined) {
-                sty.right = pos.right + 'px';
+
+            if (pos.clear !== undefined) {
+                sty.clear = pos.clear;
             }
     
             return me;
@@ -214,16 +176,9 @@ function onReady(I, Dim, Dom, Observable) {
     tag1.interfaces = {};
 
     tag1.interfaces[Dim.twoDimensionalId] = {
-    
-        // Calculate outer width of a DOM element
-        getDimensions: function (me) {
-            return tag.interfaces[Dim.twoDimensionalId].getDimensions({domNode: me.attributes});
-        },
-    
         setPosition: function (me, pos) {
             return tag.interfaces[Dim.twoDimensionalId].setPosition({domNode: me.attributes}, pos);
         }
-        
     };
     
     tag1.interfaces[Dom.toDomId] = {

@@ -20,15 +20,13 @@ function onInitialReady(MostInfluentialId) {
             contents: Donor.profile({user: MostInfluential})
         });
 
-        var sep = Layout.pillow(20);
-
         var body = Layout.spoon([
             Layout.hug([
                 mostInfluential,
-                sep,
+                Layout.pillow(20),
                 Donor.recommendedFunds({funds: PopularCharities})
             ]),
-            sep,
+            Layout.pillow(20),
             Frame.footer([
                 Core.hyperlink({url: 'Registration', text: 'Charity Registration'})
             ])
