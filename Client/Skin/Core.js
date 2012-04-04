@@ -1,53 +1,18 @@
 var deps = [
-    '/Tag/Interface.js',
-    '/Tag/TwoDimensional.js',
     '/Tag/Tag.js',
-    '/Tag/Layout.js',
     'Colors.js'
 ];
 
-function onReady(Iface, TwoDim, Tag, Layout, Colors) {
+function onReady(Tag, Colors) {
 
     var defaultFont = "/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
     var defaultFontSize = 15;
     var font = defaultFontSize + "px" + defaultFont;
 
-    function textDimensions(as, s) {
-        var canvas = Tag.tag('canvas');
-        var fontSize = as.fontSize || defaultFontSize;
-
-        if (canvas && canvas.getContext) {
-
-            var ctx = canvas.getContext('2d');
-            ctx.font = fontSize + "px" + defaultFont;
-            ctx.fontSize = fontSize;
-
-            var dim = ctx.measureText(s);
-            var maxWidth = as.maxWidth !== undefined ? as.maxWidth : dim.width;
-            var height = (fontSize + 6) * Math.ceil(dim.width / maxWidth); // TODO: Might be more lines if words do not fall on maxWidth boundaries.
-
-            return {
-                width: dim.width > maxWidth ? maxWidth : dim.width,
-                height: height
-            };
-
-        } else {
-            // No canvas available on this browser - time to guess.
-            return {
-                width: fontSize * s.length * 0.6,
-                height: fontSize + 6
-            };
-        }
-    }
-
     function hyperlink(as) {
-        var dim = textDimensions({}, as.text);
-
         var sty = {
             textDecoration: 'none',
             font: font,
-            width: dim.width + 'px',
-            height: dim.height + 'px',
             color: 'blue'
         };
 
@@ -102,8 +67,6 @@ function onReady(Iface, TwoDim, Tag, Layout, Colors) {
     }
 
     function button(as) {
-        var dim = textDimensions({}, as.text);
-
         var color      = as.loud ? Colors.red : Colors.gray;
         var focusColor = as.loud ? Colors.red : Colors.lightColor;
 
@@ -116,8 +79,6 @@ function onReady(Iface, TwoDim, Tag, Layout, Colors) {
         return Tag.tag('a', {
             href: as.href || '#', 
             style: {
-                width:  (as.width  !== undefined ? as.width : dim.width)  + 'px',
-                height: (as.height !== undefined ? as.width : dim.height) + 'px',
                 font: font, 
                 textDecoration: 'none', 
                 textAlign: 'center', 
@@ -132,11 +93,11 @@ function onReady(Iface, TwoDim, Tag, Layout, Colors) {
     function box(as) {
         var shadow = '0px 0px 5px 2px #ddd';
         var e = as.contents;
-        var iface = Iface.getInterface(e, TwoDim.twoDimensionalId);
 
         var padding = 15;
         return Tag.tag('div', {
             style: {
+                'float': 'left',
                 border: '2px solid #cfcfcf',
                 shadow: shadow,
                 MozBoxShadow: shadow,
@@ -152,11 +113,8 @@ function onReady(Iface, TwoDim, Tag, Layout, Colors) {
 
     // Create the style attribute for HTML header elements
     function hStyle(as, s) {
-        var dim = textDimensions(as, s);
 
         return {
-            width: dim.width + 'px',
-            height: dim.height + 'px',
             font: font,
             fontSize: as.fontSize + 'px',
             margin: 0,
@@ -190,16 +148,14 @@ function onReady(Iface, TwoDim, Tag, Layout, Colors) {
     }
 
     function label(s) {
-        var dim = textDimensions({}, s);
-        return Tag.tag('label', {style: {width: dim.width + 'px', height: dim.height + 'px', font: font}}, s);
+        return Tag.tag('label', {style: {font: font}}, s);
     }
 
     function p(as) {
         if (typeof as === 'string') {
             as = {text: as};
         }
-        var dim = textDimensions({width: as.width}, as.text);
-        return Tag.tag('p', {style: {width: dim.width + 'px', height: dim.height + 'px', font: font, margin: '0px'}}, as.text);
+        return Tag.tag('p', {style: {font: font, margin: '0px'}}, as.text);
     }
 
     function hr(as) {

@@ -102,7 +102,7 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
     function nav(as) {
         as = as || {};
 
-        var logo = Tag.a({href: '/'}, [
+        var logo = Tag.a({href: '/', style: {position: 'absolute'}}, [
             Core.image({url: baseUrl + '/logo.png', text: 'IContrib Home'})
         ]);
 

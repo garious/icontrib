@@ -67,12 +67,14 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
                 var row = Layout.spoon([
                     Core.hr({width: 570}),
                     Layout.pillow(0, 20),
-                    Core.h4(user.funds[i].name),
-                    alignButton({id: fundId}),
-                    Layout.hug([
-                        Chart.pie1({distribution: xs}),
-                        Layout.pillow(20, 0),
-                        fundContents(xs, total)
+                    Tag.div({style: {width: '100%'}}, [
+                        Tag.div({style: {'float': 'right'}}, [alignButton({id: fundId})]),
+                        Core.h4(user.funds[i].name),
+                        Layout.hug([
+                            Chart.pie1({distribution: xs}),
+                            Layout.pillow(20, 0),
+                            fundContents(xs, total)
+                        ])
                     ])
                 ]);
 

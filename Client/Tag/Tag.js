@@ -25,19 +25,32 @@ function onReady(I, Dim, Dom, Observable) {
             };
         }
 
+        function mkSetStyle(k, getter) {
+            return function (obs) {
+                e.style[k] = getter(obs);
+            };
+        }
+
         var k;
         if (as) {
             for (k in as) {
                 if (as.hasOwnProperty(k)) {
+                    var methods;
                     if (k === 'style') {
                         var style = as[k];
                         for (var s in style) {
-                            if (style.hasOwnProperty(s)) {
-                                e.style[s] = style[s];
+                            if (style.hasOwnProperty(s) && style[s] !== undefined) {
+                                methods = I.getInterface(style[s], Observable.observableId);
+                                if (methods) {
+                                    e.style[s] = methods.get(style[s]);
+                                    methods.subscribe(style[s], mkSetStyle(s, methods.get));
+                                } else {
+                                    e.style[s] = style[s];
+                                }
                             }
                         }
                     } else if (as[k] !== undefined) {
-                        var methods = I.getInterface(as[k], Observable.observableId);
+                        methods = I.getInterface(as[k], Observable.observableId);
                         if (methods) {
                             e.setAttribute(k, methods.get(as[k]));
                             methods.subscribe(as[k], mkSetAttribute(k, methods.get));

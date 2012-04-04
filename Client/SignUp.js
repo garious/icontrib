@@ -1,6 +1,4 @@
 var deps = [
-    '/Tag/Interface.js',
-    '/Tag/TwoDimensional.js',
     '/Tag/Tag.js', 
     '/Tag/Layout.js', 
     '/Skin/Core.js',
@@ -8,7 +6,7 @@ var deps = [
     '/Skin/Colors.js'
 ];
 
-function onReady(Iface, TwoDim, Tag, Layout, Core, Frame, Colors) {
+function onReady(Tag, Layout, Core, Frame, Colors) {
 
     var logo = Tag.a({href: '/', tabindex: -1, style: {width: '129px', height: '70px'}}, [
         Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
@@ -75,10 +73,7 @@ function onReady(Iface, TwoDim, Tag, Layout, Core, Frame, Colors) {
         onKeyUp: onKeyUp
     });
 
-    var iface = Iface.getInterface(box, TwoDim.twoDimensionalId);
-    var dim = iface.getDimensions(box);
-
-    var node = Tag.div({style: {margin: '0px auto', height: '100%', width: dim.width + 'px', textAlign: 'center'}}, [
+    var node = Tag.div({style: {margin: '0px auto', width: '335px', textAlign: 'center'}}, [
         Tag.br(),
         logo,
         Tag.br(),

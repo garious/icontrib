@@ -15,9 +15,9 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
         Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
     ]);
 
-    //var hidden = Observable.observe('hidden');
+    var hidden = Observable.observe('hidden');
 
-    var badLogin = Tag.span({style: {visibility: 'hidden', color: Colors.red}}, 'bad username or password');
+    var badLogin = Tag.span({style: {visibility: hidden, color: Colors.red}}, 'bad username or password');
 
     var formValues = {};
 
@@ -36,8 +36,7 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
         Frame.post('/auth/login', formValues, function(dat) {
             var data = JSON.parse(dat);
             if(data.Left) {
-                'noop';
-                //hidden.set('visible');
+                hidden.set('visible');
             } else {
                 window.location = '/Me';
             }
@@ -55,7 +54,6 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
         Layout.pillow(0, 15),
         password,
         badLogin,
-        Layout.pillow(0, 15),
         Core.button({text: 'Log in', onClick: submit, width: 314})
     ]);
 
