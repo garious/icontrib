@@ -31,6 +31,37 @@ instance Indexable IPNMessage where
                   ]
 $(deriveSafeCopy 0 'base ''IPNMessage)
 
+
+newtype UserPaypalAddress = UserPaypalAddress Email
+                          deriving (Eq, Ord, Show, Data, Typeable)
+data UserBalance = UserBalance { userAddr :: UserPaypalAddress, userMoney :: Cents  }
+             deriving (Eq, Ord, Show, Data, Typeable)
+
+newtype CharityPaypalAddress = CharityPaypalAddress Email
+                             deriving (Eq, Ord, Show, Data, Typeable)
+
+data Deposit = Deposit UserPaypalAddress Cents UTCTime
+             deriving (Eq, Ord, Show, Data, Typeable)
+data CharityBalance = CharityBalance { charityAddr :: CharityPaypalAddress
+                                     , deposits :: [Deposit]
+                                     }
+             deriving (Eq, Ord, Show, Data, Typeable)
+
+instance Indexable UserBalance where
+    empty = ixSet [ ixFun $ \ix -> (userAddr ix)
+                  ]
+
+$(deriveSafeCopy 0 'base ''UserBalance)
+type UserBalanceDB = IxSet UserBalance
+
+instance Indexable CharityBalance where
+    empty = ixSet [ ixFun $ \ix -> (charityAddr ix)
+                  ]
+
+$(deriveSafeCopy 0 'base ''CharityBalance)
+type CharityBalanceDB = IxSet CharityBalance
+
+
 class Parse a where
     parse :: MonadError String m => String -> m a
 
