@@ -135,7 +135,7 @@ function onReady(Tag, Colors) {
         function header(as) {
             var s = typeof as === 'string' ? as : as.text;
 
-            var sty = hStyle({fontSize: Colors['h' + n + 'Size'], maxWidth: as.maxWidth}, s); 
+            var sty = hStyle({fontSize: Colors['h' + n + 'Size']}, s); 
 
             if (typeof as === 'object') {
                 sty.color = as.color !== undefined ? as.color : sty.color;
@@ -155,7 +155,7 @@ function onReady(Tag, Colors) {
         if (typeof as === 'string') {
             as = {text: as};
         }
-        return Tag.tag('p', {style: {font: font, margin: '0px'}}, as.text);
+        return Tag.tag('p', {style: {font: font, margin: '0px', width: as.width && as.width + 'px'}}, as.text);
     }
 
     function hr(as) {

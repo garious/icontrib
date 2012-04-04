@@ -67,7 +67,7 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Popu
 
         var rows = [];
 
-        var impactHeader = Core.h6({text: impactMsg, maxWidth: 550});
+        var impactHeader = Core.p({text: impactMsg, width: 500});
 
         if (alignedUsers.length > 0) {
             rows.push( Core.h3('My impact') );
@@ -94,7 +94,8 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Popu
 
         if (user.distribution.length > 0) {
             rows.push( Core.h3('My charitable distribution') );
-            rows.push( Layout.hug([Layout.pillow(100), pie]) );
+            rows.push( Layout.hug([Layout.pillow(100, 0), pie]) );
+            rows.push( Layout.pillow(0, 15) );
         }
 
         var fundingRows = [

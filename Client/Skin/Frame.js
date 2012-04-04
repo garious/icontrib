@@ -14,15 +14,6 @@ var deps = [
 ];
 
 
-// TODO: how to get window.innerHeight in IE 8?
-function getWindowInnerHeight() {
-    return window.innerHeight;
-}
-
-function getWindowInnerWidth() {
-    return window.innerWidth;
-}
-
 function post(path, params, callback) {
     var req = new XMLHttpRequest();
     req.onreadystatechange = function () {
@@ -77,13 +68,12 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
             return Tag.div({
                 style: {
                     width: '270px',
-                    height: '77px',
                     backgroundColor: '#eee',
                     borderRadius: '5px 5px 0px 0px',
                     border: '1px solid',
                     borderBottomWidth: '0px',
                     borderColor: Colors.lightColor,
-                    padding: '20px 15px',
+                    padding: '15px 5px',
                     'float': 'right'
                 }
             }, [
