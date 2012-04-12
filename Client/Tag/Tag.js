@@ -1,4 +1,3 @@
-// Create a DOM element from a name, attributes object, and array of children.
 
 var deps = [
     'Interface.js',
@@ -7,57 +6,66 @@ var deps = [
     'Observable.js'
 ];
 
+function mkSetAttribute(e, k, getter) {
+    return function (obs) {
+        e.setAttribute(k, getter(obs));
+    };
+}
+
+function mkSetStyle(e, k, getter) {
+    return function (obs) {
+        e.style[k] = getter(obs);
+    };
+}
+
 function onReady(I, Dim, Dom, Observable) {
 
+    // Add attribute 'k' with value 'v' to the given DOM element 'e'.
+    function addAttribute(e, k, v) {
+        var methods;
+        if (k === 'style') {
+            var style = v;
+            for (var s in style) {
+                if (style.hasOwnProperty(s) && style[s] !== undefined) {
+                    methods = I.getInterface(style[s], Observable.observableId);
+                    if (methods) {
+                        e.style[s] = methods.get(style[s]);
+                        methods.subscribe(style[s], mkSetStyle(e, s, methods.get));
+                    } else {
+                        e.style[s] = style[s];
+                    }
+                }
+            }
+        } else if (v !== undefined) {
+            methods = I.getInterface(v, Observable.observableId);
+            if (methods) {
+                e.setAttribute(k, methods.get(v));
+                methods.subscribe(v, mkSetAttribute(e, k, methods.get));
+            } else {
+                e.setAttribute(k, v);
+            }
+        }
+    }
+
+    // Create a DOM element with tag name 'nm', attributes object 'as', an array of 
+    // subelements 'xs', and an object of event handlers 'es'.
     function tag(nm, as, xs, es) {
+
         if (typeof as === 'string' || as && as.constructor === Array) {
             es = xs;
             xs = as;
             as = null;
         }
     
-        // Add attributes
+        // Create DOM node
         var e = document.createElement(nm); 
 
-        function mkSetAttribute(k, getter) {
-            return function (obs) {
-                e.setAttribute(k, getter(obs));
-            };
-        }
-
-        function mkSetStyle(k, getter) {
-            return function (obs) {
-                e.style[k] = getter(obs);
-            };
-        }
-
+        // Add attributes
         var k;
         if (as) {
             for (k in as) {
                 if (as.hasOwnProperty(k)) {
-                    var methods;
-                    if (k === 'style') {
-                        var style = as[k];
-                        for (var s in style) {
-                            if (style.hasOwnProperty(s) && style[s] !== undefined) {
-                                methods = I.getInterface(style[s], Observable.observableId);
-                                if (methods) {
-                                    e.style[s] = methods.get(style[s]);
-                                    methods.subscribe(style[s], mkSetStyle(s, methods.get));
-                                } else {
-                                    e.style[s] = style[s];
-                                }
-                            }
-                        }
-                    } else if (as[k] !== undefined) {
-                        methods = I.getInterface(as[k], Observable.observableId);
-                        if (methods) {
-                            e.setAttribute(k, methods.get(as[k]));
-                            methods.subscribe(as[k], mkSetAttribute(k, methods.get));
-                        } else {
-                            e.setAttribute(k, as[k]);
-                        }
-                    }
+                    addAttribute(e, k, as[k]);
                 }
             }
         }
@@ -84,7 +92,7 @@ function onReady(I, Dim, Dom, Observable) {
             }
         }
 
-        return {domNode: e, constructor: tag};
+        return {element: e, constructor: tag};
     }
 
     tag.interfaces = {};
@@ -92,7 +100,7 @@ function onReady(I, Dim, Dom, Observable) {
     tag.interfaces[Dim.twoDimensionalId] = {
     
         setPosition: function (me, pos) {
-            var sty = me.domNode.style;
+            var sty = me.element.style;
 
             if (pos['float'] !== undefined) {
                 sty['float'] = pos['float'];
@@ -109,11 +117,13 @@ function onReady(I, Dim, Dom, Observable) {
     
     tag.interfaces[Dom.toDomId] = {
         toDom: function (me) {
-            return me.domNode;
+            return me.element;
         }
     };
     
 
+    // Create an object with tag name 'nm', attributes object 'as', an array of 
+    // subelements 'xs', and an object of event handlers 'es'.
     function tag1(nm, as, xs, es) {
         if (typeof as === 'string' || as && as.constructor === Array) {
             es = xs;
@@ -190,13 +200,13 @@ function onReady(I, Dim, Dom, Observable) {
 
     tag1.interfaces[Dim.twoDimensionalId] = {
         setPosition: function (me, pos) {
-            return tag.interfaces[Dim.twoDimensionalId].setPosition({domNode: me.attributes}, pos);
+            return tag.interfaces[Dim.twoDimensionalId].setPosition({element: me.attributes}, pos);
         }
     };
     
     tag1.interfaces[Dom.toDomId] = {
         toDom: function (me) {
-            return tag(me.name, me.attributes, me.subelements, me.handlers).domNode;
+            return tag(me.name, me.attributes, me.subelements, me.handlers).element;
         }
     };
     

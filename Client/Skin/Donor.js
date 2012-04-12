@@ -21,13 +21,8 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
         return false;
     }
 
-    function fundContents(xs, total) {
+    function fundContents(xs, total, colors) {
         var rows = [Layout.pillow(0, 15)];
-
-        var colors = [
-            Colors.green,
-            '#ddffaa'
-        ];
 
         for (var j = 0; j < xs.length; j++) {
             var x = xs[j];
@@ -64,6 +59,11 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
                     }
                 }
 
+                var colors = [
+                    Colors.green,
+                    '#ddffaa'
+                ];
+
                 var row = Layout.spoon([
                     Core.hr({width: 570}),
                     Layout.pillow(0, 20),
@@ -71,9 +71,9 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
                         Tag.div({style: {'float': 'right'}}, [alignButton({id: fundId})]),
                         Core.h4(user.funds[i].name),
                         Layout.hug([
-                            Chart.pie1({distribution: xs}),
+                            Chart.pie2({distribution: xs, colors: colors}),
                             Layout.pillow(20, 0),
-                            fundContents(xs, total)
+                            fundContents(xs, total, colors)
                         ])
                     ])
                 ]);
