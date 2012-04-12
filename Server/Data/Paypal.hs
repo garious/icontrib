@@ -9,19 +9,20 @@ newtype Cents = Cents Int
               deriving Num
 newtype Email = Email EmailAddress
 
-data IPN = CompletedPayment { reciever_email :: Email
-                            , txn_id         :: String
-                            , payer_email    :: Email
-                            , payment_fee    :: Cents
-                            , payment_gross  :: Cents
-                            , payment_date   :: UTCTime
-                            }
+data Payment = Payment { reciever_email :: Email
+                       , txn_id         :: String
+                       , payer_email    :: Email
+                       , payment_fee    :: Cents
+                       , payment_gross  :: Cents
+                       , payment_date   :: UTCTime
+                       }
               deriving (Eq, Ord, Show, Data, Typeable)
-
-instance Indexable IPN where
-    empty = ixSet [ ixFun $ \ci -> unzip (urlParams ci)
+instance Indexable Payment where
+    empty = ixSet [ ixFun $ \ix -> (txn_id ix)
                   ]
-$(deriveSafeCopy 0 'base ''IPN)
+
+$(deriveSafeCopy 0 'base ''Payment)
+type PaymentDB = IxSet Payment
 
 data IPNMessage = IPNMessage { urlParams :: [(String,String)] }
                   deriving (Eq, Ord, Show, Data, Typeable)
@@ -30,36 +31,40 @@ instance Indexable IPNMessage where
     empty = ixSet [ ixFun $ \ci -> unzip (urlParams ci)
                   ]
 $(deriveSafeCopy 0 'base ''IPNMessage)
+type IPNMessageDB = IxSet IPNMessage
 
-
-newtype UserPaypalAddress = UserPaypalAddress Email
-                          deriving (Eq, Ord, Show, Data, Typeable)
-data UserBalance = UserBalance { userAddr :: UserPaypalAddress, userMoney :: Cents  }
-             deriving (Eq, Ord, Show, Data, Typeable)
 
 newtype CharityPaypalAddress = CharityPaypalAddress Email
                              deriving (Eq, Ord, Show, Data, Typeable)
+newtype UserPaypalAddress = UserPaypalAddress Email
+                          deriving (Eq, Ord, Show, Data, Typeable)
 
-data Deposit = Deposit UserPaypalAddress Cents UTCTime
-             deriving (Eq, Ord, Show, Data, Typeable)
-data CharityBalance = CharityBalance { charityAddr :: CharityPaypalAddress
-                                     , deposits :: [Deposit]
-                                     }
+data Deposit = Deposit { userAddr :: UserPaypalAddress,
+                       , charityAddr :: CharityPaypalAddress,
+                       , cents :: Cents,
+                       , time :: UTCTime
+                       }
              deriving (Eq, Ord, Show, Data, Typeable)
 
-instance Indexable UserBalance where
+instance Indexable Deposit where
     empty = ixSet [ ixFun $ \ix -> (userAddr ix)
                   ]
 
-$(deriveSafeCopy 0 'base ''UserBalance)
-type UserBalanceDB = IxSet UserBalance
+$(deriveSafeCopy 0 'base ''Deposit)
+type DepositDB = IxSet Desposit
 
-instance Indexable CharityBalance where
-    empty = ixSet [ ixFun $ \ix -> (charityAddr ix)
+data Withdraw = Withdraw { reciever :: Email, 
+                         , deposits :: [Deposit]
+                         }
+             deriving (Eq, Ord, Show, Data, Typeable)
+
+instance Indexable Withdraw where
+    empty = ixSet [ ixFun $ \ix -> (reciever ix)
+                  , ixFun $\ ix -> (sum (map cents (deposits ix))) 
                   ]
 
-$(deriveSafeCopy 0 'base ''CharityBalance)
-type CharityBalanceDB = IxSet CharityBalance
+$(deriveSafeCopy 0 'base ''Withdraw)
+type WithdrawDB = IxSet Withdraw
 
 
 class Parse a where
@@ -83,5 +88,3 @@ instance Parse Cents where
         when ((floor fl) /= fl) $ throwError $ "float parsing error to cents" ++ str
         return $ Cents (fromRational str) 
 
-type IPNMessageDB = IxSet IPNMessage
-type PaymentDB = IxSet Payment

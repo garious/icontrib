@@ -9,6 +9,7 @@ import Data.IxSet
 import Data.SafeCopy
 import Data.Distribution
 import Data.Fund
+--import Text.Email.Validate                   ( EmailAddress, validate )
 
 
 data UserInfo = UserInfo { owner            :: Identity
@@ -22,6 +23,7 @@ data UserInfo = UserInfo { owner            :: Identity
                          , alignedUsers     :: [Identity]
                          , distribution     :: [Distribution]
                          , funds            :: [Fund]
+                         --, paymentAddress :: EmailAddress
                          }
               deriving (Eq, Ord, Show, Data, Typeable)
 
@@ -30,6 +32,7 @@ empty = UserInfo (Identity "") "" "" "" "" "" 0 0 [] [] []
 
 instance Indexable UserInfo where
     empty = ixSet [ ixFun $ \ci -> [ owner ci ]
+                  --, ixFun $ \ci -> [ paymentAddress ci ]
                   ]
 $(deriveSafeCopy 0 'base ''UserInfo)
 
