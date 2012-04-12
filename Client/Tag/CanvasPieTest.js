@@ -17,7 +17,7 @@ for (var i = 0; i < 4; i++) {
         var radius     = 40;                          // Arc radius
         var startAngle = 0;                           // Starting point on circle
         var endAngle   = Math.PI + (Math.PI * j) / 2; // End point on circle
-        var clockwise  = i % 2 === 0 ? false : true;   // clockwise or anticlockwise
+        var clockwise  = i % 2 === 0 ? false : true;  // clockwise or counterclockwise
 
         ctx.arc(x, y, radius, startAngle, endAngle, clockwise);
 

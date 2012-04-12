@@ -90,7 +90,7 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Popu
             inputs.push(obs);
         }
 
-        var pie = Chart.pie(user, inputs);
+        var pie = Chart.pie({distribution: user.distribution, width: 300, height: 225, padding: 30}, inputs);
 
         if (user.distribution.length > 0) {
             rows.push( Core.h3('My charitable distribution') );
