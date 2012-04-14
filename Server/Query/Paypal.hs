@@ -1,39 +1,41 @@
 module Query.Paypal where
 
-mdb :: MonadState DB m => (IPNMessageDB -> m IPNMessageDB) -> m ()
-mdb ff = (get >>= (ff  . ipnMessages))
+icontribPaypalAddress :: String
+icontribPaypalAddress = "paypal@icontrib.org"
 
-pdb :: MonadState DB m => (PaymentDB -> m a) -> m (a)
-pdb ff = (get >>= (ff  . payments))
+getM = liftM ipnMessages . get
+putM vv = get >>= (\ db -> put  db { ipnMessages = vv })
 
-bdb :: MonadState DB m => (BalanceDB -> m a) -> m (a)
-bdb ff = (get >>= (ff  . balances))
+getP = liftM payments . get
+putP vv = get >>= (\ db -> put  db { payments = vv })
 
-newIPNU :: IPNMessage -> Update DB ()
-newIPNU msg =  mdb $ \ db -> put (IxSet.insert msg db)
+clearUserDeposit :: Payment -> Update DB (Either String ())
+clearUserDeposit pp = do
+    
 
-getAccount :: Origin -> Destination -> UpdateDB (Balance)
-getAccount orgn dest = bdb $ \ db -> do 
-    do
-            return $ getOne $ db @* [orgn] @* [dest]
-    `justOr` do
-            let new = (Balance origin dest (Cents 0) minBound)
-            put $ IxSet.insert new
-            return $ new
+clearDeposit :: Payment -> Update DB ()
+clearDeposit pp =
+        do { isUserPaymentAddress (payer_email pp)
+           ; clearUserDeposit pp }
+    <|> do { isCharityPaymentAddress (payer_email pp)
+           ; clearCharityDeposit pp }
+    
+clear :: Payment -> Update DB (Either String ())
+clear pp
+    | (reciever_email pp) == icontribPaypalAddress = clearDeposit pp
+    | (payer_email pp) == icontribPaypalAddress = clearWithdraow pp
+    | otherwise = throwError $ "unknown reciever and sender payer email" ++ (show pp)
 
-distributeP :: Payment -> Update DB (Either String ())
-distributeP pp = runErrorT $ do
-    pdb $ \ db -> (getOne db @* [(txn_id pp)]) `nothingOr` (throwError "duplicate payment")
-    withPDB $ \ db -> put (IxSet.insert payment db)
-    acc <- getAccount (Origin $ payer_email pp) (Destination $ reciever_email pp)
-    let updated = acc { cents = (cents acc) + (payment_gross pp) - (payment_free pp) 
-                      , time = (time acc) `max` (payment_date pp) }
-    bdb $ \ db -> put $ IxSet.insert updated db
+clearPayment :: Payment -> Update DB (Either String ())
+clearPayment pp = runErrorT $ do
+    getP >>= (\ db -> (getOne db @* [(txn_id pp)]) `nothingOr` (throwError "duplicate payment"))
+    getP >>= (\ db -> putP (IxSet.insert payment db))
+    clear pp
 
-distributeValidatedPayment :: IPNMessage -> Payment -> Update DB (Either String ())
-distributeValidatedPayment msg payment = do
+clearValidatedPayment :: IPNMessage -> Payment -> Update DB (Either String ())
+clearValidatedPayment msg payment = do
     removeIPN msg
-    distributeP payment
+    clearPayment payment
 
 currentBalance :: Email -> Update DB Cents 
 currentBalance email = do
