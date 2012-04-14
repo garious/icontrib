@@ -94,7 +94,7 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
 
             var ctx = canvas.getContext('2d');
             ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
+            ctx.lineJoin = 'miter';
             ctx.strokeStyle = 'white';
 
             var x = r + padding;
@@ -102,22 +102,24 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
 
             for (var i = 0; i < pcts.length; i += 1) {
             
-                var angle = 2 * Math.PI * pcts[i];
-                ctx.beginPath();
+                var endAngle = startAngle + 2 * Math.PI * pcts[i];
 
                 // Draw pie slice
+                ctx.beginPath();
                 ctx.moveTo(x, y);
-                ctx.arc(x, y, r, startAngle, startAngle + angle, false);
-                ctx.lineTo(x, y);
-
+                ctx.arc(x, y, r, startAngle, endAngle, false);
                 var color = colors[i % colors.length];
                 ctx.fillStyle = color;
                 ctx.fill();
 
-                // Draw border
+                // Draw white mitered lines between slices
+                ctx.beginPath();
+                ctx.moveTo(x + r * Math.cos(startAngle), y + r * Math.sin(startAngle));
+                ctx.lineTo(x, y);
+                ctx.lineTo(x + r * Math.cos(endAngle), y + r * Math.sin(endAngle));
                 ctx.stroke();
             
-                startAngle += angle;
+                startAngle = endAngle;
             }
         }
 
