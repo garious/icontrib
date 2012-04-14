@@ -71,7 +71,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
                         Tag.div({style: {'float': 'right'}}, [alignButton({id: fundId})]),
                         Core.h4(user.funds[i].name),
                         Layout.hug([
-                            Chart.pie2({distribution: xs, colors: colors}),
+                            Chart.pieSnapshot({distribution: xs, colors: colors}),
                             Layout.pillow(20, 0),
                             fundContents(xs, total, colors)
                         ])

@@ -8,7 +8,7 @@ var deps = [
 
 function mkSetAttribute(e, k, getter) {
     return function (obs) {
-        e.setAttribute(k, getter(obs));
+        e[k] = getter(obs);
     };
 }
 
