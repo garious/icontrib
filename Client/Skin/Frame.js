@@ -65,7 +65,7 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
             //var logoutButton = Core.hyperlink({url: '#', text: 'Sign out'});
             var logoutButton = Core.image({url: baseUrl + '/arrowdown-darkgreen.png', text: 'settings', onClick: onClick});
 
-            return Tag.div({
+            return Tag.tag('div', {
                 style: {
                     width: '270px',
                     backgroundColor: '#eee',
@@ -92,11 +92,11 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
     function nav(as) {
         as = as || {};
 
-        var logo = Tag.a({href: '/', style: {position: 'absolute'}}, [
+        var logo = Tag.tag('a', {href: '/', style: {position: 'absolute'}}, [
             Core.image({url: baseUrl + '/logo.png', text: 'IContrib Home'})
         ]);
 
-        return Tag.div([
+        return Tag.tag('div', [
             Layout.pillow(0, 20),
             logo,
             loginWidget(as),
@@ -145,7 +145,7 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
                 ])
             ]);
 
-            var thumbnail = Tag.a({href: '/Me', style: {textDecoration: 'none'}}, [
+            var thumbnail = Tag.tag('a', {href: '/Me', style: {textDecoration: 'none'}}, [
                 thumbContents
             ]);
 
@@ -153,9 +153,9 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
         }
 
         var navbar = nav({thumbnail: thumbnail});
-        var body = Tag.div([contents]);
+        var body = Tag.tag('div', [contents]);
 
-        var node = Tag.div({style: {margin: 'auto', width: '960px'}}, [
+        var node = Tag.tag('div', {style: {margin: 'auto', width: '960px'}}, [
             Layout.spoon([
                 navbar, 
                 Layout.pillow(50), 
@@ -176,9 +176,9 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
         as.style.width = '100%';
         as.style.textAlign = 'center';
 
-        return Tag.div(as, [
+        return Tag.tag('div', as, [
             Core.hr(),
-            Tag.div({style: {padding: '20px'}}, xs)
+            Tag.tag('div', {style: {padding: '20px'}}, xs)
         ]); 
     }
 

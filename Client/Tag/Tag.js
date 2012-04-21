@@ -1,7 +1,86 @@
+//
+// Copyright (c) 2011-2012 Greg Fitzgerald, IContrib.org
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this 
+// software and associated documentation files (the "Software"), to deal in the Software
+// without restriction, including without limitation the rights to use, copy, modify, 
+// merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+// persons to whom the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or 
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+// INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
+// PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+// DEALINGS IN THE SOFTWARE.
+//
+//
+// Module name:
+//
+//     Tag
+//
+// Description:
+//
+//     Tag is a JavaScript module for creating HTML elements.
+//     The module exposes two object constructors, 'createElement' and 'tag'.
+//     The functions accept the same arguments, an HTML tag name, an attributes
+//     object, an array of subelements, and an eventHandlers object.  The
+//     difference is that 'tag' postpones the creation of an underlying DOM
+//     element, whereas 'createElement' creates and returns the DOM element.
+//
+//     createElement(x) === toDomElement( tag(x) )
+//         where
+//             function toDomElement(x) {
+//                 var methods = Iface.getInterface(x, Dom.toDomId);
+//                 return methods.toDom(x);
+//             }
+//
+//     By postponing the creation of the DOM, we can unit test modules
+//     that return tag objects without requiring a browser or a browser
+//     simulator such as JsDom or Zombie.  A bare-bones JavaScript interpreter
+//     such as Node.js will suffice.
+//
+//     Q: What if my application dynamically updates other element attributes?
+//
+//     A: Instead of setting the attribute directly, express the dependency with
+//        an Observable variable.  Your event handler should set the observable
+//        variable and your tag should be constructed using the observable.  The
+//        Tag library will detect the observable attribute and update the DOM
+//        element any time its value changes.
+//
+//
+//     Q: Why doesn't tag() automatically create observables for every tag 
+//        attribute.
+//
+//     A: If your application is mostly static content, creating the extra
+//        objects could delay startup time and consume memory the application
+//        doesn't need.
+//
+//
+//     Q: Why don't tag objects have a toDomElement() method?
+//
+//     A: Interface implementations come and go.  Avoiding methods allows us to
+//        introduce and deprecate interfaces over time without breaking
+//        compatibility.  For example, say you want to port your Tag-based JavaScript
+//        application to another platform.  Just attach a "ToMyPlatform"
+//        interface implementation to tag.constructor.interfaces and you're 
+//        done.  No need to version an object prototype or burden others
+//        with changes they don't necessarily need.
+//
+//
+//     Q: Interface programing is a pain.  This is stupid.
+//
+//     A: Indeed, JavaScript doesn't have good support for interface programming.
+//        See the Lua programming language's 'metamethods' for an example
+//        of how this should work and then please contact your nearest 
+//        JavaScript representative to file a complaint.
+
 
 var deps = [
     'Interface.js',
-    'TwoDimensional.js',
     'ToDom.js',
     'Observable.js'
 ];
@@ -18,7 +97,7 @@ function mkSetStyle(e, k, getter) {
     };
 }
 
-function onReady(I, Dim, Dom, Observable) {
+function onReady(Iface, Dom, Observable) {
 
     // Add attribute 'k' with value 'v' to the given DOM element 'e'.
     function addAttribute(e, k, v) {
@@ -27,7 +106,7 @@ function onReady(I, Dim, Dom, Observable) {
             var style = v;
             for (var s in style) {
                 if (style.hasOwnProperty(s) && style[s] !== undefined) {
-                    methods = I.getInterface(style[s], Observable.observableId);
+                    methods = Iface.getInterface(style[s], Observable.observableId);
                     if (methods) {
                         e.style[s] = methods.get(style[s]);
                         methods.subscribe(style[s], mkSetStyle(e, s, methods.get));
@@ -37,7 +116,7 @@ function onReady(I, Dim, Dom, Observable) {
                 }
             }
         } else if (v !== undefined) {
-            methods = I.getInterface(v, Observable.observableId);
+            methods = Iface.getInterface(v, Observable.observableId);
             if (methods) {
                 e.setAttribute(k, methods.get(v));
                 methods.subscribe(v, mkSetAttribute(e, k, methods.get));
@@ -49,12 +128,12 @@ function onReady(I, Dim, Dom, Observable) {
 
     // Create a DOM element with tag name 'nm', attributes object 'as', an array of 
     // subelements 'xs', and an object of event handlers 'es'.
-    function tag(nm, as, xs, es) {
+    function createElement(nm, as, xs, es) {
 
         if (typeof as === 'string' || as && as.constructor === Array) {
             es = xs;
             xs = as;
-            as = null;
+            as = undefined;
         }
     
         // Create DOM node
@@ -77,7 +156,7 @@ function onReady(I, Dim, Dom, Observable) {
             } else {
                 for (var i = 0; i < xs.length; i++) {
                     var x = xs[i];
-                    var iface = I.getInterface(x, Dom.toDomId);
+                    var iface = Iface.getInterface(x, Dom.toDomId);
                     e.appendChild(iface ? iface.toDom(x) : x);
                 }
             }
@@ -92,151 +171,47 @@ function onReady(I, Dim, Dom, Observable) {
             }
         }
 
-        return {element: e, constructor: tag};
+        return e;
+    }
+
+    //
+    // tag(nm, attributes, subelements, eventHandlers)
+    //
+
+    // Create an object with tag name 'nm', attributes object 'as', an array of 
+    // subelements 'xs', and an object of event handlers 'es'.
+    function tag(nm, as, xs, es) {
+        if (typeof as === 'string' || as && as.constructor === Array) {
+            es = xs;
+            xs = as;
+            as = undefined;
+        }
+
+        var me = {
+            constructor: tag,
+            name: nm
+        };
+
+        if (as !== undefined) { me.attributes = as; }
+        if (xs !== undefined) { me.subelements = xs; }
+        if (es !== undefined) { me.handlers = es; }
+
+        return me;
     }
 
     tag.interfaces = {};
 
-    tag.interfaces[Dim.twoDimensionalId] = {
-    
-        setPosition: function (me, pos) {
-            var sty = me.element.style;
-
-            if (pos['float'] !== undefined) {
-                sty['float'] = pos['float'];
-            }
-
-            if (pos.clear !== undefined) {
-                sty.clear = pos.clear;
-            }
-    
-            return me;
-        }
-        
-    };
-    
     tag.interfaces[Dom.toDomId] = {
         toDom: function (me) {
-            return me.element;
+            return createElement(me.name, me.attributes, me.subelements, me.handlers);
         }
     };
     
-
-    // Create an object with tag name 'nm', attributes object 'as', an array of 
-    // subelements 'xs', and an object of event handlers 'es'.
-    function tag1(nm, as, xs, es) {
-        if (typeof as === 'string' || as && as.constructor === Array) {
-            es = xs;
-            xs = as;
-            as = null;
-        }
-
-        // Normalize attributes
-        // Note: clone(as)?
-        as = as || {};
-        as.style = as.style || {};
-
-        var sty = as.style;
-        var w;
-
-        if (sty.margin !== undefined && String(sty.margin).search('auto') === -1)  {
-             w = parseInt(sty.margin, 10) + 'px';
-             if (sty.marginLeft === undefined) {
-                 sty.marginLeft = w;
-             }
-             if (sty.marginRight === undefined) {
-                 sty.marginRight = w;
-             }
-             if (sty.marginTop === undefined) {
-                 sty.marginTop = w;
-             }
-             if (sty.marginBottom === undefined) {
-                 sty.marginBottom = w;
-             }
-        }
-
-        if (sty.padding !== undefined)  {
-             w = parseInt(sty.padding, 10) + 'px';
-             if (sty.paddingLeft === undefined) {
-                 sty.paddingLeft = w;
-             }
-             if (sty.paddingRight === undefined) {
-                 sty.paddingRight = w;
-             }
-             if (sty.paddingTop === undefined) {
-                 sty.paddingTop = w;
-             }
-             if (sty.paddingBottom === undefined) {
-                 sty.paddingBottom = w;
-             }
-        }
-
-        if (sty.border !== undefined)  {
-             w = parseInt(sty.border, 10) + 'px';
-             if (sty.borderLeftWidth === undefined) {
-                 sty.borderLeftWidth = w;
-             }
-             if (sty.borderRightWidth === undefined) {
-                 sty.borderRightWidth = w;
-             }
-             if (sty.borderTopWidth === undefined) {
-                 sty.borderTopWidth = w;
-             }
-             if (sty.borderBottomWidth === undefined) {
-                 sty.borderBottomWidth = w;
-             }
-        }
-
-        return {
-            constructor: tag1,
-            name: nm,
-            attributes: as,
-            subelements: xs,
-            handlers: es
-        };
-    }
-
-    tag1.interfaces = {};
-
-    tag1.interfaces[Dim.twoDimensionalId] = {
-        setPosition: function (me, pos) {
-            return tag.interfaces[Dim.twoDimensionalId].setPosition({element: me.attributes}, pos);
-        }
-    };
+    define({
+        createElement: createElement,
+        tag:           tag
+    });
     
-    tag1.interfaces[Dom.toDomId] = {
-        toDom: function (me) {
-            return tag(me.name, me.attributes, me.subelements, me.handlers).element;
-        }
-    };
-    
-    function mkTag(nm) {
-        return function(as, xs, es) {
-            return tag1(nm, as, xs, es);
-        };
-    }
-    
-    var Tag = {
-        tag:        tag1,
-        mkTag:      mkTag
-    };
-    
-    var tags = [
-        'br', 'hr', 'p', 'div', 'link', 'a', 'img', 'span',
-        'form', 'fieldset', 'input', 'label', 'button',
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'base', 'ul', 'ol', 'li', 'legend', 
-        'table', 'th', 'tr', 'td', 'thead', 'tbody', 'tfoot',
-        'canvas'
-    ];
-    
-    for (var i = 0; i < tags.length; i++) {
-        var nm = tags[i];
-        Tag[nm] = mkTag(nm);
-    }
-    
-    define(Tag);
-
 }
 
 require(deps, onReady);

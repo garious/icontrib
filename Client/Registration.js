@@ -33,9 +33,9 @@ function onReady(Tag, Layout, Frame, Core, toaHtml, Charity) {
             MozBorderRadius: '2px'
         };
 
-        return Tag.div({style: fieldStyle}, [
-            Tag.label({'for': as.name, style: labelStyle}, as.label), 
-            Tag.input({
+        return Tag.tag('div', {style: fieldStyle}, [
+            Tag.tag('label', {'for': as.name, style: labelStyle}, as.label), 
+            Tag.tag('input', {
                 type: as.type,
                 name: as.name,
                 autofocus: 'autofocus',
@@ -58,16 +58,16 @@ function onReady(Tag, Layout, Frame, Core, toaHtml, Charity) {
             textShadow: '0 1px 1px #141451' 
         };
 
-        return Tag.legend({style: style}, xs);
+        return Tag.tag('legend', {style: style}, xs);
     }
 
     function fieldset(xs) {
-        return Tag.fieldset({style: {border: 'none', marginBottom: '10px', height: (xs * 20) + 'px'}}, xs);
+        return Tag.tag('fieldset', {style: {border: 'none', marginBottom: '10px', height: (xs * 20) + 'px'}}, xs);
     }
 
     function body() {
 
-        var toaDiv = Tag.div({style: {margin: '15px', height: '230px', overflow: 'auto', font: Core.defaultFont}});
+        var toaDiv = Tag.tag('div', {style: {margin: '15px', height: '230px', overflow: 'auto', font: Core.defaultFont}});
         toaDiv.innerHTML = toaHtml;
 
         var values = {
@@ -93,10 +93,10 @@ function onReady(Tag, Layout, Frame, Core, toaHtml, Charity) {
 
         var register = Core.button({text: 'Register!', loud: true, onClick: onRegister});
 
-        var form = Tag.form({style: {counterReset: 'fieldsets', width: '800px', height: '720px'}}, [
+        var form = Tag.tag('form', {style: {counterReset: 'fieldsets', width: '800px', height: '720px'}}, [
                 fieldset([legend('Organization Information'), ein, name, url, payAddr ]),
                 //fieldset([legend('Point of Contact'), firstName, lastName, phoneNumber, email ]),
-                fieldset([legend('Interchange Fee'), Tag.div({style: {left: '30px'}}, [Core.h4('3.9%')])]),
+                fieldset([legend('Interchange Fee'), Tag.tag('div', {style: {left: '30px'}}, [Core.h4('3.9%')])]),
                 fieldset([legend(['Terms of Agreement']), toaDiv/*, checkbox*/ ]),
                 register
         ]);

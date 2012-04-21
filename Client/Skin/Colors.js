@@ -5,6 +5,12 @@
 var smallestHeader = 15;
 
 define({
+    pieColors: [
+        '#9bc638',
+        '#ebf4d7',
+        '#b5d66d',
+        '#d0e5a2'
+    ],
     lightColor:    '#979797',
     middleColor:   '#777777',
     darkColor:     '#5e5e5e',

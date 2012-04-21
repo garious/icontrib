@@ -19,11 +19,7 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
         };
     }
 
-    var defaultColors = [
-        Colors.darkColor,
-        Colors.middleColor,
-        Colors.lightColor
-    ];
+    var defaultColors = Colors.pieColors;
 
     pie.interfaces = {};
 
@@ -32,7 +28,7 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
             var as = me.attributes;
             var inputs = me.inputs;
 
-            var e = Tag.div({style: {width: as.width + 'px', height: as.height + 'px'}});
+            var e = Tag.tag('div', {style: {width: as.width + 'px', height: as.height + 'px'}});
             var methods = Iface.getInterface(e, ToDom.toDomId);
             var div = methods.toDom(e);
 

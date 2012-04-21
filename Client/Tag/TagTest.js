@@ -9,7 +9,7 @@ var  deps = [
 
 function onReady (Tag, Assert) {
 
-    Assert.assertEq(Tag.tag('p', 'hello'), {name: 'p', attributes: {style: {}}, subelements: 'hello'});
+    Assert.assertEq(Tag.tag('p', 'hello'), {name: 'p', subelements: 'hello'});
 
     define('passed!');
 }

@@ -43,15 +43,17 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Popu
             var obs = inputs[j];
 
             var cols = Layout.hug([
-                Core.input({type: 'text', size: 4, value: obs, onKeyUp: mkHandler(j)}),
+                Core.hyperlink({url: x.url, text: x.name}),
                 Layout.pillow(10, 0),
-                Core.hyperlink({url: x.url, text: x.name})
+                Core.hr({width: 200, height: 5, color: 'green', marginTop: 15, marginLeft: 10, marginRight: 10}),
+                Layout.pillow(10, 0),
+                Core.input({type: 'text', size: 4, value: obs, onKeyUp: mkHandler(j)})
             ]);
             rows.push(cols);
             rows.push(Layout.pillow(0,15));
         }
 
-        return Layout.spoon(rows);
+        return Layout.spoon({align: 'right'}, rows);
     }
 
     function distributionTable(dist, inputs) {

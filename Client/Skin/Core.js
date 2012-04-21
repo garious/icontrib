@@ -52,6 +52,7 @@ function onReady(Tag, Colors) {
         var attrs = {
             type: as.type,
             size: as.size,
+            autofocus: as.autofocus,
             placeholder: as.placeholder || '',
             style: sty
         };
