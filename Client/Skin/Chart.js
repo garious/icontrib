@@ -33,7 +33,7 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
             var div = methods.toDom(e);
 
             function draw() {
-                 var e = pieSnapshot({distribution: as.distribution, width: as.width, height: as.height});
+                 var e = pieSnapshot({distribution: as.distribution, width: as.width, height: as.height, padding: as.padding});
                  var methods = Iface.getInterface(e, ToDom.toDomId);
                  div.innerHTML = '';
                  div.appendChild( methods.toDom(e) );
@@ -52,17 +52,17 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
 
     pie.interfaces[ToDom.toDomId] = canvasPie_ToDom;
 
-    pie.interfaces[TwoDim.twoDimensionalId] = {
-        getDimensions: function (me) {
-            return {
-                 width: 300,
-                 height: 225
-            };
-        },
-        setPosition: function (me, pos) {
-            // TODO
-        }
-    };
+    //pie.interfaces[TwoDim.twoDimensionalId] = {
+    //    getDimensions: function (me) {
+    //        return {
+    //             width: 300,
+    //             height: 225
+    //        };
+    //    },
+    //    setPosition: function (me, pos) {
+    //        // TODO
+    //    }
+    //};
 
     function pieSnapshot(as) {
 
@@ -78,15 +78,17 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
             
         var r = as.height ? Math.floor(as.height / 2 - padding) : 60;
         var startAngle = -Math.PI / 2;
+
+        var width  = as.width  ? as.width : 2 * r + 2 * padding;
+        var height = as.height ? as.height : 2 * r + 2 * padding;
         
         var canvas = document.createElement('canvas');
         if (!canvas.getContext){
             alert('Sorry, but to view this website, you need a web browser that supports the "canvas" element.');
         } else {
 
-            canvas.height = 2 * r + 2 * padding;
-            canvas.width  = 2 * r + 2 * padding;
-            canvas.style.position = 'absolute';
+            canvas.height = height;
+            canvas.width  = width;
 
             var ctx = canvas.getContext('2d');
             ctx.lineWidth = 3;
@@ -119,9 +121,7 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
             }
         }
 
-        var width  = (as.width  ? as.width : 150) + 'px';
-        var height = (as.height ? as.height : 150) + 'px';
-        return Tag.tag('div', {style: {width: width, height: height}}, [canvas]);
+        return Tag.tag('div', {style: {width: width + 'px', height: height + 'px', display: 'inline-block'}}, [canvas]);
         
     }
 

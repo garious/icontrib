@@ -7,10 +7,12 @@ var deps = [
     '/Skin/Core.js',
     '/Skin/Donor.js',
     '/Skin/Chart.js',
+    '/Skin/Slider.js',
+    '/Skin/Colors.js',
     '/charity/popular.json'
 ];
 
-function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Popular) { 
+function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Slider, Colors, Popular) { 
 
     function fundContents(dist, inputs) {
         var rows = [];
@@ -30,22 +32,22 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Popu
                             var pct = Math.round(v * 100) / 100;
 
                             inputs[i].set(pct);
+                        } else {
+                            inputs[i].set(evt.target.value);
                         }
                     }
-                } //else {
-                    // TODO: disable 'Save Changes'
-                //}
+                }
             };
         }
 
         for (var j = 0; j < dist.length; j += 1) {
             var x = dist[j];
             var obs = inputs[j];
+            var color = Colors.pieColors[j % Colors.pieColors.length];
 
             var cols = Layout.hug([
-                Core.hyperlink({url: x.url, text: x.name}),
-                Layout.pillow(10, 0),
-                Core.hr({width: 200, height: 5, color: 'green', marginTop: 15, marginLeft: 10, marginRight: 10}),
+                Core.hyperlink({url: '/Charity?id=' + x.cid, text: x.name, marginTop: 6, marginRight: 10}),
+                Slider.slider({value: obs, width: 200, height: 4, color: color, marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, onChange: mkHandler(j)}),
                 Layout.pillow(10, 0),
                 Core.input({type: 'text', size: 4, value: obs, onKeyUp: mkHandler(j)})
             ]);
@@ -63,19 +65,7 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Popu
     function dashboard(as) {
         as = as || {};
         var user = as.user || {};
-        var alignedUsers = user.alignedUsers || [];
-        var raised = Math.round(user.alignedDonated / 100);
-        var impactMsg = alignedUsers.length + ' donors are aligned with your distribution.  Together you help raise $' + raised + ' per month!';
-
         var rows = [];
-
-        var impactHeader = Core.p({text: impactMsg, width: 500});
-
-        if (alignedUsers.length > 0) {
-            rows.push( Core.h3('My impact') );
-            rows.push( Layout.hug([Layout.pillow(30), impactHeader]) );
-        }
-
         var inputs = [];
         var dist = user.distribution;
 
@@ -92,19 +82,16 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Popu
             inputs.push(obs);
         }
 
-        var pie = Chart.pie({distribution: user.distribution, width: 300, height: 225, padding: 30}, inputs);
+        var pie = Chart.pie({distribution: user.distribution, height: 220, padding: 15}, inputs);
+        var pieTin = Tag.tag('div', {style: {margin: 'auto 0px', width: '100%', textAlign: 'center'}}, [pie]);
 
         if (user.distribution.length > 0) {
-            rows.push( Core.h3('My charitable distribution') );
-            rows.push( Layout.hug([Layout.pillow(100, 0), pie]) );
-            rows.push( Layout.pillow(0, 15) );
+            rows.push( pieTin );
+            rows.push( Layout.pillow(0, 20) );
         }
 
         var fundingRows = [
             distributionTable(user.distribution, inputs),
-            Core.h3('My funding'),
-            Layout.pillow(0, 20),
-            Layout.hug([Layout.pillow(30, 0), Core.input({type: 'text', size: 10, value: user.centsDonated / 100.0}), Layout.pillow(10,0), Core.h6("dollars per month")]),
             Layout.pillow(0, 20),
             Layout.hug([Layout.pillow(20,0), Core.button({href: '#', text: 'Save Changes', loud: true})]),
             Layout.pillow(0, 20)

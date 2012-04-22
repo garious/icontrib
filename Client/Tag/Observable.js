@@ -50,7 +50,7 @@ function onReady(Iface) {
     // Observable computations.  thunk() takes a list of observables
     // and a callback function and returns an observable.  Any time
     // a value is requested AND an input has changed, the given callback
-    // is exectuted, and its return value is returned.
+    // is executed, and its return value is returned.
     function thunk(xs, f) {
         var me = {
             valid: false,
@@ -95,6 +95,7 @@ function onReady(Iface) {
 
              var oldValue = me.value;
              me.value = me.f.apply(null, vals);
+             me.valid = true;
 
              if (me.value !== oldValue && me.subscribers) {
                  me.subscribers.forEach(function(f) {
@@ -102,7 +103,6 @@ function onReady(Iface) {
                  });
              }
 
-             me.valid = true;
              return me.value;
            }
         },

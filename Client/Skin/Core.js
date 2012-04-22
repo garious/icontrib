@@ -13,7 +13,11 @@ function onReady(Tag, Colors) {
         var sty = {
             textDecoration: 'none',
             font: font,
-            color: 'blue'
+            color: 'blue',
+            marginLeft:   as.marginLeft   ? as.marginLeft   + 'px' : 0,
+            marginRight:  as.marginRight  ? as.marginRight  + 'px' : 0,
+            marginTop:    as.marginTop    ? as.marginTop    + 'px' : 0,
+            marginBottom: as.marginBottom ? as.marginBottom + 'px' : 0
         };
 
         var handlers = {
@@ -163,15 +167,15 @@ function onReady(Tag, Colors) {
         as = as || {};
 
         var sty = {
-           height: as.height ? as.height + 'px' : '1px',
-           width:  as.width  ? as.width  + 'px' : '100%',
-           margin: as.margin ? as.margin + 'px' : 0,
-           marginLeft:   as.marginLeft   ? as.marginLeft   + 'px' : 0,
-           marginRight:  as.marginRight  ? as.marginRight  + 'px' : 0,
-           marginTop:    as.marginTop    ? as.marginTop    + 'px' : 0,
-           marginBottom: as.marginBottom ? as.marginBottom + 'px' : 0,
-           borderWidth: 0,
-           backgroundColor: as.color
+            height: as.height ? as.height + 'px' : '1px',
+            width:  as.width  ? as.width  + 'px' : '100%',
+            margin: as.margin ? as.margin + 'px' : 0,
+            marginLeft:   as.marginLeft   ? as.marginLeft   + 'px' : 0,
+            marginRight:  as.marginRight  ? as.marginRight  + 'px' : 0,
+            marginTop:    as.marginTop    ? as.marginTop    + 'px' : 0,
+            marginBottom: as.marginBottom ? as.marginBottom + 'px' : 0,
+            borderWidth: 0,
+            backgroundColor: as.color
         };
 
         return Tag.tag('hr', {style: sty, noshade: true, size: 1});
