@@ -55,6 +55,7 @@ function onReady(Tag, Colors) {
 
         var attrs = {
             type: as.type,
+            disabled: as.disabled,
             size: as.size,
             autofocus: as.autofocus,
             placeholder: as.placeholder || '',

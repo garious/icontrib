@@ -33,7 +33,7 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
             var div = methods.toDom(e);
 
             function draw() {
-                 var e = pieSnapshot({distribution: as.distribution, width: as.width, height: as.height, padding: as.padding});
+                 var e = pieSnapshot({distribution: as.distribution, width: as.width, height: as.height, padding: as.padding, colors: as.colors});
                  var methods = Iface.getInterface(e, ToDom.toDomId);
                  div.innerHTML = '';
                  div.appendChild( methods.toDom(e) );

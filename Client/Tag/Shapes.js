@@ -13,10 +13,10 @@ function onReady(Tag) {
         var r = as.radius;
         return Tag.tag('div', {
             style: {
-                left: (as.left || 0) + 'px',
-                right: (as.right || 0) + 'px',
-                top: (as.top || 0) + 'px',
-                bottom: (as.bottom || 0) + 'px',
+                left: as.left,
+                right: as.right,
+                top: as.top,
+                bottom: as.bottom,
                 position: 'relative',
                 width: 2 * r + 'px',
                 height: 2 * r + 'px',

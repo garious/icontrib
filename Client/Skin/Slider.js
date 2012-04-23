@@ -44,43 +44,55 @@ function onReady(Observable, Tag, Layout, Shapes, Colors) {
         var width = as.width || 200;
         var height = as.height || 4;
         var radius = 8;
+        var maxLineWidth = width - 2 * radius;
 
         function calcLeftWidth(v) {
             var w = (width * v / 100) - radius;
-            return (w > 0 ? w : 0) + 'px'; 
+            return (w >= 0 ? (w >= maxLineWidth ? maxLineWidth : w) : 0) + 'px'; 
         }
 
         function calcRightWidth(v) {
             var w = (width * (100 - v) / 100) - radius;
-            return (w > 0 ? w : 0) + 'px'; 
+            return (w >= 0 ? (w >= maxLineWidth ? maxLineWidth : w) : 0) + 'px'; 
         }
 
         var val = as.value;
+        var mouseDown = false;
 
         function onMouseDown(evt) {
+            mouseDown = true;
+            onMouseMove(evt);
+        }
 
-            // First, track down the element that we attached the event handler to
-            var e = evt.target;
-            while (e && e.constructor !== HTMLDivElement) {
-                e = e.parentNode;
-            }
-
-            if (e) {
-                var divOffset = evt.pageX - getPageX(e);
-
-                if (divOffset > 0 && divOffset < width) {
-                    var v = divOffset / width * 100;
-                    as.onChange({target: {value: v}});
-                    //val.set(divOffset / width * 100);
-                } else {
-                    console.error('onMouseDown: event out of bounds: ', divOffset, width);
+        function onMouseMove(evt) {
+            if (mouseDown) {
+                // First, track down the element that we attached the event handler to
+                var e = evt.target;
+                while (e && !e.dataset.slider) {
+                    e = e.parentNode;
                 }
-            } else {
-                console.error('onMouseDown: expected parent node to be a DIV element', evt.target);
+
+                if (e) {
+                    var divOffset = evt.pageX - getPageX(e);
+
+                    if (divOffset > 0 && divOffset < width) {
+                        var v = divOffset / width * 100;
+                        as.onChange({target: {value: v}});
+                        //val.set(divOffset / width * 100);
+                    } else {
+                        console.error('onMouseDown: event out of bounds: ', divOffset, width);
+                    }
+                } else {
+                    console.error('onMouseDown: expected parent node to be a DIV element', evt.target);
+                }
             }
         }
 
-        var circle = Shapes.circle({radius: radius, color: as.color, 'top': as.marginTop});
+        function onMouseUp(evt) {
+            if (evt.target.dataset.slider) {
+                mouseDown = false;
+            }
+        }
 
         // Create an observable 'leftWidth' that holds the value returned by calcLeftWidth any time 'val' changes.
         var leftWidth  = Observable.thunk([val], calcLeftWidth);
@@ -89,11 +101,16 @@ function onReady(Observable, Tag, Layout, Shapes, Colors) {
         var lineMarginTop = as.marginTop + radius - height / 2;
 
         var lines = Layout.hug([
-            line({width:  leftWidth, height: height, marginTop: lineMarginTop, marginBottom: as.marginBottom, color: as.color}),
-            circle,
-            line({width: rightWidth, height: height, marginTop: lineMarginTop, marginBottom: as.marginBottom, color: Colors.gray})
+            Layout.pillow(radius, 1),
+            line({width:  leftWidth, height: height, marginTop: lineMarginTop, marginBottom: lineMarginTop, color: as.color}),
+            line({width: rightWidth, height: height, marginTop: lineMarginTop, marginBottom: lineMarginTop, color: Colors.gray}),
+            Layout.pillow(radius, 1)
         ]);
-        return Tag.tag('div', [lines], {mousedown: onMouseDown});
+
+        var circle = Shapes.circle({left: leftWidth, radius: radius, color: as.color, 'top': as.marginTop + 'px'});
+
+        var handlers = {mousedown: onMouseDown, mousemove: onMouseMove, mouseup: onMouseUp, mouseout: onMouseUp};
+        return Tag.tag('div', {'data-slider': true, style: {width: width + 'px'}}, [lines, circle], handlers);
     }
 
     define({

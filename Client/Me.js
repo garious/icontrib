@@ -14,7 +14,7 @@ var deps = [
 
 function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Slider, Colors, Popular) { 
 
-    function fundContents(dist, inputs) {
+    function fundContents(dist, inputs, colors) {
         var rows = [];
         function mkHandler(j) {
             return function(evt) {
@@ -29,9 +29,7 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Slid
                             var d = dist[i];
                             var v = d.shares - diff * d.shares/(100 - old);
                             d.shares = v;
-                            var pct = Math.round(v * 100) / 100;
-
-                            inputs[i].set(pct);
+                            inputs[i].set(v);
                         } else {
                             inputs[i].set(evt.target.value);
                         }
@@ -43,13 +41,14 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Slid
         for (var j = 0; j < dist.length; j += 1) {
             var x = dist[j];
             var obs = inputs[j];
-            var color = Colors.pieColors[j % Colors.pieColors.length];
+            var percentage = Observable.thunk([obs], function(n){return Math.round(n * 10) / 10 + '%';});
+            var color = colors[j % colors.length];
 
             var cols = Layout.hug([
                 Core.hyperlink({url: '/Charity?id=' + x.cid, text: x.name, marginTop: 6, marginRight: 10}),
                 Slider.slider({value: obs, width: 200, height: 4, color: color, marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, onChange: mkHandler(j)}),
                 Layout.pillow(10, 0),
-                Core.input({type: 'text', size: 4, value: obs, onKeyUp: mkHandler(j)})
+                Core.input({type: 'text', size: 5, disabled: true, value: percentage, onKeyUp: mkHandler(j)})
             ]);
             rows.push(cols);
             rows.push(Layout.pillow(0,15));
@@ -58,8 +57,8 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Slid
         return Layout.spoon({align: 'right'}, rows);
     }
 
-    function distributionTable(dist, inputs) {
-        return Layout.hug({width: 550}, [Layout.pillow(30), fundContents(dist, inputs)]);
+    function distributionTable(dist, inputs, colors) {
+        return Layout.hug({width: 550}, [Layout.pillow(30), fundContents(dist, inputs, colors)]);
     }
 
     function dashboard(as) {
@@ -77,12 +76,13 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Slid
 
         for (var j = 0; j < dist.length; j += 1) {
             var x = dist[j];
-            var pct = Math.round(x.shares / total * 1000) / 10;
+            var pct = x.shares * 100 / total;
             var obs = Observable.observe(pct);
             inputs.push(obs);
         }
 
-        var pie = Chart.pie({distribution: user.distribution, height: 220, padding: 15}, inputs);
+        var colors = Colors.dashboardColors;
+        var pie = Chart.pie({distribution: user.distribution, height: 220, padding: 15, colors: colors}, inputs);
         var pieTin = Tag.tag('div', {style: {margin: 'auto 0px', width: '100%', textAlign: 'center'}}, [pie]);
 
         if (user.distribution.length > 0) {
@@ -91,7 +91,7 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Slid
         }
 
         var fundingRows = [
-            distributionTable(user.distribution, inputs),
+            distributionTable(user.distribution, inputs, colors),
             Layout.pillow(0, 20),
             Layout.hug([Layout.pillow(20,0), Core.button({href: '#', text: 'Save Changes', loud: true})]),
             Layout.pillow(0, 20)

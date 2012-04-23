@@ -11,6 +11,39 @@ define({
         '#b5d66d',
         '#d0e5a2'
     ],
+    dashboardColors: [
+        //'#fffc01',
+        //'#dca169',
+        //'#ff919e',
+        //'#475dfe',
+        //'#00f6ff',
+        //'#00ff9c',
+        //'#a5c965',
+
+        //'#edd68a',
+        //'#ff5500',
+        //'#fc90ff',
+        //'#a4c4ff',
+        //'#b6f6f5',
+        //'#aeffb0',
+        //'#e2e2e2',
+
+        //'#f2b829', // Dark yellow
+        //'#ff0054', // Red
+        //'#a90fad', // Magenta
+        //'#00aeff', // Sky blue
+        //'#4cb1ad', // Light blue
+        '#12ff01', // Light green
+        //'#a1a1a1', // Light gray
+
+        '#ff9000', // Orange
+        '#a2062b', // Dark red
+        '#8a56c2', // Purple
+        '#006e8f', // Dark blue
+        '#008452', // Blue-green
+        '#5b7200'  // Dark green
+        //'#707070' // Gray
+    ],
     lightColor:    '#979797',
     middleColor:   '#777777',
     darkColor:     '#5e5e5e',
