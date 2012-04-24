@@ -7,12 +7,12 @@ var deps = [
     '/Skin/Core.js',
     '/Skin/Donor.js',
     '/Skin/Chart.js',
-    '/Skin/Slider.js',
+    //'/Skin/Slider.js',
     '/Skin/Colors.js',
     '/charity/popular.json'
 ];
 
-function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Slider, Colors, Popular) { 
+function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Slider,*/ Colors, Popular) { 
 
     function fundContents(dist, inputs, colors) {
         var rows = [];
@@ -46,7 +46,20 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Slid
 
             var cols = Layout.hug([
                 Core.hyperlink({url: '/Charity?id=' + x.cid, text: x.name, marginTop: 6, marginRight: 10}),
-                Slider.slider({value: obs, width: 200, height: 4, color: color, marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, onChange: mkHandler(j)}),
+
+                // At the time of this writing, this is only expected to work in Chrome, Safari, and Opera.
+                Tag.tag('input', {type: 'range', value: obs, min: 1, max: 99, style: {
+                    WebkitAppearance: 'none',
+                    width: '200px',
+                    margin: '10px',
+                    marginTop: '15px',
+                    backgroundColor: color,
+                    height: '4px'
+                }}, null, {change: mkHandler(j)}),
+
+                //This might work in more browsers, but is fairly broken.
+                //Slider.slider({value: obs, width: 200, height: 4, color: color, marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, onChange: mkHandler(j)}),
+
                 Layout.pillow(10, 0),
                 Core.input({type: 'text', size: 5, disabled: true, value: percentage, onKeyUp: mkHandler(j)})
             ]);
