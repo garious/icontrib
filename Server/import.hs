@@ -18,11 +18,11 @@ main :: IO ()
 main = do
     args <- getArgs
     opts <- getOptions args
+    putStrLn "importing..."
+    putStrLn $ "if you see an error you might need to : rm -rf " ++ (dbDir opts)
     db <- DB.newFromFile (dbDir opts)
     let errorLeft (Left ee) = error ee
         errorLeft (Right _) = return ()
-    putStrLn "importing..."
-    putStrLn $ "if you see an error you might need to : rm -rf " ++ (dbDir opts)
     donors <- glob "private/static/donor/*.json"
     e1 <- forM donors $ \ dd -> runErrorT $ do
         body <- liftIO $ readFile dd
