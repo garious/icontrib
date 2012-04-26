@@ -12,12 +12,18 @@ import Data.IxSet
 import Data.SafeCopy
 
 newtype Cents = Cents Int
-              deriving (Eq, Ord, Show, Data, Typeable)
+              deriving (Eq, Ord, Show, Data, Typeable, Num)
 $(deriveSafeCopy 0 'base ''Cents)
 
+fromCents :: Cents -> Int
+fromCents (Cents cc) = cc
+
 data Email = Email { localPart :: String, domainPart :: String}
-           deriving (Eq, Ord, Show, Data, Typeable)
+           deriving (Eq, Ord, Data, Typeable)
 $(deriveSafeCopy 0 'base ''Email)
+
+instance Show Email where
+    show (Email lp dp) = lp ++ "@" ++ dp
 
 newtype TransactionID = TransactionID String
                       deriving (Eq, Ord, Show, Data, Typeable)
@@ -46,7 +52,6 @@ instance Indexable IPNMessage where
                   ]
 $(deriveSafeCopy 0 'base ''IPNMessage)
 type IPNMessageDB = IxSet IPNMessage
-
 
 newtype ReceiverAddress = ReceiverAddress Email
                         deriving (Eq, Ord, Show, Data, Typeable)
@@ -85,6 +90,7 @@ instance Parse PaymentStatus where
 
 instance Parse UTCTime where
     parse str = parseTime defaultTimeLocale "%H:%M:%S %b %d, %Y %Z" str `justOr` (throwError $ "couldn't parse time string" ++ str)
+
 
 instance Parse Email where
     parse str = do 

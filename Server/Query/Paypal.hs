@@ -1,48 +1,81 @@
-module Query.Paypal where
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell, TypeFamilies, FlexibleContexts #-}
+module Query.Paypal(clearValidatedPaymentU, currentBalanceQ) where
+
+import Control.Monad.State                   ( MonadState )
+import Query.UserInfo                        ( paymentDistributionMQ )
+import Data.Distribution                     ( Distribution )
+import Query.CharityInfo                     ( charityByIDMQ' )
+
+import Data.IxSet                            ( (@*) )
+import qualified Data.CharityInfo            as C
+import Data.Distribution                     ( shares, cid )
+import qualified Data.IxSet                  as IxSet
+import Data.Paypal
+
+import Data.Acid
+import SiteError
+import Data.DB
 
 icontribPaypalAddress :: String
 icontribPaypalAddress = "paypal@icontrib.org"
 
-getM = liftM ipnMessages . get
-putM vv = get >>= (\ db -> put  db { ipnMessages = vv })
+removeIPN :: IPNMessage -> Update DB ()
+removeIPN mm = do
+    db <- getM
+    putM $ IxSet.delete mm db 
 
-getP = liftM payments . get
-putP vv = get >>= (\ db -> put  db { payments = vv })
-
-clearUserDeposit :: Payment -> Update DB (Either String ())
+clearUserDeposit :: (MonadError String m, MonadState DB m) => Payment -> m ()
 clearUserDeposit pp = do
-    
+    dists <- paymentDistributionMQ (payer_email pp)
+    chars <- charityByIDMQ' $ map cid dists
+    let 
+        td = fromIntegral
+        total = sum $ map shares dists
+        moneys = ((payment_gross pp) - (payment_fee pp))
 
-clearDeposit :: Payment -> Update DB ()
-clearDeposit pp =
-        do { isUserPaymentAddress (payer_email pp)
-           ; clearUserDeposit pp }
-    <|> do { isCharityPaymentAddress (payer_email pp)
-           ; clearCharityDeposit pp }
+        depAmnt' :: Distribution -> Double
+        depAmnt' dd = ((td $ shares dd) / (td total)) * (td $ fromCents moneys)
+
+        depAmnt :: Distribution -> Cents
+        depAmnt dd = Cents $ floor $ depAmnt' dd
+
+        remainder :: Cents
+        remainder = moneys - (sum (map depAmnt dists))
+
+        toDeposit :: Distribution -> C.CharityInfo -> Deposit 
+        toDeposit dd cc
+            | dd == (head dists) = Deposit (SenderAddress $ payer_email pp) 
+                                           (ReceiverAddress $ C.paymentAddress cc) 
+                                           (payment_date pp) ((depAmnt dd) + remainder)
+        toDeposit dd cc = Deposit (SenderAddress $ payer_email pp) 
+                                  (ReceiverAddress $ C.paymentAddress cc) 
+                                  (payment_date pp) (depAmnt dd)
+    deps <- getD
+    putD $ IxSet.union deps (IxSet.fromList $ zipWith toDeposit dists chars) 
+            
+clearDeposit :: (MonadError String m, MonadState DB m) => Payment -> m ()
+clearDeposit pp = clearUserDeposit pp
     
-clear :: Payment -> Update DB (Either String ())
+clear :: (MonadError String m, MonadState DB m) => Payment -> m ()
 clear pp
-    | (reciever_email pp) == icontribPaypalAddress = clearDeposit pp
-    | (payer_email pp) == icontribPaypalAddress = clearWithdraow pp
+    | (show $ reciever_email pp) == icontribPaypalAddress = clearDeposit pp
     | otherwise = throwError $ "unknown reciever and sender payer email" ++ (show pp)
 
-clearPayment :: Payment -> Update DB (Either String ())
-clearPayment pp = runErrorT $ do
-    getP >>= (\ db -> (getOne db @* [(txn_id pp)]) `nothingOr` (throwError "duplicate payment"))
-    getP >>= (\ db -> putP (IxSet.insert payment db))
+clearPayment :: (MonadError String m, MonadState DB m) => Payment -> m ()
+clearPayment pp = do
+    db <- getP 
+    _ <- (IxSet.getOne $ db @* [(txn_id pp)]) `nothingOr` (throwError "duplicate payment")
+    putP (IxSet.insert pp db)
     clear pp
 
-clearValidatedPayment :: IPNMessage -> Payment -> Update DB (Either String ())
-clearValidatedPayment msg payment = do
-    removeIPN msg
+clearValidatedPaymentU :: IPNMessage -> Payment -> Update DB (Either String ())
+clearValidatedPaymentU msg payment = runErrorT $ do
+    lift $ removeIPN msg
     clearPayment payment
 
-currentBalance :: Email -> Update DB Cents 
-currentBalance email = do
-    dests <- bdb $ db @* [(map Destination email)] 
-    let 
-            fromDest (Destination dst) = dst
-            origins = map (Origin . fromDest) dests
-    origins <- bdb $ db @* [(map Origin emails)]
-    return $ (sum $ map cents dests) - (sum $ map cents origins)
+currentBalanceQ :: Email -> Query DB Cents 
+currentBalanceQ email = do
+    db <- askD
+    let deps = IxSet.toList $ db @* [ReceiverAddress email] 
+    return $ (sum $ map cents deps)
 

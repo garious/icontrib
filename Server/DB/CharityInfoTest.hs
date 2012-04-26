@@ -7,6 +7,7 @@ import qualified Data.CharityInfo            as C
 import qualified DB.DB                       as DB
 import qualified Data.Login                  as L
 import qualified Data.IxSet                  as IxSet
+import qualified Data.Paypal                 as P
 import TestUtil
 
 ident :: L.Identity
@@ -27,7 +28,7 @@ updateInfoTest = do
                            (C.CharityID "cid")
                            "imageurl"
                            "mission"
-                           "paymentaddress"
+                           (P.Email "" "")
 
     assertEqErrorT "update"     (C.updateInfo db ident ci) (Right ())
     assertMEq      "updated" [ci] $ do

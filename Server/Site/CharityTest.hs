@@ -10,6 +10,7 @@ import qualified Network.Browser             as HTTP
 import qualified JSON.UserLogin              as J
 import qualified Data.CharityInfo            as C
 import qualified Data.Login                  as L
+import qualified Data.Paypal                 as P
 import TestUtil
 
 
@@ -21,7 +22,8 @@ ci = C.CharityInfo (L.Identity "greg")
                     (C.CharityID "gffw")
                     "charity/gffw.jpg"
                     "blah blah blah"
-                    "payment info"
+                    (P.Email  "" "")
+
 data PartialCI = PartialCI { ein :: String
                            , organizationName :: String
                            , companyWebsite :: String
