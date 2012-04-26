@@ -2,7 +2,7 @@ UNAME_S:=$(shell uname -s)
 FLAVOR=Debug
 V=$(UNAME_S)_$(FLAVOR)
 
-JS_TESTS=ObservableTest.js TagTest.js LayoutTest.js #$(wildcard *Test.js)
+JS_TESTS=ObservableTest.js TagTest.js ShapesTest.js LayoutTest.js #$(wildcard *Test.js)
 JS_OKS=$(patsubst %,$V/%.passed,$(JS_TESTS))
 
 all: $(JS_OKS)

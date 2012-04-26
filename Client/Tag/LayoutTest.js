@@ -10,14 +10,14 @@ var deps = [
 function onReady(Tag, Layout) {
 
     function testImg() {
-        return Tag.img({src: '/Skin/logo.png', style: {border: '1px solid', padding: '5px', borderRadius: '5px'}});
+        return Tag.tag('img', {src: '/Skin/logo.png', style: {border: '1px solid', padding: '5px', borderRadius: '5px'}});
     }
 
     function hugTest() {
         return Layout.hug([
-            Tag.span({style: {height: '20px', width: '70px'}}, 'hello'), 
+            Tag.tag('span', {style: {height: '20px', width: '70px'}}, 'hello'), 
             Layout.pillow(10),
-            Tag.span({style: {height: '20px', width: '70px'}}, 'world')
+            Tag.tag('span', {style: {height: '20px', width: '70px'}}, 'world')
         ]);
     }
 
@@ -25,7 +25,7 @@ function onReady(Tag, Layout) {
         var separator = Layout.pillow(30);
 
         function label(s, e) {
-            return Layout.hug([Tag.p({style: {width: '70px'}}, s), Layout.pillow(10), e]);
+            return Layout.hug([Tag.tag('p', {style: {width: '70px'}}, s), Layout.pillow(10), e]);
         }
 
         return Layout.hug([

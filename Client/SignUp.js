@@ -8,11 +8,11 @@ var deps = [
 
 function onReady(Tag, Layout, Core, Frame, Colors) {
 
-    var logo = Tag.a({href: '/', tabindex: -1, style: {width: '129px', height: '70px'}}, [
+    var logo = Tag.tag('a', {href: '/', tabindex: -1, style: {width: '129px', height: '70px'}}, [
         Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
     ]);
 
-    var badLogin = Tag.span({hidden: true, style: {height: '20px', width: '200px', color: Colors.red}}, 'bad username or password');
+    var badLogin = Tag.tag('span', {hidden: true, style: {height: '20px', width: '200px', color: Colors.red}}, 'bad username or password');
 
 
     var formValues = {password: ''};
@@ -27,7 +27,7 @@ function onReady(Tag, Layout, Core, Frame, Colors) {
         formValues.confirmPassword = evt.target.value;
     }
 
-    var email = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Email', onChange: onEmailChanged});
+    var email = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Email', autofocus: true, onChange: onEmailChanged});
     var password = Core.input({type: 'password', size: 18, width: 300, placeholder: 'Password', onChange: onPasswordChanged});
 
     var confirmPassword = Core.input({type: 'password', size: 18, width: 300, placeholder: 'Confirm Password', onChange: onConfirmPasswordChanged});
@@ -73,11 +73,11 @@ function onReady(Tag, Layout, Core, Frame, Colors) {
         onKeyUp: onKeyUp
     });
 
-    var node = Tag.div({style: {margin: '0px auto', width: '335px', textAlign: 'center'}}, [
-        Tag.br(),
+    var node = Tag.tag('div', {style: {margin: '0px auto', width: '335px', textAlign: 'center'}}, [
+        Tag.tag('br'),
         logo,
-        Tag.br(),
-        Tag.br(),
+        Tag.tag('br'),
+        Tag.tag('br'),
         box
     ]);
 

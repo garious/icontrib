@@ -11,13 +11,13 @@ var deps = [
 
 function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
 
-    var logo = Tag.a({href: '/', tabindex: -1, style: {width: '129px', height: '70px'}}, [
+    var logo = Tag.tag('a', {href: '/', tabindex: -1, style: {width: '129px', height: '70px'}}, [
         Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
     ]);
 
     var hidden = Observable.observe('hidden');
 
-    var badLogin = Tag.span({style: {visibility: hidden, color: Colors.red}}, 'bad username or password');
+    var badLogin = Tag.tag('span', {style: {visibility: hidden, color: Colors.red}}, 'bad username or password');
 
     var formValues = {};
 
@@ -28,7 +28,7 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
         formValues.password = evt.target.value;
     }
 
-    var email = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Email', onChange: onEmailChanged});
+    var email = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Email', autofocus: true, onChange: onEmailChanged});
     var password = Core.input({type: 'password', size: 18, width: 300, placeholder: 'Password', onChange: onPasswordChanged});
 
     function submit(evt) {
@@ -62,11 +62,11 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
         onKeyUp: onKeyUp
     });
 
-    var node = Tag.div({style: {margin: 'auto', width: '355px', textAlign: 'center'}}, [
-        Tag.br(),
+    var node = Tag.tag('div', {style: {margin: 'auto', width: '355px', textAlign: 'center'}}, [
+        Tag.tag('br'),
         logo,
-        Tag.br(),
-        Tag.br(),
+        Tag.tag('br'),
+        Tag.tag('br'),
         box
     ]);
 

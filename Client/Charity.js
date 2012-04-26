@@ -19,7 +19,7 @@ function onReady(Tag, Layout, Core, Frame, User) {
                     Core.image({width: 175, height: 175, borderRadius: 5, url: user.imageUrl, text: user.organizationName}),
                     Layout.pillow(30),
                     Layout.spoon([
-                        Tag.p({style: {font: Core.defaultFont, width: '600px'}}, user.mission), 
+                        Tag.tag('p', {style: {font: Core.defaultFont, width: '600px'}}, user.mission), 
                         Layout.pillow(20),
                         Core.button({href: '/Me?donateTo=' + user.cid, text: 'Donate!', loud: true})
                     ])
