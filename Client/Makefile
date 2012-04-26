@@ -2,7 +2,6 @@ UNAME:=$(shell uname)
 FLAVOR = Debug
 V = $(UNAME)_$(FLAVOR)
 
-LUA_DIR=../lua-5.2.0/$V/ship
 JSL_DIR=../jsl/$V
 
 all: lint $V/ship/IContrib.js
@@ -23,7 +22,7 @@ $V/%.js.ok: %.js
 	@mkdir -p $(@D)
 	@touch $@
 
-$V/ship/IContrib.js: JsCache.lua $(filter-out Tag/YoinkAdapter.js Tag/Assert.js,$(filter-out test/%.js,$(filter-out %Test.js,$(JS_FILES))))
+$V/ship/IContrib.js: JsCache.hs $(filter-out Tag/YoinkAdapter.js Tag/Assert.js,$(filter-out test/%.js,$(filter-out %Test.js,$(JS_FILES))))
 	@mkdir -p $(@D)
-	$(LUA_DIR)/lua JsCache.lua -o $@ $(filter-out $<,$^)
+	runghc JsCache.hs -o $@ $(filter-out $<,$^)
 
