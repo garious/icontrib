@@ -9,6 +9,7 @@ import qualified Network.Browser             as HTTP
 import qualified JSON.UserLogin              as J
 import qualified Data.UserInfo               as U
 import qualified Data.Login                  as L
+import qualified Data.Paypal                 as P
 import TestUtil
 
 
@@ -33,12 +34,18 @@ main = do
     run updateInfoTest
     run mostInfluentialTest
 
+user :: J.UserLogin
+user = J.UserLogin "anatoly" "anatoly"
+
+toly :: L.Identity
+toly = (L.Identity "anatoly")
+
+ui :: U.UserInfo
+ui = U.UserInfo toly "" "" "" "anatoly" "" 0 0 [] [] [] (P.Email "")
+
 --make sure adding a login adds a user as well
 getInfoTest :: IO ()
 getInfoTest = liftIO $ HTTP.browse $ do
-    let user = J.UserLogin "anatoly" "anatoly"
-        toly = (L.Identity "anatoly")
-        ui = U.UserInfo toly "" "" "" "anatoly" "" 0 0 [] [] []
     --added new user, which should log us in
     assertEqM "addUser"      (addUser user)             (Right "anatoly")
     assertEqM "readUserInfo" (readUserInfo "anatoly")    (ui)
@@ -46,9 +53,6 @@ getInfoTest = liftIO $ HTTP.browse $ do
 --testing updating user info
 updateInfoTest :: IO ()
 updateInfoTest = liftIO $ HTTP.browse $ do
-    let user = J.UserLogin "anatoly" "anatoly"
-        toly = (L.Identity "anatoly")
-        ui = U.UserInfo toly "first" "last" "phone" "email" "imageurl" 100 100 [] [] []
     --added new user, which should log us in
     assertEqM "addUser"         (addUser user)              (Right "anatoly")
     assertEqM "updateUserInfo"  (updateUserInfo ui)         (Right ())
@@ -56,7 +60,6 @@ updateInfoTest = liftIO $ HTTP.browse $ do
 
 mostInfluentialTest :: IO ()
 mostInfluentialTest = liftIO $ HTTP.browse $ do
-    let user = J.UserLogin "anatoly" "anatoly"
     --added new user, which should log us in
     assertEqM "addUser"         (addUser user)      (Right "anatoly")
     assertEqM "mostInfluential" mostInfluential     ("anatoly")

@@ -22,7 +22,7 @@ ci = C.CharityInfo (L.Identity "greg")
                     (C.CharityID "gffw")
                     "charity/gffw.jpg"
                     "blah blah blah"
-                    (P.Email  "" "")
+                    (P.Email  "payment@info.com")
 
 data PartialCI = PartialCI { ein :: String
                            , organizationName :: String
@@ -35,7 +35,7 @@ mci :: PartialCI
 mci = PartialCI ("10001")
                 "Global Fund for Women"
                 "http://gffw.com"
-                "payment info"
+                "payment@info.com"
 
 addUser :: J.UserLogin ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either String J.UserIdentity)
 addUser = post 200 "/auth/add"
@@ -52,7 +52,7 @@ readInfo (C.CharityID ident) = get 200 $ "/charity/" ++ ident ++ ".json"
 main :: IO ()
 main = do
     Log.start
-    run readInfoTest
+    --run readInfoTest
     run registerTest
 
 readInfoTest :: IO ()

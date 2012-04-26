@@ -27,7 +27,7 @@ data UserInfo = UserInfo { owner            :: Identity
               deriving (Eq, Ord, Show, Data, Typeable)
 
 empty :: UserInfo
-empty = UserInfo (Identity "") "" "" "" "" "" 0 0 [] [] [] (Email "" "")
+empty = UserInfo (Identity "") "" "" "" "" "" 0 0 [] [] [] (Email "")
 
 instance Indexable UserInfo where
     empty = ixSet [ ixFun $ \ci -> [ owner ci ]

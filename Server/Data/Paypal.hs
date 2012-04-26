@@ -18,12 +18,9 @@ $(deriveSafeCopy 0 'base ''Cents)
 fromCents :: Cents -> Int
 fromCents (Cents cc) = cc
 
-data Email = Email { localPart :: String, domainPart :: String}
-           deriving (Eq, Ord, Data, Typeable)
+newtype Email = Email String
+              deriving (Eq, Ord, Show, Data, Typeable)
 $(deriveSafeCopy 0 'base ''Email)
-
-instance Show Email where
-    show (Email lp dp) = lp ++ "@" ++ dp
 
 newtype TransactionID = TransactionID String
                       deriving (Eq, Ord, Show, Data, Typeable)
@@ -96,7 +93,7 @@ instance Parse Email where
     parse str = do 
         case (E.validate $ str) of
             (Left er)   -> throwError (show er)
-            (Right vv)  -> return (Email (E.localPart vv) (E.domainPart vv))
+            (Right _)  -> return (Email str)
 
 instance Parse Cents where
     parse str = do

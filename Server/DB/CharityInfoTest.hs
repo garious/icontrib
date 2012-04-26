@@ -28,7 +28,7 @@ updateInfoTest = do
                            (C.CharityID "cid")
                            "imageurl"
                            "mission"
-                           (P.Email "" "")
+                           (P.Email "charity@paypal.com")
 
     assertEqErrorT "update"     (C.updateInfo db ident ci) (Right ())
     assertMEq      "updated" [ci] $ do

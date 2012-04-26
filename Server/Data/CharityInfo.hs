@@ -22,7 +22,7 @@ data CharityInfo = CharityInfo { owner :: Identity
                  deriving (Eq, Ord, Show, Data, Typeable)
 
 empty :: CharityInfo
-empty = CharityInfo (Identity "") (Ein "") "" "" (CharityID "") "" "" (Email "" "")
+empty = CharityInfo (Identity "") (Ein "") "" "" (CharityID "") "" "" (Email "paypal@charity.com")
 
 
 instance Indexable CharityInfo where

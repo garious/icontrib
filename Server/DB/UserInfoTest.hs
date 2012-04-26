@@ -14,13 +14,13 @@ toly :: L.Identity
 toly = (L.Identity "anatoly")
 
 tolyi :: U.UserInfo
-tolyi = U.UserInfo toly "first" "last" "phone" "email" "imageurl" 100 100 [] [] [] (P.Email "" "")
+tolyi = U.UserInfo toly "first" "last" "phone" "email" "imageurl" 100 100 [] [] [] (P.Email "toly@paypal.com")
 
 greg :: L.Identity
 greg = (L.Identity "greg")
 
 gregi :: U.UserInfo
-gregi = U.UserInfo greg "greg" "fitz" "phone" "email" "foo" 200 100 [] [] [] (P.Email "" "")
+gregi = U.UserInfo greg "greg" "fitz" "phone" "email" "foo" 200 100 [] [] [] (P.Email "greg@paypal.com")
 
 lookupTest :: IO ()
 lookupTest = do
