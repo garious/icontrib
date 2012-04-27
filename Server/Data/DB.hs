@@ -1,13 +1,13 @@
 {-# LANGUAGE FlexibleContexts, FlexibleInstances, DeriveDataTypeable, TemplateHaskell #-}
 module Data.DB where
 
-import Control.Monad.State                   ( get, put, MonadState )
-import Control.Monad.Reader                  ( ask, MonadReader )
-import Data.Data                               ( Data, Typeable )
-import qualified Data.Login                    as L
-import qualified Data.CharityInfo              as C
-import qualified Data.UserInfo                 as U
-import qualified Data.Paypal                 as P
+import Control.Monad.State                      ( get, put, MonadState )
+import Control.Monad.Reader                     ( ask, MonadReader )
+import Data.Data                                ( Data, Typeable )
+import qualified Data.Login                     as L
+import qualified Data.CharityInfo               as C
+import qualified Data.UserInfo                  as U
+import qualified Data.Paypal                    as P
 import Data.SafeCopy
 
 data DB = DB { logins :: L.LoginDB 
