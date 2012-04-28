@@ -4,7 +4,7 @@
 
 var smallestHeader = 15;
 
-define({
+Yoink.define({
     pieColors: [
         '#9bc638',
         '#ebf4d7',

@@ -126,8 +126,8 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Sl
             Layout.pillow(20) 
         ]));
 
-    define(main);
+    Yoink.define(main);
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
  

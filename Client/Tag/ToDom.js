@@ -3,7 +3,7 @@
 // Returns a DOM node for this object
 // function ToDom.toDom (me)
 
-var toDomId = baseUrl + '/ToDom.js';
+var toDomId = Yoink.baseUrl + '/ToDom.js';
 
 
 // ToDom instance for strings
@@ -16,7 +16,7 @@ String.interfaces[toDomId] = {
     }
 };
 
-define({
+Yoink.define({
     toDomId: toDomId
 });
 

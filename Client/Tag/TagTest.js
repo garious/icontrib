@@ -11,8 +11,8 @@ function onReady (Tag, Assert) {
 
     Assert.assertEq(Tag.tag('p', 'hello'), {name: 'p', subelements: 'hello'});
 
-    define('passed!');
+    Yoink.define('passed!');
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
     

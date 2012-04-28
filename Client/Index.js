@@ -32,13 +32,13 @@ function onInitialReady(MostInfluentialId) {
             ])
         ]);
 
-        define( Frame.frame(body) );
+        Yoink.define( Frame.frame(body) );
 
     }
 
     deps.push('/donor/' + MostInfluentialId + '.json');
-    require(deps, onReady);
+    Yoink.require(deps, onReady);
 }
 
-require(initialDeps, onInitialReady);
+Yoink.require(initialDeps, onInitialReady);
 

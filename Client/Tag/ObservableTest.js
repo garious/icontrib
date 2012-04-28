@@ -58,8 +58,8 @@ function onReady (Iface, Observable, Assert) {
     // Call get() to update the computation tree
     Assert.assertEq( compMethods.get(comp), 11 );
 
-    define('passed!');
+    Yoink.define('passed!');
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
     

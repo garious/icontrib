@@ -7,7 +7,7 @@ var deps = [
 // Observable JS
 //
 
-var observableId = baseUrl + '/Observable.js';
+var observableId = Yoink.baseUrl + '/Observable.js';
 
 function onReady(Iface) {
 
@@ -125,7 +125,7 @@ function onReady(Iface) {
       };
     }
 
-    define({
+    Yoink.define({
         observableId: observableId,
         observe: observe,
         thunk: thunk,
@@ -134,5 +134,5 @@ function onReady(Iface) {
 
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

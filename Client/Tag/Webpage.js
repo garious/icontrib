@@ -5,7 +5,7 @@
 //
 // function Webpage.getTitle (me)
 
-define({
-    webpageId: baseUrl + '/Webpage.js'
+Yoink.define({
+    webpageId: Yoink.baseUrl + '/Webpage.js'
 });
 

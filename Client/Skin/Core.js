@@ -182,7 +182,7 @@ function onReady(Tag, Colors) {
         return Tag.tag('hr', {style: sty, noshade: true, size: 1});
     }
 
-    define({
+    Yoink.define({
          hyperlink: hyperlink,
          image: image,
          input: input,
@@ -201,5 +201,5 @@ function onReady(Tag, Colors) {
     });
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

@@ -18,7 +18,8 @@ function onReady (Shapes, Assert) {
                 background: 'red',
                 mozBorderRadius: '50px',
                 webkitBorderRadius: '50px',
-                borderRadius: '50px'
+                borderRadius: '50px',
+                position: 'relative'
             }
         }
     };
@@ -27,8 +28,8 @@ function onReady (Shapes, Assert) {
 
     Assert.assertEq(actual, expected);
 
-    define(actual);
+    Yoink.define(actual);
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
     

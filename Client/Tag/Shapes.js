@@ -28,11 +28,11 @@ function onReady(Tag) {
         });
     }
     
-    define({
+    Yoink.define({
         circle: circle
     });
 
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

@@ -81,8 +81,8 @@ function onReady(Tag, Layout, Core, Frame, Colors) {
         box
     ]);
 
-    define( Frame.webpage(node) );
+    Yoink.define( Frame.webpage(node) );
 }
  
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

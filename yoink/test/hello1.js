@@ -1,3 +1,3 @@
 /*jslint browser: true*/
-define(document.createTextNode('Hello World'));
+Yoink.define(document.createTextNode('Hello World'));
 

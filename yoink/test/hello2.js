@@ -1,1 +1,1 @@
-define("Hello " + params.name + "!");
+Yoink.define("Hello " + Yoink.params.name + "!");

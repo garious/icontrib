@@ -1,6 +1,6 @@
-function onReady(E) {
-    define( E.text('Hello World') );
+function onReady(Tag) {
+    Yoink.define( Tag.tag('p', 'Hello World') );
 }
 
-require(['/tag/tag.js'], onReady);
+Yoink.require(['/Tag/Tag.js'], onReady);
 

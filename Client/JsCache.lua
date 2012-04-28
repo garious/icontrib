@@ -26,7 +26,7 @@ out:write('var PRELOADED_MODULES = {\n')
 for i,path in ipairs(files) do
     local text = readfile(path)
     out:write('"/' .. path .. '": ')
-    out:write('(function (baseUrl, define, require, params, Yoink) {"use strict";\n')
+    out:write('(function (Yoink) {"use strict";\n')
     out:write(text)
     out:write('\n})')
 
