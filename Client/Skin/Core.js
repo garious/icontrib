@@ -117,6 +117,51 @@ function onReady(Tag, Colors) {
         });
     }
 
+    function menu(as) {
+
+        var width = as.width;
+
+        var listItems = [];
+
+        for (var i = 0; i < as.menuItems.length; i += 1) {
+            if (i !== 0) {
+                listItems.push( hr({width: width}) );
+            }
+            listItems.push(as.menuItems[i]);
+        }
+
+        return Tag.tag('div', {
+            style: {
+                visibility: as.visibility,
+                border: '1px solid',
+                borderColor: Colors.lightColor,
+                borderRadius: '0px 0px 5px 5px',
+                width:  as.width + 'px',
+                position: 'absolute',
+                top: as.top + 'px',
+                right: '0px',
+                backgroundColor: '#eee',
+                zIndex: 1
+            }
+        }, listItems);
+    }
+
+    function mkRedirect(url) {
+        return function() {
+             window.location = '/Me';
+        };
+    }
+
+    function menuItem(as) {
+        var onSelect = typeof as.onSelect === 'string' ? mkRedirect(as.onSelect) : as.onSelect;
+        return Tag.tag('div', {
+            style: {
+                width: '100%',
+                padding: '10px'
+            }
+        }, [as.contents], {click: onSelect});
+    }
+
     // Create the style attribute for HTML header elements
     function hStyle(as, s) {
 
@@ -189,6 +234,8 @@ function onReady(Tag, Colors) {
          label: label,
          button: button,
          box: box,
+         menu: menu,
+         menuItem: menuItem,
          h1: mkHeader(1),
          h2: mkHeader(2),
          h3: mkHeader(3),

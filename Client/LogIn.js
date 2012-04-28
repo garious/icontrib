@@ -38,7 +38,7 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
             if(data.Left) {
                 hidden.set('visible');
             } else {
-                window.location = '/Me';
+                window.history.back();
             }
         });
     }
