@@ -41,7 +41,7 @@ Client/$V/ship/IContrib.js: client
 Server/$V/ship/icontrib: server
 Server/$V/ship/import: server
 
-serve: Server/$V/ship/icontrib private/static.ok client
+serve: Server/$V/ship/icontrib private/static.ok client  
 	@$<
 
 private/static.ok: Server/$V/ship/import $(wildcard private/static/*/*) $(wildcard Server/Data/*.hs)

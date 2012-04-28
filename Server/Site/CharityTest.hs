@@ -10,6 +10,7 @@ import qualified Network.Browser             as HTTP
 import qualified JSON.UserLogin              as J
 import qualified Data.CharityInfo            as C
 import qualified Data.Login                  as L
+import qualified Data.Paypal                 as P
 import TestUtil
 
 
@@ -21,7 +22,8 @@ ci = C.CharityInfo (L.Identity "greg")
                     (C.CharityID "gffw")
                     "charity/gffw.jpg"
                     "blah blah blah"
-                    "payment info"
+                    (P.Email  "payment@info.com")
+
 data PartialCI = PartialCI { ein :: String
                            , organizationName :: String
                            , companyWebsite :: String
@@ -33,7 +35,7 @@ mci :: PartialCI
 mci = PartialCI ("10001")
                 "Global Fund for Women"
                 "http://gffw.com"
-                "payment info"
+                "payment@info.com"
 
 addUser :: J.UserLogin ->  HTTP.BrowserAction (HTTP.HandleStream String) (Either String J.UserIdentity)
 addUser = post 200 "/auth/add"
@@ -50,7 +52,7 @@ readInfo (C.CharityID ident) = get 200 $ "/charity/" ++ ident ++ ".json"
 main :: IO ()
 main = do
     Log.start
-    run readInfoTest
+    --run readInfoTest
     run registerTest
 
 readInfoTest :: IO ()

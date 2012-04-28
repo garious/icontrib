@@ -1,24 +1,41 @@
-{-# LANGUAGE OverloadedStrings, GeneralizedNewtypeDeriving, DeriveDataTypeable, TemplateHaskell #-}
+{-# LANGUAGE FlexibleContexts, OverloadedStrings, GeneralizedNewtypeDeriving, DeriveDataTypeable, TemplateHaskell #-}
 module Data.Paypal where
 import Data.Time.Format                      ( parseTime )
+import Char                                  ( toLower )
 import Data.Time.Clock                       ( UTCTime )
-import Text.Email.Validate                   ( EmailAddress, validate )
 import System.Locale                         ( defaultTimeLocale )
+import Data.Data                             ( Data, Typeable )
+import Control.Monad                         ( when )
+import qualified Text.Email.Validate         as E
+import SiteError
+import Data.IxSet
+import Data.SafeCopy
 
 newtype Cents = Cents Int
-              deriving Num
-newtype Email = Email EmailAddress
+              deriving (Eq, Ord, Show, Data, Typeable, Num)
+$(deriveSafeCopy 0 'base ''Cents)
+
+fromCents :: Cents -> Int
+fromCents (Cents cc) = cc
+
+newtype Email = Email String
+              deriving (Eq, Ord, Show, Data, Typeable)
+$(deriveSafeCopy 0 'base ''Email)
+
+newtype TransactionID = TransactionID String
+                      deriving (Eq, Ord, Show, Data, Typeable)
+$(deriveSafeCopy 0 'base ''TransactionID)
 
 data Payment = Payment { reciever_email :: Email
-                       , txn_id         :: String
                        , payer_email    :: Email
                        , payment_fee    :: Cents
                        , payment_gross  :: Cents
                        , payment_date   :: UTCTime
+                       , txn_id         :: TransactionID 
                        }
               deriving (Eq, Ord, Show, Data, Typeable)
 instance Indexable Payment where
-    empty = ixSet [ ixFun $ \ix -> (txn_id ix)
+    empty = ixSet [ ixFun $ \ix -> [(txn_id ix)]
                   ]
 
 $(deriveSafeCopy 0 'base ''Payment)
@@ -28,63 +45,64 @@ data IPNMessage = IPNMessage { urlParams :: [(String,String)] }
                   deriving (Eq, Ord, Show, Data, Typeable)
 
 instance Indexable IPNMessage where
-    empty = ixSet [ ixFun $ \ci -> unzip (urlParams ci)
+    empty = ixSet [ ixFun $ \ci -> (urlParams ci)
                   ]
 $(deriveSafeCopy 0 'base ''IPNMessage)
 type IPNMessageDB = IxSet IPNMessage
 
+newtype ReceiverAddress = ReceiverAddress Email
+                        deriving (Eq, Ord, Show, Data, Typeable)
+$(deriveSafeCopy 0 'base ''ReceiverAddress)
+newtype SenderAddress = SenderAddress Email
+                      deriving (Eq, Ord, Show, Data, Typeable)
+$(deriveSafeCopy 0 'base ''SenderAddress)
 
-newtype CharityPaypalAddress = CharityPaypalAddress Email
-                             deriving (Eq, Ord, Show, Data, Typeable)
-newtype UserPaypalAddress = UserPaypalAddress Email
-                          deriving (Eq, Ord, Show, Data, Typeable)
-
-data Deposit = Deposit { userAddr :: UserPaypalAddress,
-                       , charityAddr :: CharityPaypalAddress,
-                       , cents :: Cents,
+data Deposit = Deposit { sender :: SenderAddress
+                       , receiver :: ReceiverAddress 
                        , time :: UTCTime
+                       , cents :: Cents
                        }
              deriving (Eq, Ord, Show, Data, Typeable)
 
 instance Indexable Deposit where
-    empty = ixSet [ ixFun $ \ix -> (userAddr ix)
+    empty = ixSet [ ixFun $ \ix -> [(sender ix)]
+                  , ixFun $ \ix -> [(receiver ix)]
                   ]
 
 $(deriveSafeCopy 0 'base ''Deposit)
-type DepositDB = IxSet Desposit
-
-data Withdraw = Withdraw { reciever :: Email, 
-                         , deposits :: [Deposit]
-                         }
-             deriving (Eq, Ord, Show, Data, Typeable)
-
-instance Indexable Withdraw where
-    empty = ixSet [ ixFun $ \ix -> (reciever ix)
-                  , ixFun $\ ix -> (sum (map cents (deposits ix))) 
-                  ]
-
-$(deriveSafeCopy 0 'base ''Withdraw)
-type WithdrawDB = IxSet Withdraw
-
+type DepositDB = IxSet Deposit
 
 class Parse a where
     parse :: MonadError String m => String -> m a
 
+data PaymentStatus = Completed
+
+downcase :: [Char] -> [Char]
+downcase = map toLower
+
 instance Parse PaymentStatus where
-    parse 
-        | (downcase str) == "completed" = Completed
-    parse  = throwError $ "unexpected payment status: " ++ str
+    parse str
+        | (downcase str) == "completed" = return $ Completed
+    parse str = throwError $ "unexpected payment status: " ++ str
 
 instance Parse UTCTime where
     parse str = parseTime defaultTimeLocale "%H:%M:%S %b %d, %Y %Z" str `justOr` (throwError $ "couldn't parse time string" ++ str)
 
+
 instance Parse Email where
-    parse str = Email `ap` (validate $ str)
+    parse str = do 
+        case (E.validate $ str) of
+            (Left er)   -> throwError (show er)
+            (Right _)  -> return (Email str)
 
 instance Parse Cents where
     parse str = do
-        let fl :: Float 
+        let fl :: Double
             fl = (read str) * 100
-        when ((floor fl) /= fl) $ throwError $ "float parsing error to cents" ++ str
-        return $ Cents (fromRational str) 
+            ceiling' :: Double -> Int
+            ceiling' aa = ceiling (toRational aa)
+            floor' :: Double -> Int
+            floor' aa = floor (toRational aa)
+        when ((floor' fl) /= (ceiling' fl)) $ throwError $ "float parsing error to cents" ++ str
+        return $ Cents (floor' fl)
 

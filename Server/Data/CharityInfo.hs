@@ -5,6 +5,7 @@ import Data.Login
 import Data.Data                             ( Data, Typeable )
 import Data.IxSet
 import Data.SafeCopy
+import Data.Paypal (Email(..))
 
 newtype Ein         = Ein       String    deriving (Eq, Ord, Show, Data, Typeable, SafeCopy)
 newtype CharityID   = CharityID String    deriving (Eq, Ord, Show, Data, Typeable, SafeCopy)
@@ -16,12 +17,12 @@ data CharityInfo = CharityInfo { owner :: Identity
                                , cid :: CharityID
                                , imageUrl :: String
                                , mission :: String
-                               , paymentAddress :: String
+                               , paymentAddress :: Email
                                }
                  deriving (Eq, Ord, Show, Data, Typeable)
 
 empty :: CharityInfo
-empty = CharityInfo (Identity "") (Ein "") "" "" (CharityID "") "" "" ""
+empty = CharityInfo (Identity "") (Ein "") "" "" (CharityID "") "" "" (Email "paypal@charity.com")
 
 
 instance Indexable CharityInfo where

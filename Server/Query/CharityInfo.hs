@@ -28,7 +28,6 @@ deleteCharityByEinU uid cien = runErrorT $ replace $ \ db -> do
     cis <- (IxSet.getOne $ db @* [uid] @* [cien]) `justOr` doesntExist
     return $ IxSet.delete cis db
 
-
 charityInfoU :: CharityInfo -> Update DB (Either String ())
 charityInfoU ci =  runErrorT $ replace $ \ db -> do
     let
@@ -53,4 +52,7 @@ charityByOwnerQ uid = use $ \ db -> return $ db @* [uid]
 
 charityByIDQ :: [CharityID] -> Query DB [CharityInfo]
 charityByIDQ cids = use $ \ db -> return $ IxSet.toList $ db @+ cids
+
+charityByIDMQ' :: (MonadState DB m) => [CharityID] -> m [CharityInfo]
+charityByIDMQ' cids = get >>= (\ db -> return $ IxSet.toList $ (charities db) @+ cids)
 

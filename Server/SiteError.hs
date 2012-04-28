@@ -7,6 +7,8 @@ module SiteError(MonadError
                 ,liftM
                 ,runErrorT
                 ,failErrorT
+                ,failLeftIO
+                ,failLeftM
                 ,ErrorT
                 ,SiteErrorT
                 ,throwLeft
@@ -85,10 +87,15 @@ runErrorT_ aa = do
 failErrorT :: MonadIO m => ErrorT [Char] m b -> m b
 failErrorT aa = do
     rv <- runErrorT aa
-    failLeft rv
+    failLeftIO rv
 
-failLeft :: MonadIO m => Either [Char] b -> m b
-failLeft (Left ee) = do 
+failLeftIO :: MonadIO m => Either [Char] b -> m b
+failLeftIO (Left ee) = do 
     Log.debugM $ "failLeft: exceptable failure: " ++ ee
     fail ee
-failLeft (Right aa) = return aa
+failLeftIO (Right aa) = return aa
+
+failLeftM :: Monad m => Either String a -> m a
+failLeftM (Left ee) = fail ee
+failLeftM (Right aa) = return aa
+

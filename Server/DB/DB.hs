@@ -11,13 +11,11 @@ import Data.Acid.Memory                      ( openMemoryState )
 import Data.Acid
 import Query.DB                              ( Database )
 
-
 emptyDB :: DB
-emptyDB = DB IxSet.empty IxSet.empty IxSet.empty
+emptyDB = DB IxSet.empty IxSet.empty IxSet.empty IxSet.empty IxSet.empty IxSet.empty
 
 newFromFile :: FilePath -> IO Database
 newFromFile fp = openLocalStateFrom fp emptyDB
 
 emptyMemoryDB :: IO Database
 emptyMemoryDB = openMemoryState emptyDB
-
