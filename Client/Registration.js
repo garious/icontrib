@@ -39,8 +39,7 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
 
     function onRegister (evt) {
         evt.preventDefault();
-        var dataString = JSON.stringify(formValues);
-        Frame.post('/charity/update', dataString, function(data) {
+        Frame.post('/charity/update', formValues, function(data) {
             var dataString = JSON.stringify(data);
             console.log(dataString);
         });
