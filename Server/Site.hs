@@ -62,7 +62,7 @@ site :: DB.Database -> ServerPart Response
 site st = msum [ 
       JSW.widget root []
     , fileServer "Client/Darwin_Debug/ship"
-    , fileServer "yoink"
+    , fileServer "Yoink"
     , fileServer root
     , fileServer "private/images"
     , dir "auth"    (authServices st)
