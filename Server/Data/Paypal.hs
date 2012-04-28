@@ -1,11 +1,13 @@
 {-# LANGUAGE FlexibleContexts, OverloadedStrings, GeneralizedNewtypeDeriving, DeriveDataTypeable, TemplateHaskell #-}
 module Data.Paypal where
 import Data.Time.Format                      ( parseTime )
+import Data.Login                            ()
 import Char                                  ( toLower )
 import Data.Time.Clock                       ( UTCTime )
 import System.Locale                         ( defaultTimeLocale )
 import Data.Data                             ( Data, Typeable )
 import Control.Monad                         ( when )
+import qualified Data.ByteString.Lazy        as BL
 import qualified Text.Email.Validate         as E
 import SiteError
 import Data.IxSet
@@ -26,12 +28,18 @@ newtype TransactionID = TransactionID String
                       deriving (Eq, Ord, Show, Data, Typeable)
 $(deriveSafeCopy 0 'base ''TransactionID)
 
+newtype ProductID = ProductID BL.ByteString
+                  deriving (Eq, Ord, Show, Data, Typeable)
+
+$(deriveSafeCopy 0 'base ''ProductID)
+
 data Payment = Payment { reciever_email :: Email
                        , payer_email    :: Email
                        , payment_fee    :: Cents
                        , payment_gross  :: Cents
                        , payment_date   :: UTCTime
                        , txn_id         :: TransactionID 
+                       , custom         :: ProductID
                        }
               deriving (Eq, Ord, Show, Data, Typeable)
 instance Indexable Payment where

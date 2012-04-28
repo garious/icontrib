@@ -4,6 +4,7 @@ module Data.DB where
 import Control.Monad.State                      ( get, put, MonadState )
 import Control.Monad.Reader                     ( ask, MonadReader )
 import Data.Data                                ( Data, Typeable )
+import Data.Product                             ( ProductDB )
 import qualified Data.Login                     as L
 import qualified Data.CharityInfo               as C
 import qualified Data.UserInfo                  as U
@@ -16,6 +17,7 @@ data DB = DB { logins :: L.LoginDB
              , ipnMessages :: P.IPNMessageDB 
              , payments :: P.PaymentDB 
              , deposits :: P.DepositDB 
+             , products :: ProductDB
              }
         deriving (Eq, Ord, Show, Data, Typeable)
 
@@ -39,6 +41,9 @@ askP = ask >>= return . payments
 
 getP :: MonadState DB m => m P.PaymentDB
 getP = get >>= return . payments
+
+getPR :: MonadState DB m => m ProductDB
+getPR = get >>= return . products
 
 putP :: MonadState DB m => P.PaymentDB -> m ()
 putP vv = get >>= (\ db -> put  db { payments = vv })

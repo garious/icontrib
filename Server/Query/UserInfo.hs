@@ -9,7 +9,6 @@ import Data.Generics                         ( listify )
 
 import Data.CharityInfo                      ( CharityID(..) )
 import Data.Login                            ( Identity )
-import Data.Paypal                           ( Email )
 import Data.Distribution                     ( Distribution, shares )
 
 import Data.IxSet                            ( (@*) )
@@ -34,11 +33,11 @@ use ff = do
 userInfoU :: UserInfo -> Update DB ()
 userInfoU ui =  replace $ \ db -> return (IxSet.updateIx (owner ui) ui db)
 
-paymentDistributionMQ :: (MonadError String m, MonadState DB m) => Email -> m [Distribution]
-paymentDistributionMQ key = do
+userDistributionMQ :: (MonadError String m, MonadState DB m) => Identity -> m [Distribution]
+userDistributionMQ uid = do
     db <- getU
     let sort' = sortBy (compare `on` (negate . shares))
-    ui <- ((IxSet.getOne $ db @* [key]) `justOr` doesntExist)
+    ui <- ((IxSet.getOne $ db @* [uid]) `justOr` doesntExist)
     return $ sort' $ distribution ui
 
 userInfoByOwnerQ :: Identity -> Query DB (Either String UserInfo)

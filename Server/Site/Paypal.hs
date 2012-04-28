@@ -1,6 +1,8 @@
 module Site.Paypal where
 
 import qualified Happstack.Server            as H
+import qualified Codec.Binary.Url            as Url
+import Random                                ( randomIO )
 import Control.Monad                         ( ap )
 import Network.URL                           ( importURL, url_params )
 import Data.Time.Clock                       ( UTCTime )
@@ -43,7 +45,13 @@ toPayment params = do
                    `ap` ("payment_gross"  `elookup` params >>= parse)
                    `ap` ("payment_date"   `elookup` params >>= parse)
                    `ap` ("payment_status" `elookup` params >>= parse)
+                   `ap` ("custom" `elookup` params >>= parse)
 
 elookup str params = do
     (str `lookup` params) `justOr` (throwError $ "missing key in url data " ++ (show (str, params)))
+
+newProductID :: IO ProductID
+newProductID = do
+    pid <- liftM (take 255 . Url.encode) $ sequence $ repeat randomIO
+    return $ ProductID pid
 
