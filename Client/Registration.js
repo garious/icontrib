@@ -32,8 +32,8 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
         };
     }
 
-    var orgEin = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Employer Identification Number (EIN)', autofocus: true, onChange: mkOnChanged('ein')});
-    var orgName = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Organization name', onChange: mkOnChanged('organizationName')});
+    var orgName = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Organization name', autofocus: true, onChange: mkOnChanged('organizationName')});
+    var orgEin = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Employer Identification Number (EIN)', onChange: mkOnChanged('ein')});
     var orgUrl = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Website URL', onChange: mkOnChanged('companyWebsite')});
     var orgPayPal = Core.input({type: 'text', size: 18, width: 300, placeholder: 'PayPal address', onChange: mkOnChanged('paymentAddress')});
 
@@ -56,9 +56,9 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
     var widget = Layout.spoon([
         Core.h4('Charity Registration'),
         Layout.pillow(0, 15),
-        orgEin,
-        Layout.pillow(0, 15),
         orgName,
+        Layout.pillow(0, 15),
+        orgEin,
         Layout.pillow(0, 15),
         orgUrl,
         Layout.pillow(0, 15),

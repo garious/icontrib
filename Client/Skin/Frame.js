@@ -5,7 +5,6 @@ var authDeps = [
 var deps = [
     '/Tag/Interface.js', 
     '/Tag/Tag.js', 
-    '/Tag/TwoDimensional.js', 
     '/Tag/ToDom.js', 
     '/Tag/Webpage.js', 
     '/Tag/Layout.js', 
@@ -32,7 +31,7 @@ function post(path, params, callback) {
 
 
 function onAuthReady(Auth) { 
-function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) { 
+function onReady(Iface, Tag, ToDom, Webpage, Layout, Core, Colors, Me) { 
 
     function loginWidget(as) {
 
@@ -63,7 +62,7 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
             };
 
             //var logoutButton = Core.hyperlink({url: '#', text: 'Sign out'});
-            var logoutButton = Core.image({url: baseUrl + '/arrowdown-darkgreen.png', text: 'settings', onClick: onClick});
+            var logoutButton = Core.image({url: Yoink.baseUrl + '/arrowdown-darkgreen.png', text: 'settings', onClick: onClick});
 
             return Tag.tag('div', {
                 style: {
@@ -77,13 +76,14 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
                     'float': 'right'
                 }
             }, [
-                Layout.hug([
-                    as.thumbnail,
-                    Layout.pillow(20, 0),
-                    Layout.spoon([
-                        Layout.pillow(0, 22),
-                        logoutButton
-                    ])
+                as.thumbnail,
+                Tag.tag('div', {
+                    style: {
+                        'float': 'right',
+                        padding: '15px 5px'
+                    }
+                }, [
+                    logoutButton
                 ])
             ]);
         }
@@ -93,7 +93,7 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
         as = as || {};
 
         var logo = Tag.tag('a', {href: '/', style: {position: 'absolute'}}, [
-            Core.image({url: baseUrl + '/logo.png', text: 'IContrib Home'})
+            Core.image({url: Yoink.baseUrl + '/logo.png', text: 'IContrib Home'})
         ]);
 
         return Tag.tag('div', [
@@ -186,7 +186,7 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
         return Me;
     }
 
-    define({
+    Yoink.define({
         nav: nav,
         frame: frame,
         footer: footer,
@@ -200,8 +200,8 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
 var donorId = Auth.Left && 'anonymous' || Auth.Right;
 var donorUrl = '/donor/' + donorId + '.json';
 deps.push(donorUrl);
-require(deps, onReady);
+Yoink.require(deps, onReady);
 }
 
-require(authDeps, onAuthReady);
+Yoink.require(authDeps, onAuthReady);
  
