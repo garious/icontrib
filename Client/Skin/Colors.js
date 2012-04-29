@@ -3,6 +3,7 @@
 //
 
 var smallestHeader = 15;
+var green = '#a7d322';
 
 Yoink.define({
     pieColors: [
@@ -33,8 +34,10 @@ Yoink.define({
         //'#a90fad', // Magenta
         //'#00aeff', // Sky blue
         //'#4cb1ad', // Light blue
-        '#12ff01', // Light green
+        //'#12ff01', // Light green
         //'#a1a1a1', // Light gray
+
+        green,
 
         '#ff9000', // Orange
         '#a2062b', // Dark red
@@ -48,7 +51,7 @@ Yoink.define({
     middleColor:   '#777777',
     darkColor:     '#5e5e5e',
     greenText:     '#8bb800',
-    green:         '#a7d322',
+    green:         green,
     redText:       '#ff4e00',
     red:           '#ff4e00',
     gray:          '#d7d7d7',
