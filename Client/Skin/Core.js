@@ -148,18 +148,19 @@ function onReady(Tag, Colors) {
 
     function mkRedirect(url) {
         return function() {
-             window.location = '/Me';
+             window.location = url;
         };
     }
 
     function menuItem(as) {
         var onSelect = typeof as.onSelect === 'string' ? mkRedirect(as.onSelect) : as.onSelect;
-        return Tag.tag('div', {
+        var div = Tag.tag('div', {
             style: {
                 width: '100%',
                 padding: '10px'
             }
         }, [as.contents], {click: onSelect});
+        return Tag.tag('a', {href: '#', style: {textDecoration: 'none'}}, [div]);
     }
 
     // Create the style attribute for HTML header elements
