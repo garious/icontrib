@@ -59,9 +59,9 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
             };
 
             return Layout.spoon({align: 'right'}, [
-                Core.button({text: 'Log in', onClick: onLogin}),
+                Core.button({text: 'Log in', onClick: onLogin, quiet: true}),
                 Layout.pillow(0, 5),
-                Core.button({text: 'Sign up', onClick: onSignup}),
+                Core.button({text: 'Sign up', onClick: onSignup, quiet: true}),
                 Layout.pillow(0, 15)
             ]);
 

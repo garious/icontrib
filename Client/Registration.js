@@ -1,4 +1,5 @@
 var deps = [
+    '/auth/check.json',
     '/Tag/Interface.js',
     '/Tag/TwoDimensional.js',
     '/Tag/Tag.js', 
@@ -9,7 +10,11 @@ var deps = [
     '/Skin/Colors.js'
 ];
 
-function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
+function onReady(Auth, Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
+    if (Auth.Left) {
+        window.location = '/SignUp';
+        return;
+    }
 
     var logo = Tag.tag('a', {href: '/', tabindex: -1, style: {width: '129px', height: '70px'}}, [
         Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
@@ -71,7 +76,7 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
             Core.hyperlink({text: 'Terms and Conditions', url: 'toa.html'})
         ]),
         Layout.pillow(0, 10),
-        Core.button({text: 'Create account', onClick: onRegister, width: 314})
+        Core.button({text: 'Register organization', onClick: onRegister, width: 314})
     ]);
 
     var box = Core.box({

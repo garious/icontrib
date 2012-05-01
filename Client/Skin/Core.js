@@ -73,8 +73,8 @@ function onReady(Tag, Colors) {
     }
 
     function button(as) {
-        var color      = as.loud ? Colors.red : Colors.gray;
-        var focusColor = as.loud ? Colors.red : Colors.lightColor;
+        var color      = as.loud ? Colors.red        : as.quiet ? Colors.gray       : Colors.green;
+        var focusColor = as.loud ? Colors.lightColor : as.quiet ? Colors.lightColor : Colors.lightGreen;
 
         var handlers = {
             mouseover: function(evt) { evt.target.style.backgroundColor = focusColor; },
@@ -86,6 +86,7 @@ function onReady(Tag, Colors) {
             href: as.href || '#', 
             style: {
                 font: font, 
+                width:  as.width ? as.width + 'px' : undefined,
                 textDecoration: 'none', 
                 textAlign: 'center', 
                 backgroundColor: color, 

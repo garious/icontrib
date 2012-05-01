@@ -43,7 +43,7 @@ function onReady(Tag, Layout, Core, Frame, Colors) {
                 if(data.Left) {
                     badLogin.hidden = false;
                 } else {
-                    window.location = '/Me';
+                    window.history.back();
                 }
             });
         }
@@ -56,7 +56,7 @@ function onReady(Tag, Layout, Core, Frame, Colors) {
     }
 
     var widget = Layout.spoon([
-        Core.h4('Create an Account'),
+        Core.h4('Create an account'),
         Layout.pillow(0, 15),
         email,
         Layout.pillow(0, 15),
@@ -64,7 +64,7 @@ function onReady(Tag, Layout, Core, Frame, Colors) {
         Layout.pillow(0, 15),
         confirmPassword,
         Layout.pillow(0, 15),
-        Core.button({text: 'Create Account', onClick: submit, width: 314})
+        Core.button({text: 'Create account', onClick: submit, width: 314})
     ]);
 
     var box = Core.box({
