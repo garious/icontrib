@@ -9,8 +9,8 @@ function onReady(Frame, Core) {
         Core.hyperlink({url: '#', text: 'blah'})
     ]);
 
-    define(node);
+    Yoink.define(node);
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

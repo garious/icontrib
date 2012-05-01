@@ -35,7 +35,7 @@ wrapFile :: (FilePath, Text.Text) -> Text.Text
 wrapFile (p, cnts) = Text.concat [
     "\"/",
     Text.pack p,
-    "\": (function (baseUrl, define, require, params) {\"use strict\";\n",
+    "\": (function (Yoink) {\"use strict\";\n",
     cnts,
     "\n})"
     ]

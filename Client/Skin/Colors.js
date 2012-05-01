@@ -3,13 +3,15 @@
 //
 
 var smallestHeader = 15;
+var green = '#a7d322';
+var lightGreen = '#d0e5a2';
 
-define({
+Yoink.define({
     pieColors: [
-        '#9bc638',
-        '#ebf4d7',
+        '#9bc638', // Green
+        '#ebf4d7', // Very light green
         '#b5d66d',
-        '#d0e5a2'
+        lightGreen
     ],
     dashboardColors: [
         //'#fffc01',
@@ -33,8 +35,10 @@ define({
         //'#a90fad', // Magenta
         //'#00aeff', // Sky blue
         //'#4cb1ad', // Light blue
-        '#12ff01', // Light green
+        //'#12ff01', // Light green
         //'#a1a1a1', // Light gray
+
+        green,
 
         '#ff9000', // Orange
         '#a2062b', // Dark red
@@ -48,7 +52,8 @@ define({
     middleColor:   '#777777',
     darkColor:     '#5e5e5e',
     greenText:     '#8bb800',
-    green:         '#a7d322',
+    green:         green,
+    lightGreen:    lightGreen,
     redText:       '#ff4e00',
     red:           '#ff4e00',
     gray:          '#d7d7d7',

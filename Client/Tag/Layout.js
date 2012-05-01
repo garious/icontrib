@@ -72,12 +72,12 @@ function onReady(Tag, I, Dim) {
         return cat(as, xs, setPos);
     }
     
-    define({
+    Yoink.define({
         hug:    hug,
         spoon:  spoon,
         pillow: pillow
     });
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

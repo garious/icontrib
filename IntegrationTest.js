@@ -58,6 +58,8 @@ pingServer();
 // Pages to test
 var pages = [
     {path: '/'},
+    {path: '/SignUp'},
+    {path: '/LogIn'},
     {path: '/Registration'},
     {path: '/Charity?id=usoa'},
     {path: '/Me'},

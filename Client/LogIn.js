@@ -38,7 +38,7 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
             if(data.Left) {
                 hidden.set('visible');
             } else {
-                window.location = '/Me';
+                window.history.back();
             }
         });
     }
@@ -70,8 +70,8 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
         box
     ]);
 
-    define( Frame.webpage(node) );
+    Yoink.define( Frame.webpage(node) );
 }
  
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

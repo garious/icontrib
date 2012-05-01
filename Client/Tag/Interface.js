@@ -41,6 +41,6 @@ function getInterface(obj, iid) {
 //  }
 
 
-define({
+Yoink.define({
     getInterface: getInterface
 });

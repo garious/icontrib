@@ -44,9 +44,9 @@ function onReady(Tag, Layout) {
         ]);
     }
 
-    define(test());
+    Yoink.define(test());
 }
 
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

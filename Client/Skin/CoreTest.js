@@ -36,8 +36,8 @@ function onReady(Core, Tag) {
 
     }
 
-    define(main());
+    Yoink.define(main());
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

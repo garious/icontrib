@@ -5,8 +5,8 @@ var authDeps = [
 var deps = [
     '/Tag/Interface.js', 
     '/Tag/Tag.js', 
-    '/Tag/TwoDimensional.js', 
     '/Tag/ToDom.js', 
+    '/Tag/Observable.js', 
     '/Tag/Webpage.js', 
     '/Tag/Layout.js', 
     'Core.js',
@@ -32,9 +32,20 @@ function post(path, params, callback) {
 
 
 function onAuthReady(Auth) { 
-function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) { 
+function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, Me) { 
 
     function loginWidget(as) {
+ 
+        // Control the visibility of the the menu
+        var visibility = Observable.observe('hidden');
+
+        function onMouseOver() {
+            visibility.set('visible');
+        }
+
+        function onMouseOut() {
+            visibility.set('hidden');
+        }
 
         if (Auth.Left) {
             var onLogin = function (evt) {
@@ -48,44 +59,58 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
             };
 
             return Layout.spoon({align: 'right'}, [
-                Core.button({text: 'Log in', onClick: onLogin}),
+                Core.button({text: 'Log in', onClick: onLogin, quiet: true}),
                 Layout.pillow(0, 5),
-                Core.button({text: 'Sign up', onClick: onSignup}),
+                Core.button({text: 'Sign up', onClick: onSignup, quiet: true}),
                 Layout.pillow(0, 15)
             ]);
 
         } else {
-            var onClick = function (evt) {
+            var logoutButton = Core.image({url: Yoink.baseUrl + '/arrowdown-darkgreen.png', text: 'settings'});
+
+            var tabStyle = {
+                width: '270px',
+                backgroundColor: '#eee',
+                borderRadius: '5px 5px 0px 0px',
+                border: '1px solid',
+                borderBottomWidth: '0px',
+                borderColor: Colors.lightColor,
+                padding: '15px 5px',
+                'float': 'right'
+            };
+
+            var logoff = function (evt) {
                 evt.preventDefault();
                 post('/auth/logout', {}, function(data) {
                     window.location = '/';
                 });
             };
 
-            //var logoutButton = Core.hyperlink({url: '#', text: 'Sign out'});
-            var logoutButton = Core.image({url: baseUrl + '/arrowdown-darkgreen.png', text: 'settings', onClick: onClick});
+            var menu = Core.menu({
+                width: 280,
+                top: 80,
+                visibility: visibility,
+                menuItems: [  
+                    Core.menuItem({contents: Core.h6('Settings'), onSelect: '/Me'}),
+                    Core.menuItem({contents: Core.h6('Log off'),  onSelect: logoff})
+                ]
+            });
 
-            return Tag.tag('div', {
-                style: {
-                    width: '270px',
-                    backgroundColor: '#eee',
-                    borderRadius: '5px 5px 0px 0px',
-                    border: '1px solid',
-                    borderBottomWidth: '0px',
-                    borderColor: Colors.lightColor,
-                    padding: '15px 5px',
-                    'float': 'right'
-                }
-            }, [
-                Layout.hug([
-                    as.thumbnail,
-                    Layout.pillow(20, 0),
-                    Layout.spoon([
-                        Layout.pillow(0, 22),
-                        logoutButton
-                    ])
+            var tabContents = [
+                as.thumbnail,
+                Tag.tag('div', {
+                    style: {
+                        'float': 'right',
+                        padding: '15px 5px'
+                    }
+                }, [
+                    logoutButton
                 ])
-            ]);
+            ];
+
+            var tab = Tag.tag('div', {style: tabStyle}, tabContents);
+
+            return Tag.tag('div', {style: {position: 'relative'}}, [tab, menu], {mouseover: onMouseOver, mouseout: onMouseOut});
         }
     }
 
@@ -93,7 +118,7 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
         as = as || {};
 
         var logo = Tag.tag('a', {href: '/', style: {position: 'absolute'}}, [
-            Core.image({url: baseUrl + '/logo.png', text: 'IContrib Home'})
+            Core.image({url: Yoink.baseUrl + '/logo.png', text: 'IContrib Home'})
         ]);
 
         return Tag.tag('div', [
@@ -186,7 +211,7 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
         return Me;
     }
 
-    define({
+    Yoink.define({
         nav: nav,
         frame: frame,
         footer: footer,
@@ -200,8 +225,8 @@ function onReady(Iface, Tag, TwoDim, ToDom, Webpage, Layout, Core, Colors, Me) {
 var donorId = Auth.Left && 'anonymous' || Auth.Right;
 var donorUrl = '/donor/' + donorId + '.json';
 deps.push(donorUrl);
-require(deps, onReady);
+Yoink.require(deps, onReady);
 }
 
-require(authDeps, onAuthReady);
+Yoink.require(authDeps, onAuthReady);
  

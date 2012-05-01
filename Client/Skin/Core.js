@@ -73,8 +73,8 @@ function onReady(Tag, Colors) {
     }
 
     function button(as) {
-        var color      = as.loud ? Colors.red : Colors.gray;
-        var focusColor = as.loud ? Colors.red : Colors.lightColor;
+        var color      = as.loud ? Colors.red        : as.quiet ? Colors.gray       : Colors.green;
+        var focusColor = as.loud ? Colors.lightColor : as.quiet ? Colors.lightColor : Colors.lightGreen;
 
         var handlers = {
             mouseover: function(evt) { evt.target.style.backgroundColor = focusColor; },
@@ -86,6 +86,7 @@ function onReady(Tag, Colors) {
             href: as.href || '#', 
             style: {
                 font: font, 
+                width:  as.width ? as.width + 'px' : undefined,
                 textDecoration: 'none', 
                 textAlign: 'center', 
                 backgroundColor: color, 
@@ -115,6 +116,52 @@ function onReady(Tag, Colors) {
         }, [e], {
             keyup: as.onKeyUp
         });
+    }
+
+    function menu(as) {
+
+        var width = as.width;
+
+        var listItems = [];
+
+        for (var i = 0; i < as.menuItems.length; i += 1) {
+            if (i !== 0) {
+                listItems.push( hr({width: width}) );
+            }
+            listItems.push(as.menuItems[i]);
+        }
+
+        return Tag.tag('div', {
+            style: {
+                visibility: as.visibility,
+                border: '1px solid',
+                borderColor: Colors.lightColor,
+                borderRadius: '0px 0px 5px 5px',
+                width:  as.width + 'px',
+                position: 'absolute',
+                top: as.top + 'px',
+                right: '0px',
+                backgroundColor: '#eee',
+                zIndex: 1
+            }
+        }, listItems);
+    }
+
+    function mkRedirect(url) {
+        return function() {
+             window.location = url;
+        };
+    }
+
+    function menuItem(as) {
+        var onSelect = typeof as.onSelect === 'string' ? mkRedirect(as.onSelect) : as.onSelect;
+        var div = Tag.tag('div', {
+            style: {
+                width: '100%',
+                padding: '10px'
+            }
+        }, [as.contents], {click: onSelect});
+        return Tag.tag('a', {href: '#', style: {textDecoration: 'none'}}, [div]);
     }
 
     // Create the style attribute for HTML header elements
@@ -182,13 +229,15 @@ function onReady(Tag, Colors) {
         return Tag.tag('hr', {style: sty, noshade: true, size: 1});
     }
 
-    define({
+    Yoink.define({
          hyperlink: hyperlink,
          image: image,
          input: input,
          label: label,
          button: button,
          box: box,
+         menu: menu,
+         menuItem: menuItem,
          h1: mkHeader(1),
          h2: mkHeader(2),
          h3: mkHeader(3),
@@ -201,5 +250,5 @@ function onReady(Tag, Colors) {
     });
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

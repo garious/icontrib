@@ -113,10 +113,10 @@ function onReady(Observable, Tag, Layout, Shapes, Colors) {
         return Tag.tag('div', {'data-slider': true, style: {width: width + 'px'}}, [lines, circle], handlers);
     }
 
-    define({
+    Yoink.define({
         slider: slider
     });
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

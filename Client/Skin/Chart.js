@@ -125,12 +125,12 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
         
     }
 
-    define({
+    Yoink.define({
         pie: pie,
         pieSnapshot: pieSnapshot
     });
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 
 

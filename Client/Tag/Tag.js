@@ -207,13 +207,13 @@ function onReady(Iface, Dom, Observable) {
         }
     };
     
-    define({
+    Yoink.define({
         createElement: createElement,
         tag:           tag
     });
     
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 
 

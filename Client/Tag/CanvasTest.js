@@ -24,8 +24,8 @@ function onReady(Tag) {
     ctx.fillStyle = "rgba(0, 0, 200, 0.5)";  
     ctx.fillRect(40, 140, 55, 50);
 
-    define(canvas);
+    Yoink.define(canvas);
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

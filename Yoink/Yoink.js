@@ -33,20 +33,30 @@ var YOINK = (function () {
         },
         js: function (text, require, callback, params) {
             // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-            var f_str = '(function (baseUrl, define, require, params) {"use strict";' + text + '})';
+            var f_str = '(function (Yoink) {"use strict";' + text + '})';
             var f = eval(f_str);
-            f(require.base, callback, require, params);
+            f({
+                baseUrl: require.base,
+                define: callback,
+                require: require,
+                params: params
+            });
         }
     };
 
     // Special handling for Internet Explorer
     if (typeof window !== 'undefined' && window.execScript) {
         defaultInterpreters.js = function (text, require, callback, params) {
-            var f_str = '(function (baseUrl, define, require, params) {' + text + '})';
+            var f_str = '(function (Yoink) {' + text + '})';
             /*global iesucks: true*/
             window.execScript('iesucks = ' + f_str);
             var f = iesucks;
-            f(require.base, callback, require, params);
+            f({
+                baseUrl: require.base,
+                define: callback,
+                require: require,
+                params: params
+            });
         };
     }
 
@@ -116,7 +126,12 @@ var YOINK = (function () {
         // relative to the directory of the url we are currently loading.
         var base = url.substring(0, url.lastIndexOf('/'));
         var require = mkGetResources(base, cache, moduleCache, interpreters);
-        f(base, callback, require, params);
+        f({
+            baseUrl: base,
+            define: callback,
+            require: require,
+            params: params
+        });
     }
 
     function getResource(interpreters, cache, moduleCache, url, onInterpreted) {

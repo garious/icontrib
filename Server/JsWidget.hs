@@ -50,7 +50,7 @@ htmlForJsMod baseUrl filename ps = appTemplate $ do
       H.script ! A.src preloadedAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
   where
-      yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["yoink.js"]))
+      yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["Yoink.js"]))
       preloadedAttr = H.toValue (mkPath (mkRelUrl baseUrl ["IContrib.js"]))
 
       yoink = "\n\

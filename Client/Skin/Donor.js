@@ -137,12 +137,12 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
         });
     }
 
-    define({
+    Yoink.define({
         profile: profile,
         recommendedFunds: recommendedFunds,
         alignButton: alignButton
     });
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

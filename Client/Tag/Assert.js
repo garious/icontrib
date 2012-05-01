@@ -22,7 +22,7 @@ function assertEq(actual, expected) {
    }
 }
 
-define({
+Yoink.define({
     assertEq: assertEq
 });
 

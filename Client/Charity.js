@@ -3,7 +3,7 @@ var deps = [
     '/Tag/Layout.js', 
     '/Skin/Core.js', 
     '/Skin/Frame.js',
-    '/charity/' + params.id + '.json'
+    '/charity/' + Yoink.params.id + '.json'
 ];
 
 function onReady(Tag, Layout, Core, Frame, User) {
@@ -35,9 +35,9 @@ function onReady(Tag, Layout, Core, Frame, User) {
 
     var main = Frame.frame(charity({user: User}));
 
-    define(main);
+    Yoink.define(main);
 
 }
 
-require(deps, onReady);
+Yoink.require(deps, onReady);
 

@@ -1,0 +1,2 @@
+Yoink.define('Hello World');
+
