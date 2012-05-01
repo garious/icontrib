@@ -17,7 +17,7 @@ Add Yoink, load your module, and use it to construct the DOM.
 ~~~html
 <html>
     <body>
-        <script type="text/javascript" src="yoink-min.js"></script>
+        <script type="text/javascript" src="Yoink.js"></script>
         <script type="text/javascript">
             YOINK.require(['helloworld.js'], function(Hello) {
                 document.body.appendChild(Hello);
