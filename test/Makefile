@@ -1,30 +1,14 @@
-o = tmp
+V = tmp
 
-all: $o/node.passed $o/spidermonkey.passed $o/timers_node.passed #$o/timers_spidermonkey.passed
+all: $V/Timers.js.passed
 
 SRC = ..
 
-$o/spidermonkey.passed: goodScript.js yoink_spidermonkey.js $(SRC)/yoinkSync.js
+$V/%.js.passed: %.js YoinkNode.js $(SRC)/Yoink.js
 	@mkdir -p $(@D)
-	js -f yoink_spidermonkey.js $<
+	node YoinkNode.js $<
 	@touch $@
-
-$o/node.passed: goodScript.js yoink_node.js $(SRC)/yoinkSync.js
-	@mkdir -p $(@D)
-	node yoink_node.js $<
-	@touch $@
-
-$o/timers_spidermonkey.passed: timers.js yoink_spidermonkey.js $(SRC)/yoink.js
-	@mkdir -p $(@D)
-	js -f yoink_spidermonkey.js $<
-	@touch $@
-
-$o/timers_node.passed: timers.js yoink_node.js $(SRC)/yoink.js
-	@mkdir -p $(@D)
-	node yoink_node.js $<
-	@touch $@
-
 
 clean:
-	rm -rf $o
+	rm -rf $V
 

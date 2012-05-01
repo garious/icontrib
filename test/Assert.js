@@ -1,10 +1,10 @@
-var assert = function(b) {
+function assert(b) {
     if (!b) {
         throw "assertion failed";
     }
 };
 
-return {
+Yoink.define({
    assert: assert,
-};
+});
 

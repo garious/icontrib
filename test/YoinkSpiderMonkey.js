@@ -1,9 +1,13 @@
-if (typeof XMLHttpRequest == 'undefined') {
+if (typeof XMLHttpRequest === 'undefined') {
     var XMLHttpRequest = function() {
        this.open = function(method, url, b) { this.responseText = snarf(url); };
        this.send = function(){};
     };
 }
 
-eval( snarf('../yoinkSync.js') );
+console = {
+    log: print
+};
+
+eval( snarf('../Yoink.js') );
 

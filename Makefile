@@ -1,14 +1,17 @@
 all: test compress
 
+V=Release
+
 test:
 	$(MAKE) -C test
 
-compress: yoink-min.js
+compress: $V/Yoink.js
 
-yoink-min.js: yoink.js
+$V/Yoink.js: Yoink.js
+	@mkdir -p $(@D)
 	yuicompressor $< -o $@
 
 clean:
-	rm -rf yoink-min.js
+	rm -rf Release
 	$(MAKE) -C test clean
 

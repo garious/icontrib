@@ -9,7 +9,7 @@ is much smaller and simpler, and the plugin model is especially simple.
 Yoink modules are simple.  Here is the "Hello World" of Yoink modules:
 
 ~~~javascript
-define( document.createTextNode("Hello world!") );
+Yoink.define( document.createTextNode("Hello world!") );
 ~~~
 
 Add Yoink, load your module, and use it to construct the DOM.
@@ -19,8 +19,8 @@ Add Yoink, load your module, and use it to construct the DOM.
     <body>
         <script type="text/javascript" src="yoink-min.js"></script>
         <script type="text/javascript">
-            YOINK.require(['helloworld.js'], function(HELLO) {
-                document.body.appendChild(HELLO);
+            YOINK.require(['helloworld.js'], function(Hello) {
+                document.body.appendChild(Hello);
             });
         </script>
     </body>
@@ -32,11 +32,11 @@ parallel.
 
 
 ~~~javascript
-require(['helloworld.js', 'goodbye.js'], function(HELLO, GOODBYE) {
+Yoink.require(['helloworld.js', 'goodbye.js'], function(Hello, Goodbye) {
     var e = document.createElement('div');
-    e.appendChild(HELLO);
-    e.appendChild(GOODBYE);
-    define(e);
+    e.appendChild(Hello);
+    e.appendChild(Goodbye);
+    Yoink.define(e);
 });
 ~~~
 
@@ -45,10 +45,10 @@ as many times as you need.  'define()' can be called after any number of
 asynchronous calls.
 
 ~~~javascript
-require(['a.js'], function(A) {
+Yoink.require(['a.js'], function(A) {
 
-    require(A.moreDeps, function(B, C, D) {
-        define( document.createTextNode(A.message + B.message) );
+    Yoink.require(A.moreDeps, function(B, C, D) {
+        Yoink.define( document.createTextNode(A.message + B.message) );
     });
 
 });
@@ -61,8 +61,8 @@ the module directory.
 
 ~~~javascript
 var e = document.createElement('img');
-e.src = baseUrl + '/favicon.png'; 
-define(e);
+e.src = Yoink.baseUrl + '/favicon.png'; 
+Yoink.define(e);
 ~~~
 
 Yoink caches modules, but sometimes you want multiple caches.  For example, jQuery
@@ -71,7 +71,7 @@ a second copy of jQuery that plugins stomp all over.
 
 ~~~javascript
 function exportJQuery(text, yoink, callback) {
-    YOINK.interpreters.js(text + '\ndefine( jQuery.noConflict(true) );', yoink, callback);
+    YOINK.interpreters.js(text + '\n' + 'Yoink.define( jQuery.noConflict(true) );', yoink, callback);
 }
 
 function onReady($) {
@@ -85,7 +85,7 @@ function onReady($) {
         {path: 'jquery-ui-1.8.16.custom.min.js', interpreter: exportJQuery}
     ];
 
-    require(deps, function(jQuery) { define(jQuery.noConflict(true)); });
+    Yoink.require(deps, function(jQuery) { Yoink.define(jQuery.noConflict(true)); });
 }
 
 // Create a separate resource loader, so that jQuery UI can whomp its personal copy of jQuery.
@@ -119,7 +119,7 @@ Chrome and Firefox via Node.js and SpiderMonkey, respectively.
 Distributuion
 -------------
 
-Get YUI Compressor to make yoink-min.js
+Get YUI Compressor to make Release/Yoink.js
 
     $ brew install yuicompressor
 
