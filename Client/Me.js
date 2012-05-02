@@ -12,62 +12,117 @@ var deps = [
     '/charity/popular.json'
 ];
 
+function removeItem(xs, x) {
+    for (var i = 0; i < xs.length; i += 1) {
+        if (xs[i] === x) {
+             xs.splice(i, 1);
+             return xs;
+        }
+    }
+    return xs;
+}
+
 function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Slider,*/ Colors, Popular) { 
+
+    function fundRow(x, rowsObs, rows, obs, colorObs, colors, dist, inputs, colorAttrs) {
+
+        function onRangeChange(evt) {
+            var n = parseFloat(evt.target.value);
+            if (n !== NaN && n < 100) {
+                var old = x.shares;
+                var diff = n - old;
+                x.shares = n;
+
+                for (var i = 0; i < inputs.length; i += 1) {
+                    var d = dist[i];
+                    colorAttrs[i].set( colors[i % colors.length] );
+                    if (d !== x) {
+                        var v = d.shares - diff * d.shares/(100 - old);
+                        d.shares = v;
+                        inputs[i].set(v);
+                    } else {
+                        inputs[i].set(evt.target.value);
+                    }
+                }
+            }
+        }
+
+        var rowBorder = Observable.observe('1px solid white');
+        var deleteObs = Observable.observe('hidden');
+
+        function onMouseOver(evt) {
+            rowBorder.set('1px solid ' + Colors.gray);
+            deleteObs.set('visible');
+        }
+
+        function onMouseOut(evt) {
+            rowBorder.set('1px solid white');
+            deleteObs.set('hidden');
+        }
+
+        var rowStyle = {width: '100%', borderRadius: '10px', border: rowBorder, padding: '5px'};
+        var rowChildren = [];
+        var row = Tag.tag('div', {style: rowStyle}, rowChildren, {mouseover: onMouseOver, mouseout: onMouseOut});
+
+        function onDeleteClicked(evt) {
+            evt.preventDefault();
+
+            // Remove this item from the distribution
+            removeItem(inputs, obs);
+            removeItem(dist, x);
+            removeItem(rows, row);
+            removeItem(colorAttrs, colorObs);
+            rowsObs.set(rows);
+            onRangeChange({target: {value: '0'}});
+        }
+   
+        var percentage = Observable.thunk([obs], function(n){return Math.round(n * 10) / 10 + '%';});
+
+        var deleteImg = Tag.tag('img', {src: 'Delete.png', alt: 'delete', style: {padding: '5px', visibility: deleteObs}});
+        var deleteLink = Tag.tag('a', {href: '#'}, [deleteImg], {click: onDeleteClicked});
+
+        var rangeStyle = {
+            WebkitAppearance: 'none',
+            width: '150px',
+            margin: '10px',
+            marginTop: '15px',
+            backgroundColor: colorObs,
+            height: '4px'
+        };
+
+        // At the time of this writing, this is only expected to work in Chrome, Safari, and Opera.
+        var slider = Tag.tag('input', {type: 'range', value: obs, min: 1, max: 99, style: rangeStyle}, null, {change: onRangeChange});
+
+        //This might work in more browsers, but is fairly broken.
+        //var slider = Slider.slider({value: obs, width: 200, height: 4, color: color, marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, onChange: onRangeChange(x)}),
+
+        var cols = Layout.hug([
+            Core.hyperlink({url: '/Charity?id=' + x.cid, text: x.name, marginTop: 6, marginRight: 10}),
+            slider,
+            Layout.pillow(10, 0),
+            Core.input({type: 'text', size: 5, disabled: true, value: percentage}),
+            Layout.pillow(10, 0),
+            deleteLink
+        ]);
+
+        var rightCol = Tag.tag('div', {style: {'float': 'right'}}, [cols]);
+
+        rowChildren.push(rightCol);
+        return row;
+    }
 
     function fundContents(dist, inputs, colors) {
         var rows = [];
-        function mkHandler(j) {
-            return function(evt) {
-                var n = parseFloat(evt.target.value);
-                if (n !== NaN && n > 0 && n < 100) {
-                    var old = dist[j].shares;
-                    var diff = n - old;
-                    dist[j].shares = n;
-
-                    for (var i = 0; i < inputs.length; i += 1) {
-                        if (i !== j) {
-                            var d = dist[i];
-                            var v = d.shares - diff * d.shares/(100 - old);
-                            d.shares = v;
-                            inputs[i].set(v);
-                        } else {
-                            inputs[i].set(evt.target.value);
-                        }
-                    }
-                }
-            };
-        }
-
+        var rowsObs = Observable.observe(rows);
+        var colorAttrs = [];
         for (var j = 0; j < dist.length; j += 1) {
-            var x = dist[j];
-            var obs = inputs[j];
-            var percentage = Observable.thunk([obs], function(n){return Math.round(n * 10) / 10 + '%';});
-            var color = colors[j % colors.length];
-
-            var cols = Layout.hug([
-                Core.hyperlink({url: '/Charity?id=' + x.cid, text: x.name, marginTop: 6, marginRight: 10}),
-
-                // At the time of this writing, this is only expected to work in Chrome, Safari, and Opera.
-                Tag.tag('input', {type: 'range', value: obs, min: 1, max: 99, style: {
-                    WebkitAppearance: 'none',
-                    width: '200px',
-                    margin: '10px',
-                    marginTop: '15px',
-                    backgroundColor: color,
-                    height: '4px'
-                }}, null, {change: mkHandler(j)}),
-
-                //This might work in more browsers, but is fairly broken.
-                //Slider.slider({value: obs, width: 200, height: 4, color: color, marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, onChange: mkHandler(j)}),
-
-                Layout.pillow(10, 0),
-                Core.input({type: 'text', size: 5, disabled: true, value: percentage, onKeyUp: mkHandler(j)})
-            ]);
-            rows.push(cols);
-            rows.push(Layout.pillow(0,15));
+            var colorObs = Observable.observe(colors[j % colors.length]);
+            colorAttrs.push(colorObs);
+            var row = fundRow(dist[j], rowsObs, rows, inputs[j], colorObs, colors, dist, inputs, colorAttrs);
+            rows.push(row);
         }
 
-        return Layout.spoon({align: 'right'}, rows);
+        return Layout.spoon({align: 'right'}, rowsObs);
     }
 
     function distributionTable(dist, inputs, colors) {

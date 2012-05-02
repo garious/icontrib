@@ -91,7 +91,7 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
                 top: 80,
                 visibility: visibility,
                 menuItems: [  
-                    Core.menuItem({contents: Core.h6('Settings'), onSelect: '/Me'}),
+                    Core.menuItem({contents: Core.h6('Manage my distribution'), onSelect: '/Me'}),
                     Core.menuItem({contents: Core.h6('Log off'),  onSelect: logoff})
                 ]
             });
