@@ -29,12 +29,11 @@ distributePayment :: (MonadError String m, MonadState DB m) => Payment -> [Distr
 distributePayment pp dists = do
     chars <- charityByIDMQ' $ map cid dists
     let 
-        td = fromIntegral
         total = sum $ map shares dists
         moneys = ((payment_gross pp) - (payment_fee pp))
 
         depAmnt' :: Distribution -> Double
-        depAmnt' dd = ((td $ shares dd) / (td total)) * (td $ fromCents moneys)
+        depAmnt' dd = ((shares dd) / (total)) * (fromIntegral $ fromCents moneys)
 
         depAmnt :: Distribution -> Cents
         depAmnt dd = Cents $ floor $ depAmnt' dd

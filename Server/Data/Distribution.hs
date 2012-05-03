@@ -7,7 +7,7 @@ import Data.CharityInfo
 
 data Distribution = Distribution { name   :: String 
                                  , cid    :: CharityID
-                                 , shares :: Int
+                                 , shares :: Double
                                  , labels :: [String]
                                  }
                    deriving (Eq, Ord, Show, Data, Typeable)
