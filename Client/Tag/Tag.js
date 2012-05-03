@@ -126,6 +126,19 @@ function onReady(Iface, Dom, Observable) {
         }
     }
 
+    function mkSetChildren(e, getter) {
+        return function (obs) {
+            e.innerHTML = '';
+            var xs = getter(obs);
+            for (var i = 0; i < xs.length; i++) {
+                var x = xs[i];
+                var iface = Iface.getInterface(x, Dom.toDomId);
+                e.appendChild(iface ? iface.toDom(x) : x);
+            }
+        };
+    }
+
+
     // Create a DOM element with tag name 'nm', attributes object 'as', an array of 
     // subelements 'xs', and an object of event handlers 'es'.
     function createElement(nm, as, xs, es) {
@@ -154,6 +167,13 @@ function onReady(Iface, Dom, Observable) {
             if (typeof xs === 'string') {
                 e.appendChild(document.createTextNode(xs));
             } else {
+                var methods = Iface.getInterface(xs, Observable.observableId);
+                if (methods) {
+                    var xsObs = xs;
+                    xs = methods.get(xsObs);
+                    methods.subscribe(xsObs, mkSetChildren(e, methods.get));
+                }
+
                 for (var i = 0; i < xs.length; i++) {
                     var x = xs[i];
                     var iface = Iface.getInterface(x, Dom.toDomId);

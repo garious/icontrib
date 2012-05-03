@@ -91,7 +91,7 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
                 top: 80,
                 visibility: visibility,
                 menuItems: [  
-                    Core.menuItem({contents: Core.h6('Settings'), onSelect: '/Me'}),
+                    Core.menuItem({contents: Core.h6('Manage my distribution'), onSelect: '/Me'}),
                     Core.menuItem({contents: Core.h6('Log off'),  onSelect: logoff})
                 ]
             });
@@ -158,14 +158,16 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
         var as = {};
 
         if (Auth.Right) {
+            var userName = Me.firstName && Me.lastName ? (Me.firstName + ' ' + Me.lastName) : Me.email;
+            var img  = Me.imageUrl ? Core.image({width: 50, height: 50, url: Me.imageUrl, text: userName}) : Layout.pillow(1, 50);
             var thumbContents = Layout.hug([
-                Core.image({width: 50, height: 50, url: Me.imageUrl, text: Me.firstName + ' ' + Me.lastName}),
+                img,
                 Layout.pillow(20, 0),
                 Layout.spoon([
                     Layout.pillow(0, 10),
                     Core.h3({
                         color: Colors.greenText,
-                        text: Me.firstName + ' ' + Me.lastName
+                        text: userName
                     })
                 ])
             ]);

@@ -10,10 +10,11 @@
 var deps = [
     'Tag.js',
     'Interface.js',
+    'Observable.js',
     'TwoDimensional.js'
 ];
 
-function onReady(Tag, I, Dim) {
+function onReady(Tag, Iface, Observable, Dim) {
 
     // pillow(w, h)
     //
@@ -30,15 +31,20 @@ function onReady(Tag, I, Dim) {
     
     // Concatenate elements
     function cat(as, xs, setPos) {
+        var ys = xs;
+        var methods = Iface.getInterface(ys, Observable.observableId);
+        if (methods) {
+            xs = methods.get(ys);
+        }
         for (var i = 0; i < xs.length; i += 1) {
             setPos(xs[i]);
         }
-        return Tag.tag('div', xs);
+        return Tag.tag('div', undefined, ys);
     }
     
     // Set the horizontal position of a 2D element
     function setHPos(x) {
-        var iface = I.getInterface(x, Dim.twoDimensionalId);
+        var iface = Iface.getInterface(x, Dim.twoDimensionalId);
         iface.setPosition(x, {'float': 'left', clear: 'none'});
     }
 
@@ -53,12 +59,12 @@ function onReady(Tag, I, Dim) {
     
     // Set the vertical position of a 2D element
     function setVPos(x) {
-        var iface = I.getInterface(x, Dim.twoDimensionalId);
+        var iface = Iface.getInterface(x, Dim.twoDimensionalId);
         iface.setPosition(x, {'float': 'left', clear: 'both'});
     }
 
     function setVPosRight(x) {
-        var iface = I.getInterface(x, Dim.twoDimensionalId);
+        var iface = Iface.getInterface(x, Dim.twoDimensionalId);
         iface.setPosition(x, {'float': 'right', clear: 'both'});
     }
     
