@@ -3,6 +3,7 @@ UNAME:=$(shell uname)
 -include $(UNAME).min
 
 GHC_FLAGS+=-Wall -Werror -threaded -fno-warn-orphans -optl-Wl,-no_pie
+RUNGHC_FLAGS=$(filter-out -threaded,$(GHC_FLAGS))
 
 RUN_TESTS := $(wildcard *Test.hs) $(wildcard */*Test.hs)
 
@@ -37,7 +38,7 @@ test: $(patsubst %,$V/%.passed,$(RUN_TESTS))
 $V/%.passed:
 	@mkdir -p $(@D)
 	@echo Testing: $<
-	@runghc $(GHC_FLAGS) $<
+	@runghc $(RUNGHC_FLAGS) $<
 	@touch $@
 
 clean:
