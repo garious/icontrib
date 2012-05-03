@@ -16,10 +16,8 @@ mostInfluential db = throwLeft $ query db MostInfluentialUserQ
 queryByOwner :: (MonadError String m, MonadIO m) => Database -> Identity -> m UserInfo
 queryByOwner db cid = throwLeft $ query db (UserInfoByOwnerQ cid)
 
-updateInfo :: (MonadError String m, MonadIO m)  => Database -> Identity -> UserInfo -> m ()
-updateInfo db uid ui
-    | uid /= (owner ui) = badUsername
-    | otherwise = liftIO $ update db (UserInfoU ui)
+updateInfo :: (MonadError String m, MonadIO m)  => Database -> Identity -> String -> m ()
+updateInfo db uid ui = throwLeft $ update db (UserInfoMergeU uid ui)
 
 list :: MonadIO m => Database -> m ([Identity])
 list db = liftIO $ query db (UsersQ)

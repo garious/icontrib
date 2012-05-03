@@ -6,6 +6,7 @@ import qualified DB.DB                      as DB
 import qualified DB.UserInfo                as U
 import qualified Data.UserInfo              as U
 import qualified Data.Login                 as L
+import qualified JSONUtil                   as J
 
 import TestUtil
 
@@ -29,7 +30,7 @@ lookupTest = do
 updateInfoTest :: IO ()
 updateInfoTest = do
     db <- DB.emptyMemoryDB
-    assertEqErrorT "update"     (U.updateInfo db toly tolyi)   (Right ())
+    assertEqErrorT "update"     (U.updateInfo db toly (J.jsonEncode tolyi))   (Right ())
     assertEqErrorT "updated"    (U.queryByOwner db toly)       (Right tolyi)
     assertEqM       "list"      (U.list db )                   [toly]
 
@@ -37,8 +38,8 @@ mostInfluentialTest :: IO ()
 mostInfluentialTest = do
     db <- DB.emptyMemoryDB
     assertEqErrorT "mostInfluential empty"  (U.mostInfluential db) (Left "DoesntExist")
-    assertEqErrorT "update" (U.updateInfo db toly tolyi) (Right ())
-    assertEqErrorT "update" (U.updateInfo db greg gregi) (Right ())
+    assertEqErrorT "update" (U.updateInfo db toly (J.jsonEncode tolyi)) (Right ())
+    assertEqErrorT "update" (U.updateInfo db greg (J.jsonEncode gregi)) (Right ())
     assertEqErrorT "updated"  (U.mostInfluential db)  (Right greg)
 
 main :: IO ()

@@ -9,7 +9,9 @@ import Data.Paypal (Email(..))
 
 newtype Ein         = Ein       String    deriving (Eq, Ord, Show, Data, Typeable, SafeCopy)
 newtype CharityID   = CharityID String    deriving (Eq, Ord, Show, Data, Typeable, SafeCopy)
-
+data Fund = Fund { name :: String }
+          deriving (Eq, Ord, Show, Data, Typeable)
+$(deriveSafeCopy 0 'base ''Fund)
 data CharityInfo = CharityInfo { owner :: Identity
                                , ein :: Ein
                                , organizationName :: String
@@ -18,11 +20,12 @@ data CharityInfo = CharityInfo { owner :: Identity
                                , imageUrl :: String
                                , mission :: String
                                , paymentAddress :: Email
+                               , funds :: [Fund]
                                }
                  deriving (Eq, Ord, Show, Data, Typeable)
 
 empty :: CharityInfo
-empty = CharityInfo (Identity "") (Ein "") "" "" (CharityID "") "" "" (Email "paypal@charity.com")
+empty = CharityInfo (Identity "") (Ein "") "" "" (CharityID "") "" "" (Email "paypal@charity.com") []
 
 
 instance Indexable CharityInfo where

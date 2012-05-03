@@ -23,6 +23,7 @@ ci = C.CharityInfo (L.Identity "greg")
                     "charity/gffw.jpg"
                     "blah blah blah"
                     (P.Email  "payment@info.com")
+                    []
 
 data PartialCI = PartialCI { ein :: String
                            , organizationName :: String
