@@ -2,7 +2,7 @@ UNAME:=$(shell uname)
 
 -include $(UNAME).min
 
-GHC_FLAGS+=-Wall -Werror -threaded -fno-warn-orphans
+GHC_FLAGS+=-Wall -Werror -threaded -fno-warn-orphans -optl-Wl,-no_pie
 
 RUN_TESTS := $(wildcard *Test.hs) $(wildcard */*Test.hs)
 
