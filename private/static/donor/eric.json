@@ -14,7 +14,7 @@
        {"name": "Global Fund for Women", "cid": "gffw", "shares": 50, "labels": ["General Fund"]}
    ],
    "funds" : [
-       {"name": "General Fund", "labels": ["Erics-GeneralFund"]}
+       {"name": "General Fund", "label": "Erics-GeneralFund"}
    ]
 }
 

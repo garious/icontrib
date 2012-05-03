@@ -17,9 +17,9 @@
        {"name": "LACC", "cid": "lacc", "shares": 20, "labels": ["Gregs-Personal-Fund"]}
    ],
    "funds": [
-       {"name": "General Fund", "labels": ["Gregs-General-Fund"]},
-       {"name": "San Diego Fund", "labels": ["Gregs-SanDiego-Fund"]},
-       {"name": "Personal Fund", "labels": ["Gregs-Personal-Fund"]}
+       {"name": "General Fund", "label": "Gregs-General-Fund"},
+       {"name": "San Diego Fund", "label": "Gregs-SanDiego-Fund"},
+       {"name": "Personal Fund", "label": "Gregs-Personal-Fund"}
    ]
 }
 

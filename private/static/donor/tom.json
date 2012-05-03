@@ -13,7 +13,7 @@
        {"name": "Underwater Society of America", "cid": "usoa", "shares": 9.09, "labels": ["General Fund"]}
    ],
    "funds": [
-       {"name": "General Fund", "labels": ["TomBrown-GeneralFund"]}
+       {"name": "General Fund", "label": "TomBrown-GeneralFund"}
    ]
 }
 
