@@ -6,7 +6,6 @@ import qualified DB.DB                      as DB
 import qualified DB.UserInfo                as U
 import qualified Data.UserInfo              as U
 import qualified Data.Login                 as L
-import qualified Data.Paypal                as P
 
 import TestUtil
 
@@ -14,13 +13,13 @@ toly :: L.Identity
 toly = (L.Identity "anatoly")
 
 tolyi :: U.UserInfo
-tolyi = U.UserInfo toly "first" "last" "phone" "email" "imageurl" 100 100 [] [] [] (P.Email "toly@paypal.com")
+tolyi = U.UserInfo toly "first" "last" "phone" "email" "imageurl" 100 100 [] [] []
 
 greg :: L.Identity
 greg = (L.Identity "greg")
 
 gregi :: U.UserInfo
-gregi = U.UserInfo greg "greg" "fitz" "phone" "email" "foo" 200 100 [] [] [] (P.Email "greg@paypal.com")
+gregi = U.UserInfo greg "greg" "fitz" "phone" "email" "foo" 200 100 [] [] []
 
 lookupTest :: IO ()
 lookupTest = do

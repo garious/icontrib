@@ -58,7 +58,6 @@ clearUserDeposit pp (Product _ (OneTime dists)) = distributePayment pp dists
 clearUserDeposit pp (Product _ (UserSubscription uid)) = do
     dists <- userDistributionMQ uid
     distributePayment pp dists
-
     
 clear :: (MonadError String m, MonadState DB m) => Payment -> m ()
 clear pp

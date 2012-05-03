@@ -7,7 +7,6 @@ import Data.Time.Clock                       ( UTCTime )
 import System.Locale                         ( defaultTimeLocale )
 import Data.Data                             ( Data, Typeable )
 import Control.Monad                         ( when )
-import qualified Data.ByteString.Lazy        as BL
 import qualified Text.Email.Validate         as E
 import SiteError
 import Data.IxSet
@@ -28,7 +27,7 @@ newtype TransactionID = TransactionID String
                       deriving (Eq, Ord, Show, Data, Typeable)
 $(deriveSafeCopy 0 'base ''TransactionID)
 
-newtype ProductID = ProductID BL.ByteString
+newtype ProductID = ProductID String
                   deriving (Eq, Ord, Show, Data, Typeable)
 
 $(deriveSafeCopy 0 'base ''ProductID)

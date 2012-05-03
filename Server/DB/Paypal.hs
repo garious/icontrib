@@ -1,14 +1,18 @@
 {-# LANGUAGE FlexibleContexts #-}
-module DB.Paypal
+module DB.Paypal where
 
-import Data.CharityInfo
-import Data.Login                            ( Identity )
-import Data.Acid                             ( query, update )
+import Data.Acid                             ( update )
+import Data.Paypal                           ( Payment, IPNMessage, ProductID(..) )
+import Random                                ( randomIO )
+import DB.Login                              ()
+import qualified Codec.Binary.Url            as Url
 import SiteError
-import Data.Popular                          ( Popular(Popular) )
 import Query.DB
-import qualified Data.IxSet                  as IxSet
 
-clearValidatedPayment :: (MonadError String m, MonadIO m) => Database -> Payment -> m () 
-clearValidatedPayment db payment = throwLeft $ update db (ClearValidatedPaymentU payment)
+clearValidatedPayment :: (MonadError String m, MonadIO m) => Database -> IPNMessage -> Payment -> m () 
+clearValidatedPayment db msg payment = throwLeft $ update db (ClearValidatedPaymentU msg payment)
 
+newProductID :: IO ProductID
+newProductID = do
+    pid <- liftM (take 255 . Url.encode) $ sequence $ replicate 255 randomIO
+    return $ ProductID pid
