@@ -46,13 +46,13 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
             var dist = user.distribution;
             for (var i = 0; i < user.funds.length; i++) {
 
-                var fundId = user.funds[i].labels[0];  // TODO: Anatoly, why is this a list?
+                var fund = user.funds[i];
                 var xs = [];
                 var total = 0;
 
                 // filter (nm `elem` dist.labels)
                 for (var j = 0; j < dist.length; j++) {
-                    if (isMember(dist[j].labels, fundId)) {
+                    if (isMember(dist[j].labels, fund.label)) {
                         var d = dist[j];
                         total = total + d.shares;
                         xs.push(d);
@@ -65,8 +65,8 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
                     Core.hr({width: 570}),
                     Layout.pillow(0, 20),
                     Tag.tag('div', {style: {width: '100%'}}, [
-                        Tag.tag('div', {style: {'float': 'right'}}, [alignButton({id: fundId})]),
-                        Core.h4(user.funds[i].name),
+                        Tag.tag('div', {style: {'float': 'right'}}, [alignButton({id: fund.label})]),
+                        Core.h4(fund.name),
                         Layout.hug([
                             Chart.pieSnapshot({distribution: xs, colors: colors}),
                             Layout.pillow(20, 0),
