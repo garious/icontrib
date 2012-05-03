@@ -6,7 +6,7 @@ import Data.Data                             ( Typeable, Data )
 import Data.SafeCopy
 
 data Fund = Fund { name   :: String 
-                 , labels :: [String]
+                 , label :: String
                  }
           deriving (Eq, Ord, Show, Data, Typeable)
 
