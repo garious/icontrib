@@ -16,7 +16,7 @@ JS_TESTS = $(patsubst %,$V/%.passed,$(RUN_JS_TESTS))
 
 INTEGRATION_TESTS = $(patsubst %,$V/%.passed,$(RUN_INTEGRATION_TESTS))
 
-all: server private/static.ok client $(INTEGRATION_TESTS)
+all: server private/db/static.ok client $(INTEGRATION_TESTS)
 
 
 
@@ -44,7 +44,7 @@ Server/$V/ship/import: server
 serve: Server/$V/ship/icontrib private/static.ok client  
 	@$<
 
-private/static.ok: Server/$V/ship/import $(wildcard private/static/*/*) $(wildcard Server/Data/*.hs)
+private/db/static.ok: Server/$V/ship/import $(wildcard private/static/*/*) $(wildcard Server/Data/*.hs)
 	@$<
 	@touch $@
 
@@ -69,7 +69,7 @@ NODE_DIR = node/$V
 
 $V/IntegrationTest.js.passed: Client/$V/ship/IContrib.js Server/$V/ship/icontrib
 
-$V/SiteTest.js.passed: private/static.ok
+$V/SiteTest.js.passed: private/db/static.ok
 
 $V/%.js.passed: %.js
 	@mkdir -p $(@D)
