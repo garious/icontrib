@@ -29,7 +29,7 @@ main = do
         di <- jsonUpdate U.empty body
         let ident@(L.Identity name) = (U.owner di)
         (L.addIdentity db ident name) <|> return ()
-        U.updateInfo db ident di
+        U.updateInfo db ident body
     mapM_ errorLeft e1
     putStrLn "done importing donors"
     charities <- glob "private/static/charity/*.json"
