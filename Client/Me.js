@@ -158,10 +158,23 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Sl
             rows.push( Layout.pillow(0, 20) );
         }
 
+        function saveChanges() {
+            // Update the database
+            Frame.post('/donor/update', {distribution: as.user.distribution}, function (dat) {
+                var data = JSON.parse(dat);
+                if (data.Left) {
+                    alert(data.Left);
+                } else {
+                    // TODO: go to confirmation window
+                    window.location = '/';
+                }
+            });
+        }
+
         var fundingRows = [
             distributionTable(user.distribution, inputs, colors),
             Layout.pillow(0, 20),
-            Layout.hug([Layout.pillow(20,0), Core.button({href: '#', text: 'Save Changes', loud: true})]),
+            Layout.hug([Layout.pillow(20,0), Core.button({href: '#', text: 'Save Changes', loud: true, onClick: saveChanges})]),
             Layout.pillow(0, 20)
         ];
 
