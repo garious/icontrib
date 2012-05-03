@@ -72,6 +72,5 @@ basename = path $ \ (pp::String) -> isext ".json" pp
             | otherwise = mzero
 
 
-
 withBody :: Data t => (t1 -> t -> ErrorT String (ServerPartT IO) b) -> t1 -> ErrorT String (ServerPartT IO) b
 withBody ff uid = do bd <- getBody; ff uid bd

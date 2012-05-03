@@ -2,7 +2,7 @@
 module Query.Paypal(clearValidatedPaymentU, currentBalanceQ) where
 
 import Control.Monad.State                   ( MonadState )
-import Query.UserInfo                        ( paymentDistributionMQ )
+import Query.UserInfo                        ( userDistributionMQ )
 import Data.Distribution                     ( Distribution )
 import Query.CharityInfo                     ( charityByIDMQ' )
 
@@ -11,6 +11,7 @@ import qualified Data.CharityInfo            as C
 import Data.Distribution                     ( shares, cid )
 import qualified Data.IxSet                  as IxSet
 import Data.Paypal
+import Data.Product
 
 import Data.Acid
 import SiteError
@@ -24,9 +25,8 @@ removeIPN mm = do
     db <- getM
     putM $ IxSet.delete mm db 
 
-clearUserDeposit :: (MonadError String m, MonadState DB m) => Payment -> m ()
-clearUserDeposit pp = do
-    dists <- paymentDistributionMQ (payer_email pp)
+distributePayment :: (MonadError String m, MonadState DB m) => Payment -> [Distribution] -> m ()
+distributePayment pp dists = do
     chars <- charityByIDMQ' $ map cid dists
     let 
         td = fromIntegral
@@ -53,12 +53,18 @@ clearUserDeposit pp = do
     deps <- getD
     putD $ IxSet.union deps (IxSet.fromList $ zipWith toDeposit dists chars) 
             
-clearDeposit :: (MonadError String m, MonadState DB m) => Payment -> m ()
-clearDeposit pp = clearUserDeposit pp
+clearUserDeposit :: (MonadError String m, MonadState DB m) => Payment -> Product -> m ()
+clearUserDeposit pp (Product _ (OneTime dists)) = distributePayment pp dists
+clearUserDeposit pp (Product _ (UserSubscription uid)) = do
+    dists <- userDistributionMQ uid
+    distributePayment pp dists
     
 clear :: (MonadError String m, MonadState DB m) => Payment -> m ()
 clear pp
-    | (show $ reciever_email pp) == icontribPaypalAddress = clearDeposit pp
+    | (show $ reciever_email pp) == icontribPaypalAddress = do
+            pdb <- getPR
+            prod <- (IxSet.getOne $ pdb @* [(custom pp)]) `justOr` (throwError "no product for payment")
+            clearUserDeposit pp prod
     | otherwise = throwError $ "unknown reciever and sender payer email" ++ (show pp)
 
 clearPayment :: (MonadError String m, MonadState DB m) => Payment -> m ()

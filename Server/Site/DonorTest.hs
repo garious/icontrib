@@ -9,7 +9,6 @@ import qualified Network.Browser             as HTTP
 import qualified JSON.UserLogin              as J
 import qualified Data.UserInfo               as U
 import qualified Data.Login                  as L
-import qualified Data.Paypal                 as P
 import TestUtil
 
 
@@ -41,7 +40,7 @@ toly :: L.Identity
 toly = (L.Identity "anatoly")
 
 ui :: U.UserInfo
-ui = U.UserInfo toly "" "" "" "anatoly" "" 0 0 [] [] [] (P.Email "")
+ui = U.UserInfo toly "" "" "" "anatoly" "" 0 0 [] [] []
 
 --make sure adding a login adds a user as well
 getInfoTest :: IO ()

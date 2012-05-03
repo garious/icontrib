@@ -10,7 +10,7 @@ import Query.Paypal
 
 $(makeAcidic ''DB [ 'addIdentityU, 'checkPasswordQ, 'addIdentityTokenU, 'tokenToIdentityQ, 'listIdentitiesQ, 'clearIdentityTokensU
                   , 'deleteCharityByEinU, 'charityInfoU, 'charityByOwnerQ, 'charityByIDQ
-                  , 'userInfoU, 'userInfoByOwnerQ, 'mostInfluentialUserQ, 'usersQ, 'userCharitiesQ 
+                  , 'userInfoU, 'userInfoMergeU, 'userInfoByOwnerQ, 'mostInfluentialUserQ, 'usersQ, 'userCharitiesQ 
                   , 'clearValidatedPaymentU
                   ])
 

@@ -27,8 +27,8 @@ import Happstack.Server                      ( ServerPart
                                              )
 import qualified Log as Log
 import qualified Site.Login as SL
-import SiteError                             ( runErrorT, failErrorT )
-import Site.Utils                            ( basename, withBody, post, get )
+import SiteError                             ( runErrorT, failErrorT, SiteErrorT )
+import Site.Utils                            ( basename, post, get, getBody' )
 import qualified Site.Charity               as C
 
 serve :: Either TLSConf Int -> ServerPart Response -> IO ()
@@ -85,12 +85,16 @@ authServices st = msum [
 
 donorServices:: DB.Database -> ServerPart Response
 donorServices st = msum [ 
-      dir "update"               (post (runErrorT  $ check >>= (withBody (U.updateInfo st))))
+      dir "update"               (post (runErrorT  $ updateInfo st))
     , dir "mostInfluential.json" (get  (failErrorT $ U.mostInfluential st))
     , (get (basename >>= (failErrorT . U.queryByOwner st . L.Identity)))
     ]
-    where
-        check = (SL.checkUser st)
+
+updateInfo :: DB.Database -> SiteErrorT ()
+updateInfo st = do
+    uid <- SL.checkUser st
+    bd <- getBody'
+    U.updateInfo st uid bd
 
 redirect ::  HTTP.Request_String -> ServerPart Response
 redirect req = do
