@@ -61,7 +61,7 @@ dist:
 
 deps:
 	cabal update
-	cabal install --only-dependencies
+	cabal install --only-dependencies Server/icontrib.cabal
 	npm install zombie
 
 
