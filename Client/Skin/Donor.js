@@ -81,6 +81,49 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
         }
     }
 
+    function distributionTable1(user) {
+        if (user.funds) {
+            var dist = user.distribution;
+
+            var total = 0;
+            for (var j = 0; j < dist.length; j++) {
+                var d = dist[j];
+                total += d.shares;
+            }
+
+            var colors = Colors.dashboardColors;
+
+            var row = Tag.tag('div', {style: {width: '100%'}}, [
+               Layout.hug([
+                   fundContents(dist, total, colors),
+                   Layout.pillow(20, 0),
+                   Chart.pieSnapshot({distribution: dist, colors: colors, height: 200})
+               ])
+            ]);
+
+            return row;
+        }
+    }
+
+    function profile1(as) {
+        as = as || {};
+        var user = as.user || {};
+        var name = user.firstName + ' ' + user.lastName;
+        var userInfo = Layout.hug([
+            Layout.pillow(25, 0), 
+            Core.h3(name)
+        ]);
+
+        return Layout.spoon([
+            Layout.hug([
+                Tag.tag('img', {style: {width: '90px', height: '90px'}, src: user.imageUrl, alt: name}),
+	        userInfo
+            ]),
+            Layout.pillow(0, 10),
+            distributionTable1(user)
+        ]);
+    }
+
     function profile(as) {
         as = as || {};
         var user = as.user || {};
@@ -139,6 +182,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
 
     Yoink.define({
         profile: profile,
+        profile1: profile1,
         recommendedFunds: recommendedFunds,
         alignButton: alignButton
     });

@@ -17,7 +17,7 @@ function onInitialReady(MostInfluentialId) {
 
         var mostInfluential = Core.box({
             width: 600,
-            contents: Donor.profile({user: MostInfluential})
+            contents: Donor.profile1({user: MostInfluential})
         });
 
         var body = Layout.spoon([

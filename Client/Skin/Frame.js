@@ -47,7 +47,14 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
             visibility.set('hidden');
         }
 
+        function invalidateBackCache() {
+            // necessary for Safari: mobile & desktop
+        }
+
         if (Auth.Left) {
+            // necessary for Safari: mobile & desktop
+            window.addEventListener('unload', invalidateBackCache, false);
+
             var onLogin = function (evt) {
                 evt.preventDefault();
                 window.location = '/LogIn';
