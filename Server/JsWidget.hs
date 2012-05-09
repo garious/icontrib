@@ -54,6 +54,7 @@ htmlForJsMod baseUrl filename ps = appTemplate $ do
       preloadedAttr = H.toValue (mkPath (mkRelUrl baseUrl ["IContrib.js"]))
 
       yoink = "\n\
+           \YOINK.setDebugLevel(1);\n\
            \YOINK.resourceLoader('', {}, window.PRELOADED_MODULES).getResources([\n\
            \    '/Tag/Interface.js',\n\
            \    '/Tag/ToDom.js',\n\

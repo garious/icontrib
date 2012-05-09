@@ -27,6 +27,12 @@
 var YOINK = (function () {
     'use strict';
 
+    var debugLevel = 0;
+
+    function setDebugLevel(n) {
+        debugLevel = n;
+    }
+
     var defaultInterpreters = {
         json: function (text) {
             return JSON.parse(text);
@@ -111,7 +117,9 @@ var YOINK = (function () {
 
     function interpretFile(interpreters, cache, moduleCache, u, str, httpCode, callback) {
         if (httpCode >= 200 && httpCode < 300) {
-            console.log("yoink: interpreting '" + u.path + "'");
+            if (debugLevel > 0) {
+                console.log("yoink: interpreting '" + u.path + "'");
+            }
             interpret(str, u.path, u.params, u.interpreter, interpreters, cache, moduleCache, callback);
         } else if (u.onError) {
             var rsc = u.onError(httpCode);
@@ -158,7 +166,9 @@ var YOINK = (function () {
 
                 if (moduleCache[p]) {
                     // Is this in our module cache?
-                    console.log("yoink: executing preloaded module '" + p + "'");
+                    if (debugLevel > 0) {
+                        console.log("yoink: executing preloaded module '" + p + "'");
+                    }
                     evaluateModule(moduleCache[p], p, url.params, cache, moduleCache, interpreters, callback);
                 } else {
                     getFile(p, function (str, httpCode) {
@@ -237,6 +247,7 @@ var YOINK = (function () {
     }
 
     return {
+        setDebugLevel: setDebugLevel,
         require: require,
         resourceLoader: resourceLoader,
         interpreters: defaultInterpreters

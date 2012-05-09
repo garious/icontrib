@@ -39,7 +39,12 @@
     
         // Print the result of each module.
         for (var k in arguments) {
-            console.log(arguments[k]);
+            var v = arguments[k];
+            if (typeof v === 'string') {
+                console.log(v);
+            } else {
+                console.log('passed!');
+            }
         }
     });
 

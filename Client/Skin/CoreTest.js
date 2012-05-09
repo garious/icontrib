@@ -19,7 +19,7 @@ function onReady(Core, Tag) {
             Tag.tag('thead', [
                 Tag.tag('tr', [ Tag.tag('th', 'Name'), Tag.tag('th', 'Raw'), Tag.tag('th', 'Stylized') ])
             ]),
-            Tag.tbody([
+            Tag.tag('tbody', [
                 row('h1',     Tag.tag('h1', 'Tag.h1'),              Core.h1('Core.h1')),
                 row('h2',     Tag.tag('h2', 'Tag.h2'),              Core.h2('Core.h2')),
                 row('h3',     Tag.tag('h3', 'Tag.h3'),              Core.h3('Core.h3')),
@@ -30,7 +30,7 @@ function onReady(Core, Tag) {
                 row('a',      Tag.tag('a', {href: '#'}, ['Tag.a']), Core.hyperlink({url: '#', text: 'Core.hyperlink'})),
                 row('label',  Tag.tag('label', 'Tag.label'),        Core.label('Core.label')),
                 row('button', Tag.tag('button', 'Tag.button'),      Core.button({href: '#', text: 'Core.button'})),
-                row('box',    Tag.tag('div', [Tag.p(['Tag.div'])]), Core.box({contents: Core.p('Core.box')}))
+                row('box',    Tag.tag('div', [Tag.tag('p', ['Tag.div'])]), Core.box({contents: Core.p('Core.box')}))
             ])
         ]);
 

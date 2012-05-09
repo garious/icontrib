@@ -32,7 +32,7 @@ client:
 
 tree_%:
 	$(MAKE) -C Server V=$V $(patsubst tree_%,%,$@)
-	$(MAKE) -C Client V=$V $(patsubst tree_%,%,$@)
+	$(MAKE) -C Client V=$V $@
 	$(MAKE) -C Yoink V=$V $(patsubst tree_%,%,$@)
 	$(MAKE) V=$V $(patsubst tree_%,%,$@)
 

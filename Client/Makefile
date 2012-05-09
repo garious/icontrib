@@ -9,6 +9,11 @@ all: lint $V/ship/IContrib.js
 clean:
 	rm -rf $V
 
+tree_%:
+	$(MAKE) -C Tag $@
+	$(MAKE) -C Skin $@
+	$(MAKE) $(patsubst tree_%,%,$@)
+
 JS_WHITELIST:= \
     js/json2.js \
 
