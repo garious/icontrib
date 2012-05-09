@@ -32,6 +32,7 @@ function onReady(Tag, Colors) {
         var sty = {
             width:  as.width  && as.width  + 'px',
             height: as.height && as.height + 'px',
+            borderWidth: '0px',
             borderRadius: as.borderRadius && as.borderRadius + 'px'
         };
 

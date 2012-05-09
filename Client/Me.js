@@ -78,7 +78,7 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Sl
    
         var percentage = Observable.thunk([obs], function(n){return Math.round(n * 10) / 10 + '%';});
 
-        var deleteImg = Tag.tag('img', {src: 'Delete.png', alt: 'delete', style: {padding: '5px', visibility: deleteObs}});
+        var deleteImg = Tag.tag('img', {src: 'Delete.png', alt: 'delete', style: {padding: '5px', visibility: deleteObs, borderWidth: '0px'}});
         var deleteLink = Tag.tag('a', {href: '#'}, [deleteImg], {click: onDeleteClicked});
 
         var rangeStyle = {
