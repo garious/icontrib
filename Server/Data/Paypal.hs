@@ -2,7 +2,7 @@
 module Data.Paypal where
 import Data.Time.Format                      ( parseTime )
 import Data.Login                            ()
-import Char                                  ( toLower )
+import Data.Char                             ( toLower )
 import Data.Time.Clock                       ( UTCTime )
 import System.Locale                         ( defaultTimeLocale )
 import Data.Data                             ( Data, Typeable )

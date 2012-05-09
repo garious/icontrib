@@ -6,7 +6,7 @@ import JSONUtil                              ( jsonDecode, jsonEncode )
 import Happstack.Server                      ( lookPairs, path )
 import Happstack.Server.Monads               ( ServerPartT )
 import System.FilePath                       ( takeBaseName )
-import Monad                                 ( mzero )
+import Control.Monad                         ( mzero )
 import qualified Data.ByteString.Lazy.Char8  as BS
 import qualified Log                         as Log
 import Happstack.Server                      ( Response

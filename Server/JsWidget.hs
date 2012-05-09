@@ -2,7 +2,7 @@
 
 module JsWidget where
 
-import Monad                                 ( msum )
+import Control.Monad                         ( msum )
 import Happstack.Server                      ( ServerPart, Response, path, nullDir, lookPairs, ok, toResponse )
 import Happstack.Server.Routing              ( trailingSlash )
 

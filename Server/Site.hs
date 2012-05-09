@@ -7,7 +7,7 @@ import qualified DB.UserInfo                 as U
 import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP
 import qualified DB.DB                       as DB
-import Monad                                 ( msum )
+import Control.Monad                         ( msum )
 import Happstack.Server.SimpleHTTPS          ( simpleHTTPS, TLSConf, tlsPort )
 import Happstack.Server                      ( ServerPart
                                              , Response

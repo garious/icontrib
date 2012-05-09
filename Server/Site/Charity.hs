@@ -13,7 +13,7 @@ import qualified Data.IxSet                  as IxSet
 import Data.IxSet                            ( (@*), getOne )
 import Site.Utils                            ( basename, getBody', post, get )
 import JSONUtil                              ( jsonUpdate )
-import Monad                                 ( msum )
+import Control.Monad                         ( msum )
 import Happstack.Server                      ( ServerPart
                                              , Response
                                              , dir

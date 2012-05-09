@@ -2,7 +2,7 @@
 module DB.Login where
 import Data.Char                             ( ord )
 import Control.Monad                         ( when )
-import Random                                ( randomIO, Random, random, randomR )
+import System.Random                         ( randomIO, Random )
 import Data.Word                             ( Word8 )
 
 import qualified Data.ByteString.Lazy        as BL
@@ -55,11 +55,11 @@ tokenToIdentity db token = throwLeft $ query db (TokenToIdentityQ token)
 clearIdentityTokens :: Database -> Identity -> IO ()
 clearIdentityTokens db uid = update db (ClearIdentityTokensU uid)
 
-instance Random Word8 where
-    randomR (lo, hi) rng = let (val, rng') = randomR (fromIntegral lo, fromIntegral hi) rng
-                               val :: Int
-                           in  (fromIntegral val, rng')
-    random rng = randomR (minBound, maxBound) rng
+--instance Random Word8 where
+--    randomR (lo, hi) rng = let (val, rng') = randomR (fromIntegral lo, fromIntegral hi) rng
+--                               val :: Int
+--                           in  (fromIntegral val, rng')
+--    random rng = randomR (minBound, maxBound) rng
  
 newSalt :: IO BS.ByteString
 newSalt = liftM BS.pack $ sequence $ take 64 $ repeat randomIO
