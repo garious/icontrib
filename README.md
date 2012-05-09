@@ -13,19 +13,19 @@ Then clone the source code repository:
     git clone git@github.com:garious/icontrib.git
 
 
+If on Ubuntu, install a few more prereqs:
+
+    sudo apt-get install libssl-dev libcrypto++-dev
+
+
 Using GNU Make 3.81, run the rule that downloads and builds the project dependencies.
 
     make deps
 
 
-To build the web server and run the unit-tests, just type 'make' in the directory with the Makefile.
+To build the web server and run the test suites:
 
-    make
-
-
-To only run the unit tests.
-
-    make test
+    make tree_all
 
 
 To run the web server:
