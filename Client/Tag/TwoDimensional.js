@@ -9,7 +9,7 @@ function onReady(Tag) {
     var twoDimensionalId = Yoink.baseUrl + '/TwoDimensional.js';
     
     // TwoDimensional instance for Tag objects
-    Tag.tag.interfaces[twoDimensionalId] = {
+    Tag.tag1.interfaces[twoDimensionalId] = {
 
         setPosition: function (me, pos) {
 
@@ -17,11 +17,11 @@ function onReady(Tag) {
                 me.attributes = {};
             }
 
-            if (!me.attributes.style) {
-                me.attributes.style = {};
+            if (!me.style) {
+                me.style = {};
             }
 
-            var sty = me.attributes.style;
+            var sty = me.style;
 
             if (pos['float'] !== undefined) {
                 sty['float'] = pos['float'];

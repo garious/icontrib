@@ -99,24 +99,25 @@ function mkSetStyle(e, k, getter) {
 
 function onReady(Iface, Dom, Observable) {
 
-    // Add attribute 'k' with value 'v' to the given DOM element 'e'.
-    function addAttribute(e, k, v) {
-        var methods;
-        if (k === 'style') {
-            var style = v;
-            for (var s in style) {
-                if (style.hasOwnProperty(s) && style[s] !== undefined) {
-                    methods = Iface.getInterface(style[s], Observable.observableId);
-                    if (methods) {
-                        e.style[s] = methods.get(style[s]);
-                        methods.subscribe(style[s], mkSetStyle(e, s, methods.get));
-                    } else {
-                        e.style[s] = style[s];
-                    }
+    // Add all items of style object 'style' to the DOM element 'e'.
+    function addStyle(e, style) {
+        for (var s in style) {
+            if (style.hasOwnProperty(s) && style[s] !== undefined) {
+                var methods = Iface.getInterface(style[s], Observable.observableId);
+                if (methods) {
+                    e.style[s] = methods.get(style[s]);
+                    methods.subscribe(style[s], mkSetStyle(e, s, methods.get));
+                } else {
+                    e.style[s] = style[s];
                 }
             }
-        } else if (v !== undefined) {
-            methods = Iface.getInterface(v, Observable.observableId);
+        }
+    }
+
+    // Add attribute 'k' with value 'v' to the DOM element 'e'.
+    function addAttribute(e, k, v) {
+        if (v !== undefined) {
+            var methods = Iface.getInterface(v, Observable.observableId);
             if (methods) {
                 e.setAttribute(k, methods.get(v));
                 methods.subscribe(v, mkSetAttribute(e, k, methods.get));
@@ -139,30 +140,35 @@ function onReady(Iface, Dom, Observable) {
     }
 
 
-    // Create a DOM element with tag name 'nm', attributes object 'as', an array of 
-    // subelements 'xs', and an object of event handlers 'es'.
-    function createElement(nm, as, xs, es) {
+    // Create a DOM element with tag name 'nm', attributes object 'as', style object 'sty', 
+    // an array of subelements 'xs', and an object of event handlers 'es'.
+    function createElement(ps) {
 
-        if (typeof as === 'string' || as && as.constructor === Array) {
-            es = xs;
-            xs = as;
-            as = undefined;
+        if (typeof ps === 'string') {
+            ps = {name: ps};
         }
-    
+
         // Create DOM node
-        var e = document.createElement(nm); 
+        var e = document.createElement(ps.name);
 
         // Add attributes
+        var as = ps.attributes;
         var k;
         if (as) {
             for (k in as) {
-                if (as.hasOwnProperty(k)) {
+                if (as.hasOwnProperty(k) && k !== 'style') {
                     addAttribute(e, k, as[k]);
                 }
             }
         }
+
+        // Add Style
+        if (ps.style) {
+            addStyle(e, ps.style);
+        }
     
-        // Add children
+        // Add child elements
+        var xs = ps.contents;
         if (xs) {
             if (typeof xs === 'string') {
                 e.appendChild(document.createTextNode(xs));
@@ -183,6 +189,7 @@ function onReady(Iface, Dom, Observable) {
         }
     
         // Add event handlers
+        var es = ps.handlers;
         if (typeof es === 'object') {
             for (k in es) {
                 if (es.hasOwnProperty(k)) {
@@ -194,27 +201,37 @@ function onReady(Iface, Dom, Observable) {
         return e;
     }
 
-    //
-    // tag(nm, attributes, subelements, eventHandlers)
-    //
+    // Overwrite 'obj' with defined keys in 'newObj'
+    function mixin(obj, newObj) {
+        for (var k in newObj) {
+            if (newObj.hasOwnProperty(k) && newObj[k] !== undefined) {
+                obj[k] = newObj[k];
+            }
+        }
 
-    // Create an object with tag name 'nm', attributes object 'as', an array of 
-    // subelements 'xs', and an object of event handlers 'es'.
-    function tag(nm, as, xs, es) {
-        if (typeof as === 'string' || as && as.constructor === Array) {
-            es = xs;
-            xs = as;
-            as = undefined;
+        return obj;
+    }
+
+    // left-fold style objects
+    // cascadeStyles(xs) === {} `mixin` xs[0] `mixin` xs[1] `mixin` ... `mixin` xs[-1]
+    function cascadeStyles(xs) {
+        return xs.reduce(mixin, {});
+    }
+
+    function tag(as) {
+
+        if (typeof as === 'string') {
+            as = {name: as};
         }
 
         var me = {
             constructor: tag,
-            name: nm
+            name:        as.name
         };
 
-        if (as !== undefined) { me.attributes = as; }
-        if (xs !== undefined) { me.subelements = xs; }
-        if (es !== undefined) { me.handlers = es; }
+        if (as.attributes !== undefined) { me.attributes = as.attributes; }
+        if (as.style      !== undefined) { me.style      = as.style; }
+        if (as.contents   !== undefined) { me.contents   = as.contents; }
 
         return me;
     }
@@ -222,14 +239,38 @@ function onReady(Iface, Dom, Observable) {
     tag.interfaces = {};
 
     tag.interfaces[Dom.toDomId] = {
-        toDom: function (me) {
-            return createElement(me.name, me.attributes, me.subelements, me.handlers);
-        }
+        toDom: createElement
     };
     
+
+    //
+    // tag(nm, attributes, subelements, eventHandlers)
+    //
+
+    // Create an object with tag name 'nm', attributes object 'as', an array of 
+    // subelements 'xs', and an object of event handlers 'es'.
+    function tag_deprecated(nm, as, xs, es) {
+        if (typeof as === 'string' || as && as.constructor === Array) {
+            es = xs;
+            xs = as;
+            as = undefined;
+        }
+
+        return tag({
+            name: nm,
+            attributes: as,
+            style: as && as.style,
+            contents: xs,
+            handlers: es
+        });
+    }
+
     Yoink.define({
         createElement: createElement,
-        tag:           tag
+        mixin:         mixin,
+        cascadeStyles: cascadeStyles,
+        tag:           tag_deprecated,
+        tag1:          tag
     });
     
 }
