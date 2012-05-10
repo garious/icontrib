@@ -8,12 +8,21 @@ var deps = [
 
 function onReady(Tag, Layout, Core, Frame, Colors) {
 
-    var logo = Tag.tag('a', {href: '/', tabindex: -1, style: {width: '129px', height: '70px'}}, [
-        Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
-    ]);
+    var logo = Tag.tag({
+        name: 'a',
+        attributes: {href: '/', tabindex: -1},
+        style: {width: '129px', height: '70px'}, 
+        contents: [
+            Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
+        ]
+    });
 
-    var badLogin = Tag.tag('span', {hidden: true, style: {height: '20px', width: '200px', color: Colors.red}}, 'bad username or password');
-
+    var badLogin = Tag.tag({
+        name: 'span',
+        attributes: {hidden: true},
+        style: {height: '20px', width: '200px', color: Colors.red},
+        contents: 'bad username or password'
+    });
 
     var formValues = {password: ''};
 
@@ -73,13 +82,17 @@ function onReady(Tag, Layout, Core, Frame, Colors) {
         onKeyUp: onKeyUp
     });
 
-    var node = Tag.tag('div', {style: {margin: '0px auto', width: '335px', textAlign: 'center'}}, [
-        Tag.tag('br'),
-        logo,
-        Tag.tag('br'),
-        Tag.tag('br'),
-        box
-    ]);
+    var node = Tag.tag({
+        name: 'div',
+        style: {margin: '0px auto', width: '335px', textAlign: 'center'},
+        contents: [
+            Tag.tag('br'),
+            logo,
+            Tag.tag('br'),
+            Tag.tag('br'),
+            box
+        ]
+    });
 
     Yoink.define( Frame.webpage(node) );
 }

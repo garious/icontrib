@@ -218,6 +218,9 @@ function onReady(Iface, Dom, Observable) {
         return xs.reduce(mixin, {});
     }
 
+    //
+    // tag({name, attributes, style, contents, handlers})
+    //
     function tag(as) {
 
         if (typeof as === 'string') {
@@ -232,6 +235,7 @@ function onReady(Iface, Dom, Observable) {
         if (as.attributes !== undefined) { me.attributes = as.attributes; }
         if (as.style      !== undefined) { me.style      = as.style; }
         if (as.contents   !== undefined) { me.contents   = as.contents; }
+        if (as.handlers   !== undefined) { me.handlers   = as.handlers; }
 
         return me;
     }
@@ -243,34 +247,11 @@ function onReady(Iface, Dom, Observable) {
     };
     
 
-    //
-    // tag(nm, attributes, subelements, eventHandlers)
-    //
-
-    // Create an object with tag name 'nm', attributes object 'as', an array of 
-    // subelements 'xs', and an object of event handlers 'es'.
-    function tag_deprecated(nm, as, xs, es) {
-        if (typeof as === 'string' || as && as.constructor === Array) {
-            es = xs;
-            xs = as;
-            as = undefined;
-        }
-
-        return tag({
-            name: nm,
-            attributes: as,
-            style: as && as.style,
-            contents: xs,
-            handlers: es
-        });
-    }
-
     Yoink.define({
         createElement: createElement,
         mixin:         mixin,
         cascadeStyles: cascadeStyles,
-        tag:           tag_deprecated,
-        tag1:          tag
+        tag:           tag
     });
     
 }

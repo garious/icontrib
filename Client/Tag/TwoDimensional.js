@@ -9,7 +9,7 @@ function onReady(Tag) {
     var twoDimensionalId = Yoink.baseUrl + '/TwoDimensional.js';
     
     // TwoDimensional instance for Tag objects
-    Tag.tag1.interfaces[twoDimensionalId] = {
+    Tag.tag.interfaces[twoDimensionalId] = {
 
         setPosition: function (me, pos) {
 

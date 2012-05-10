@@ -28,7 +28,11 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
             var as = me.attributes;
             var inputs = me.inputs;
 
-            var e = Tag.tag('div', {style: {width: as.width + 'px', height: as.height + 'px'}});
+            var e = Tag.tag({
+                name: 'div',
+                style: {width: as.width + 'px', height: as.height + 'px'}
+            });
+
             var methods = Iface.getInterface(e, ToDom.toDomId);
             var div = methods.toDom(e);
 
@@ -121,7 +125,11 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
             }
         }
 
-        return Tag.tag('div', {style: {width: width + 'px', height: height + 'px', display: 'inline-block'}}, [canvas]);
+        return Tag.tag({
+            name: 'div',
+            style: {width: width + 'px', height: height + 'px', display: 'inline-block'},
+            contents: [canvas]
+        });
         
     }
 

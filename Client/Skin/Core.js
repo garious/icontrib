@@ -25,7 +25,13 @@ function onReady(Tag, Colors) {
             mouseout:  function(evt) { evt.target.style.textDecoration = 'none'; }
         };
 
-        return Tag.tag('a', {style: sty, href: as.url}, [as.text], handlers);
+        return Tag.tag({
+            name: 'a',
+            style: sty,
+            attributes: {href: as.url},
+            contents: [as.text],
+            handlers: handlers
+        });
     }
 
     function image(as) {
@@ -36,7 +42,7 @@ function onReady(Tag, Colors) {
             borderRadius: as.borderRadius && as.borderRadius + 'px'
         };
 
-        return Tag.tag('img', {style: sty, src: as.url, alt: as.text}, null, {click: as.onClick});
+        return Tag.tag({name: 'img', style: sty, attributes: {src: as.url, alt: as.text}, handlers: {click: as.onClick}});
     }
 
     function input(as) {
@@ -59,8 +65,7 @@ function onReady(Tag, Colors) {
             disabled: as.disabled,
             size: as.size,
             autofocus: as.autofocus,
-            placeholder: as.placeholder || '',
-            style: sty
+            placeholder: as.placeholder || ''
         };
 
         // Special handling for 'value' attribute, which will awkwardly write the text "undefined".
@@ -70,7 +75,7 @@ function onReady(Tag, Colors) {
 
         var handlers = {keyup: as.onKeyUp, change: as.onChange};
 
-        return Tag.tag('input', attrs, null, handlers);
+        return Tag.tag({name: 'input', attributes: attrs, style: sty, handlers: handlers});
     }
 
     function button(as) {
@@ -83,8 +88,9 @@ function onReady(Tag, Colors) {
             click: as.onClick
         };
 
-        return Tag.tag('a', {
-            href: as.href || '#', 
+        return Tag.tag({
+            name: 'a',
+            attributes: {href: as.href || '#'},
             style: {
                 font: font, 
                 width:  as.width ? as.width + 'px' : undefined,
@@ -94,8 +100,10 @@ function onReady(Tag, Colors) {
                 color: '#fff', 
                 padding: '5px', 
                 borderRadius: '2px'
-            }
-        }, as.text, handlers);
+            },
+            contents: as.text,
+            handlers: handlers
+        });
     }
 
     function box(as) {
@@ -103,7 +111,8 @@ function onReady(Tag, Colors) {
         var e = as.contents;
 
         var padding = 15;
-        return Tag.tag('div', {
+        return Tag.tag({
+            name: 'div',
             style: {
                 'float': 'left',
                 border: '2px solid #cfcfcf',
@@ -113,9 +122,9 @@ function onReady(Tag, Colors) {
                 width:  as.width && (as.width - 2 * padding - 4) + 'px',
                 height: as.height && (as.height - 2 * padding - 4) + 'px',
                 padding: padding + 'px'
-            }
-        }, [e], {
-            keyup: as.onKeyUp
+            },
+            contents: [e],
+            handlers: {keyup: as.onKeyUp}
         });
     }
 
@@ -132,7 +141,8 @@ function onReady(Tag, Colors) {
             listItems.push(as.menuItems[i]);
         }
 
-        return Tag.tag('div', {
+        return Tag.tag({
+            name: 'div',
             style: {
                 visibility: as.visibility,
                 border: '1px solid',
@@ -144,8 +154,9 @@ function onReady(Tag, Colors) {
                 right: '0px',
                 backgroundColor: '#eee',
                 zIndex: 1
-            }
-        }, listItems);
+            },
+            contents: listItems
+        });
     }
 
     function mkRedirect(url) {
@@ -156,13 +167,16 @@ function onReady(Tag, Colors) {
 
     function menuItem(as) {
         var onSelect = typeof as.onSelect === 'string' ? mkRedirect(as.onSelect) : as.onSelect;
-        var div = Tag.tag('div', {
+        var div = Tag.tag({
+            name: 'div',
             style: {
                 width: '100%',
                 padding: '10px'
-            }
-        }, [as.contents], {click: onSelect});
-        return Tag.tag('a', {href: '#', style: {textDecoration: 'none'}}, [div]);
+            },
+            contents: [as.contents],
+            handlers: {click: onSelect}
+        });
+        return Tag.tag({name: 'a', attributes: {href: '#'}, style: {textDecoration: 'none'}, contents: [div]});
     }
 
     // Create the style attribute for HTML header elements
@@ -195,21 +209,25 @@ function onReady(Tag, Colors) {
                 sty.color = as.color !== undefined ? as.color : sty.color;
             }
 
-            return Tag.tag('h' + n, {style: sty}, s);
+            return Tag.tag({name: 'h' + n, style: sty, contents: s});
         }
 
         return header;
     }
 
     function label(s) {
-        return Tag.tag('label', {style: {font: font}}, s);
+        return Tag.tag({name: 'label', style: {font: font}, contents: s});
     }
 
     function p(as) {
         if (typeof as === 'string') {
             as = {text: as};
         }
-        return Tag.tag('p', {style: {font: font, margin: '0px', width: as.width && as.width + 'px'}}, as.text);
+        return Tag.tag({
+            name: 'p',
+            style: {font: font, margin: '0px', width: as.width && as.width + 'px'},
+            contents: as.text
+        });
     }
 
     function hr(as) {
@@ -227,7 +245,7 @@ function onReady(Tag, Colors) {
             backgroundColor: as.color
         };
 
-        return Tag.tag('hr', {style: sty, noshade: true, size: 1});
+        return Tag.tag({name: 'hr', style: sty, attributes: {noshade: true, size: 1}});
     }
 
     Yoink.define({

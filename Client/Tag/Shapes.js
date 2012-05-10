@@ -11,7 +11,8 @@ function onReady(Tag) {
     // Draw a circle using CSS
     function circle(as) {
         var r = as.radius;
-        return Tag.tag('div', {
+        return Tag.tag({
+            name: 'div',
             style: {
                 left: as.left,
                 right: as.right,

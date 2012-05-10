@@ -30,9 +30,16 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
 
 
             var cols = Layout.hug([
-                Tag.tag('div', {style: {width: '18px', height: '18px', backgroundColor: colors[j % colors.length]}}),
+                Tag.tag({
+                    name: 'div',
+                    style: {width: '18px', height: '18px', backgroundColor: colors[j % colors.length]}
+                }),
                 Layout.pillow(15, 0),
-                Tag.tag('div', {style: {width: '55px', height: pct.height}}, [pct]),
+                Tag.tag({
+                    name: 'div',
+                    style: {width: '55px', height: pct.height},
+                    contents: [pct]
+                }),
                 Core.hyperlink({url: 'Charity?id=' + x.cid, text: x.name})
             ]);
             rows.push(cols);
@@ -64,15 +71,23 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
                 var row = Layout.spoon([
                     Core.hr({width: 570}),
                     Layout.pillow(0, 20),
-                    Tag.tag('div', {style: {width: '100%'}}, [
-                        Tag.tag('div', {style: {'float': 'right'}}, [alignButton({id: fund.label})]),
-                        Core.h4(fund.name),
-                        Layout.hug([
-                            Chart.pieSnapshot({distribution: xs, colors: colors}),
-                            Layout.pillow(20, 0),
-                            fundContents(xs, total, colors)
-                        ])
-                    ])
+                    Tag.tag({
+                        name: 'div',
+                        style: {width: '100%'},
+                        contents: [
+                            Tag.tag({
+                                 name: 'div',
+                                 style: {'float': 'right'},
+                                 contents: [alignButton({id: fund.label})]
+                            }),
+                            Core.h4(fund.name),
+                            Layout.hug([
+                                Chart.pieSnapshot({distribution: xs, colors: colors}),
+                                Layout.pillow(20, 0),
+                                fundContents(xs, total, colors)
+                            ])
+                        ]
+                    })
                 ]);
 
                 rows.push(row);
@@ -93,13 +108,17 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
 
             var colors = Colors.dashboardColors;
 
-            var row = Tag.tag('div', {style: {width: '100%'}}, [
-               Layout.hug([
-                   fundContents(dist, total, colors),
-                   Layout.pillow(20, 0),
-                   Chart.pieSnapshot({distribution: dist, colors: colors, height: 200})
-               ])
-            ]);
+            var row = Tag.tag({
+                name: 'div',
+                style: {width: '100%'},
+                contents: [
+                    Layout.hug([
+                        fundContents(dist, total, colors),
+                        Layout.pillow(20, 0),
+                        Chart.pieSnapshot({distribution: dist, colors: colors, height: 200})
+                    ])
+                ]
+            });
 
             return row;
         }
@@ -116,7 +135,11 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
 
         return Layout.spoon([
             Layout.hug([
-                Tag.tag('img', {style: {width: '90px', height: '90px'}, src: user.imageUrl, alt: name}),
+                Tag.tag({
+                    name: 'img',
+                    style: {width: '90px', height: '90px'},
+                    attributes: {src: user.imageUrl, alt: name}
+                }),
 	        userInfo
             ]),
             Layout.pillow(0, 10),
@@ -140,7 +163,11 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
 
         return Layout.spoon([
             Layout.hug([
-                Tag.tag('img', {style: {width: '90px', height: '90px'}, src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}),
+                Tag.tag({
+                    name: 'img',
+                    style: {width: '90px', height: '90px'},
+                    attributes: {src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}
+                }),
 	        userInfo
             ]),
             Layout.pillow(0, 10),
@@ -166,7 +193,11 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
             listItems.push( Layout.pillow(0, 10) );
 
             var e = Layout.hug([
-                Tag.tag('img', {src: x.imageUrl, style: {width: '50px', height: '50px'}}),
+                Tag.tag({
+                    name: 'img',
+                    attributes: {src: x.imageUrl},
+                    style: {width: '50px', height: '50px'}
+                }),
                 Layout.pillow(20, 0),
                 Core.hyperlink({url: '/Charity?id=' + x.cid, text: x.name})
             ]);

@@ -62,7 +62,7 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Sl
 
         var rowStyle = {width: '100%', borderRadius: '10px', border: rowBorder, padding: '5px'};
         var rowChildren = [];
-        var row = Tag.tag('div', {style: rowStyle}, rowChildren, {mouseover: onMouseOver, mouseout: onMouseOut});
+        var row = Tag.tag({name: 'div', style: rowStyle, contents: rowChildren, handlers: {mouseover: onMouseOver, mouseout: onMouseOut}});
 
         function onDeleteClicked(evt) {
             evt.preventDefault();
@@ -78,8 +78,8 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Sl
    
         var percentage = Observable.thunk([obs], function(n){return Math.round(n * 10) / 10 + '%';});
 
-        var deleteImg = Tag.tag('img', {src: 'Delete.png', alt: 'delete', style: {padding: '5px', visibility: deleteObs, borderWidth: '0px'}});
-        var deleteLink = Tag.tag('a', {href: '#'}, [deleteImg], {click: onDeleteClicked});
+        var deleteImg = Tag.tag({name: 'img', attributes: {src: 'Delete.png', alt: 'delete'}, style: {padding: '5px', visibility: deleteObs, borderWidth: '0px'}});
+        var deleteLink = Tag.tag({name: 'a', attributes: {href: '#'}, contents: [deleteImg], handlers: {click: onDeleteClicked}});
 
         var rangeStyle = {
             WebkitAppearance: 'none',
@@ -105,7 +105,7 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Sl
             deleteLink
         ]);
 
-        var rightCol = Tag.tag('div', {style: {'float': 'right'}}, [cols]);
+        var rightCol = Tag.tag({name: 'div', style: {'float': 'right'}, contents: [cols]});
 
         rowChildren.push(rightCol);
         return row;
@@ -151,7 +151,7 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Sl
 
         var colors = Colors.dashboardColors;
         var pie = Chart.pie({distribution: user.distribution, height: 220, padding: 15, colors: colors}, inputs);
-        var pieTin = Tag.tag('div', {style: {margin: 'auto 0px', width: '100%', textAlign: 'center'}}, [pie]);
+        var pieTin = Tag.tag({name: 'div', style: {margin: 'auto 0px', width: '100%', textAlign: 'center'}, contents: [pie]});
 
         if (user.distribution.length > 0) {
             rows.push( pieTin );

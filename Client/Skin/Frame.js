@@ -105,35 +105,45 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
 
             var tabContents = [
                 as.thumbnail,
-                Tag.tag('div', {
-                    style: {
-                        'float': 'right',
-                        padding: '15px 5px'
-                    }
-                }, [
-                    logoutButton
-                ])
+                Tag.tag({
+                    name: 'div',
+                    style: {'float': 'right', padding: '15px 5px'},
+                    contents: [logoutButton]
+                })
             ];
 
-            var tab = Tag.tag('div', {style: tabStyle}, tabContents);
+            var tab = Tag.tag({name: 'div', style: tabStyle, contents: tabContents});
 
-            return Tag.tag('div', {style: {position: 'relative'}}, [tab, menu], {mouseover: onMouseOver, mouseout: onMouseOut});
+            return Tag.tag({
+                name: 'div',
+                style: {position: 'relative'},
+                contents: [tab, menu],
+                handlers: {mouseover: onMouseOver, mouseout: onMouseOut}
+            });
         }
     }
 
     function nav(as) {
         as = as || {};
 
-        var logo = Tag.tag('a', {href: '/', style: {position: 'absolute'}}, [
-            Core.image({url: Yoink.baseUrl + '/logo.png', text: 'IContrib Home'})
-        ]);
+        var logo = Tag.tag({
+            name: 'a',
+            attributes: {href: '/'},
+            style: {position: 'absolute'},
+            contents: [
+                Core.image({url: Yoink.baseUrl + '/logo.png', text: 'IContrib Home'})
+            ]
+        });
 
-        return Tag.tag('div', [
-            Layout.pillow(0, 20),
-            logo,
-            loginWidget(as),
-            Core.hr({width: 960, height: 4, color: Colors.green})
-        ]);
+        return Tag.tag({
+            name: 'div',
+            contents: [
+                Layout.pillow(0, 20),
+                logo,
+                loginWidget(as),
+                Core.hr({width: 960, height: 4, color: Colors.green})
+            ]
+        });
     }
 
     //
@@ -179,23 +189,30 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
                 ])
             ]);
 
-            var thumbnail = Tag.tag('a', {href: '/Me', style: {textDecoration: 'none'}}, [
-                thumbContents
-            ]);
+            var thumbnail = Tag.tag({
+                name: 'a',
+                attributes: {href: '/Me'},
+                style: {textDecoration: 'none'},
+                contents: [thumbContents]
+            });
 
             as.thumbnail = thumbnail;
         }
 
         var navbar = nav({thumbnail: thumbnail});
-        var body = Tag.tag('div', [contents]);
+        var body = Tag.tag({name: 'div', contents: [contents]});
 
-        var node = Tag.tag('div', {style: {margin: 'auto', width: '960px'}}, [
-            Layout.spoon([
-                navbar, 
-                Layout.pillow(50), 
-                body
-            ])
-        ]);
+        var node = Tag.tag({
+            name: 'div',
+            style: {margin: 'auto', width: '960px'},
+            contents: [
+                Layout.spoon([
+                    navbar, 
+                    Layout.pillow(50), 
+                    body
+                ])
+            ]
+        });
 
         return webpage(node);
     }
@@ -205,15 +222,20 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
             xs = as;
             as = {};
         }
-        as.style = as.style || {};
-        as.style.bottom = '0px';
-        as.style.width = '100%';
-        as.style.textAlign = 'center';
 
-        return Tag.tag('div', as, [
-            Core.hr(),
-            Tag.tag('div', {style: {padding: '20px'}}, xs)
-        ]); 
+        return Tag.tag({
+            name: 'div',
+            attributes: as,
+            style: {
+                bottom: '0px',
+                width: '100%',
+                textAlign: 'center'
+            },
+            contents: [
+                Core.hr(),
+                Tag.tag({name: 'div', style: {padding: '20px'}, contents: xs})
+            ]
+        }); 
     }
 
     function userInfo() {

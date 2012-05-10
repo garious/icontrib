@@ -16,13 +16,22 @@ function onReady(Auth, Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colo
         return;
     }
 
-    var logo = Tag.tag('a', {href: '/', tabindex: -1, style: {width: '129px', height: '70px'}}, [
-        Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
-    ]);
+    var logo = Tag.tag({
+        name: 'a',
+        attributes: {href: '/', tabindex: -1},
+        style: {width: '129px', height: '70px'},
+        contents: [
+            Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
+        ]
+    });
 
     var hidden = Observable.observe('hidden');
 
-    var badLogin = Tag.tag('span', {style: {visibility: hidden, color: Colors.red}}, 'bad username or password');
+    var badLogin = Tag.tag({
+        name: 'span',
+        style: {visibility: hidden, color: Colors.red},
+        contents: 'bad username or password'
+    });
 
     var formValues = {
          ein: '',
@@ -69,7 +78,7 @@ function onReady(Auth, Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colo
         orgPayPal,
         Layout.pillow(0, 10),
         Layout.hug([
-            Tag.tag('input', {type: 'checkbox', style: {marginTop: '5px'}}),
+            Tag.tag({name: 'input', attributes: {type: 'checkbox'}, style: {marginTop: '5px'}}),
             Layout.pillow(5, 0),
             Core.p('I agree to the'),
             Layout.pillow(5, 0),
@@ -84,13 +93,17 @@ function onReady(Auth, Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colo
         onKeyUp: onKeyUp
     });
 
-    var node = Tag.tag('div', {style: {margin: 'auto', width: '355px', textAlign: 'center'}}, [
-        Tag.tag('br'),
-        logo,
-        Tag.tag('br'),
-        Tag.tag('br'),
-        box
-    ]);
+    var node = Tag.tag({
+        name: 'div',
+        style: {margin: 'auto', width: '355px', textAlign: 'center'},
+        contents: [
+            Tag.tag('br'),
+            logo,
+            Tag.tag('br'),
+            Tag.tag('br'),
+            box
+        ]
+    });
 
     Yoink.define( Frame.webpage(node) );
 }

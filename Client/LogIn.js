@@ -11,13 +11,22 @@ var deps = [
 
 function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
 
-    var logo = Tag.tag('a', {href: '/', tabindex: -1, style: {width: '129px', height: '70px'}}, [
-        Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
-    ]);
+    var logo = Tag.tag({
+        name: 'a',
+        attributes: {href: '/', tabindex: -1},
+        style: {width: '129px', height: '70px'},
+        contents: [
+            Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
+        ]
+    });
 
     var hidden = Observable.observe('hidden');
 
-    var badLogin = Tag.tag('span', {style: {visibility: hidden, color: Colors.red}}, 'bad username or password');
+    var badLogin = Tag.tag({
+        name: 'span',
+        style: {visibility: hidden, color: Colors.red},
+        contents: 'bad username or password'
+    });
 
     var formValues = {};
 
@@ -62,13 +71,17 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
         onKeyUp: onKeyUp
     });
 
-    var node = Tag.tag('div', {style: {margin: 'auto', width: '355px', textAlign: 'center'}}, [
-        Tag.tag('br'),
-        logo,
-        Tag.tag('br'),
-        Tag.tag('br'),
-        box
-    ]);
+    var node = Tag.tag({
+        name: 'div',
+        style: {margin: 'auto', width: '355px', textAlign: 'center'},
+        contents: [
+            Tag.tag('br'),
+            logo,
+            Tag.tag('br'),
+            Tag.tag('br'),
+            box
+        ]
+    });
 
     Yoink.define( Frame.webpage(node) );
 }

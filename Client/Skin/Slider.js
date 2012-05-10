@@ -24,7 +24,7 @@ function onReady(Observable, Tag, Layout, Shapes, Colors) {
            backgroundColor: as.color
         };
 
-        return Tag.tag('hr', {style: sty, noshade: true, size: 1});
+        return Tag.tag({name: 'hr', style: sty, attributes: {noshade: true, size: 1}});
     }
 
     // Get the X coordinate of an element, relative to the page.
@@ -110,7 +110,13 @@ function onReady(Observable, Tag, Layout, Shapes, Colors) {
         var circle = Shapes.circle({left: leftWidth, radius: radius, color: as.color, 'top': as.marginTop + 'px'});
 
         var handlers = {mousedown: onMouseDown, mousemove: onMouseMove, mouseup: onMouseUp, mouseout: onMouseUp};
-        return Tag.tag('div', {'data-slider': true, style: {width: width + 'px'}}, [lines, circle], handlers);
+        return Tag.tag({
+            name: 'div',
+            attributes: {'data-slider': true},
+            style: {width: width + 'px'},
+            contents: [lines, circle],
+            handlers: handlers
+        });
     }
 
     Yoink.define({

@@ -26,7 +26,7 @@ function onReady(Tag, Iface, Observable, Dim) {
         // Chrome won't render an object that is 0 pixels high or wide
         h = h || 1;
         w = w || 1;
-        return Tag.tag('div', {style: {width: w + 'px', height: h + 'px'}});
+        return Tag.tag({name: 'div', style: {width: w + 'px', height: h + 'px'}});
     }
     
     // Concatenate elements
@@ -39,7 +39,7 @@ function onReady(Tag, Iface, Observable, Dim) {
         for (var i = 0; i < xs.length; i += 1) {
             setPos(xs[i]);
         }
-        return Tag.tag('div', undefined, ys);
+        return Tag.tag({name: 'div', contents: ys});
     }
     
     // Set the horizontal position of a 2D element
