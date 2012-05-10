@@ -91,7 +91,12 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Sl
         };
 
         // At the time of this writing, this is only expected to work in Chrome, Safari, and Opera.
-        var slider = Tag.tag('input', {type: 'range', value: obs, min: 1, max: 99, style: rangeStyle}, null, {change: onRangeChange});
+        var slider = Tag.tag({
+            name: 'input',
+            attributes: {type: 'range', value: obs, min: 1, max: 99},
+            style: rangeStyle,
+            handlers: {change: onRangeChange}
+        });
 
         //This might work in more browsers, but is fairly broken.
         //var slider = Slider.slider({value: obs, width: 200, height: 4, color: color, marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, onChange: onRangeChange(x)}),

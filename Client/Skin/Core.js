@@ -27,7 +27,7 @@ function onReady(Tag, Colors) {
 
         return Tag.tag({
             name: 'a',
-            style: sty,
+            style: as.style ? Tag.mixin(sty, as.style) : sty,
             attributes: {href: as.url},
             contents: [as.text],
             handlers: handlers
@@ -42,7 +42,12 @@ function onReady(Tag, Colors) {
             borderRadius: as.borderRadius && as.borderRadius + 'px'
         };
 
-        return Tag.tag({name: 'img', style: sty, attributes: {src: as.url, alt: as.text}, handlers: {click: as.onClick}});
+        return Tag.tag({
+            name: 'img',
+            style: as.style ? Tag.mixin(sty, as.style) : sty,
+            attributes: {src: as.url, alt: as.text},
+            handlers: {click: as.onClick}
+        });
     }
 
     function input(as) {
@@ -75,7 +80,12 @@ function onReady(Tag, Colors) {
 
         var handlers = {keyup: as.onKeyUp, change: as.onChange};
 
-        return Tag.tag({name: 'input', attributes: attrs, style: sty, handlers: handlers});
+        return Tag.tag({
+            name: 'input',
+            attributes: attrs,
+            style: as.style ? Tag.mixin(sty, as.style) : sty,
+            handlers: handlers
+        });
     }
 
     function button(as) {
@@ -88,19 +98,21 @@ function onReady(Tag, Colors) {
             click: as.onClick
         };
 
+        var sty = {
+            font: font, 
+            width:  as.width ? as.width + 'px' : undefined,
+            textDecoration: 'none', 
+            textAlign: 'center', 
+            backgroundColor: color, 
+            color: '#fff', 
+            padding: '5px', 
+            borderRadius: '2px'
+        };
+
         return Tag.tag({
             name: 'a',
             attributes: {href: as.href || '#'},
-            style: {
-                font: font, 
-                width:  as.width ? as.width + 'px' : undefined,
-                textDecoration: 'none', 
-                textAlign: 'center', 
-                backgroundColor: color, 
-                color: '#fff', 
-                padding: '5px', 
-                borderRadius: '2px'
-            },
+            style: as.style ? Tag.mixin(sty, as.style) : sty,
             contents: as.text,
             handlers: handlers
         });
@@ -108,21 +120,23 @@ function onReady(Tag, Colors) {
 
     function box(as) {
         var shadow = '0px 0px 5px 2px #ddd';
+        var padding = 15;
         var e = as.contents;
 
-        var padding = 15;
+        var sty = {
+            'float': 'left',
+            border: '2px solid #cfcfcf',
+            shadow: shadow,
+            MozBoxShadow: shadow,
+            WebkitBoxShadow: shadow,
+            width:  as.width && (as.width - 2 * padding - 4) + 'px',
+            height: as.height && (as.height - 2 * padding - 4) + 'px',
+            padding: padding + 'px'
+        };
+
         return Tag.tag({
             name: 'div',
-            style: {
-                'float': 'left',
-                border: '2px solid #cfcfcf',
-                shadow: shadow,
-                MozBoxShadow: shadow,
-                WebkitBoxShadow: shadow,
-                width:  as.width && (as.width - 2 * padding - 4) + 'px',
-                height: as.height && (as.height - 2 * padding - 4) + 'px',
-                padding: padding + 'px'
-            },
+            style: as.style ? Tag.mixin(sty, as.style) : sty,
             contents: [e],
             handlers: {keyup: as.onKeyUp}
         });
@@ -141,20 +155,22 @@ function onReady(Tag, Colors) {
             listItems.push(as.menuItems[i]);
         }
 
+        var sty = {
+            visibility: as.visibility,
+            border: '1px solid',
+            borderColor: Colors.lightColor,
+            borderRadius: '0px 0px 5px 5px',
+            width:  as.width + 'px',
+            position: 'absolute',
+            top: as.top + 'px',
+            right: '0px',
+            backgroundColor: '#eee',
+            zIndex: 1
+        };
+
         return Tag.tag({
             name: 'div',
-            style: {
-                visibility: as.visibility,
-                border: '1px solid',
-                borderColor: Colors.lightColor,
-                borderRadius: '0px 0px 5px 5px',
-                width:  as.width + 'px',
-                position: 'absolute',
-                top: as.top + 'px',
-                right: '0px',
-                backgroundColor: '#eee',
-                zIndex: 1
-            },
+            style: as.style ? Tag.mixin(sty, as.style) : sty,
             contents: listItems
         });
     }
@@ -167,12 +183,15 @@ function onReady(Tag, Colors) {
 
     function menuItem(as) {
         var onSelect = typeof as.onSelect === 'string' ? mkRedirect(as.onSelect) : as.onSelect;
+
+        var sty = {
+            width: '100%',
+            padding: '10px'
+        };
+
         var div = Tag.tag({
             name: 'div',
-            style: {
-                width: '100%',
-                padding: '10px'
-            },
+            style: as.style ? Tag.mixin(sty, as.style) : sty,
             contents: [as.contents],
             handlers: {click: onSelect}
         });
@@ -209,7 +228,11 @@ function onReady(Tag, Colors) {
                 sty.color = as.color !== undefined ? as.color : sty.color;
             }
 
-            return Tag.tag({name: 'h' + n, style: sty, contents: s});
+            return Tag.tag({
+                name: 'h' + n,
+                style: as.style ? Tag.mixin(sty, as.style) : sty,
+                contents: s
+            });
         }
 
         return header;
@@ -223,9 +246,12 @@ function onReady(Tag, Colors) {
         if (typeof as === 'string') {
             as = {text: as};
         }
+
+        var sty = {font: font, margin: '0px', width: as.width && as.width + 'px'};
+
         return Tag.tag({
             name: 'p',
-            style: {font: font, margin: '0px', width: as.width && as.width + 'px'},
+            style: as.style ? Tag.mixin(sty, as.style) : sty,
             contents: as.text
         });
     }
@@ -245,7 +271,11 @@ function onReady(Tag, Colors) {
             backgroundColor: as.color
         };
 
-        return Tag.tag({name: 'hr', style: sty, attributes: {noshade: true, size: 1}});
+        return Tag.tag({
+            name: 'hr',
+            style: as.style ? Tag.mixin(sty, as.style) : sty,
+            attributes: {noshade: true, size: 1}
+        });
     }
 
     Yoink.define({
