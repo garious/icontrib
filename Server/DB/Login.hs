@@ -15,7 +15,7 @@ import Data.Login
 import Data.Acid
 
 toIdentity :: String -> Identity
-toIdentity str = Identity $ toBL str
+toIdentity str = Identity $ str
 
 toToken :: String -> Token
 toToken str = Token $ toBL str
@@ -35,7 +35,7 @@ listIdentities db = query db ListIdentitiesQ
 addIdentity :: (MonadError String m, MonadIO m) => Database -> Identity -> Password -> m ()
 addIdentity db uid@(Identity uidstr) pwd = do
    salt <- liftIO $ newSalt
-   when (BL.null uidstr) (badUsername)
+   when (null uidstr) (badUsername)
    when (BL.null pwd) (badPassword)
    throwLeft $ update db (AddIdentityU uid (PasswordHash (hashPassword salt pwd) salt))
 

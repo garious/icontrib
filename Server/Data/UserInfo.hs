@@ -3,7 +3,6 @@ module Data.UserInfo where
 
 import Data.Data                             ( Typeable, Data )
 import Data.Login
-import qualified Data.ByteString.Lazy        as BL
 import Data.IxSet
 import Data.SafeCopy
 import Data.Distribution
@@ -14,7 +13,7 @@ data UserInfo = UserInfo { owner            :: Identity
                          , firstName        :: String
                          , lastName         :: String
                          , phone            :: String
-                         , email            :: BL.ByteString
+                         , email            :: String
                          , imageUrl         :: String
                          , centsDonated     :: Int
                          , alignedDonated   :: Int

@@ -14,6 +14,7 @@ import Data.Acid
 import SiteError
 import Data.Login
 import Data.DB
+
 replace :: MonadState DB m => (LoginDB -> m LoginDB) -> m ()
 replace ff = do
     db <- get
@@ -29,7 +30,7 @@ use ff = do
 addIdentityU :: Identity -> PasswordHash -> Update DB (Either String ())
 addIdentityU uid@(Identity email) phash = runErrorT $ replace $ \ db -> do
     let notExist mm = mm `nothingOr` alreadyExists
-    notExist $ IxSet.getOne $ db @* [uid]
+    notExist $ IxSet.getOne $ db @* [upcase uid]
     lift $ userInfoU $ U.empty { U.owner = uid, U.email = email }
     return $ IxSet.insert (Login uid phash []) db
 
@@ -43,17 +44,17 @@ listIdentitiesQ = use $ \ db -> do
 
 addIdentityTokenU :: Identity -> Token -> Update DB ()
 addIdentityTokenU uid tok = runErrorT_ $ replace $ \ db -> do
-    ll@(Login _ phash tts) <- (IxSet.getOne $ db @* [uid]) `justOr` doesntExist 
+    ll@(Login _ phash tts) <- (IxSet.getOne $ db @* [upcase uid]) `justOr` doesntExist 
     return $ IxSet.insert (Login uid phash (tok:tts)) $ IxSet.delete ll db
 
 clearIdentityTokensU :: Identity -> Update DB ()
 clearIdentityTokensU uid = runErrorT_ $ replace $ \ db -> do
-    ll@(Login _ phash _) <- (IxSet.getOne $ db @* [uid]) `justOr` doesntExist 
+    ll@(Login _ phash _) <- (IxSet.getOne $ db @* [upcase uid]) `justOr` doesntExist 
     return $ IxSet.insert (Login uid phash []) $ IxSet.delete ll db
 
 checkPasswordQ :: Identity -> Password -> Query DB (Either String ())
 checkPasswordQ uid pwd = runErrorT $ use $ \ db -> do
-    (Login _ (PasswordHash phash salt) _) <- (IxSet.getOne $ db @* [uid]) `justOr` doesntExist 
+    (Login _ (PasswordHash phash salt) _) <- (IxSet.getOne $ db @* [upcase uid]) `justOr` doesntExist 
     if phash == hashPassword salt pwd then return () else badPassword
 
 hashPassword :: Salt -> Password -> Hash

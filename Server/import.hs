@@ -28,7 +28,7 @@ main = do
         body <- liftIO $ readFile dd
         di <- jsonUpdate U.empty body
         let ident@(L.Identity name) = (U.owner di)
-        (L.addIdentity db ident name) <|> return ()
+        (L.addIdentity db ident (L.toPassword name)) <|> return ()
         U.updateInfo db ident body
     mapM_ errorLeft e1
     putStrLn "done importing donors"

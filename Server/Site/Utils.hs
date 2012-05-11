@@ -7,7 +7,6 @@ import Happstack.Server                      ( lookPairs, path )
 import Happstack.Server.Monads               ( ServerPartT )
 import System.FilePath                       ( takeBaseName )
 import Control.Monad                         ( mzero )
-import qualified Data.ByteString.Lazy.Char8  as BS
 import qualified Log                         as Log
 import Happstack.Server                      ( Response
                                              , ok
@@ -64,11 +63,11 @@ getBody' = do
     Log.debugShow ("body"::String, bd')
     return bd'
 
-basename :: ServerPartT IO BS.ByteString
+basename :: ServerPartT IO String
 basename = path $ \ (pp::String) -> isext ".json" pp
     where
         isext ee pp
-            | (reverse ee) == (take (length ee) $ reverse pp) = return  (BS.pack $ takeBaseName pp)
+            | (reverse ee) == (take (length ee) $ reverse pp) = return  (takeBaseName pp)
             | otherwise = mzero
 
 

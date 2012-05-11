@@ -4,10 +4,11 @@ module Data.Login where
 import Data.Data                             ( Data, Typeable )
 import Data.IxSet
 import Data.SafeCopy
+import Char                                  ( toUpper ) 
 import qualified Data.ByteString.Lazy        as BL
 import qualified Data.ByteString             as BS
 
-newtype Identity  = Identity BL.ByteString
+newtype Identity  = Identity String
                   deriving (Eq, Ord, Show, Data, Typeable)
 newtype Token     = Token BL.ByteString
                   deriving (Eq, Ord, Show, Data, Typeable)
@@ -23,6 +24,12 @@ data PasswordHash = PasswordHash Hash Salt
                   deriving (Eq, Ord, Show, Data, Typeable)
 $(deriveSafeCopy 0 'base ''PasswordHash)
 
+newtype Username = Username String
+            deriving (Eq, Ord, Show, Data, Typeable)
+$(deriveSafeCopy 0 'base ''Username)
+
+upcase :: Identity -> Identity 
+upcase (Identity uu) = Identity $ map toUpper uu
 
 data Login = Login { ident :: Identity
                    , password :: PasswordHash
@@ -31,8 +38,9 @@ data Login = Login { ident :: Identity
                  deriving (Eq, Ord, Show, Data, Typeable)
 $(deriveSafeCopy 0 'base ''Login)
 
+
 instance Indexable Login where
-    empty = ixSet [ ixFun $ \ci -> [ ident ci ]
+    empty = ixSet [ ixFun $ \ci -> [ upcase $ ident ci ]
                   , ixFun $ \ci -> tokens ci
                   ]
 

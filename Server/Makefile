@@ -16,7 +16,7 @@ V = $(TARGET)_$(FLAVOR)
 CRYPTO.Darwin=/usr/local/Cellar/cryptopp/5.6.1/lib
 CRYPTO.Linux=/usr/lib
 CRYPTO=$(CRYPTO.$(UNAME_S))/libcryptopp.a
-all: $V/ship/icontrib $V/ship/import test
+all: $V/ship/icontrib $V/ship/import #test
 
 HS=$(filter-out $(RUN_TESTS),$(wildcard *.hs) $(wildcard */*.hs))
 

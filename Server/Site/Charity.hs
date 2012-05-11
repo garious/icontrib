@@ -6,7 +6,6 @@ import qualified Data.CharityInfo            as C
 import qualified DB.UserInfo                 as U
 import qualified Happstack.Server            as H
 import qualified Site.Login                  as SL
-import qualified Data.ByteString.Lazy.Char8  as BS
 import qualified Data.Popular                as P
 import qualified Log                         as Log
 import qualified Data.IxSet                  as IxSet
@@ -51,5 +50,5 @@ popular :: MonadIO m => DB.Database -> m [P.Popular]
 popular db = (U.popularCharities db) >>= (C.toPopular db)
 
 public :: DB.Database -> H.ServerPartT IO C.CharityInfo
-public db = (basename >>= (failErrorT . C.queryByCID db . C.CharityID . BS.unpack))
+public db = (basename >>= (failErrorT . C.queryByCID db . C.CharityID ))
 
