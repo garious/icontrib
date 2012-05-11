@@ -11,6 +11,6 @@ import Happstack.Server                      ( ServerPart
 
 
 stats :: DB.Database -> ServerPart Response
-stats db = msum [ dir "programDistribution.json" (get  (U.programDistribution db))
+stats db = msum [ dir "community.json" (get  (U.programDistribution db))
                 ]
 

@@ -6,6 +6,7 @@ import Query.CharityInfo
 import Query.Login
 import Query.UserInfo
 import Query.Paypal
+import Query.Stats
 
 
 $(makeAcidic ''DB [ 'addIdentityU, 'checkPasswordQ, 'addIdentityTokenU, 'tokenToIdentityQ, 'listIdentitiesQ, 'clearIdentityTokensU
