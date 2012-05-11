@@ -4,12 +4,12 @@ module Query.UserInfo where
 import Control.Monad.State                   ( get, put, MonadState )
 import Control.Monad.Reader                  ( ask, MonadReader )
 import Data.Function                         ( on )
-import Data.List                             ( sortBy )
+import Data.List                             ( sortBy, groupBy )
 import Data.Generics                         ( listify )
 
 import Data.CharityInfo                      ( CharityID(..) )
 import Data.Login                            ( Identity )
-import Data.Distribution                     ( Distribution, shares )
+import Data.Distribution                     ( Distribution, shares, cid, labels )
 import JSONUtil                              ( jsonUpdate )
 import Data.IxSet                            ( (@*) )
 import qualified Data.IxSet                  as IxSet
@@ -64,5 +64,15 @@ userCharitiesQ :: Query DB ([CharityID])
 userCharitiesQ = use $ \ db -> do 
     let isCharityID (CharityID _) = True
     return $ (listify isCharityID (IxSet.toList db))
+
+programDistributionQ :: Query DB [Distribution]
+programDistributionQ = use $ \ db -> do
+   let 
+        dists :: [Distribution]
+        dists = concatMap distribution $ IxSet.toList db
+        byCid :: [Distribution] -> [[Distribution]]
+        byCid = groupBy ((==) `on` cid) . sortBy (compare `on` cid) 
+        merge dd bb = dd { shares = (shares dd) + (shares bb), labels = [] }
+   return $  map (foldl1 merge) $ byCid $ dists
 
 

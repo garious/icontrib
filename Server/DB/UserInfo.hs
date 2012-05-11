@@ -6,12 +6,16 @@ import Data.List                             ( sortBy, group, sort )
 import Data.Function                         ( on )
 import Data.Login                            ( Identity )
 import Data.CharityInfo                      ( CharityID )
+import Data.Distribution                     ( Distribution )
 import Data.UserInfo
 import Query.DB
 import SiteError
 
 mostInfluential :: (MonadError String m, MonadIO m) => Database -> m Identity
 mostInfluential db = throwLeft $ query db MostInfluentialUserQ
+
+programDistribution :: (MonadIO m) => Database -> m [Distribution]
+programDistribution db = liftIO $ query db ProgramDistributionQ
 
 queryByOwner :: (MonadError String m, MonadIO m) => Database -> Identity -> m UserInfo
 queryByOwner db cid = throwLeft $ query db (UserInfoByOwnerQ cid)

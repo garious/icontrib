@@ -12,6 +12,7 @@ $(makeAcidic ''DB [ 'addIdentityU, 'checkPasswordQ, 'addIdentityTokenU, 'tokenTo
                   , 'deleteCharityByEinU, 'charityInfoU, 'charityByOwnerQ, 'charityByIDQ
                   , 'userInfoU, 'userInfoMergeU, 'userInfoByOwnerQ, 'mostInfluentialUserQ, 'usersQ, 'userCharitiesQ 
                   , 'clearValidatedPaymentU
+                  , 'programDistributionQ 
                   ])
 
 type Database = AcidState DB

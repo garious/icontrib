@@ -31,6 +31,7 @@ import qualified Site.Login as SL
 import SiteError                             ( runErrorT, failErrorT, SiteErrorT )
 import Site.Utils                            ( basename, post, get, getBody' )
 import qualified Site.Charity               as C
+import qualified Site.Stats                 as S
 
 serve :: Either TLSConf Int -> ServerPart Response -> IO ()
 serve (Right pn) part =
@@ -69,6 +70,7 @@ site st = msum [
     , dir "auth"    (authServices st)
     , dir "donor"   (donorServices st)
     , dir "charity" (C.charityServices st)
+    , dir "stats"   (S.stats st)
     , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "http://www.google.com/jsapi"))
     ]
   where
