@@ -7,24 +7,24 @@ import Data.List                             ( sortBy, groupBy )
 
 import Data.Distribution                     ( Distribution, shares, cid, labels )
 import qualified Data.IxSet                  as IxSet
+import qualified Data.Stats as S
 
 import Data.Acid
-import Data.UserInfo
+import qualified Data.UserInfo as U
 import Data.DB
-import Data.Stats(Stats(Stats))
 
 
-use :: MonadReader DB m => (UserInfoDB -> m b) -> m b
+use :: MonadReader DB m => (U.UserInfoDB -> m b) -> m b
 use ff = do
     db <- ask
     ff (userInfos db)
 
 
-programDistributionQ :: Query DB Stats
+programDistributionQ :: Query DB S.Stats
 programDistributionQ = use $ \ db -> do
    let 
-        userDists :: UserInfo -> [Distribution]
-        userDists ui = map (\ dd -> dd { shares = (shares dd) * (fromIntegral $ centsDonated ui) } ) (distribution ui)
+        userDists :: U.UserInfo -> [Distribution]
+        userDists ui = map (\ dd -> dd { shares = (shares dd) * (fromIntegral $ U.centsDonated ui) } ) (U.distribution ui)
         dists :: [Distribution]
         dists = concatMap userDists $ IxSet.toList db
         byCid :: [Distribution] -> [[Distribution]]
@@ -32,5 +32,6 @@ programDistributionQ = use $ \ db -> do
         merge dd bb = dd { shares = (shares dd) + (shares bb), labels = [] }
         merged = map (foldl1 merge) $ byCid $ dists
         total = sum $ map shares merged
-        
-   return $ Stats total $ map (\ dd -> dd { shares = (shares dd) / total } ) merged
+   return ( S.empty { S.centsDonated = total 
+                    , S.distribution = map (\ dd -> dd { shares = (shares dd) / total } ) merged
+                    } )
