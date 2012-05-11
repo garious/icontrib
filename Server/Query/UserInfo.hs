@@ -9,7 +9,7 @@ import Data.Generics                         ( listify )
 
 import Data.CharityInfo                      ( CharityID(..) )
 import Data.Login                            ( Identity )
-import Data.Distribution                     ( Distribution, shares, cid )
+import Data.Distribution                     ( Distribution, shares, cid, labels )
 import JSONUtil                              ( jsonUpdate )
 import Data.IxSet                            ( (@*) )
 import qualified Data.IxSet                  as IxSet
@@ -72,7 +72,7 @@ programDistributionQ = use $ \ db -> do
         dists = concatMap distribution $ IxSet.toList db
         byCid :: [Distribution] -> [[Distribution]]
         byCid = groupBy ((==) `on` cid) . sortBy (compare `on` cid) 
-        merge dd bb = dd { shares = (shares dd) + (shares bb) }
+        merge dd bb = dd { shares = (shares dd) + (shares bb), labels = [] }
    return $  map (foldl1 merge) $ byCid $ dists
 
 
