@@ -44,13 +44,13 @@ listIdentitiesQ = use $ \ db -> do
 
 addIdentityTokenU :: Identity -> Token -> Update DB ()
 addIdentityTokenU uid tok = runErrorT_ $ replace $ \ db -> do
-    ll@(Login _ phash tts) <- (IxSet.getOne $ db @* [upcase uid]) `justOr` doesntExist 
-    return $ IxSet.insert (Login uid phash (tok:tts)) $ IxSet.delete ll db
+    ll@(Login ouid phash tts) <- (IxSet.getOne $ db @* [upcase uid]) `justOr` doesntExist 
+    return $ IxSet.insert (Login ouid phash (tok:tts)) $ IxSet.delete ll db
 
 clearIdentityTokensU :: Identity -> Update DB ()
 clearIdentityTokensU uid = runErrorT_ $ replace $ \ db -> do
-    ll@(Login _ phash _) <- (IxSet.getOne $ db @* [upcase uid]) `justOr` doesntExist 
-    return $ IxSet.insert (Login uid phash []) $ IxSet.delete ll db
+    ll@(Login ouid phash _) <- (IxSet.getOne $ db @* [upcase uid]) `justOr` doesntExist 
+    return $ IxSet.insert (Login ouid phash []) $ IxSet.delete ll db
 
 checkPasswordQ :: Identity -> Password -> Query DB (Either String ())
 checkPasswordQ uid pwd = runErrorT $ use $ \ db -> do

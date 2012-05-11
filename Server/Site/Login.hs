@@ -24,7 +24,8 @@ loginUser db = do
    Log.debugM (show uid)
    let cookie = H.mkCookie "auth" (Url.encode (L.tokenUnpack token))
    lift $ H.addCookies [(H.Session, cookie)]
-   return $ ident
+   identity <- L.tokenToIdentity db token
+   return $ identity
 
 addUser :: DB.Database -> SiteErrorT L.Identity
 addUser db = do 
