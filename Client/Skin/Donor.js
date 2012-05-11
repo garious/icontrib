@@ -96,32 +96,28 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
         }
     }
 
-    function distributionTable1(user) {
-        if (user.funds) {
-            var dist = user.distribution;
-
-            var total = 0;
-            for (var j = 0; j < dist.length; j++) {
-                var d = dist[j];
-                total += d.shares;
-            }
-
-            var colors = Colors.dashboardColors;
-
-            var row = Tag.tag({
-                name: 'div',
-                style: {width: '100%'},
-                contents: [
-                    Layout.hug([
-                        fundContents(dist, total, colors),
-                        Layout.pillow(20, 0),
-                        Chart.pieSnapshot({distribution: dist, colors: colors, height: 200})
-                    ])
-                ]
-            });
-
-            return row;
+    function distributionTable1(dist) {
+        var total = 0;
+        for (var j = 0; j < dist.length; j++) {
+            var d = dist[j];
+            total += d.shares;
         }
+
+        var colors = Colors.dashboardColors;
+
+        var row = Tag.tag({
+            name: 'div',
+            style: {width: '100%'},
+            contents: [
+                Layout.hug([
+                    fundContents(dist, total, colors),
+                    Layout.pillow(20, 0),
+                    Chart.pieSnapshot({distribution: dist, colors: colors, height: 200})
+                ])
+            ]
+        });
+
+        return row;
     }
 
     function profile1(as) {
@@ -143,7 +139,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
 	        userInfo
             ]),
             Layout.pillow(0, 10),
-            distributionTable1(user)
+            distributionTable1(user.distribution)
         ]);
     }
 

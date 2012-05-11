@@ -6,19 +6,17 @@ var deps = [
     '/Skin/Core.js', 
     '/charity/popular.json', 
     '/Skin/Donor.js',
-    '/donor/mostInfluentialUser.json'
+    '/stats/community.json'
 ];
 
-function onReady(Auth, Tag, Layout, Frame, Core, PopularCharities, Donor, MostInfluential) {
-
-    var mostInfluential = Core.box({
-        width: 600,
-        contents: Donor.profile1({user: MostInfluential})
-    });
+function onReady(Auth, Tag, Layout, Frame, Core, PopularCharities, Donor, Community) {
 
     var body = Layout.spoon([
         Layout.hug([
-            mostInfluential,
+            Core.box({
+                width: 600,
+                contents: Donor.profile1({user: Community})
+            }),
             Layout.pillow(20),
             Donor.recommendedFunds({funds: PopularCharities})
         ]),

@@ -15,6 +15,6 @@ data Stats = Stats { centsDonated :: Double
               deriving (Eq, Ord, Show, Data, Typeable)
 
 empty :: Stats
-empty = Stats 0 [] "icontrib.org" "community" "/Skin/logo_thumb.png"
+empty = Stats 0 [] "IContrib.org" "Community" "/Skin/logo_thumb.png"
 
 $(deriveSafeCopy 0 'base ''Stats)
