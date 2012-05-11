@@ -68,11 +68,15 @@ userCharitiesQ = use $ \ db -> do
 programDistributionQ :: Query DB [Distribution]
 programDistributionQ = use $ \ db -> do
    let 
+        userDists :: UserInfo -> [Distribution]
+        userDists ui = map (\ dd -> dd { shares = (shares dd) * (fromIntegral $ centsDonated ui) } ) (distribution ui)
         dists :: [Distribution]
-        dists = concatMap distribution $ IxSet.toList db
+        dists = concatMap userDists $ IxSet.toList db
         byCid :: [Distribution] -> [[Distribution]]
         byCid = groupBy ((==) `on` cid) . sortBy (compare `on` cid) 
         merge dd bb = dd { shares = (shares dd) + (shares bb), labels = [] }
-   return $  map (foldl1 merge) $ byCid $ dists
+        merged = map (foldl1 merge) $ byCid $ dists
+        total = sum $ map shares merged
+   return $ map (\ dd -> dd { shares = (shares dd) / total } ) merged
 
 
