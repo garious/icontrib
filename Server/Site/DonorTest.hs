@@ -26,12 +26,20 @@ readUserInfo ident = get 200 $ "/donor/" ++ ident ++ ".json"
 mostInfluential :: HTTP.BrowserAction (HTTP.HandleStream String) (J.UserIdentity)
 mostInfluential = get 200 "/donor/mostInfluential.json"
 
+mostInfluentialUser :: HTTP.BrowserAction (HTTP.HandleStream String) (U.UserInfo)
+mostInfluentialUser = get 200 "/donor/mostInfluentialUser.json"
+
+checkUser :: HTTP.BrowserAction (HTTP.HandleStream String) (Either String U.UserInfo)
+checkUser = get 200 "/donor/checkUser.json"
+
 main :: IO ()
 main = do
     Log.start
     run getInfoTest
     run updateInfoTest
     run mostInfluentialTest
+    run mostInfluentialUserTest
+    run checkUserTest
 
 user :: J.UserLogin
 user = J.UserLogin "anatoly" "anatoly"
@@ -62,3 +70,16 @@ mostInfluentialTest = liftIO $ HTTP.browse $ do
     --added new user, which should log us in
     assertEqM "addUser"         (addUser user)      (Right "anatoly")
     assertEqM "mostInfluential" mostInfluential     ("anatoly")
+
+mostInfluentialUserTest :: IO ()
+mostInfluentialUserTest = liftIO $ HTTP.browse $ do
+    --added new user, which should log us in
+    assertEqM "addUser"             (addUser user)          (Right "anatoly")
+    assertEqM "mostInfluentialUser" mostInfluentialUser     (ui)
+
+
+checkUserTest :: IO ()
+checkUserTest = liftIO $ HTTP.browse $ do
+    --added new user, which should log us in
+    assertEqM "addUser"   (addUser user)    (Right "anatoly")
+    assertEqM "checkUser" checkUser         (Right ui)

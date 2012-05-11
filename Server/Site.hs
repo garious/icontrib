@@ -86,11 +86,18 @@ authServices st = msum [
 
 donorServices:: DB.Database -> ServerPart Response
 donorServices st = msum [ 
-      dir "update"               (post (runErrorT  $ updateInfo st))
-    , dir "mostInfluential.json" (get  (failErrorT $ U.mostInfluential st))
-    , dir "checkUser.json"       (get  (runErrorT $ checkUserJson st))
+      dir "update"                   (post (runErrorT  $ updateInfo st))
+    , dir "mostInfluential.json"     (get  (failErrorT $ U.mostInfluential st))
+    , dir "mostInfluentialUser.json" (get  (failErrorT $ mostInfluentialUser st))
+    , dir "checkUser.json"           (get  (runErrorT $ checkUserJson st))
     , (get (basename >>= (failErrorT . U.queryByOwner st . L.Identity)))
     ]
+
+mostInfluentialUser :: DB.Database -> SiteErrorT (U.UserInfo)
+mostInfluentialUser st = do
+    uid <- U.mostInfluential st
+    U.queryByOwner st uid
+
 
 checkUserJson :: DB.Database -> SiteErrorT (U.UserInfo)
 checkUserJson st = do
