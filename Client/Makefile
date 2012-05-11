@@ -14,8 +14,7 @@ tree_%:
 	$(MAKE) -C Skin $@
 	$(MAKE) $(patsubst tree_%,%,$@)
 
-JS_WHITELIST:= \
-    js/json2.js \
+JS_WHITELIST:=
 
 JS_FILES:=$(filter-out $(JS_WHITELIST),$(wildcard *.js) $(wildcard */*.js))
 
@@ -27,7 +26,7 @@ $V/%.js.ok: %.js
 	@mkdir -p $(@D)
 	@touch $@
 
-$V/ship/IContrib.js: JsCache.hs $(filter-out Tag/YoinkAdapter.js Tag/Assert.js,$(filter-out test/%.js,$(filter-out %Test.js,$(JS_FILES))))
+$V/ship/IContrib.js: JsCache.hs $(filter-out Tag/YoinkAdapter.js Tag/Assert.js,$(filter-out %Example.js,$(filter-out %Test.js,$(JS_FILES))))
 	@mkdir -p $(@D)
 	runghc JsCache.hs -o $@ $(filter-out $<,$^)
 

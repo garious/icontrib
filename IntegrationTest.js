@@ -62,6 +62,15 @@ var pages = [
     {path: '/LogIn'},
     {path: '/Registration'},
     {path: '/Charity?id=usoa'},
+    {path: '/Charity?id=ljp'},
+    {path: '/Charity?id=unicef'},
+    {path: '/Charity?id=sdfoundation'},
+    {path: '/Charity?id=redcross'},
+    {path: '/Charity?id=gffw'},
+    {path: '/Charity?id=lacc'},
+    {path: '/Donor?id=greg'},
+    {path: '/Donor?id=tom'},
+    {path: '/Donor?id=elisa'},
     {path: '/Me'},
 ];
 
