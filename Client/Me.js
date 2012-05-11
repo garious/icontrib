@@ -1,4 +1,5 @@
 var deps = [
+    '/donor/checkUser.json',
     '/Tag/Interface.js', 
     '/Tag/Tag.js', 
     '/Tag/Layout.js', 
@@ -22,7 +23,7 @@ function removeItem(xs, x) {
     return xs;
 }
 
-function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Slider,*/ Colors, Popular) { 
+function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Slider,*/ Colors, Popular) { 
 
     function fundRow(x, rowsObs, rows, obs, colorObs, colors, dist, inputs, colorAttrs) {
 
@@ -186,18 +187,27 @@ function onReady(Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Sl
         return Layout.spoon(rows.concat(fundingRows));
     }
 
-    var main = Frame.frame(
-        Layout.spoon([
+    var dash;
+    if (Auth.Right) {
+        dash = dashboard({user: Auth.Right});
+    } else {
+        dash = Core.hyperlink({text: 'Please log in to modify your charitable distribution.', url: '/LogIn'});
+    }
+
+    var main = Frame.frame({
+        contents: Layout.spoon([
             Layout.hug([
                 Core.box({
                     width: 600,
-                    contents: dashboard({user: Frame.userInfo()})
+                    contents: dash
                 }),
                 Layout.pillow(20),
                 Donor.recommendedFunds({funds: Popular})
             ]),
             Layout.pillow(20) 
-        ]));
+        ]),
+        auth: Auth
+    });
 
     Yoink.define(main);
 }

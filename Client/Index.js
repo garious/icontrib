@@ -3,6 +3,7 @@ var initialDeps = [
 ];
 
 var deps = [
+    '/donor/checkUser.json',
     '/Tag/Tag.js', 
     '/Tag/Layout.js', 
     '/Skin/Frame.js', 
@@ -13,7 +14,7 @@ var deps = [
 
 function onInitialReady(MostInfluentialId) {
 
-    function onReady(Tag, Layout, Frame, Core, PopularCharities, Donor, MostInfluential) {
+    function onReady(Auth, Tag, Layout, Frame, Core, PopularCharities, Donor, MostInfluential) {
 
         var mostInfluential = Core.box({
             width: 600,
@@ -32,7 +33,7 @@ function onInitialReady(MostInfluentialId) {
             ])
         ]);
 
-        Yoink.define( Frame.frame(body) );
+        Yoink.define( Frame.frame({contents: body, auth: Auth}) );
 
     }
 

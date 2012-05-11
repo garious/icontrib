@@ -1,7 +1,3 @@
-var authDeps = [
-    '/auth/check.json'
-];
-
 var deps = [
     '/Tag/Interface.js', 
     '/Tag/Tag.js', 
@@ -12,7 +8,6 @@ var deps = [
     'Core.js',
     'Colors.js'
 ];
-
 
 function post(path, params, callback) {
     var req = new XMLHttpRequest();
@@ -30,9 +25,7 @@ function post(path, params, callback) {
     req.send(body);
 }
 
-
-function onAuthReady(Auth) { 
-function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, Me) { 
+function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors) { 
 
     function loginWidget(as) {
  
@@ -51,7 +44,7 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
             // necessary for Safari: mobile & desktop
         }
 
-        if (Auth.Left) {
+        if (as.auth.Left) {
             // necessary for Safari: mobile & desktop
             window.addEventListener('unload', invalidateBackCache, false);
 
@@ -124,8 +117,6 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
     }
 
     function nav(as) {
-        as = as || {};
-
         var logo = Tag.tag({
             name: 'a',
             attributes: {href: '/'},
@@ -171,12 +162,13 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
         }
     };
 
-    function frame(contents) {
-        var as = {};
+    function frame(as) {
+        var thumbnail;
 
-        if (Auth.Right) {
-            var userName = Me.firstName && Me.lastName ? (Me.firstName + ' ' + Me.lastName) : Me.email;
-            var img  = Me.imageUrl ? Core.image({width: 50, height: 50, url: Me.imageUrl, text: userName}) : Layout.pillow(1, 50);
+        if (as.auth.Right) {
+            var user = as.auth.Right;
+            var userName = user.firstName && user.lastName ? (user.firstName + ' ' + user.lastName) : user.email;
+            var img  = user.imageUrl ? Core.image({width: 50, height: 50, url: user.imageUrl, text: userName}) : Layout.pillow(1, 50);
             var thumbContents = Layout.hug([
                 img,
                 Layout.pillow(20, 0),
@@ -189,18 +181,16 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
                 ])
             ]);
 
-            var thumbnail = Tag.tag({
+            thumbnail = Tag.tag({
                 name: 'a',
                 attributes: {href: '/Me'},
                 style: {textDecoration: 'none'},
                 contents: [thumbContents]
             });
-
-            as.thumbnail = thumbnail;
         }
 
-        var navbar = nav({thumbnail: thumbnail});
-        var body = Tag.tag({name: 'div', contents: [contents]});
+        var navbar = nav({thumbnail: thumbnail, auth: as.auth});
+        var body = Tag.tag({name: 'div', contents: [as.contents]});
 
         var node = Tag.tag({
             name: 'div',
@@ -238,26 +228,15 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors, M
         }); 
     }
 
-    function userInfo() {
-        return Me;
-    }
-
     Yoink.define({
         nav: nav,
         frame: frame,
         footer: footer,
-        userInfo: userInfo,
         webpage: webpage,
         post: post
     });
 
 }
 
-var donorId = Auth.Left && 'anonymous' || Auth.Right;
-var donorUrl = '/donor/' + donorId + '.json';
-deps.push(donorUrl);
 Yoink.require(deps, onReady);
-}
 
-Yoink.require(authDeps, onAuthReady);
- 

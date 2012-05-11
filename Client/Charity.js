@@ -1,4 +1,5 @@
 var deps = [
+    '/donor/checkUser.json',
     '/Tag/Tag.js', 
     '/Tag/Layout.js', 
     '/Skin/Core.js', 
@@ -6,7 +7,7 @@ var deps = [
     '/charity/' + Yoink.params.id + '.json'
 ];
 
-function onReady(Tag, Layout, Core, Frame, User) {
+function onReady(Auth, Tag, Layout, Core, Frame, Charity) {
     
     function charity(as) {
         as = as || {};
@@ -33,7 +34,10 @@ function onReady(Tag, Layout, Core, Frame, User) {
         ]);
     }
 
-    var main = Frame.frame(charity({user: User}));
+    var main = Frame.frame({
+        contents: charity({user: Charity}),
+        auth: Auth
+    });
 
     Yoink.define(main);
 
