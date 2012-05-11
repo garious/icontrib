@@ -4,6 +4,7 @@ import Control.Monad.IO.Class                ( MonadIO, liftIO )
 import Control.Monad                         ( liftM )
 import qualified Data.Login                  as L
 import qualified DB.UserInfo                 as U
+import qualified Data.UserInfo               as U
 import qualified JsWidget                    as JSW
 import qualified Network.HTTP                as HTTP
 import qualified DB.DB                       as DB
@@ -87,8 +88,14 @@ donorServices:: DB.Database -> ServerPart Response
 donorServices st = msum [ 
       dir "update"               (post (runErrorT  $ updateInfo st))
     , dir "mostInfluential.json" (get  (failErrorT $ U.mostInfluential st))
+    , dir "checkUser.json"       (get  (runErrorT $ checkUserJson st))
     , (get (basename >>= (failErrorT . U.queryByOwner st . L.Identity)))
     ]
+
+checkUserJson :: DB.Database -> SiteErrorT (U.UserInfo)
+checkUserJson st = do
+    uid <- SL.checkUser st
+    U.queryByOwner st uid
 
 updateInfo :: DB.Database -> SiteErrorT ()
 updateInfo st = do
