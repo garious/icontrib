@@ -177,14 +177,21 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
             });
         }
 
-        var fundingRows = [
-            distributionTable(user.distribution, inputs, colors),
-            Layout.pillow(0, 20),
-            Layout.hug([Layout.pillow(20,0), Core.button({href: '#', text: 'Save Changes', loud: true, onClick: saveChanges})]),
-            Layout.pillow(0, 20)
-        ];
+        function cancelChanges() {
+	    window.location.reload(true);
+        }
 
-        return Layout.spoon(rows.concat(fundingRows));
+        rows.push( distributionTable(user.distribution, inputs, colors) );
+
+        var buttons = Layout.hug({width: 100}, [
+            Core.button({href: '#', text: 'Cancel', quiet: true, onClick: cancelChanges}),
+            Layout.pillow(10, 0),
+            Core.button({href: '#', text: 'Save Changes', loud: true, onClick: saveChanges})
+        ]);
+
+        rows.push( buttons );
+
+        return Layout.spoon(rows);
     }
 
     var dash;
