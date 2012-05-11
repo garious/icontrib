@@ -47,7 +47,8 @@ function onReady(Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
             if(data.Left) {
                 hidden.set('visible');
             } else {
-                window.history.back();
+                // Cheap trick to go back a page and ensure it refreshes.
+                location.href = document.referrer + '?date=' + new Date().valueOf();
             }
         });
     }
