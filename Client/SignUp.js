@@ -52,7 +52,8 @@ function onReady(Tag, Layout, Core, Frame, Colors) {
                 if(data.Left) {
                     badLogin.hidden = false;
                 } else {
-                    window.history.back();
+                    // Cheap trick to go back a page and ensure it refreshes.
+                    location.href = document.referrer + '?date=' + new Date().valueOf();
                 }
             });
         }
