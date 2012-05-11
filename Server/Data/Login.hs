@@ -24,10 +24,6 @@ data PasswordHash = PasswordHash Hash Salt
                   deriving (Eq, Ord, Show, Data, Typeable)
 $(deriveSafeCopy 0 'base ''PasswordHash)
 
-newtype Username = Username String
-            deriving (Eq, Ord, Show, Data, Typeable)
-$(deriveSafeCopy 0 'base ''Username)
-
 upcase :: Identity -> Identity 
 upcase (Identity uu) = Identity $ map toUpper uu
 
