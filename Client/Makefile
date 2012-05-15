@@ -5,7 +5,10 @@ V = $(UNAME)_$(FLAVOR)
 JSL_DIR=../jsl/$(UNAME)
 CLOSURE_DIR=../Closure
 
-all: lint $V/ship/WebApp.js
+LINT_DEPS.Darwin=lint
+LINT_DEPS=$(LINT_DEPS.$(UNAME))
+
+all: $(LINT_DEPS) $V/ship/WebApp.js
 
 clean:
 	rm -rf $V

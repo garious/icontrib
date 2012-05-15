@@ -4,7 +4,7 @@ module Data.Login where
 import Data.Data                             ( Data, Typeable )
 import Data.IxSet
 import Data.SafeCopy
-import Char                                  ( toUpper ) 
+import Data.Char                             ( toUpper ) 
 import qualified Data.ByteString.Lazy        as BL
 import qualified Data.ByteString             as BS
 
