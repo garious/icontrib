@@ -8,7 +8,7 @@ var Subprocess = require('child_process');
 var Assert     = require('assert');
 
 // Server configuration
-var serverDir = 'Darwin_Debug/ship';
+var serverPath = process.argv[2];
 var dbDir = 'private/db';
 
 
@@ -31,8 +31,8 @@ function onResponseData (chunk) {
 
     // Verify the fund is tagged with one of the user's labels.
     var fundLabel = 'Gregs-General-Fund';
-    Assert.strictEqual(x.labels[0],             fundLabel);
-    Assert.strictEqual(user.funds[0].labels[0], fundLabel);
+    Assert.strictEqual(x.labels[0],         fundLabel);
+    Assert.strictEqual(user.funds[0].label, fundLabel);
 
     // That's it, all tests passed!
     console.log("passed!");
@@ -57,7 +57,7 @@ function onResponseError(e) {
 
 // Start the web server
 var httpPort = 8889;
-var server = Subprocess.spawn(serverDir + '/icontrib', ['--dbdir=' + dbDir, '--port=' + httpPort]);
+var server = Subprocess.spawn(serverPath, ['--dbdir=' + dbDir, '--port=' + httpPort]);
 server.on('exit', function (code, signal) {
     console.log('child process terminated due to receipt of signal ' + signal);
 });

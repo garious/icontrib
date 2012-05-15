@@ -2,7 +2,8 @@ UNAME:=$(shell uname)
 FLAVOR = Debug
 V = $(UNAME)_$(FLAVOR)
 
-JSL_DIR=../jsl/$V
+JSL_DIR=../jsl/$(UNAME)
+CLOSURE_DIR=../Closure
 
 all: lint $V/ship/IContrib.js
 
@@ -26,7 +27,15 @@ $V/%.js.ok: %.js
 	@mkdir -p $(@D)
 	@touch $@
 
-$V/ship/IContrib.js: JsCache.hs $(filter-out Tag/YoinkAdapter.js Tag/Assert.js,$(filter-out %Example.js,$(filter-out %Test.js,$(JS_FILES))))
+$V/IContrib.js: JsCache.hs $(filter-out Tag/YoinkAdapter.js Tag/Assert.js $V/IContrib.js,$(filter-out %Example.js,$(filter-out %Test.js,$(JS_FILES))))
 	@mkdir -p $(@D)
 	runghc JsCache.hs -o $@ $(filter-out $<,$^)
+
+$(UNAME)_Debug/ship/IContrib.js: $V/IContrib.js
+	@mkdir -p $(@D)
+	cp $< $@
+
+$(UNAME)_Release/ship/IContrib.js: $V/IContrib.js
+	@mkdir -p $(@D)
+	java -jar $(CLOSURE_DIR)/compiler.jar --js_output_file=$@ --js=$<
 

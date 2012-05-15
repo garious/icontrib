@@ -26,7 +26,7 @@ parseArgs xs          = (Nothing, xs)
 
 preloadedMods :: [(FilePath, Text.Text)] -> Text.Text
 preloadedMods xs = Text.concat [
-    "var PRELOADED_MODULES = {\n",
+    "window.PRELOADED_MODULES = {\n",
     Text.intercalate ",\n" (map wrapFile xs),
     "};\n"
     ]

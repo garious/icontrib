@@ -2,8 +2,8 @@ UNAME:=$(shell uname)
 FLAVOR = Debug
 V = $(UNAME)_$(FLAVOR)
 
-JSLINT = ../node/$V/node ../node_modules/jslint/bin/jslint.js
-JSL    = ../jsl/$V/jsl
+JSLINT = ../node/$(UNAME)/node ../node_modules/jslint/bin/jslint.js
+JSL    = ../jsl/$(UNAME)/jsl
 
 all: lint
 

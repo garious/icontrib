@@ -15,7 +15,7 @@ var Zombie     = require('zombie');
 var Assert     = require('assert');
 
 // Server configuration
-var serverDir = 'Server/Darwin_Debug/ship';
+var serverPath = process.argv[2];
 var dbDir = 'private/db';
 
 
@@ -41,7 +41,7 @@ function onResponseError(e) {
 // Start the web server.  This test will not exit until the server process is killed.
 var httpPort = 8890;
 var httpHost = 'http://localhost:' + httpPort + '/';
-var server = Subprocess.spawn(serverDir + '/icontrib', ['--dbdir=' + dbDir, '--port=' + httpPort]);
+var server = Subprocess.spawn(serverPath, ['--dbdir=' + dbDir, '--port=' + httpPort]);
 
 // Ping the server until it fails to fail
 function pingServer() {
@@ -71,7 +71,7 @@ var pages = [
     {path: '/Donor?id=greg'},
     {path: '/Donor?id=tom'},
     {path: '/Donor?id=elisa'},
-    {path: '/Me'},
+    {path: '/Me'}
 ];
 
 function onServerReady() {
@@ -82,7 +82,7 @@ function onServerReady() {
         site: httpHost
     };
 
-    var browser = new Zombie()
+    var browser = new Zombie();
     
     var pageIndex = 0;
     

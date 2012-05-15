@@ -10,7 +10,7 @@ all: $(JS_OKS)
 tree_%:
 	$(MAKE) $(patsubst tree_%,%,$@)
 
-NODE_DIR = ../../node/$V
+NODE_DIR = ../../node/$(UNAME_S)
 
 $V/%Test.js.passed: %Test.js %.js
 	@mkdir -p $(@D)
