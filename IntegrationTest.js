@@ -16,6 +16,7 @@ var Assert     = require('assert');
 
 // Server configuration
 var serverPath = process.argv[2];
+var modDir = process.argv[3];
 var dbDir = 'private/db';
 
 
@@ -41,7 +42,7 @@ function onResponseError(e) {
 // Start the web server.  This test will not exit until the server process is killed.
 var httpPort = 8890;
 var httpHost = 'http://localhost:' + httpPort + '/';
-var server = Subprocess.spawn(serverPath, ['--dbdir=' + dbDir, '--port=' + httpPort]);
+var server = Subprocess.spawn(serverPath, ['--dbdir=' + dbDir, '--port=' + httpPort, '--moddir=' + modDir]);
 
 // Ping the server until it fails to fail
 function pingServer() {
@@ -96,6 +97,9 @@ function onServerReady() {
         });
 
         // Verify the page loaded without errors.
+        if (errors.length > 0) {
+            console.log(errors);
+        }
         Assert.deepEqual(errors, []);
     
         // Success!  On to the next page.

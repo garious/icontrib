@@ -6,12 +6,14 @@ data Flag
  = DbDir FilePath
  | ModDir FilePath
  | HttpPort Int
+ | Ssl
    deriving Show
 
 data Options = Options {
    dbDir      :: FilePath
  , modDirs    :: [FilePath]
  , httpPort   :: Int
+ , ssl        :: Bool
 }
    deriving (Show, Eq)
 
@@ -20,6 +22,7 @@ options = [
    Option []        ["dbdir"]   (ReqArg DbDir "DIR")  "directory for database files"
  , Option []        ["moddir"]  (ReqArg ModDir "DIR")  "directory for frontend files"
  , Option []        ["port"]    (ReqArg (HttpPort . read) "NUM") "HTTP port"
+ , Option []        ["ssl"]     (NoArg Ssl) "Redirect HTTP requests to SSL"
  ]
 
 getOptions :: [String] -> IO Options
@@ -29,6 +32,7 @@ getOptions argv = do
                        dbDir = headDef "private/db" [x | DbDir x <- os]
                      , modDirs = idDef ["public"] [x | ModDir x <- os]
                      , httpPort = headDef 8000 [x | HttpPort x <- os]
+                     , ssl = not (null [Ssl | Ssl <- os])
                      }
        (_,_,errs) -> ioError (userError (concat errs ++ usageInfo header options))
 

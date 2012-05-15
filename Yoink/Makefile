@@ -5,7 +5,7 @@ V = $(UNAME)_$(FLAVOR)
 JSLINT = ../node/$(UNAME)/node ../node_modules/jslint/bin/jslint.js
 JSL    = ../jsl/$(UNAME)/jsl
 
-all: lint
+all: lint $V/ship/Yoink.js
 
 clean:
 	rm -rf $V
@@ -22,7 +22,15 @@ $V/%.js.ok: %.js
 
 $V/%.js.lint: %.js
 	@echo Linting with JSLint: $<
-	@$(JSLINT) --predef=define --predef=require --predef=baseUrl --predef=YOINK --predef=params $<
+	@$(JSLINT) $<
 	@mkdir -p $(@D)
 	@touch $@
+
+$(UNAME)_Debug/ship/Yoink.js: Yoink.js lint
+	@mkdir -p $(@D)
+	cp $< $@
+
+$(UNAME)_Release/ship/Yoink.js: Yoink.js lint
+	@mkdir -p $(@D)
+	java -jar ../Closure/Compiler.jar --js_output_file=$@ --js=$<
 

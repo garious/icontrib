@@ -60,20 +60,20 @@ redirectToSSL tlsconf hn pn = simpleHTTP (nullConf { port = pn }) $ do
 tohttps :: String -> Int -> ServerPart Response
 tohttps hn pn = (seeOther ("https://" ++ hn ++ ":" ++ show pn) (toResponse ()))
 
-site :: DB.Database -> ServerPart Response
-site st = msum [ 
-      JSW.widget root []
-    , fileServer "Client/Darwin_Debug/ship"
-    , fileServer "Yoink"
-    , fileServer root
-    , fileServer "private/images"
-    , dir "auth"    (authServices st)
-    , dir "donor"   (donorServices st)
-    , dir "charity" (C.charityServices st)
-    , dir "stats"   (S.stats st)
-    , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "http://www.google.com/jsapi"))
-    ]
+site :: [FilePath] -> DB.Database -> ServerPart Response
+site modDirs st = msum (moduleDirs ++ staticDirs)
   where
+    staticDirs = [ 
+          fileServer "Yoink"
+        , fileServer root
+        , fileServer "private/images"
+        , dir "auth"    (authServices st)
+        , dir "donor"   (donorServices st)
+        , dir "charity" (C.charityServices st)
+        , dir "stats"   (S.stats st)
+        , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "http://www.google.com/jsapi"))
+        ]
+    moduleDirs = JSW.widget root [] : map fileServer modDirs
     root = "Client"
 
 authServices:: DB.Database -> ServerPart Response

@@ -51,7 +51,7 @@ htmlForJsMod baseUrl filename ps = appTemplate $ do
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
   where
       yoinkAttr = H.toValue (mkPath (mkRelUrl baseUrl ["Yoink.js"]))
-      preloadedAttr = H.toValue (mkPath (mkRelUrl baseUrl ["IContrib.js"]))
+      preloadedAttr = H.toValue (mkPath (mkRelUrl baseUrl ["WebApp.js"]))
 
       yoink = "\n\
            \YOINK.setDebugLevel(1);\n\
