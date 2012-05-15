@@ -97,6 +97,9 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
     }
 
     function distributionTable1(dist) {
+        // inplace sort.  TODO: Probably should clone the array
+        dist.sort(function(a,b){return b.shares - a.shares;});
+
         var total = 0;
         for (var j = 0; j < dist.length; j++) {
             var d = dist[j];
