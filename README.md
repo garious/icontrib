@@ -15,7 +15,7 @@ Then clone the source code repository:
 
 If on Ubuntu, install a few more prereqs:
 
-    sudo apt-get install libssl-dev libcrypto++-dev
+    sudo apt-get install libssl-dev libcrypto++-dev g++ npm
 
 
 Using GNU Make 3.81, run the rule that downloads and builds the project dependencies.
