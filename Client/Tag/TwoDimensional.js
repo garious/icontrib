@@ -30,6 +30,10 @@ function onReady(Tag) {
             if (pos.clear !== undefined) {
                 sty.clear = pos.clear;
             }
+
+            if (pos.display !== undefined) {
+                sty.display = pos.display;
+            }
     
             return me;
         }

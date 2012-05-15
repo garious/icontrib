@@ -45,7 +45,7 @@ function onReady(Tag, Iface, Observable, Dim) {
     // Set the horizontal position of a 2D element
     function setHPos(x) {
         var iface = Iface.getInterface(x, Dim.twoDimensionalId);
-        iface.setPosition(x, {'float': 'left', clear: 'none'});
+        iface.setPosition(x, {'float': 'left', clear: 'none', display: 'inline-block'});
     }
 
     // Concatenate elements horizontally
@@ -60,12 +60,12 @@ function onReady(Tag, Iface, Observable, Dim) {
     // Set the vertical position of a 2D element
     function setVPos(x) {
         var iface = Iface.getInterface(x, Dim.twoDimensionalId);
-        iface.setPosition(x, {'float': 'left', clear: 'both'});
+        iface.setPosition(x, {'float': 'left', clear: 'both', display: 'block'});
     }
 
     function setVPosRight(x) {
         var iface = Iface.getInterface(x, Dim.twoDimensionalId);
-        iface.setPosition(x, {'float': 'right', clear: 'both'});
+        iface.setPosition(x, {'float': 'right', clear: 'both', display: 'block'});
     }
     
     // Concatenate elements vertically
