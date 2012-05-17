@@ -8,7 +8,7 @@ var deps = [
     '/Skin/Core.js',
     '/Skin/Donor.js',
     '/Skin/Chart.js',
-    //'/Skin/Slider.js',
+    '/Skin/Slider.js',
     '/Skin/Colors.js',
     '/charity/popular.json'
 ];
@@ -23,7 +23,7 @@ function removeItem(xs, x) {
     return xs;
 }
 
-function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, /*Slider,*/ Colors, Popular) { 
+function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Slider, Colors, Popular) { 
 
     function fundRow(x, rowsObs, rows, obs, colorObs, colors, dist, inputs, colorAttrs) {
 
@@ -82,25 +82,27 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
         var deleteImg = Tag.tag({name: 'img', attributes: {src: 'Delete.png', alt: 'delete'}, style: {padding: '5px', visibility: deleteObs, borderWidth: '0px'}});
         var deleteLink = Tag.tag({name: 'a', attributes: {href: '#'}, contents: [deleteImg], handlers: {click: onDeleteClicked}});
 
-        var rangeStyle = {
-            WebkitAppearance: 'none',
-            width: '150px',
-            margin: '10px',
-            marginTop: '15px',
-            backgroundColor: colorObs,
-            height: '4px'
-        };
+        var slider;
+        if (navigator.userAgent.indexOf("Firefox")!=-1) {
+             slider = Slider.slider({value: obs, width: 200, height: 4, color: colorObs, marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, onChange: onRangeChange});
+        } else {
+             var rangeStyle = {
+                 WebkitAppearance: 'none',
+                 width: '150px',
+                 margin: '10px',
+                 marginTop: '15px',
+                 backgroundColor: colorObs,
+                 height: '4px'
+             };
 
-        // At the time of this writing, this is only expected to work in Chrome, Safari, and Opera.
-        var slider = Tag.tag({
-            name: 'input',
-            attributes: {type: 'range', value: obs, min: 1, max: 99},
-            style: rangeStyle,
-            handlers: {change: onRangeChange}
-        });
-
-        //This might work in more browsers, but is fairly broken.
-        //var slider = Slider.slider({value: obs, width: 200, height: 4, color: color, marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, onChange: onRangeChange(x)}),
+             // At the time of this writing, this is only expected to work in Chrome, Safari, and Opera.
+             slider = Tag.tag({
+                 name: 'input',
+                 attributes: {type: 'range', value: obs, min: 1, max: 99},
+                 style: rangeStyle,
+                 handlers: {change: onRangeChange}
+             });
+        }
 
         var cols = Layout.hug([
             Core.hyperlink({url: '/Charity?id=' + x.cid, text: x.name, marginTop: 6, marginRight: 10}),
