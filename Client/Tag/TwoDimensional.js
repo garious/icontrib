@@ -21,19 +21,7 @@ function onReady(Tag) {
                 me.style = {};
             }
 
-            var sty = me.style;
-
-            if (pos['float'] !== undefined) {
-                sty['float'] = pos['float'];
-            }
-
-            if (pos.clear !== undefined) {
-                sty.clear = pos.clear;
-            }
-
-            if (pos.display !== undefined) {
-                sty.display = pos.display;
-            }
+            Tag.mixin(me.style, pos);
     
             return me;
         }

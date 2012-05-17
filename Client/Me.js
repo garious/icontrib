@@ -111,7 +111,7 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
             deleteLink
         ]);
 
-        var rightCol = Tag.tag({name: 'div', style: {'float': 'right'}, contents: [cols]});
+        var rightCol = Tag.tag({name: 'div', style: {'float': 'right', cssFloat: 'right'}, contents: [cols]});
 
         rowChildren.push(rightCol);
         return row;

@@ -40,13 +40,7 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors) {
             visibility.set('hidden');
         }
 
-        function invalidateBackCache() {
-            // necessary for Safari: mobile & desktop
-        }
-
         if (as.auth.Left) {
-            // necessary for Safari: mobile & desktop
-            window.addEventListener('unload', invalidateBackCache, false);
 
             var onLogin = function (evt) {
                 evt.preventDefault();
@@ -76,7 +70,8 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors) {
                 borderBottomWidth: '0px',
                 borderColor: Colors.lightColor,
                 padding: '15px 5px',
-                'float': 'right'
+                'float': 'right',
+                cssFloat: 'right' // Required by Firefox and Opera
             };
 
             var logoff = function (evt) {
@@ -100,7 +95,11 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors) {
                 as.thumbnail,
                 Tag.tag({
                     name: 'div',
-                    style: {'float': 'right', padding: '15px 5px'},
+                    style: {
+                        'float': 'right',
+                        cssFloat: 'right',  // Required by Firefox and Opera
+                        padding: '15px 5px'
+                    },
                     contents: [logoutButton]
                 })
             ];

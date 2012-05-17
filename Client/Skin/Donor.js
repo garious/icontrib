@@ -77,7 +77,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
                         contents: [
                             Tag.tag({
                                  name: 'div',
-                                 style: {'float': 'right'},
+                                 style: {'float': 'right', cssFloat: 'right'},
                                  contents: [alignButton({id: fund.label})]
                             }),
                             Core.h4(fund.name),

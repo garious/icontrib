@@ -125,6 +125,7 @@ function onReady(Tag, Colors) {
 
         var sty = {
             'float': 'left',
+            cssFloat: 'left',  // Required by Firefox and Opera
             border: '2px solid #cfcfcf',
             shadow: shadow,
             MozBoxShadow: shadow,
@@ -268,7 +269,8 @@ function onReady(Tag, Colors) {
             marginTop:    as.marginTop    ? as.marginTop    + 'px' : 0,
             marginBottom: as.marginBottom ? as.marginBottom + 'px' : 0,
             borderWidth: 0,
-            backgroundColor: as.color
+            backgroundColor: as.color,
+            clear: 'both'     // Required by Firefox and Opera
         };
 
         return Tag.tag({
