@@ -48,9 +48,7 @@ function onReady(Tag, Iface, Observable, Dim) {
         iface.setPosition(x, {
             'float': 'left',
             cssFloat: 'left',       // Required by Firefox and Opera
-            clear: 'none',
-            verticalAlign: 'top',   // Required by Firefox and Opera
-            display: 'inline-block' // Required by Firefox and Opera
+            clear: 'none'
         });
     }
 
@@ -69,8 +67,7 @@ function onReady(Tag, Iface, Observable, Dim) {
         iface.setPosition(x, {
             'float': 'left',
             cssFloat: 'left', // Required by Firefox and Opera
-            clear: 'both',
-            display: 'block'  // Required by Firefox and Opera
+            clear: 'both'
         });
     }
 
@@ -79,8 +76,7 @@ function onReady(Tag, Iface, Observable, Dim) {
         iface.setPosition(x, {
             'float': 'right',
             cssFloat: 'right', // Required by Firefox and Opera
-            clear: 'both',
-            display: 'block'   // Required by Firefox and Opera
+            clear: 'both'
         });
     }
     
