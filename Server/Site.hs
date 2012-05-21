@@ -5,7 +5,7 @@ import Control.Monad                         ( liftM )
 import qualified Data.Login                  as L
 import qualified DB.UserInfo                 as U
 import qualified Data.UserInfo               as U
-import qualified JsWidget                    as JSW
+import qualified JsAppServer                 as JAS
 import qualified Network.HTTP                as HTTP
 import qualified DB.DB                       as DB
 import Control.Monad                         ( msum )
@@ -73,7 +73,7 @@ site modDirs st = msum (moduleDirs ++ staticDirs)
         , dir "stats"   (S.stats st)
         , dir "mirror" $ dir "google" $ dir "jsapi" (redirect (HTTP.getRequest "http://www.google.com/jsapi"))
         ]
-    moduleDirs = JSW.widget root [] : map fileServer modDirs
+    moduleDirs = JAS.jsAppDirectory root [] : map fileServer modDirs
     root = "Client"
 
 authServices:: DB.Database -> ServerPart Response

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module JsWidget where
+module JsAppServer where
 
 import Control.Monad                         ( msum )
 import Happstack.Server                      ( ServerPart, Response, path, nullDir, lookPairs, ok, toResponse )
@@ -18,34 +18,34 @@ import qualified Text.JSON                   as JS
 import qualified Data.Text.Lazy as T
 
 -- Is this a javascript file or directory within a widgets directory?
-widget :: FilePath -> [String] -> ServerPart Response
-widget root baseUrl = msum [
-      path (\p -> jsModFile root baseUrl (p ++ ".js"))
-    , jsMod root baseUrl
-    , path (\p -> widget root (baseUrl ++ [p]))
+jsAppDirectory :: FilePath -> [String] -> ServerPart Response
+jsAppDirectory root baseUrl = msum [
+      path (\p -> jsApp root baseUrl (p ++ ".js"))
+    , jsAppIndex root baseUrl
+    , path (\p -> jsAppDirectory root (baseUrl ++ [p]))
     ]
 
 -- Is there a javascript file named 'Index.js' within this directory?
-jsMod :: FilePath -> [String] -> ServerPart Response
-jsMod root baseUrl = do
+jsAppIndex :: FilePath -> [String] -> ServerPart Response
+jsAppIndex root baseUrl = do
       nullDir
       trailingSlash
-      jsModFile root baseUrl "Index.js"
+      jsApp root baseUrl "Index.js"
 
 -- Is there a javascript file here? 
-jsModFile :: FilePath -> [String] -> FilePath -> ServerPart Response
-jsModFile root baseUrl filename = do
+jsApp :: FilePath -> [String] -> FilePath -> ServerPart Response
+jsApp root baseUrl filename = do
       nullDir
       b <- liftIO (doesFileExist (joinPath (root : url)))
       guard b
       ps <- lookPairs
       let ps' = [(s, x) | (s, Right x) <- ps]
-      ok (toResponse (htmlForJsMod baseUrl ('/' : mkPath url) (JS.toJSObject ps')))
+      ok (toResponse (jsAppHtml baseUrl ('/' : mkPath url) (JS.toJSObject ps')))
    where
       url = baseUrl ++ [filename]
 
-htmlForJsMod :: [String] -> String -> JS.JSObject String -> H.Html
-htmlForJsMod baseUrl filename ps = appTemplate $ do
+jsAppHtml :: [String] -> String -> JS.JSObject String -> H.Html
+jsAppHtml baseUrl filename ps = jsAppTemplate $ do
       H.script ! A.src yoinkAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.src preloadedAttr  ! A.type_ "text/javascript" $ ""
       H.script ! A.type_ "text/javascript" $ H.toHtml (T.pack yoink)
@@ -76,8 +76,6 @@ htmlForJsMod baseUrl filename ps = appTemplate $ do
       params = JS.encode ps
 
 
- 
-
 -- mkRelUrl ["a","b"] ["c","d"] == ["..","..","c","d"]
 -- mkRelUrl ["a","b"] ["a","c"] == ["..","c"]
 mkRelUrl :: [String] -> [String] -> [String]
@@ -88,8 +86,8 @@ mkRelUrl baseUrl url              = (replicate (length baseUrl) "..") ++ url
 mkPath :: [String] -> String
 mkPath = intercalate "/"
 
-appTemplate :: H.Html -> H.Html
-appTemplate body =
+jsAppTemplate :: H.Html -> H.Html
+jsAppTemplate body =
      H.docTypeHtml $ do
        H.head $ do
          H.meta ! A.httpEquiv "Content-Type" ! A.content "text/html;charset=utf-8"

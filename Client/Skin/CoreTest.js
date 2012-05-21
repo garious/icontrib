@@ -19,10 +19,10 @@ function onReady(Core, Tag) {
             name: 'table',
             attributes: {border: 1, cellpadding: 20},
             contents: [
-                Tag.tag('thead', [
-                    Tag.tag('tr', [ Tag.tag('th', 'Name'), Tag.tag('th', 'Raw'), Tag.tag('th', 'Stylized') ])
-                ]),
-                Tag.tag('tbody', [
+                //Tag.tag('thead', [
+                    Tag.tag('tr', [ Tag.tag('th', 'Name'), Tag.tag('th', 'Raw'), Tag.tag('th', 'Stylized') ]),
+                //]),
+                //Tag.tag('tbody', [
                     row('h1',     Tag.tag({name: 'h1', contents: 'Tag.h1'}),              Core.h1('Core.h1')),
                     row('h2',     Tag.tag({name: 'h2', contents: 'Tag.h2'}),              Core.h2('Core.h2')),
                     row('h3',     Tag.tag({name: 'h3', contents: 'Tag.h3'}),              Core.h3('Core.h3')),
@@ -34,7 +34,7 @@ function onReady(Core, Tag) {
                     row('label',  Tag.tag({name: 'label', contents: 'Tag.label'}),        Core.label('Core.label')),
                     row('button', Tag.tag({name: 'button', contents: 'Tag.button'}),      Core.button({href: '#', text: 'Core.button'})),
                     row('box',    Tag.tag({name: 'div', contents: [Tag.tag({name: 'p', contents: ['Tag.div']})]}), Core.box({contents: Core.p('Core.box')}))
-                ])
+                //])
             ]
         });
 
