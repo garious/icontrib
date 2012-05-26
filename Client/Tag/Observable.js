@@ -119,17 +119,44 @@ function onReady(Iface) {
     
     // Handy function to lift a raw function into the observable realm
     function lift(f) {
-      return function() {
-         var args = Array.prototype.slice.call(arguments);
-         return thunk(args, f);
-      };
+        return function() {
+           var args = Array.prototype.slice.call(arguments);
+           return thunk(args, f);
+        };
+    }
+
+
+    // Handy function to capture the current state of an object containing observables
+    function snapshot(o) {
+        if (typeof o === 'object') {
+            var methods = Iface.getInterface(o, observableId);
+            if (methods) {
+                return snapshot( methods.get(o) );
+            } else {
+                if (o.constructor === Array) {
+                    return o.map(snapshot);
+                } else {
+                    var o2 = {};
+                    var k;
+                    for (k in o) {
+                        if (o.hasOwnProperty(k)) {
+                            o2[k] = snapshot(o[k]);
+                        }
+                    }
+                    return o2;
+                }
+            }
+        } else {
+            return o;
+        }
     }
 
     Yoink.define({
         observableId: observableId,
         observe: observe,
         thunk: thunk,
-        lift: lift
+        lift: lift,
+        snapshot: snapshot
     });
 
 }

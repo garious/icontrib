@@ -42,7 +42,7 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
                         d.shares = v;
                         inputs[i].set(v);
                     } else {
-                        inputs[i].set(evt.target.value);
+                        inputs[i].set(n);
                     }
                 }
             }
@@ -138,10 +138,9 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
     }
 
     function dashboard(as) {
-        var user = as.user;
         var rows = [];
         var inputs = [];
-        var dist = user.distribution;
+        var dist = as.user.distribution;
 
         var total = 0;
         for (var i = 0; i < dist.length; i++) {
@@ -160,7 +159,7 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
         var pie = Chart.pie({distribution: inputs, height: 220, padding: 15, colors: colors});
         var pieTin = Tag.tag({name: 'div', style: {margin: 'auto 0px', width: '100%', textAlign: 'center'}, contents: [pie]});
 
-        if (user.distribution.length > 0) {
+        if (dist.length > 0) {
             rows.push( pieTin );
             rows.push( Layout.pillow(0, 20) );
         }

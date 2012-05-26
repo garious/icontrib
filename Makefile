@@ -41,8 +41,9 @@ Server/$V/ship/icontrib: server
 Server/$V/ship/import: server
 
 # TODO: Enable SSL 
-#SERVER_FLAGS.Release=--ssl
-SERVER_FLAGS=--moddir=Client/$V/ship $(SERVER_FLAGS.$(FLAVOR))
+SERVER_FLAGS.Release=--moddir=Client/$V/ship
+#SERVER_FLAGS.Release+=--ssl
+SERVER_FLAGS=$(SERVER_FLAGS.$(FLAVOR))
 
 serve: Server/$V/ship/icontrib private/db/static.ok client  
 	$< $(SERVER_FLAGS)
@@ -70,7 +71,10 @@ deps:
 
 NODE_DIR = node/$(UNAME)
 
-$V/IntegrationTest.js.passed: Client/$V/ship/WebApp.js Server/$V/ship/icontrib
+WEBAPP_DEPS.Release=Client/$V/ship/WebApp.js
+WEBAPP_DEPS=$(WEBAPP_DEPS.$(FLAVOR))
+
+$V/IntegrationTest.js.passed: $(WEBAPP_DEPS) Server/$V/ship/icontrib
 
 $V/SiteTest.js.passed: private/db/static.ok
 

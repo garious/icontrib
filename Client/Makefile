@@ -8,7 +8,10 @@ CLOSURE_DIR=../Closure
 LINT_DEPS.Darwin=lint
 LINT_DEPS=$(LINT_DEPS.$(UNAME))
 
-all: $(LINT_DEPS) $V/ship/WebApp.js
+WEBAPP_DEPS.Release=$V/ship/WebApp.js
+WEBAPP_DEPS=$(WEBAPP_DEPS.$(FLAVOR))
+
+all: $(LINT_DEPS) $(WEBAPP_DEPS)
 
 clean:
 	rm -rf $V

@@ -34,12 +34,7 @@ function onReady(Iface, ToDom, Tag, Observable, Colors) {
             var div = methods.toDom(e);
 
             function draw() {
-
-                 var distSnapshot = as.distribution.map(function(x) {
-                     var obsMethods = Iface.getInterface(x, Observable.observableId);
-                     // TODO: remove parseFloat once caller is no longer passing in strings
-                     return obsMethods ? parseFloat(obsMethods.get(x)) : x;
-                 });
+                 var distSnapshot = Observable.snapshot(as.distribution);
                  var e = pieSnapshot({distribution: distSnapshot, width: as.width, height: as.height, padding: as.padding, colors: as.colors});
                  var methods = Iface.getInterface(e, ToDom.toDomId);
                  div.innerHTML = '';
