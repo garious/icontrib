@@ -13,7 +13,7 @@ function onReady(Auth, Tag, Layout, Frame, Core, PopularCharities, Donor, User) 
 
     var box = Core.box({
         width: 600,
-        contents: Donor.profile1({user: User})
+        contents: Donor.profile({user: User})
     });
 
     var body = Layout.hug([

@@ -15,7 +15,7 @@ function onReady(Auth, Tag, Layout, Frame, Core, PopularCharities, Donor, Commun
         Layout.hug([
             Core.box({
                 width: 600,
-                contents: Donor.profile1({user: Community})
+                contents: Donor.profile({user: Community})
             }),
             Layout.pillow(20),
             Donor.recommendedFunds({funds: PopularCharities})

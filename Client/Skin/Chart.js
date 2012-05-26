@@ -1,20 +1,18 @@
 var deps = [
     '/Tag/Interface.js',
     '/Tag/ToDom.js',
-    '/Tag/TwoDimensional.js',
     '/Tag/Tag.js',
     '/Tag/Observable.js',
     'Colors.js'
 ];
 
-function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
+function onReady(Iface, ToDom, Tag, Observable, Colors) {
 
 
     // Uses HTML's canvas element to generate an interactive pie chart
-    function pie(as, inputs) {
+    function pie(as) {
         return {
             attributes: as,
-            inputs: inputs,
             constructor: pie
         };
     }
@@ -26,7 +24,6 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
     var canvasPie_ToDom = {
         toDom: function (me) {
             var as = me.attributes;
-            var inputs = me.inputs;
 
             var e = Tag.tag({
                 name: 'div',
@@ -37,15 +34,24 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
             var div = methods.toDom(e);
 
             function draw() {
-                 var e = pieSnapshot({distribution: as.distribution, width: as.width, height: as.height, padding: as.padding, colors: as.colors});
+
+                 var distSnapshot = as.distribution.map(function(x) {
+                     var obsMethods = Iface.getInterface(x, Observable.observableId);
+                     // TODO: remove parseFloat once caller is no longer passing in strings
+                     return obsMethods ? parseFloat(obsMethods.get(x)) : x;
+                 });
+                 var e = pieSnapshot({distribution: distSnapshot, width: as.width, height: as.height, padding: as.padding, colors: as.colors});
                  var methods = Iface.getInterface(e, ToDom.toDomId);
                  div.innerHTML = '';
                  div.appendChild( methods.toDom(e) );
             }
 
-            for (var i = 0; i < inputs.length; i++) {
-                var obsMethods = Iface.getInterface(inputs[i], Observable.observableId);
-                obsMethods.subscribe(inputs[i], draw);
+            for (var i = 0; i < as.distribution.length; i++) {
+                var obs = as.distribution[i];
+                var obsMethods = Iface.getInterface(obs, Observable.observableId);
+                if (obsMethods) {
+                    obsMethods.subscribe(obs, draw);
+                }
             }
 
             draw();
@@ -56,26 +62,16 @@ function onReady(Iface, ToDom, TwoDim, Tag, Observable, Colors) {
 
     pie.interfaces[ToDom.toDomId] = canvasPie_ToDom;
 
-    //pie.interfaces[TwoDim.twoDimensionalId] = {
-    //    getDimensions: function (me) {
-    //        return {
-    //             width: 300,
-    //             height: 225
-    //        };
-    //    },
-    //    setPosition: function (me, pos) {
-    //        // TODO
-    //    }
-    //};
-
     function pieSnapshot(as) {
 
         var total = 0;
-        for (var n = 0; n < as.distribution.length; n += 1) {
-             total += as.distribution[n].shares;
+        var dist = as.distribution;
+
+        for (var n = 0; n < dist.length; n += 1) {
+             total += dist[n];
         }
 
-        var pcts = as.distribution.map(function(x) {return x.shares / total;});
+        var pcts = dist.map(function(x) {return x / total;});
 
         var colors = as.colors || defaultColors;
         var padding = as.padding !== undefined ? as.padding : 10;

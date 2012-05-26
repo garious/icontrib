@@ -138,8 +138,7 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
     }
 
     function dashboard(as) {
-        as = as || {};
-        var user = as.user || {};
+        var user = as.user;
         var rows = [];
         var inputs = [];
         var dist = user.distribution;
@@ -158,7 +157,7 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
         }
 
         var colors = Colors.dashboardColors;
-        var pie = Chart.pie({distribution: user.distribution, height: 220, padding: 15, colors: colors}, inputs);
+        var pie = Chart.pie({distribution: inputs, height: 220, padding: 15, colors: colors});
         var pieTin = Tag.tag({name: 'div', style: {margin: 'auto 0px', width: '100%', textAlign: 'center'}, contents: [pie]});
 
         if (user.distribution.length > 0) {
@@ -168,7 +167,7 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
 
         function saveChanges() {
             // Update the database
-            Frame.post('/donor/update', {distribution: as.user.distribution}, function (dat) {
+            Frame.post('/donor/update', {distribution: dist}, function (dat) {
                 var data = JSON.parse(dat);
                 if (data.Left) {
                     alert(data.Left);
@@ -183,7 +182,7 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
 	    window.location.reload(true);
         }
 
-        rows.push( distributionTable(user.distribution, inputs, colors) );
+        rows.push( distributionTable(dist, inputs, colors) );
 
         var buttons = Layout.hug({width: 100}, [
             Core.button({href: '#', text: 'Cancel', quiet: true, onClick: cancelChanges}),

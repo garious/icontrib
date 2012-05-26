@@ -18,9 +18,8 @@ tree_%:
 	$(MAKE) -C Skin $@
 	$(MAKE) $(patsubst tree_%,%,$@)
 
-JS_WHITELIST:=
-
-JS_FILES:=$(filter-out $(JS_WHITELIST),$(wildcard *.js) $(wildcard */*.js))
+JS_FILES:=$(wildcard *.js)
+WEBAPP_FILES:=$(wildcard *.js) $(wildcard */*.js)
 
 lint: $(patsubst %,$V/%.ok,$(JS_FILES))
 
@@ -30,7 +29,7 @@ $V/%.js.ok: %.js
 	@mkdir -p $(@D)
 	@touch $@
 
-$V/WebApp.js: JsCache.hs $(filter-out Tag/YoinkAdapter.js Tag/Assert.js $V/WebApp.js,$(filter-out %Example.js,$(filter-out %Test.js,$(JS_FILES))))
+$V/WebApp.js: JsCache.hs $(filter-out Tag/YoinkAdapter.js Tag/Assert.js $V/WebApp.js,$(filter-out %Example.js,$(filter-out %Test.js,$(WEBAPP_FILES))))
 	@mkdir -p $(@D)
 	runghc JsCache.hs -o $@ $(filter-out $<,$^)
 

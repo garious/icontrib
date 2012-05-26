@@ -47,56 +47,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
         return Layout.spoon(rows);
     }
 
-    function distributionTable(user) {
-        if (user.funds) {
-            var rows = [];
-            var dist = user.distribution;
-            for (var i = 0; i < user.funds.length; i++) {
-
-                var fund = user.funds[i];
-                var xs = [];
-                var total = 0;
-
-                // filter (nm `elem` dist.labels)
-                for (var j = 0; j < dist.length; j++) {
-                    if (isMember(dist[j].labels, fund.label)) {
-                        var d = dist[j];
-                        total = total + d.shares;
-                        xs.push(d);
-                    }
-                }
-
-                var colors = Colors.pieColors;
-
-                var row = Layout.spoon([
-                    Core.hr({width: 570}),
-                    Layout.pillow(0, 20),
-                    Tag.tag({
-                        name: 'div',
-                        style: {width: '100%'},
-                        contents: [
-                            Tag.tag({
-                                 name: 'div',
-                                 style: {'float': 'right', cssFloat: 'right'},
-                                 contents: [alignButton({id: fund.label})]
-                            }),
-                            Core.h4(fund.name),
-                            Layout.hug([
-                                Chart.pieSnapshot({distribution: xs, colors: colors}),
-                                Layout.pillow(20, 0),
-                                fundContents(xs, total, colors)
-                            ])
-                        ]
-                    })
-                ]);
-
-                rows.push(row);
-            }
-            return Layout.spoon(rows);
-        }
-    }
-
-    function distributionTable1(dist) {
+    function distributionTable(dist) {
         // inplace sort.  TODO: Probably should clone the array
         dist.sort(function(a,b){return b.shares - a.shares;});
 
@@ -123,7 +74,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
         return row;
     }
 
-    function profile1(as) {
+    function profile(as) {
         as = as || {};
         var user = as.user || {};
         var name = user.firstName + ' ' + user.lastName;
@@ -142,35 +93,7 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
 	        userInfo
             ]),
             Layout.pillow(0, 10),
-            distributionTable1(user.distribution)
-        ]);
-    }
-
-    function profile(as) {
-        as = as || {};
-        var user = as.user || {};
-        var userInfo = Layout.hug([
-            Layout.pillow(25, 0), 
-            Layout.spoon([
-                Core.h3(user.firstName + ' ' + user.lastName),
-                Core.h5({
-                    color: 'red',
-                    text: 'Helps raise $' + Math.round(user.alignedDonated / 100) + ' per month'
-                })
-            ])
-        ]);
-
-        return Layout.spoon([
-            Layout.hug([
-                Tag.tag({
-                    name: 'img',
-                    style: {width: '90px', height: '90px'},
-                    attributes: {src: user.imageUrl, alt: user.firstName + ' ' + user.lastName}
-                }),
-	        userInfo
-            ]),
-            Layout.pillow(0, 10),
-            distributionTable(user)
+            distributionTable(user.distribution)
         ]);
     }
 
@@ -212,7 +135,6 @@ function onReady(Tag, Layout, Chart, Colors, Core) {
 
     Yoink.define({
         profile: profile,
-        profile1: profile1,
         recommendedFunds: recommendedFunds,
         alignButton: alignButton
     });
