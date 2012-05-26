@@ -6,7 +6,7 @@ var deps = [
 
 function onReady(Tag) {
 
-    var twoDimensionalId = Yoink.baseUrl + '/TwoDimensional.js';
+    var twoDimensionalId = Yoink.fileUrl;
     
     // TwoDimensional instance for Tag objects
     Tag.tag.interfaces[twoDimensionalId] = {

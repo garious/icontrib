@@ -3,7 +3,7 @@
 // Returns a DOM node for this object
 // function ToDom.toDom (me)
 
-var toDomId = Yoink.baseUrl + '/ToDom.js';
+var toDomId = Yoink.fileUrl;
 
 
 // ToDom instance for strings

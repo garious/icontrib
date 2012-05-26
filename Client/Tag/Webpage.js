@@ -6,6 +6,6 @@
 // function Webpage.getTitle (me)
 
 Yoink.define({
-    webpageId: Yoink.baseUrl + '/Webpage.js'
+    webpageId: Yoink.fileUrl
 });
 

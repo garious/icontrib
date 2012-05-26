@@ -7,7 +7,7 @@ var deps = [
 // Observable JS
 //
 
-var observableId = Yoink.baseUrl + '/Observable.js';
+var observableId = Yoink.fileUrl;
 
 function onReady(Iface) {
 

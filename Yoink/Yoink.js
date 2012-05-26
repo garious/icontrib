@@ -43,6 +43,7 @@ var YOINK = (function () {
             var f = eval(f_str);
             f({
                 baseUrl: require.base,
+                fileUrl: require.url,
                 define: callback,
                 require: require,
                 params: params
@@ -59,6 +60,7 @@ var YOINK = (function () {
             var f = iesucks;
             f({
                 baseUrl: require.base,
+                fileUrl: require.url,
                 define: callback,
                 require: require,
                 params: params
@@ -96,6 +98,7 @@ var YOINK = (function () {
             var base = url.substring(0, url.lastIndexOf('/'));
             var require = mkGetResources(base, cache, moduleCache, interpreters);
             require.base = base;
+            require.url = url;
             interpreter(rsc, require, callback, params);
         }
     }
@@ -136,6 +139,7 @@ var YOINK = (function () {
         var require = mkGetResources(base, cache, moduleCache, interpreters);
         f({
             baseUrl: base,
+            fileUrl: url,
             define: callback,
             require: require,
             params: params
