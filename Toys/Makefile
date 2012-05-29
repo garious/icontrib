@@ -12,5 +12,5 @@ server:
 ../Server/$V/ship/icontrib: server
 
 serve: ../Server/$V/ship/icontrib
-	$< --yoinkdir=../Yoink/$V/Ship --moddir=. --tagdir=../Client/Tag
+	$< --yoinkdir=../Yoink/$V/Ship --moddir=. --tagdir=../Tag
 

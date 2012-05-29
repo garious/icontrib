@@ -42,7 +42,7 @@ Server/$V/ship/import: server
 
 # TODO: Enable SSL 
 #SERVER_FLAGS.Release+=--ssl
-SERVER_FLAGS=--yoinkdir=Yoink/$V/Ship --moddir=Client/$V/Ship --moddir=private/images $(SERVER_FLAGS.$(FLAVOR))
+SERVER_FLAGS=--yoinkdir=Yoink/$V/Ship --tagdir=Tag --moddir=Client/$V/Ship --moddir=private/images $(SERVER_FLAGS.$(FLAVOR))
 
 serve: Server/$V/ship/icontrib private/db/static.ok client  
 	$< $(SERVER_FLAGS)

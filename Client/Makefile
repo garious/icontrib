@@ -9,9 +9,9 @@ LINT_DEPS=$(LINT_DEPS.$(UNAME))
 
 JS_LINT_FILES:=$(wildcard *.js)
 
-ALL_JS_FILES:=$(JS_LINT_FILES) $(wildcard Tag/*.js) $(wildcard Skin/*.js)
+ALL_JS_FILES:=$(JS_LINT_FILES) $(wildcard Skin/*.js)
 
-JS_FILES.Release=$(filter-out Tag/YoinkAdapter.js Tag/Assert.js,$(filter-out %Example.js,$(filter-out %Test.js,$(ALL_JS_FILES))))
+JS_FILES.Release=$(filter-out %Example.js,$(filter-out %Test.js,$(ALL_JS_FILES)))
 JS_FILES.Debug=$(ALL_JS_FILES)
 JS_FILES=$(JS_FILES.$(FLAVOR))
 
@@ -23,7 +23,7 @@ clean:
 	rm -rf $V
 
 tree_%:
-	$(MAKE) -C Tag $@
+	$(MAKE) -C ../Tag $@
 	$(MAKE) -C Skin $@
 	$(MAKE) $(patsubst tree_%,%,$@)
 

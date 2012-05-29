@@ -2,8 +2,8 @@ UNAME_S:=$(shell uname -s)
 FLAVOR=Debug
 V=$(UNAME_S)_$(FLAVOR)
 
-JSL_DIR=../../jsl/$(UNAME_S)
-NODE_DIR = ../../node/$(UNAME_S)
+JSL_DIR=../jsl/$(UNAME_S)
+NODE_DIR = ../node/$(UNAME_S)
 
 JS_TESTS=$(wildcard *Test.js)
 JS_PASSED=$(patsubst %,$V/%.passed,$(JS_TESTS))
