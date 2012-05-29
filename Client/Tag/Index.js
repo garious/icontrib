@@ -1,28 +1,29 @@
 var deps = [
-    '/Tag/Tag.js',
-    '/Tag/Layout.js',
-    '/Skin/Core.js'
+    'Tag.js',
+    'Layout.js'
 ];
 
 var modules = ['CanvasExample', 'CanvasPieExample', 'Interface', 'Layout', 'LayoutTest', 'Observable', 'Shapes', 'ShapesTest', 'ToDom', 'TwoDimensional', 'Webpage'];
 
-function onReady (Tag, Layout, Core) {
+function onReady (Tag, Layout, Module) {
 
     function mkRow (nm) {
-        return Core.hyperlink({text: nm, url: nm});
+        return Tag.tag({
+            name: 'a',
+            attributes: {href: nm},
+            style: {display: 'block'},
+            contents: nm
+        });
     }
     
     var rows = [
-        Core.h3('Modules')
+        Tag.tag({name: 'h3', contents: 'Modules'})
     ];
 
     var body = Tag.tag({
         name: 'div',
         style: {margin: '10px'},
-        contents: [
-            Layout.spoon(rows.concat(modules.map(mkRow)))
-
-        ]
+        contents: rows.concat(modules.map(mkRow))
     });
 
     Yoink.define(body);

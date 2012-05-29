@@ -2,6 +2,10 @@
 // Experiment: a module constructor for modules.  This object implements the ToDom interface
 //
 
+var deps = [
+    'ToDom.js'
+];
+
 function module(o1) {
     var o2 = {
         constructor: module
@@ -45,43 +49,49 @@ function addConstants(div, constants) {
     }
 }
 
-module.interfaces[toDomId] = {
-    toDom: function (me) {
-        var funcs = [];
-        var constants = [];
-        for (var k in me) {
-            if (me.hasOwnProperty(k)) {
-                var ty = typeof me[k];
-                if (ty === 'function') {
-                    funcs.push(k);
-                } else {
-                    constants.push(k);
+function onReady(ToDom) {
+
+    module.interfaces[ToDom.toDomId] = {
+        toDom: function (me) {
+            var funcs = [];
+            var constants = [];
+            for (var k in me) {
+                if (me.hasOwnProperty(k)) {
+                    var ty = typeof me[k];
+                    if (ty === 'function') {
+                        funcs.push(k);
+                    } else {
+                        constants.push(k);
+                    }
                 }
             }
+    
+            var div = document.createElement('div');
+            div.style.marginLeft = '10px';
+    
+            var hdr = document.createElement('h2');
+            hdr.appendChild(document.createTextNode('JavaScript Module'));
+            div.appendChild(hdr);
+    
+            if (funcs.length > 0) {
+                funcs.sort();
+                addFunctions(div, funcs);
+            }
+    
+            if (constants.length > 0) {
+                constants.sort();
+                addConstants(div, constants);
+            }
+    
+            return div;
         }
+    };
 
-        var div = document.createElement('div');
-        div.style.marginLeft = '10px';
+    Yoink.define({
+        module: module
+    });
 
-        var hdr = document.createElement('h2');
-        hdr.appendChild(document.createTextNode('JavaScript Module'));
-        div.appendChild(hdr);
+}
 
-        if (funcs.length > 0) {
-            funcs.sort();
-            addFunctions(div, funcs);
-        }
-
-        if (constants.length > 0) {
-            constants.sort();
-            addConstants(div, constants);
-        }
-
-        return div;
-    }
-};
-
-Yoink.define({
-    module: module
-});
+Yoink.require(deps, onReady);
 
