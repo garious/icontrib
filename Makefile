@@ -35,15 +35,14 @@ tree_%:
 	$(MAKE) -C Yoink V=$V $(patsubst tree_%,%,$@)
 	$(MAKE) V=$V $(patsubst tree_%,%,$@)
 
-Client/$V/ship/WebApp.js: client
+Client/$V/Ship/Index.js: client
 
 Server/$V/ship/icontrib: server
 Server/$V/ship/import: server
 
 # TODO: Enable SSL 
-SERVER_FLAGS.Release=--moddir=Client/$V/ship
 #SERVER_FLAGS.Release+=--ssl
-SERVER_FLAGS=$(SERVER_FLAGS.$(FLAVOR))
+SERVER_FLAGS=--yoinkdir=Yoink/$V/Ship --moddir=Client/$V/Ship --moddir=private/images $(SERVER_FLAGS.$(FLAVOR))
 
 serve: Server/$V/ship/icontrib private/db/static.ok client  
 	$< $(SERVER_FLAGS)
@@ -71,7 +70,7 @@ deps:
 
 NODE_DIR = node/$(UNAME)
 
-WEBAPP_DEPS.Release=Client/$V/ship/WebApp.js
+WEBAPP_DEPS.Release=Client/$V/Ship/Index.js
 WEBAPP_DEPS=$(WEBAPP_DEPS.$(FLAVOR))
 
 $V/IntegrationTest.js.passed: $(WEBAPP_DEPS) Server/$V/ship/icontrib
@@ -81,6 +80,6 @@ $V/SiteTest.js.passed: private/db/static.ok
 $V/%.js.passed: %.js
 	@mkdir -p $(@D)
 	@echo Testing: $<
-	$(NODE_DIR)/node $< Server/$V/ship/icontrib Client/$V/ship
+	$(NODE_DIR)/node $< Server/$V/ship/icontrib Client/$V/Ship
 	@touch $@
 

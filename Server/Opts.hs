@@ -4,6 +4,7 @@ import System.Console.GetOpt
 
 data Flag 
  = DbDir FilePath
+ | YoinkDir FilePath
  | ModDir FilePath
  | HttpPort Int
  | Ssl
@@ -11,6 +12,7 @@ data Flag
 
 data Options = Options {
    dbDir      :: FilePath
+ , yoinkDir   :: FilePath
  , modDirs    :: [FilePath]
  , httpPort   :: Int
  , ssl        :: Bool
@@ -19,10 +21,11 @@ data Options = Options {
 
 options :: [OptDescr Flag]
 options = [
-   Option []        ["dbdir"]   (ReqArg DbDir "DIR")  "directory for database files"
- , Option []        ["moddir"]  (ReqArg ModDir "DIR")  "directory for frontend files"
- , Option []        ["port"]    (ReqArg (HttpPort . read) "NUM") "HTTP port"
- , Option []        ["ssl"]     (NoArg Ssl) "Redirect HTTP requests to SSL"
+   Option []        ["dbdir"]    (ReqArg DbDir "DIR")  "directory for database files"
+ , Option []        ["moddir"]   (ReqArg ModDir "DIR")  "directory for frontend files"
+ , Option []        ["yoinkdir"] (ReqArg YoinkDir "DIR")  "directory to find Yoink, the frontend module loader"
+ , Option []        ["port"]     (ReqArg (HttpPort . read) "NUM") "HTTP port"
+ , Option []        ["ssl"]      (NoArg Ssl) "Redirect HTTP requests to SSL"
  ]
 
 getOptions :: [String] -> IO Options
@@ -30,6 +33,7 @@ getOptions argv = do
     case getOpt Permute options argv of
        (os,_,[]  ) -> return $ Options {
                        dbDir = headDef "private/db" [x | DbDir x <- os]
+                     , yoinkDir = headDef "Yoink" [x | YoinkDir x <- os]
                      , modDirs = idDef ["public"] [x | ModDir x <- os]
                      , httpPort = headDef 8000 [x | HttpPort x <- os]
                      , ssl = not (null [Ssl | Ssl <- os])

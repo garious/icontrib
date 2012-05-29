@@ -8,7 +8,7 @@ JSL    = ../jsl/$(UNAME)/jsl
 LINT_DEPS.Darwin=lint
 LINT_DEPS=$(LINT_DEPS.$(UNAME))
 
-all: $(LINT_DEPS) $V/ship/Yoink.js
+all: $(LINT_DEPS) $V/Ship/Yoink.js
 
 clean:
 	rm -rf $V
@@ -29,11 +29,11 @@ $V/%.js.lint: %.js
 	@mkdir -p $(@D)
 	@touch $@
 
-$(UNAME)_Debug/ship/Yoink.js: Yoink.js $(LINT_DEPS)
+$(UNAME)_Debug/Ship/Yoink.js: Yoink.js $(LINT_DEPS)
 	@mkdir -p $(@D)
 	cp $< $@
 
-$(UNAME)_Release/ship/Yoink.js: Yoink.js $(LINT_DEPS)
+$(UNAME)_Release/Ship/Yoink.js: Yoink.js $(LINT_DEPS)
 	@mkdir -p $(@D)
 	java -jar ../Closure/Compiler.jar --js_output_file=$@ --js=$<
 
