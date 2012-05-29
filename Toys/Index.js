@@ -1,8 +1,8 @@
 var deps = [
-    'Tag.js'
+    '/Tag/Tag.js',
 ];
 
-var modules = ['Interface', 'Layout', 'LayoutTest', 'Observable', 'Shapes', 'ShapesTest', 'ToDom', 'TwoDimensional', 'Webpage'];
+var modules = ['CanvasExample', 'CanvasPieExample'];
 
 function onReady (Tag) {
 

@@ -65,11 +65,15 @@ redirectToSSL tlsconf hn pn = simpleHTTP (nullConf { port = pn }) $ do
 tohttps :: String -> Int -> ServerPart Response
 tohttps hn pn = (seeOther ("https://" ++ hn ++ ":" ++ show pn) (toResponse ()))
 
-site :: FilePath -> [FilePath] -> DB.Database -> ServerPart Response
-site yoinkDir modDirs st = msum (moduleDirs ++ staticDirs)
+site :: FilePath -> FilePath -> [FilePath] -> DB.Database -> ServerPart Response
+site yoinkDir tagDir modDirs st = msum (moduleDirs ++ staticDirs)
   where
     staticDirs = [ 
           fileServer yoinkDir
+        , dir "Tag" (msum [
+             JAS.jsAppDirectory tagDir ["Tag"]
+           , fileServer tagDir
+           ])
         , dir "WebApp.js" (webApp modDirs)
         , dir "auth"    (authServices st)
         , dir "donor"   (donorServices st)
