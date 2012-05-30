@@ -95,20 +95,30 @@ authServices st = msum [
 
 webApp :: [FilePath] -> ServerPart Response
 webApp modDirs = do
-    cnts <- liftIO (mapM (\root -> webAppMap root "") modDirs)
-    return $ toResponse (preloadedMods (concat cnts))
+    maps <- liftIO (mapM (\x -> webAppMap x "") modDirs)
+    return $ toResponse (preloadedMods (concat maps))
 
 webAppMap :: FilePath -> String -> IO [(FilePath, Text.Text)]
 webAppMap root relDir = do
-    let baseDir = root </> relDir
-    nms <- getDirectoryContents baseDir
-    let files = [x | x <- nms, take 1 x /= "." && takeExtension x == ".js"]
-    strs <- mapM TextIO.readFile (map (baseDir </>) files)
-    let fileMap = zipWith (\nm s -> (if null relDir then nm else relDir ++ "/" ++ nm, s)) files strs
-
-    dirs <- filterM (\nm -> doesDirectoryExist (baseDir </> nm)) (filter (\x -> take 1 x /= ".") nms)
-    subMaps <- mapM (\nm -> webAppMap root (if null relDir then nm else relDir ++ "/" ++ nm)) dirs 
+    nms     <- liftM filterHiddenFiles (getDirectoryContents baseDir)
+    dirs    <- filterM (doesDirectoryExist . (baseDir </>)) nms
+    fileMap <- mapM (webAppField baseDir relDir) (filter ((== ".js") . takeExtension) nms)
+    subMaps <- mapM (webAppMap root . appendPathSegment relDir) dirs
     return (concat (fileMap : subMaps))
+  where
+    baseDir = root </> relDir
+
+webAppField :: FilePath -> String -> FilePath -> IO (String, Text.Text)
+webAppField baseDir relDir nm = do
+    cnts <- TextIO.readFile (baseDir </> nm)
+    return (appendPathSegment relDir nm, cnts)
+
+filterHiddenFiles :: [FilePath] -> [FilePath]
+filterHiddenFiles = filter ((/= ".") . take 1)
+
+appendPathSegment :: String -> String -> String
+appendPathSegment   "" nm = nm
+appendPathSegment root nm = root ++ "/" ++ nm
 
 preloadedMods :: [(FilePath, Text.Text)] -> Text.Text
 preloadedMods xs = Text.concat [
