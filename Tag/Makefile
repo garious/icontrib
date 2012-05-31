@@ -4,6 +4,7 @@ V=$(UNAME_S)_$(FLAVOR)
 
 JSL_DIR=../jsl/$(UNAME_S)
 NODE_DIR = ../node/$(UNAME_S)
+YOINK_DIR = ../Yoink
 
 JS_TESTS=$(wildcard *Test.js)
 JS_PASSED=$(patsubst %,$V/%.passed,$(JS_TESTS))
@@ -30,7 +31,7 @@ $V/%.js.ok: %.js
 $V/%Test.js.passed: %Test.js %.js
 	@mkdir -p $(@D)
 	@echo Testing: $<
-	@$(NODE_DIR)/node YoinkAdapter.js $<
+	@$(NODE_DIR)/node $(YOINK_DIR)/YoinkAdapter.js $<
 	@touch $@
 
 clean:

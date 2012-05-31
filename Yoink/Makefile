@@ -2,7 +2,6 @@ UNAME:=$(shell uname)
 FLAVOR = Debug
 V = $(UNAME)_$(FLAVOR)
 
-JSLINT = ../node/$(UNAME)/node ../node_modules/jslint/bin/jslint.js
 JSL    = ../jsl/$(UNAME)/jsl
 
 LINT_DEPS.Darwin=lint
@@ -15,17 +14,11 @@ clean:
 
 JS_FILES:=$(wildcard *.js)
 
-lint: $(patsubst %,$V/%.ok,$(JS_FILES)) $(patsubst %,$V/%.lint,$(JS_FILES))
+lint: $(patsubst %,$V/%.ok,$(JS_FILES))
 
 $V/%.js.ok: %.js
-	@echo Linting with jsl: $<
+	@echo Linting: $<
 	@$(JSL) -nologo -nofilelisting -nosummary -output-format "$*.js:__LINE__:__COL__: __ERROR__" -process $<
-	@mkdir -p $(@D)
-	@touch $@
-
-$V/%.js.lint: %.js
-	@echo Linting with JSLint: $<
-	@$(JSLINT) $<
 	@mkdir -p $(@D)
 	@touch $@
 

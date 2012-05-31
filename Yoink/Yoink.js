@@ -22,8 +22,6 @@
 // yoink, a simple resource loader.  XMLHttpRequest is the only dependency.
 //
 
-/*jslint vars: true, evil: true, regexp: true, browser: true*/
-
 var YOINK = (function () {
     'use strict';
 
@@ -257,4 +255,7 @@ var YOINK = (function () {
         interpreters: defaultInterpreters
     };
 }());
+
+// Return YOINK as the last evaluated expression for anyone using eval() in strict mode
+YOINK;
 
