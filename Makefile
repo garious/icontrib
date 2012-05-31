@@ -10,7 +10,7 @@ RUN_TESTS := $(wildcard *Test.hs)
 TESTS = $(patsubst %,$V/%.passed,$(RUN_TESTS))
 
 # TODO: Figure out why latest version of Zombie JS test framework chokes.
-#RUN_INTEGRATION_TESTS=IntegrationTest.js SiteTest.js
+RUN_INTEGRATION_TESTS=SiteTest.js #IntegrationTest.js
 
 RUN_JS_TESTS := $(filter-out $(RUN_INTEGRATION_TESTS),$(wildcard *Test.js))
 JS_TESTS = $(patsubst %,$V/%.passed,$(RUN_JS_TESTS))
@@ -80,6 +80,6 @@ $V/SiteTest.js.passed: private/db/static.ok
 $V/%.js.passed: %.js
 	@mkdir -p $(@D)
 	@echo Testing: $<
-	$(NODE_DIR)/node $< Server/$V/ship/icontrib Client/$V/Ship
+	$(NODE_DIR)/node $< Server/$V/ship/icontrib Client/$V/Ship Yoink/$V/Ship Tag
 	@touch $@
 

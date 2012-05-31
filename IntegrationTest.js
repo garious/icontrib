@@ -17,8 +17,9 @@ var Assert     = require('assert');
 // Server configuration
 var serverPath = process.argv[2];
 var modDir = process.argv[3];
+var yoinkDir = process.argv[4];
+var tagDir = process.argv[5];
 var dbDir = 'private/db';
-
 
 function onResponse(res) {
     Assert.strictEqual(res.statusCode, 200);
@@ -42,7 +43,7 @@ function onResponseError(e) {
 // Start the web server.  This test will not exit until the server process is killed.
 var httpPort = 8890;
 var httpHost = 'http://localhost:' + httpPort + '/';
-var server = Subprocess.spawn(serverPath, ['--dbdir=' + dbDir, '--port=' + httpPort, '--moddir=' + modDir]);
+var server = Subprocess.spawn(serverPath, ['--dbdir=' + dbDir, '--port=' + httpPort, '--moddir=' + modDir, '--yoinkdir=' + yoinkDir, '--tagdir=' + tagDir]);
 
 // Ping the server until it fails to fail
 function pingServer() {
@@ -128,6 +129,7 @@ function onServerReady() {
     
         browser.visit(page.path, options, onLoaded);
     }
+
 
     // Oddly, Zombie doesn't respect the 'silent' option until the 2nd page is load.
     // So we seed the system with a page that doesn't print anything.
