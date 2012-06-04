@@ -124,8 +124,7 @@ function onReady(Tag, Colors) {
         var e = as.contents;
 
         var sty = {
-            'float': 'left',
-            cssFloat: 'left',  // Required by Firefox and Opera
+            cssFloat: 'left',
             border: '2px solid #cfcfcf',
             shadow: shadow,
             MozBoxShadow: shadow,

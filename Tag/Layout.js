@@ -46,8 +46,7 @@ function onReady(Tag, Iface, Observable, Dim) {
     function setHPos(x) {
         var iface = Iface.getInterface(x, Dim.twoDimensionalId);
         iface.setPosition(x, {
-            'float': 'left',
-            cssFloat: 'left',       // Required by Firefox and Opera
+            cssFloat: 'left',
             clear: 'none'
         });
     }
@@ -65,8 +64,7 @@ function onReady(Tag, Iface, Observable, Dim) {
     function setVPos(x) {
         var iface = Iface.getInterface(x, Dim.twoDimensionalId);
         iface.setPosition(x, {
-            'float': 'left',
-            cssFloat: 'left', // Required by Firefox and Opera
+            cssFloat: 'left',
             clear: 'both'
         });
     }
@@ -74,8 +72,7 @@ function onReady(Tag, Iface, Observable, Dim) {
     function setVPosRight(x) {
         var iface = Iface.getInterface(x, Dim.twoDimensionalId);
         iface.setPosition(x, {
-            'float': 'right',
-            cssFloat: 'right', // Required by Firefox and Opera
+            cssFloat: 'right',
             clear: 'both'
         });
     }

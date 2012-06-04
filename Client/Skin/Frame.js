@@ -70,8 +70,7 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors) {
                 borderBottomWidth: '0px',
                 borderColor: Colors.lightColor,
                 padding: '15px 5px',
-                'float': 'right',
-                cssFloat: 'right' // Required by Firefox and Opera
+                cssFloat: 'right'
             };
 
             var logoff = function (evt) {
@@ -96,8 +95,7 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors) {
                 Tag.tag({
                     name: 'div',
                     style: {
-                        'float': 'right',
-                        cssFloat: 'right',  // Required by Firefox and Opera
+                        cssFloat: 'right',
                         padding: '15px 5px'
                     },
                     contents: [logoutButton]
