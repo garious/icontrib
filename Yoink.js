@@ -22,10 +22,14 @@
 // yoink, a simple resource loader.  XMLHttpRequest is the only dependency.
 //
 
-/*jslint vars: true, evil: true, regexp: true, browser: true*/
-
 var YOINK = (function () {
     'use strict';
+
+    var debugLevel = 0;
+
+    function setDebugLevel(n) {
+        debugLevel = n;
+    }
 
     var defaultInterpreters = {
         json: function (text) {
@@ -37,6 +41,7 @@ var YOINK = (function () {
             var f = eval(f_str);
             f({
                 baseUrl: require.base,
+                fileUrl: require.url,
                 define: callback,
                 require: require,
                 params: params
@@ -53,6 +58,7 @@ var YOINK = (function () {
             var f = iesucks;
             f({
                 baseUrl: require.base,
+                fileUrl: require.url,
                 define: callback,
                 require: require,
                 params: params
@@ -90,6 +96,7 @@ var YOINK = (function () {
             var base = url.substring(0, url.lastIndexOf('/'));
             var require = mkGetResources(base, cache, moduleCache, interpreters);
             require.base = base;
+            require.url = url;
             interpreter(rsc, require, callback, params);
         }
     }
@@ -111,7 +118,9 @@ var YOINK = (function () {
 
     function interpretFile(interpreters, cache, moduleCache, u, str, httpCode, callback) {
         if (httpCode >= 200 && httpCode < 300) {
-            console.log("yoink: interpreting '" + u.path + "'");
+            if (debugLevel > 0) {
+                console.log("yoink: interpreting '" + u.path + "'");
+            }
             interpret(str, u.path, u.params, u.interpreter, interpreters, cache, moduleCache, callback);
         } else if (u.onError) {
             var rsc = u.onError(httpCode);
@@ -128,6 +137,7 @@ var YOINK = (function () {
         var require = mkGetResources(base, cache, moduleCache, interpreters);
         f({
             baseUrl: base,
+            fileUrl: url,
             define: callback,
             require: require,
             params: params
@@ -158,7 +168,9 @@ var YOINK = (function () {
 
                 if (moduleCache[p]) {
                     // Is this in our module cache?
-                    console.log("yoink: executing preloaded module '" + p + "'");
+                    if (debugLevel > 0) {
+                        console.log("yoink: executing preloaded module '" + p + "'");
+                    }
                     evaluateModule(moduleCache[p], p, url.params, cache, moduleCache, interpreters, callback);
                 } else {
                     getFile(p, function (str, httpCode) {
@@ -237,9 +249,13 @@ var YOINK = (function () {
     }
 
     return {
+        setDebugLevel: setDebugLevel,
         require: require,
         resourceLoader: resourceLoader,
         interpreters: defaultInterpreters
     };
 }());
+
+// Return YOINK as the last evaluated expression for anyone using eval() in strict mode
+YOINK;
 
