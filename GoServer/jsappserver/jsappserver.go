@@ -70,20 +70,51 @@ var jsAppHtml = `<!DOCTYPE html>
     <script>
       YOINK.setDebugLevel(1);
       YOINK.resourceLoader('', {}, window.PRELOADED_MODULES).getResources([
-          '/Tag/Interface.js',
-          '/Tag/ToDom.js',
-          '/Tag/Webpage.js',
           {path: '{{.Filename}}', params: {{.Params}}}
-      ], function(Iface, Dom, Webpage, widget) {
-          var page = Iface.getInterface(widget, Webpage.webpageId);
-          if (page) {
-              var title = page.getTitle(widget);
-              if (title) {
-                  document.title = title;
+      ], function(widget) {
+          function getInterface(obj, iid, funcNames) {
+              var x = obj.constructor.interfaces;
+              if (x) {
+                  var iface;
+                  if (typeof iid === 'string') {
+                      iface = x[iid];
+                      if (iface) {
+                          return iface;
+                      }
+                  }
+                  for (var nm in x) {
+                      var o = x[nm];
+                      var match = true;
+                      for (var i = 0; i < funcNames.length; i++) {
+                          var need = funcNames[i];
+                          if (typeof o[need] !== 'function') {
+                              match = false;
+                              break;
+                          }
+                      }
+                      if (match) {
+                          return o;
+                      }
+                  }
               }
           }
-          var iface = Iface.getInterface(widget, Dom.toDomId);
-          var nd = iface ? iface.toDom(widget) : widget;
+          var title;
+          var page = getInterface(widget, null, ["getTitle"]);
+          if (page) {
+              title = page.getTitle(widget);
+          } else if (widget.getTitle) {
+              title = widget.getTitle();
+          }
+          if (title) {
+              document.title = title;
+          }
+          var nd;
+          var iface = getInterface(widget, null, ["toDom"]);
+          if (iface) {
+              nd = iface.toDom(widget)
+          } else if (widget.toDom) {
+              nd = widget.toDom()
+          }
           document.body.appendChild(nd);
       });
     </script>
