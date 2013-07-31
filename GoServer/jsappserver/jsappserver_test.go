@@ -8,13 +8,23 @@ import (
 	"testing"
 )
 
-func TestGetTag(t *testing.T) {
-	ts := httptest.NewServer(NewJsAppServer("/Tag", "../../Tag"))
+func TestGetPages(t *testing.T) {
+	getJsPage(t, "/Tag", "../../Tag", "/Tag/LayoutTest", 200)
+	getJsPage(t, "/Tag", "../../Tag", "/Tag/", 200)  // contains Index.js
+	getJsPage(t, "/Tag", "../../Tag", "/Tag", 200)   // contains Index.js
+	getJsPage(t, "/Tag", "../../Tag", "/bogus", 404)
+}
+
+func getJsPage(t *testing.T, patt, dir, url string, code int) {
+	ts := httptest.NewServer(NewJsAppServer(patt, dir))
 	defer ts.Close()
 
-	res, err := http.Get(ts.URL + "/Tag/LayoutTest")
+	res, err := http.Get(ts.URL + url)
 	if err != nil {
 		log.Fatal(err)
+	}
+	if res.StatusCode != code {
+		log.Fatal(res.Status)
 	}
 	_, err = ioutil.ReadAll(res.Body)
 	res.Body.Close()
