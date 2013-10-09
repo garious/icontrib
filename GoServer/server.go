@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./jsappserver"
+	"github.com/garious/icontrib/GoServer/jsappserver"
 	"log"
 	"net/http"
 )
