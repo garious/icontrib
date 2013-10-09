@@ -79,36 +79,13 @@ var jsAppHtml = `<!DOCTYPE html>
     <script>
       YOINK.setDebugLevel(1);
       YOINK.resourceLoader('', {}, window.PRELOADED_MODULES).getResources([
+          '/Tag/Interface.js',
+          '/Tag/ToDom.js',
+          '/Tag/Webpage.js',
           {path: '{{.Filename}}', params: {{.Params}}}
-      ], function(widget) {
-          function getInterface(obj, iid, funcNames) {
-              var x = obj.constructor.interfaces;
-              if (x) {
-                  var iface;
-                  if (typeof iid === 'string') {
-                      iface = x[iid];
-                      if (iface) {
-                          return iface;
-                      }
-                  }
-                  for (var nm in x) {
-                      var o = x[nm];
-                      var match = true;
-                      for (var i = 0; i < funcNames.length; i++) {
-                          var need = funcNames[i];
-                          if (typeof o[need] !== 'function') {
-                              match = false;
-                              break;
-                          }
-                      }
-                      if (match) {
-                          return o;
-                      }
-                  }
-              }
-          }
+      ], function(I, ToDom, Webpage, widget) {
           var title;
-          var page = getInterface(widget, null, ["getTitle"]);
+          var page = I.getInterface(widget, Webpage.webpageId);
           if (page) {
               title = page.getTitle(widget);
           } else if (widget.getTitle) {
@@ -118,7 +95,7 @@ var jsAppHtml = `<!DOCTYPE html>
               document.title = title;
           }
           var nd;
-          var iface = getInterface(widget, null, ["toDom"]);
+          var iface = I.getInterface(widget, ToDom.toDomId);
           if (iface) {
               nd = iface.toDom(widget)
           } else if (widget.toDom) {

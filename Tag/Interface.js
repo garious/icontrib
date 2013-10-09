@@ -6,8 +6,22 @@
 //    getInterface(obj : {}, iid : String) : {Function(obj, ...)}
 //
 function getInterface(obj, iid) {
-     var x = obj.constructor.interfaces;
-     return x && x[iid];
+    var x = obj.constructor.interfaces;
+    return x && x[iid];
+}
+
+function supportsInterface(o, i) {
+    if (typeof i !== 'object') {
+        return false;
+    }
+    for (var k in i) {
+        var f = o[k];
+        var v = i[k];
+        if (typeof f !== 'function' || (typeof v === 'function' && f.length !== v.length)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 //  //
@@ -42,5 +56,6 @@ function getInterface(obj, iid) {
 
 
 Yoink.define({
-    getInterface: getInterface
+    getInterface: getInterface,
+    supportsInterface: supportsInterface
 });
