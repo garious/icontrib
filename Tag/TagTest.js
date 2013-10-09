@@ -9,7 +9,9 @@ var  deps = [
 
 function onReady (Tag, Assert) {
 
-    Assert.assertEq(Tag.tag({name: 'p', contents: 'hello'}), {name: 'p', contents: 'hello'});
+    var t = Tag.tag({name: 'p', contents: 'hello'});
+    Assert.assertEq(t.name, 'p');
+    Assert.assertEq(t.contents, 'hello');
 
     Yoink.define('passed!');
 }

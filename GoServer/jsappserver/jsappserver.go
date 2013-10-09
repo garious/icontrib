@@ -79,29 +79,14 @@ var jsAppHtml = `<!DOCTYPE html>
     <script>
       YOINK.setDebugLevel(1);
       YOINK.resourceLoader('', {}, window.PRELOADED_MODULES).getResources([
-          '/Tag/Interface.js',
-          '/Tag/ToDom.js',
-          '/Tag/Webpage.js',
           {path: '{{.Filename}}', params: {{.Params}}}
-      ], function(I, ToDom, Webpage, widget) {
-          var title;
-          var page = I.getInterface(widget, Webpage.webpageId);
-          if (page) {
-              title = page.getTitle(widget);
-          } else if (widget.getTitle) {
-              title = widget.getTitle();
-          }
-          if (title) {
+      ], function(widget) {
+          if (widget.getTitle) {
               document.title = title;
           }
-          var nd;
-          var iface = I.getInterface(widget, ToDom.toDomId);
-          if (iface) {
-              nd = iface.toDom(widget)
-          } else if (widget.toDom) {
-              nd = widget.toDom()
+          if (widget.toDom) {
+              document.body.appendChild(widget.toDom());
           }
-          document.body.appendChild(nd);
       });
     </script>
   </body>

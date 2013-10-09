@@ -3,17 +3,14 @@
 // Returns a DOM node for this object
 // function ToDom.toDom (me)
 
-var toDomId = Yoink.fileUrl;
+var toDomId = {
+    toDom: function() {}
+};
 
 
 // ToDom instance for strings
-
-String.interfaces = String.interfaces || {};
-
-String.interfaces[toDomId] = {
-    toDom: function (me) {
-        return document.createTextNode(me);
-    }
+String.prototype.toDom = function () {
+    return document.createTextNode(this);
 };
 
 Yoink.define({

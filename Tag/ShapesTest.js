@@ -24,7 +24,8 @@ function onReady (Shapes, Assert) {
 
     var actual = Shapes.circle({radius: 50, color: 'red'});
 
-    Assert.assertEq(actual, expected);
+    Assert.assertEq(actual.name, expected.name);
+    Assert.assertEq(actual.style, expected.style);
 
     Yoink.define(actual);
 }

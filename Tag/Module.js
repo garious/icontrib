@@ -2,56 +2,9 @@
 // Experiment: a module constructor for modules.  This object implements the ToDom interface
 //
 
-var deps = [
-    'ToDom.js'
-];
-
 function module(o1) {
     var o2 = {
-        constructor: module
-    };
-
-    for (var k in o1) {
-        if (o1.hasOwnProperty(k)) {
-            o2[k] = o1[k];
-        }
-    }
-
-    return o2;
-}
-
-// ToDom instance for object
-module.interfaces = module.interfaces || {};
-
-function addFunctions(div, funcs) {
-    var hdr = document.createElement('h3');
-    hdr.appendChild(document.createTextNode('Functions'));
-    div.appendChild(hdr);
-
-    for (var i = 0; i < funcs.length; i += 1) {
-        var x = funcs[i];
-        var p = document.createElement('p');
-        p.appendChild( document.createTextNode(x) );
-        div.appendChild(p);
-    }
-}
-
-function addConstants(div, constants) {
-    var hdr = document.createElement('h3');
-    hdr.appendChild(document.createTextNode('Constants'));
-    div.appendChild(hdr);
-
-    for (var i = 0; i < constants.length; i += 1) {
-        var k = constants[i];
-        var p = document.createElement('p');
-        p.appendChild( document.createTextNode(k) );
-        div.appendChild(p);
-    }
-}
-
-function onReady(ToDom) {
-
-    module.interfaces[ToDom.toDomId] = {
+        constructor: module,
         toDom: function (me) {
             var funcs = [];
             var constants = [];
@@ -87,11 +40,42 @@ function onReady(ToDom) {
         }
     };
 
-    Yoink.define({
-        module: module
-    });
+    for (var k in o1) {
+        if (o1.hasOwnProperty(k)) {
+            o2[k] = o1[k];
+        }
+    }
 
+    return o2;
 }
 
-Yoink.require(deps, onReady);
+function addFunctions(div, funcs) {
+    var hdr = document.createElement('h3');
+    hdr.appendChild(document.createTextNode('Functions'));
+    div.appendChild(hdr);
+
+    for (var i = 0; i < funcs.length; i += 1) {
+        var x = funcs[i];
+        var p = document.createElement('p');
+        p.appendChild( document.createTextNode(x) );
+        div.appendChild(p);
+    }
+}
+
+function addConstants(div, constants) {
+    var hdr = document.createElement('h3');
+    hdr.appendChild(document.createTextNode('Constants'));
+    div.appendChild(hdr);
+
+    for (var i = 0; i < constants.length; i += 1) {
+        var k = constants[i];
+        var p = document.createElement('p');
+        p.appendChild( document.createTextNode(k) );
+        div.appendChild(p);
+    }
+}
+
+Yoink.define({
+    module: module
+});
 

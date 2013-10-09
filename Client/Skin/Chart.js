@@ -13,49 +13,39 @@ function onReady(Iface, ToDom, Tag, Observable, Colors) {
     function pie(as) {
         return {
             attributes: as,
-            constructor: pie
+            constructor: pie,
+            toDom: function (me) {
+                var as = me.attributes;
+
+                var e = Tag.tag({
+                    name: 'div',
+                    style: {width: as.width + 'px', height: as.height + 'px'}
+                });
+
+                var div = e.toDom();
+
+                function draw() {
+                     var distSnapshot = Observable.snapshot(as.distribution);
+                     var e = pieSnapshot({distribution: distSnapshot, width: as.width, height: as.height, padding: as.padding, colors: as.colors});
+                     div.innerHTML = '';
+                     div.appendChild( e.toDom() );
+                }
+
+                for (var i = 0; i < as.distribution.length; i++) {
+                    var obs = as.distribution[i];
+                    if (Iface.supportsInterface(obs, Observable.observableId)) {
+                        obs.subscribe(draw);
+                    }
+                }
+
+                draw();
+
+                return div;
+            }
         };
     }
 
     var defaultColors = Colors.pieColors;
-
-    pie.interfaces = {};
-
-    var canvasPie_ToDom = {
-        toDom: function (me) {
-            var as = me.attributes;
-
-            var e = Tag.tag({
-                name: 'div',
-                style: {width: as.width + 'px', height: as.height + 'px'}
-            });
-
-            var methods = Iface.getInterface(e, ToDom.toDomId);
-            var div = methods.toDom(e);
-
-            function draw() {
-                 var distSnapshot = Observable.snapshot(as.distribution);
-                 var e = pieSnapshot({distribution: distSnapshot, width: as.width, height: as.height, padding: as.padding, colors: as.colors});
-                 var methods = Iface.getInterface(e, ToDom.toDomId);
-                 div.innerHTML = '';
-                 div.appendChild( methods.toDom(e) );
-            }
-
-            for (var i = 0; i < as.distribution.length; i++) {
-                var obs = as.distribution[i];
-                var obsMethods = Iface.getInterface(obs, Observable.observableId);
-                if (obsMethods) {
-                    obsMethods.subscribe(obs, draw);
-                }
-            }
-
-            draw();
-
-            return div;
-        }
-    };
-
-    pie.interfaces[ToDom.toDomId] = canvasPie_ToDom;
 
     function pieSnapshot(as) {
 

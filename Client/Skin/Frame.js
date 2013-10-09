@@ -3,7 +3,6 @@ var deps = [
     '/Tag/Tag.js', 
     '/Tag/ToDom.js', 
     '/Tag/Observable.js', 
-    '/Tag/Webpage.js', 
     '/Tag/Layout.js', 
     'Core.js',
     'Colors.js'
@@ -25,7 +24,7 @@ function post(path, params, callback) {
     req.send(body);
 }
 
-function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors) { 
+function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
 
     function loginWidget(as) {
  
@@ -140,24 +139,14 @@ function onReady(Iface, Tag, ToDom, Observable, Webpage, Layout, Core, Colors) {
     function webpage(domable) {
         return {
             constructor: webpage,
-            domable: domable
+            toDom: function (me) {
+                return Iface.supportsInterface(domable, ToDom.toDomId) ? domable.toDom() : domable;
+            },
+            getTitle: function (me) {
+                return 'IContrib.org';
+            }
         };
     }
-
-    webpage.interfaces = {};
-
-    webpage.interfaces[ToDom.toDomId] = {
-        toDom: function (me) {
-            var iface = Iface.getInterface(me.domable, ToDom.toDomId);
-            return iface !== undefined ? iface.toDom(me.domable) : me.domable;
-        }
-    };
-
-    webpage.interfaces[Webpage.webpageId] = {
-        getTitle: function (me) {
-            return 'IContrib.org';
-        }
-    };
 
     function frame(as) {
         var thumbnail;

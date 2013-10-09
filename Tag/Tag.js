@@ -31,12 +31,7 @@
 //     difference is that 'tag' postpones the creation of an underlying DOM
 //     element, whereas 'createElement' creates and returns the DOM element.
 //
-//     createElement(x) === toDomElement( tag(x) )
-//         where
-//             function toDomElement(x) {
-//                 var methods = Iface.getInterface(x, Dom.toDomId);
-//                 return methods.toDom(x);
-//             }
+//     createElement(x) === tag(x).toDom()
 //
 //     By postponing the creation of the DOM, we can unit test modules
 //     that return tag objects without requiring a browser or a browser
@@ -59,24 +54,6 @@
 //        objects could delay startup time and consume memory the application
 //        doesn't need.
 //
-//
-//     Q: Why don't tag objects have a toDomElement() method?
-//
-//     A: Interface implementations come and go.  Avoiding methods allows us to
-//        introduce and deprecate interfaces over time without breaking
-//        compatibility.  For example, say you want to port your Tag-based JavaScript
-//        application to another platform.  Just attach a "ToMyPlatform"
-//        interface implementation to tag.constructor.interfaces and you're 
-//        done.  No need to version an object prototype or burden others
-//        with changes they don't necessarily need.
-//
-//
-//     Q: Interface programing is a pain.  This is stupid.
-//
-//     A: Indeed, JavaScript doesn't have good support for interface programming.
-//        See the Lua programming language's 'metamethods' for an example
-//        of how this should work and then please contact your nearest 
-//        JavaScript representative to file a complaint.
 
 
 var deps = [
@@ -85,28 +62,15 @@ var deps = [
     'Observable.js'
 ];
 
-function mkSetAttribute(e, k, getter) {
-    return function (obs) {
-        e[k] = getter(obs);
-    };
-}
-
-function mkSetStyle(e, k, getter) {
-    return function (obs) {
-        e.style[k] = getter(obs);
-    };
-}
-
 function onReady(Iface, Dom, Observable) {
 
     // Add all items of style object 'style' to the DOM element 'e'.
     function addStyle(e, style) {
         for (var s in style) {
             if (style.hasOwnProperty(s) && style[s] !== undefined) {
-                var methods = Iface.getInterface(style[s], Observable.observableId);
-                if (methods) {
-                    e.style[s] = methods.get(style[s]);
-                    methods.subscribe(style[s], mkSetStyle(e, s, methods.get));
+                if (Iface.supportsInterface(style[s], Observable.observableId)) {
+                    e.style[s] = style[s].get();
+                    style[s].subscribe(function(obs) {e.style[s] = obs.get();});
                 } else {
                     e.style[s] = style[s];
                 }
@@ -117,24 +81,22 @@ function onReady(Iface, Dom, Observable) {
     // Add attribute 'k' with value 'v' to the DOM element 'e'.
     function addAttribute(e, k, v) {
         if (v !== undefined) {
-            var methods = Iface.getInterface(v, Observable.observableId);
-            if (methods) {
-                e.setAttribute(k, methods.get(v));
-                methods.subscribe(v, mkSetAttribute(e, k, methods.get));
+            if (Iface.supportsInterface(v, Observable.observableId)) {
+                e.setAttribute(k, v.get());
+                v.subscribe(function(obs) {e[k] = obs.get();});
             } else {
                 e.setAttribute(k, v);
             }
         }
     }
 
-    function mkSetChildren(e, getter) {
+    function mkSetChildren(e) {
         return function (obs) {
             e.innerHTML = '';
-            var xs = getter(obs);
+            var xs = obs.get();
             for (var i = 0; i < xs.length; i++) {
                 var x = xs[i];
-                var iface = Iface.getInterface(x, Dom.toDomId);
-                e.appendChild(iface ? iface.toDom(x) : x);
+                e.appendChild(Iface.supportsInterface(x, Dom.toDomId) ? x.toDom() : x);
             }
         };
     }
@@ -173,17 +135,15 @@ function onReady(Iface, Dom, Observable) {
             if (typeof xs === 'string') {
                 e.appendChild(document.createTextNode(xs));
             } else {
-                var methods = Iface.getInterface(xs, Observable.observableId);
-                if (methods) {
+                if (Iface.supportsInterface(xs, Observable.observableId)) {
                     var xsObs = xs;
-                    xs = methods.get(xsObs);
-                    methods.subscribe(xsObs, mkSetChildren(e, methods.get));
+                    xs = xsObs.get();
+                    xsObs.subscribe(mkSetChildren(e));
                 }
 
                 for (var i = 0; i < xs.length; i++) {
                     var x = xs[i];
-                    var iface = Iface.getInterface(x, Dom.toDomId);
-                    e.appendChild(iface ? iface.toDom(x) : x);
+                    e.appendChild(Iface.supportsInterface(x, Dom.toDomId) ? x.toDom() : x);
                 }
             }
         }
@@ -232,6 +192,24 @@ function onReady(Iface, Dom, Observable) {
             name:        as.name
         };
 
+        me.toDom = function() {
+           return createElement(me);
+        };
+
+        me.setPosition = function (pos) {
+            if (!me.attributes) {
+                me.attributes = {};
+            }
+
+            if (!me.style) {
+                me.style = {};
+            }
+
+            mixin(me.style, pos);
+
+            return me;
+        };
+
         if (as.attributes !== undefined) { me.attributes = as.attributes; }
         if (as.style      !== undefined) { me.style      = as.style; }
         if (as.contents   !== undefined) { me.contents   = as.contents; }
@@ -239,13 +217,6 @@ function onReady(Iface, Dom, Observable) {
 
         return me;
     }
-
-    tag.interfaces = {};
-
-    tag.interfaces[Dom.toDomId] = {
-        toDom: createElement
-    };
-    
 
     Yoink.define({
         createElement: createElement,

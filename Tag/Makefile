@@ -34,5 +34,8 @@ $V/%Test.js.passed: %Test.js %.js
 	@$(NODE_DIR)/node $(YOINK_DIR)/YoinkAdapter.js $<
 	@touch $@
 
+serve: TestServer.go all
+	go run $<
+
 clean:
 	rm -rf $V
