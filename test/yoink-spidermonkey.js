@@ -4,7 +4,7 @@
     "use strict";
 
     var path = require('path');
-    var optparse = require('./OptParse');
+    var optparse = require('./opt-parse');
     
     var switches = [
         ['--modspec STRING', 'Declares JSON module spec']
@@ -56,7 +56,7 @@
     }
 
     // Preload yoink so that we can add the function as a global variable
-    var cnts = fs.readFileSync(__dirname + '/Yoink.js', 'utf8');
+    var cnts = fs.readFileSync(__dirname + '/../yoink.js', 'utf8');
     var YOINK = eval(cnts);
 
     // Assume any arguments are modules that should be executed

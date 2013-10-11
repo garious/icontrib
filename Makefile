@@ -1,15 +1,13 @@
-UNAME:=$(shell uname)
-FLAVOR = Debug
-V = $(UNAME)_$(FLAVOR)
+target := $(shell uname)
+flavor = Debug
+o = $(target)_$(flavor)
 
-all: $V/Ship/Yoink.js
+all: $o/ship/yoink.js
 
 clean:
-	rm -rf $V
+	rm -rf $o
 
-JS_FILES:=$(wildcard *.js)
-
-$V/Ship/%.js: %.js
+$o/ship/%.js: %.js
 	@mkdir -p $(@D)
 	cp $< $@
 

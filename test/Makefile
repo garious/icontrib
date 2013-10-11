@@ -1,12 +1,12 @@
 V = tmp
 
-all: $V/Timers.js.passed
+all: $V/timers.js.passed
 
 SRC = ..
 
-$V/%.js.passed: %.js YoinkNode.js $(SRC)/Yoink.js
+$V/%.js.passed: %.js yoink-node.js $(SRC)/yoink.js
 	@mkdir -p $(@D)
-	node YoinkNode.js $<
+	node yoink-node.js $<
 	@touch $@
 
 clean:

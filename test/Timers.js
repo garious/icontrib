@@ -1,11 +1,11 @@
 var deps = [
-    'Assert.js'
+    'assert.js'
 ];
 
-function onReady(Assert) {
+function onReady(assert) {
     var isSet = false;
 
-    Assert.assert(isSet === false);
+    assert.assert(isSet === false);
 
     function f1() {
         isSet = true;
@@ -13,7 +13,7 @@ function onReady(Assert) {
     
     // Queue the test
     function f2() {
-        Assert.assert(isSet === true);
+        assert.assert(isSet === true);
         print("passed!");
     };
 

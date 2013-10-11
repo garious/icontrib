@@ -1,5 +1,5 @@
 
-Yoink.js
+yoink.js
 ========
 
 yoink.js is a small and simple module loader for JavaScript.  The API and design
@@ -17,7 +17,7 @@ Add Yoink, load your module, and use it to construct the DOM.
 ~~~html
 <html>
     <body>
-        <script type="text/javascript" src="Yoink.js"></script>
+        <script type="text/javascript" src="yoink.js"></script>
         <script type="text/javascript">
             YOINK.require(['helloworld.js'], function(Hello) {
                 document.body.appendChild(Hello);
@@ -119,7 +119,7 @@ Chrome and Firefox via Node.js and SpiderMonkey, respectively.
 Distributuion
 -------------
 
-Get YUI Compressor to make Release/Yoink.js
+Get YUI Compressor to make Release/yoink.js
 
     $ brew install yuicompressor
 
