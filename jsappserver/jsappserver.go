@@ -84,7 +84,13 @@ var jsAppHtml = `<!DOCTYPE html>
           if (widget.getTitle) {
               document.title = title;
           }
-          document.body.appendChild(widget.toDom ? widget.toDom() : widget);
+          var nd = widget;
+          if (typeof widget === 'string') {
+              nd = document.createTextNode(widget);
+          } else if (typeof widget.toDom === 'function')  {
+              nd = widget.toDom();
+          }
+          document.body.appendChild(nd);
       });
     </script>
   </body>
