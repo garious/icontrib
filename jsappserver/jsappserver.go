@@ -84,9 +84,7 @@ var jsAppHtml = `<!DOCTYPE html>
           if (widget.getTitle) {
               document.title = title;
           }
-          if (widget.toDom) {
-              document.body.appendChild(widget.toDom());
-          }
+          document.body.appendChild(widget.toDom ? widget.toDom() : widget);
       });
     </script>
   </body>
