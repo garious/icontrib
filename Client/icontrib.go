@@ -7,9 +7,8 @@ import (
 )
 
 func main() {
-	jsappserver.HandleDir("/Tag/", "./Tag")
-	jsappserver.HandleDir("/Toys/", "./Toys")
-	jsappserver.HandleDir("/", "./Client")
+	jsappserver.HandleDir("/Tag/", "../Tag")
+	jsappserver.HandleDir("/", ".")
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
