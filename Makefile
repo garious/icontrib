@@ -17,7 +17,7 @@ JS_TESTS = $(patsubst %,$V/%.passed,$(RUN_JS_TESTS))
 
 INTEGRATION_TESTS = $(patsubst %,$V/%.passed,$(RUN_INTEGRATION_TESTS))
 
-all: server private/db/static.ok client $(INTEGRATION_TESTS)
+all: private/db/static.ok client $(INTEGRATION_TESTS)
 
 
 
@@ -27,12 +27,10 @@ server:
 
 client:
 	$(MAKE) -C Client V=$V
-	$(MAKE) -C Yoink V=$V
 
 tree_%:
 	$(MAKE) -C Server V=$V $(patsubst tree_%,%,$@)
 	$(MAKE) -C Client V=$V $@
-	$(MAKE) -C Yoink V=$V $(patsubst tree_%,%,$@)
 	$(MAKE) V=$V $(patsubst tree_%,%,$@)
 
 Client/$V/Ship/Index.js: client
