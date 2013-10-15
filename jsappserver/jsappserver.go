@@ -74,7 +74,7 @@ func exists(p string) bool {
 var jsAppHtml = `<!DOCTYPE html>
 <html>
   <head></head>
-  <body>
+  <body style="margin: 0; padding: 0">
     <script>{{.Yoink}}</script>
     <script>
       YOINK.setDebugLevel(1);
