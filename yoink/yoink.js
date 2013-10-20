@@ -37,7 +37,7 @@ var YOINK = (function () {
         },
         js: function (text, require, callback, params) {
             // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-            var f_str = '(function (Yoink) {"use strict";' + text + '})';
+            var f_str = '(function (yoink) {"use strict";' + text + '})';
             var f = eval(f_str);
             f({
                 baseUrl: require.base,
@@ -52,7 +52,7 @@ var YOINK = (function () {
     // Special handling for Internet Explorer
     if (typeof window !== 'undefined' && window.execScript) {
         defaultInterpreters.js = function (text, require, callback, params) {
-            var f_str = '(function (Yoink) {' + text + '})';
+            var f_str = '(function (yoink) {' + text + '})';
             /*global iesucks: true*/
             window.execScript('iesucks = ' + f_str);
             var f = iesucks;

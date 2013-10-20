@@ -9,10 +9,10 @@ import (
 )
 
 func TestGetPages(t *testing.T) {
-	//getJsPage(t, "/Tag", "tag", "/Tag/LayoutTest", 200)
-	//getJsPage(t, "/Tag", "tag", "/Tag/", 200)  // contains Index.js
-	//getJsPage(t, "/Tag", "tag", "/Tag", 200)   // contains Index.js
-	getJsPage(t, "/Tag", "tag", "/bogus", 404)
+	getJsPage(t, "/yoink", "../yoink", "/yoink/layout_test", 200)
+	getJsPage(t, "/yoink", "../yoink", "/yoink/", 200)  // contains index.js
+	getJsPage(t, "/yoink", "../yoink", "/yoink", 200)   // contains index.js
+	getJsPage(t, "/yoink", "../yoink", "/bogus", 404)
 }
 
 func getJsPage(t *testing.T, patt, dir, url string, code int) {

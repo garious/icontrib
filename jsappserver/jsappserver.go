@@ -37,7 +37,7 @@ func mkPage(w http.ResponseWriter, r *http.Request, url string) {
 	parsedTempl, _ := templ.Parse(jsAppHtml)
 
 	_, filename, _, _ := runtime.Caller(0)
-	yoinkBytes, err := ioutil.ReadFile(path.Join(path.Dir(filename), "../yoink.js"))
+	yoinkBytes, err := ioutil.ReadFile(path.Join(path.Dir(filename), "../yoink/yoink.js"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,10 +52,10 @@ func mkPage(w http.ResponseWriter, r *http.Request, url string) {
 func (h *JsAppServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	p := h.Root + strings.TrimPrefix(r.URL.Path, h.Prefix)
 
-	if exists(p + "Index.js") {
-		mkPage(w, r, r.URL.Path + "Index.js")
-	} else if exists(p + "index.js") {
+	if exists(p + "index.js") {
 		mkPage(w, r, r.URL.Path + "index.js")
+	} else if exists(p + "Index.js") {
+		mkPage(w, r, r.URL.Path + "Index.js")
 	} else if exists(p) {
 		http.ServeFile(w, r, p)
 	} else if exists(p + ".js") {
