@@ -58,11 +58,14 @@
 
 var deps = [
     'interface.js',
-    'to-dom.js',
     'observable.js'
 ];
 
-function onReady(iface, dom, observable) {
+var toDomInterface = {
+    toDom: function() {}
+};
+
+function onReady(iface, observable) {
 
     // Add all items of style object 'style' to the DOM element 'e'.
     function addStyle(e, style) {
@@ -96,7 +99,7 @@ function onReady(iface, dom, observable) {
             var xs = obs.get();
             for (var i = 0; i < xs.length; i++) {
                 var x = xs[i];
-                e.appendChild(iface.supportsInterface(x, dom.toDomId) ? x.toDom() : x);
+                e.appendChild(iface.supportsInterface(x, toDomInterface) ? x.toDom() : x);
             }
         };
     }
@@ -143,7 +146,7 @@ function onReady(iface, dom, observable) {
 
                 for (var i = 0; i < xs.length; i++) {
                     var x = xs[i];
-                    e.appendChild(iface.supportsInterface(x, dom.toDomId) ? x.toDom() : x);
+                    e.appendChild(iface.supportsInterface(x, toDomInterface) ? x.toDom() : x);
                 }
             }
         }
