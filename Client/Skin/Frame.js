@@ -1,9 +1,7 @@
 var deps = [
-    '/Tag/Interface.js', 
-    '/Tag/Tag.js', 
-    '/Tag/ToDom.js', 
-    '/Tag/Observable.js', 
-    '/Tag/Layout.js', 
+    '/yoink/tag.js', 
+    '/yoink/observable.js', 
+    '/yoink/Layout.js', 
     'Core.js',
     'Colors.js'
 ];
@@ -24,12 +22,12 @@ function post(path, params, callback) {
     req.send(body);
 }
 
-function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
+function onReady(tag, observable, layout, core, colors) {
 
     function loginWidget(as) {
  
         // Control the visibility of the the menu
-        var visibility = Observable.observe('hidden');
+        var visibility = observable.observe('hidden');
 
         function onMouseOver() {
             visibility.set('visible');
@@ -51,15 +49,15 @@ function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
                 window.location = '/SignUp';
             };
 
-            return Layout.spoon({align: 'right'}, [
-                Core.button({text: 'Log in', onClick: onLogin, quiet: true}),
-                Layout.pillow(0, 5),
-                Core.button({text: 'Sign up', onClick: onSignup, quiet: true}),
-                Layout.pillow(0, 15)
+            return layout.spoon({align: 'right'}, [
+                core.button({text: 'Log in', onClick: onLogin, quiet: true}),
+                layout.pillow(0, 5),
+                core.button({text: 'Sign up', onClick: onSignup, quiet: true}),
+                layout.pillow(0, 15)
             ]);
 
         } else {
-            var logoutButton = Core.image({url: Yoink.baseUrl + '/arrowdown-darkgreen.png', text: 'settings'});
+            var logoutButton = core.image({url: yoink.baseUrl + '/arrowdown-darkgreen.png', text: 'settings'});
 
             var tabStyle = {
                 width: '270px',
@@ -67,7 +65,7 @@ function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
                 borderRadius: '5px 5px 0px 0px',
                 border: '1px solid',
                 borderBottomWidth: '0px',
-                borderColor: Colors.lightColor,
+                borderColor: colors.lightColor,
                 padding: '15px 5px',
                 cssFloat: 'right'
             };
@@ -79,19 +77,19 @@ function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
                 });
             };
 
-            var menu = Core.menu({
+            var menu = core.menu({
                 width: 280,
                 top: 80,
                 visibility: visibility,
                 menuItems: [  
-                    Core.menuItem({contents: Core.h6('Manage my distribution'), onSelect: '/Me'}),
-                    Core.menuItem({contents: Core.h6('Log off'),  onSelect: logoff})
+                    core.menuItem({contents: core.h6('Manage my distribution'), onSelect: '/Me'}),
+                    core.menuItem({contents: core.h6('Log off'),  onSelect: logoff})
                 ]
             });
 
             var tabContents = [
                 as.thumbnail,
-                Tag.tag({
+                tag.tag({
                     name: 'div',
                     style: {
                         cssFloat: 'right',
@@ -101,9 +99,9 @@ function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
                 })
             ];
 
-            var tab = Tag.tag({name: 'div', style: tabStyle, contents: tabContents});
+            var tab = tag.tag({name: 'div', style: tabStyle, contents: tabContents});
 
-            return Tag.tag({
+            return tag.tag({
                 name: 'div',
                 style: {position: 'relative'},
                 contents: [tab, menu],
@@ -113,22 +111,22 @@ function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
     }
 
     function nav(as) {
-        var logo = Tag.tag({
+        var logo = tag.tag({
             name: 'a',
             attributes: {href: '/'},
             style: {position: 'absolute'},
             contents: [
-                Core.image({url: Yoink.baseUrl + '/logo.png', text: 'IContrib Home'})
+                core.image({url: yoink.baseUrl + '/logo.png', text: 'IContrib Home'})
             ]
         });
 
-        return Tag.tag({
+        return tag.tag({
             name: 'div',
             contents: [
-                Layout.pillow(0, 20),
+                layout.pillow(0, 20),
                 logo,
                 loginWidget(as),
-                Core.hr({width: 960, height: 4, color: Colors.green})
+                core.hr({width: 960, height: 4, color: colors.green})
             ]
         });
     }
@@ -140,7 +138,7 @@ function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
         return {
             constructor: webpage,
             toDom: function (me) {
-                return Iface.supportsInterface(domable, ToDom.toDomId) ? domable.toDom() : domable;
+                return domable.toDom ? domable.toDom() : domable;
             },
             getTitle: function (me) {
                 return 'IContrib.org';
@@ -154,20 +152,20 @@ function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
         if (as.auth.Right) {
             var user = as.auth.Right;
             var userName = user.firstName && user.lastName ? (user.firstName + ' ' + user.lastName) : user.email;
-            var img  = user.imageUrl ? Core.image({width: 50, height: 50, url: user.imageUrl, text: userName}) : Layout.pillow(1, 50);
-            var thumbContents = Layout.hug([
+            var img  = user.imageUrl ? core.image({width: 50, height: 50, url: user.imageUrl, text: userName}) : layout.pillow(1, 50);
+            var thumbContents = layout.hug([
                 img,
-                Layout.pillow(20, 0),
-                Layout.spoon([
-                    Layout.pillow(0, 10),
-                    Core.h3({
-                        color: Colors.greenText,
+                layout.pillow(20, 0),
+                layout.spoon([
+                    layout.pillow(0, 10),
+                    core.h3({
+                        color: colors.greenText,
                         text: userName
                     })
                 ])
             ]);
 
-            thumbnail = Tag.tag({
+            thumbnail = tag.tag({
                 name: 'a',
                 attributes: {href: '/Me'},
                 style: {textDecoration: 'none'},
@@ -176,15 +174,15 @@ function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
         }
 
         var navbar = nav({thumbnail: thumbnail, auth: as.auth});
-        var body = Tag.tag({name: 'div', contents: [as.contents]});
+        var body = tag.tag({name: 'div', contents: [as.contents]});
 
-        var node = Tag.tag({
+        var node = tag.tag({
             name: 'div',
             style: {margin: 'auto', width: '960px'},
             contents: [
-                Layout.spoon([
+                layout.spoon([
                     navbar, 
-                    Layout.pillow(50), 
+                    layout.pillow(50), 
                     body
                 ])
             ]
@@ -199,7 +197,7 @@ function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
             as = {};
         }
 
-        return Tag.tag({
+        return tag.tag({
             name: 'div',
             attributes: as,
             style: {
@@ -208,13 +206,13 @@ function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
                 textAlign: 'center'
             },
             contents: [
-                Core.hr(),
-                Tag.tag({name: 'div', style: {padding: '20px'}, contents: xs})
+                core.hr(),
+                tag.tag({name: 'div', style: {padding: '20px'}, contents: xs})
             ]
         }); 
     }
 
-    Yoink.define({
+    yoink.define({
         nav: nav,
         frame: frame,
         footer: footer,
@@ -224,5 +222,5 @@ function onReady(Iface, Tag, ToDom, Observable, Layout, Core, Colors) {
 
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 

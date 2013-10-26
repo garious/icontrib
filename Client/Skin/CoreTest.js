@@ -1,47 +1,47 @@
 var deps = [
     'Core.js',
-    '/Tag/Tag.js'
+    '/yoink/tag.js'
 ];
 
-function onReady(Core, Tag) {
+function onReady(core, tag) {
 
     function row(nm, a, b) {
-        return Tag.tag({name: 'tr', contents: [
-            Tag.tag({name: 'td', contents: [nm]}),
-            Tag.tag({name: 'td', contents: [a]}),
-            Tag.tag({name: 'td', contents: [b]})
+        return tag.tag({name: 'tr', contents: [
+            tag.tag({name: 'td', contents: [nm]}),
+            tag.tag({name: 'td', contents: [a]}),
+            tag.tag({name: 'td', contents: [b]})
         ]});
     }
 
     function main() {
 
-        return Tag.tag({
+        return tag.tag({
             name: 'table',
             attributes: {border: 1, cellpadding: 20},
             contents: [
-                //Tag.tag('thead', [
-                    Tag.tag('tr', [ Tag.tag('th', 'Name'), Tag.tag('th', 'Raw'), Tag.tag('th', 'Stylized') ]),
+                //tag.tag('thead', [
+                    tag.tag('tr', [ tag.tag('th', 'Name'), tag.tag('th', 'Raw'), tag.tag('th', 'Stylized') ]),
                 //]),
-                //Tag.tag('tbody', [
-                    row('h1',     Tag.tag({name: 'h1', contents: 'Tag.h1'}),              Core.h1('Core.h1')),
-                    row('h2',     Tag.tag({name: 'h2', contents: 'Tag.h2'}),              Core.h2('Core.h2')),
-                    row('h3',     Tag.tag({name: 'h3', contents: 'Tag.h3'}),              Core.h3('Core.h3')),
-                    row('h4',     Tag.tag({name: 'h4', contents: 'Tag.h4'}),              Core.h4('Core.h4')),
-                    row('h5',     Tag.tag({name: 'h5', contents: 'Tag.h5'}),              Core.h5('Core.h5')),
-                    row('h6',     Tag.tag({name: 'h6', contents: 'Tag.h6'}),              Core.h6('Core.h6')),
-                    row('p',      Tag.tag({name: 'p', contents: 'Tag.p'}),                Core.p('Core.p')),
-                    row('a',      Tag.tag({name: 'a', attributes: {href: '#'}, contents: ['Tag.a']}), Core.hyperlink({url: '#', text: 'Core.hyperlink'})),
-                    row('label',  Tag.tag({name: 'label', contents: 'Tag.label'}),        Core.label('Core.label')),
-                    row('button', Tag.tag({name: 'button', contents: 'Tag.button'}),      Core.button({href: '#', text: 'Core.button'})),
-                    row('box',    Tag.tag({name: 'div', contents: [Tag.tag({name: 'p', contents: ['Tag.div']})]}), Core.box({contents: Core.p('Core.box')}))
+                //tag.tag('tbody', [
+                    row('h1',     tag.tag({name: 'h1', contents: 'tag.h1'}),              core.h1('core.h1')),
+                    row('h2',     tag.tag({name: 'h2', contents: 'tag.h2'}),              core.h2('core.h2')),
+                    row('h3',     tag.tag({name: 'h3', contents: 'tag.h3'}),              core.h3('core.h3')),
+                    row('h4',     tag.tag({name: 'h4', contents: 'tag.h4'}),              core.h4('core.h4')),
+                    row('h5',     tag.tag({name: 'h5', contents: 'tag.h5'}),              core.h5('core.h5')),
+                    row('h6',     tag.tag({name: 'h6', contents: 'tag.h6'}),              core.h6('core.h6')),
+                    row('p',      tag.tag({name: 'p', contents: 'tag.p'}),                core.p('core.p')),
+                    row('a',      tag.tag({name: 'a', attributes: {href: '#'}, contents: ['tag.a']}), core.hyperlink({url: '#', text: 'core.hyperlink'})),
+                    row('label',  tag.tag({name: 'label', contents: 'tag.label'}),        core.label('core.label')),
+                    row('button', tag.tag({name: 'button', contents: 'tag.button'}),      core.button({href: '#', text: 'core.button'})),
+                    row('box',    tag.tag({name: 'div', contents: [tag.tag({name: 'p', contents: ['tag.div']})]}), core.box({contents: core.p('core.box')}))
                 //])
             ]
         });
 
     }
 
-    Yoink.define(main());
+    yoink.define(main());
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 

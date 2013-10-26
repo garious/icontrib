@@ -4,7 +4,7 @@
 // Example:  http://localhost/JsonTest?url=/charity/popular.json
 
 var deps = [
-    Yoink.params.url
+    yoink.params.url
 ];
 
 function onReady(Data) {
@@ -15,8 +15,8 @@ function onReady(Data) {
     var s = JSON.stringify(Data, null, 4);
     console.log(s);
 
-    Yoink.define('check your javascript console');
+    yoink.define('check your javascript console');
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 

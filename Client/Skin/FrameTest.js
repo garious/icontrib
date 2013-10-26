@@ -3,14 +3,14 @@ var deps = [
     'Core.js'
 ];
 
-function onReady(Frame, Core) {
+function onReady(frame, core) {
 
-    var node = Frame.footer({style: {backgroundColor: '#EEE'}}, [
-        Core.hyperlink({url: '#', text: 'blah'})
+    var node = frame.footer({style: {backgroundColor: '#EEE'}}, [
+        core.hyperlink({url: '#', text: 'blah'})
     ]);
 
-    Yoink.define(node);
+    yoink.define(node);
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 

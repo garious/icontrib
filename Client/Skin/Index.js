@@ -1,32 +1,32 @@
 var deps = [
-    '/Tag/Tag.js',
-    '/Tag/Layout.js',
+    '/yoink/tag.js',
+    '/yoink/layout.js',
     'Core.js'
 ];
 
 var modules = ['Chart', 'Colors', 'Core', 'CoreTest', 'Donor', 'Frame', 'FrameTest', 'Slider'];
 
-function onReady (Tag, Layout, Core) {
+function onReady (tag, layout, core) {
 
     function mkRow (nm) {
-        return Core.hyperlink({text: nm, url: nm});
+        return core.hyperlink({text: nm, url: nm});
     }
     
     var rows = [
-        Core.h3('Modules')
+        core.h3('Modules')
     ];
 
-    var body = Tag.tag({
+    var body = tag.tag({
         name: 'div',
         style: {margin: '10px'},
         contents: [
-            Layout.spoon(rows.concat(modules.map(mkRow)))
+            layout.spoon(rows.concat(modules.map(mkRow)))
 
         ]
     });
 
-    Yoink.define(body);
+    yoink.define(body);
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 

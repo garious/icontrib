@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"github.com/garious/yoink/jsappserver"
+	"github.com/garious/yoink/yoink"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -14,7 +15,7 @@ func main() {
 	http.HandleFunc("/donor/checkUser.json", checkUser)
 	http.Handle("/donor/", http.FileServer(http.Dir("../private/static")))
 	http.Handle("/charity/", http.FileServer(http.Dir("../private/static")))
-	jsappserver.HandleDir("/Tag/", "../Tag")
+	jsappserver.HandleDir("/yoink/", yoink.Dir())
 	jsappserver.HandleDir("/", ".")
 
 	log.Fatal(http.ListenAndServe(":8080", nil))

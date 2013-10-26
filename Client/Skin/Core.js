@@ -1,9 +1,9 @@
 var deps = [
-    '/Tag/Tag.js',
+    '/yoink/tag.js',
     'Colors.js'
 ];
 
-function onReady(Tag, Colors) {
+function onReady(tag, colors) {
 
     var defaultFont = "/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
     var defaultFontSize = 15;
@@ -25,9 +25,9 @@ function onReady(Tag, Colors) {
             mouseout:  function(evt) { evt.target.style.textDecoration = 'none'; }
         };
 
-        return Tag.tag({
+        return tag.tag({
             name: 'a',
-            style: as.style ? Tag.mixin(sty, as.style) : sty,
+            style: as.style ? tag.mixin(sty, as.style) : sty,
             attributes: {href: as.url},
             contents: [as.text],
             handlers: handlers
@@ -42,9 +42,9 @@ function onReady(Tag, Colors) {
             borderRadius: as.borderRadius && as.borderRadius + 'px'
         };
 
-        return Tag.tag({
+        return tag.tag({
             name: 'img',
-            style: as.style ? Tag.mixin(sty, as.style) : sty,
+            style: as.style ? tag.mixin(sty, as.style) : sty,
             attributes: {src: as.url, alt: as.text},
             handlers: {click: as.onClick}
         });
@@ -58,7 +58,7 @@ function onReady(Tag, Colors) {
             height: height,
             width: width,
             border: '2px solid',
-            borderColor: Colors.gray,
+            borderColor: colors.gray,
             borderRadius: '2px',
             font: font,
             paddingLeft: '10px',
@@ -80,17 +80,17 @@ function onReady(Tag, Colors) {
 
         var handlers = {keyup: as.onKeyUp, change: as.onChange};
 
-        return Tag.tag({
+        return tag.tag({
             name: 'input',
             attributes: attrs,
-            style: as.style ? Tag.mixin(sty, as.style) : sty,
+            style: as.style ? tag.mixin(sty, as.style) : sty,
             handlers: handlers
         });
     }
 
     function button(as) {
-        var color      = as.loud ? Colors.red        : as.quiet ? Colors.gray       : Colors.green;
-        var focusColor = as.loud ? Colors.lightColor : as.quiet ? Colors.lightColor : Colors.lightGreen;
+        var color      = as.loud ? colors.red        : as.quiet ? colors.gray       : colors.green;
+        var focusColor = as.loud ? colors.lightColor : as.quiet ? colors.lightColor : colors.lightGreen;
 
         var handlers = {
             mouseover: function(evt) { evt.target.style.backgroundColor = focusColor; },
@@ -109,10 +109,10 @@ function onReady(Tag, Colors) {
             borderRadius: '2px'
         };
 
-        return Tag.tag({
+        return tag.tag({
             name: 'a',
             attributes: {href: as.href || '#'},
-            style: as.style ? Tag.mixin(sty, as.style) : sty,
+            style: as.style ? tag.mixin(sty, as.style) : sty,
             contents: as.text,
             handlers: handlers
         });
@@ -134,9 +134,9 @@ function onReady(Tag, Colors) {
             padding: padding + 'px'
         };
 
-        return Tag.tag({
+        return tag.tag({
             name: 'div',
-            style: as.style ? Tag.mixin(sty, as.style) : sty,
+            style: as.style ? tag.mixin(sty, as.style) : sty,
             contents: [e],
             handlers: {keyup: as.onKeyUp}
         });
@@ -158,7 +158,7 @@ function onReady(Tag, Colors) {
         var sty = {
             visibility: as.visibility,
             border: '1px solid',
-            borderColor: Colors.lightColor,
+            borderColor: colors.lightColor,
             borderRadius: '0px 0px 5px 5px',
             width:  as.width + 'px',
             position: 'absolute',
@@ -168,9 +168,9 @@ function onReady(Tag, Colors) {
             zIndex: 1
         };
 
-        return Tag.tag({
+        return tag.tag({
             name: 'div',
-            style: as.style ? Tag.mixin(sty, as.style) : sty,
+            style: as.style ? tag.mixin(sty, as.style) : sty,
             contents: listItems
         });
     }
@@ -189,13 +189,13 @@ function onReady(Tag, Colors) {
             padding: '10px'
         };
 
-        var div = Tag.tag({
+        var div = tag.tag({
             name: 'div',
-            style: as.style ? Tag.mixin(sty, as.style) : sty,
+            style: as.style ? tag.mixin(sty, as.style) : sty,
             contents: [as.contents],
             handlers: {click: onSelect}
         });
-        return Tag.tag({name: 'a', attributes: {href: '#'}, style: {textDecoration: 'none'}, contents: [div]});
+        return tag.tag({name: 'a', attributes: {href: '#'}, style: {textDecoration: 'none'}, contents: [div]});
     }
 
     // Create the style attribute for HTML header elements
@@ -205,7 +205,7 @@ function onReady(Tag, Colors) {
             font: font,
             fontSize: as.fontSize + 'px',
             margin: 0,
-            color: Colors.darkColor
+            color: colors.darkColor
         };
     }
 
@@ -222,15 +222,15 @@ function onReady(Tag, Colors) {
         function header(as) {
             var s = typeof as === 'string' ? as : as.text;
 
-            var sty = hStyle({fontSize: Colors['h' + n + 'Size']}, s); 
+            var sty = hStyle({fontSize: colors['h' + n + 'Size']}, s); 
 
             if (typeof as === 'object') {
                 sty.color = as.color !== undefined ? as.color : sty.color;
             }
 
-            return Tag.tag({
+            return tag.tag({
                 name: 'h' + n,
-                style: as.style ? Tag.mixin(sty, as.style) : sty,
+                style: as.style ? tag.mixin(sty, as.style) : sty,
                 contents: s
             });
         }
@@ -239,7 +239,7 @@ function onReady(Tag, Colors) {
     }
 
     function label(s) {
-        return Tag.tag({name: 'label', style: {font: font}, contents: s});
+        return tag.tag({name: 'label', style: {font: font}, contents: s});
     }
 
     function p(as) {
@@ -249,9 +249,9 @@ function onReady(Tag, Colors) {
 
         var sty = {font: font, margin: '0px', width: as.width && as.width + 'px'};
 
-        return Tag.tag({
+        return tag.tag({
             name: 'p',
-            style: as.style ? Tag.mixin(sty, as.style) : sty,
+            style: as.style ? tag.mixin(sty, as.style) : sty,
             contents: as.text
         });
     }
@@ -272,14 +272,14 @@ function onReady(Tag, Colors) {
             clear: 'both'     // Required by Firefox and Opera
         };
 
-        return Tag.tag({
+        return tag.tag({
             name: 'hr',
-            style: as.style ? Tag.mixin(sty, as.style) : sty,
+            style: as.style ? tag.mixin(sty, as.style) : sty,
             attributes: {noshade: true, size: 1}
         });
     }
 
-    Yoink.define({
+    yoink.define({
          hyperlink: hyperlink,
          image: image,
          input: input,
@@ -300,5 +300,5 @@ function onReady(Tag, Colors) {
     });
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 

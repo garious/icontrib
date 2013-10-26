@@ -1,28 +1,28 @@
 var deps = [
     'Chart.js',
-    '/Tag/Observable.js'
+    '/yoink/observable.js'
 ];
 
-function onReady(Chart, Observable) {
+function onReady(chart, observable) {
 
     var dist = [
-        Observable.observe(5),
-        Observable.observe(95)
+        observable.observe(5),
+        observable.observe(95)
     ];
 
     // TODO: support this variation instead
-    //var dist = Observable.observe([
+    //var dist = observable.observe([
     //    5,
     //    95
     //]);
 
-    var chart = Chart.pie({
+    var chart = chart.pie({
         distribution: dist
     });
 
-    Yoink.define(chart);
+    yoink.define(chart);
 
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 

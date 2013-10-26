@@ -1,5 +1,5 @@
 all:
 
-serve: TestServer.go
+serve: server.go
 	go run $<
 

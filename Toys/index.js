@@ -1,13 +1,13 @@
 var deps = [
-    '/Tag/Tag.js',
+    '/yoink/tag.js',
 ];
 
-var modules = ['CanvasExample', 'CanvasPieExample'];
+var modules = ['canvas-example', 'canvas-pie-example'];
 
-function onReady (Tag) {
+function onReady (tag) {
 
     function mkRow (nm) {
-        return Tag.tag({
+        return tag.tag({
             name: 'a',
             attributes: {href: nm},
             style: {display: 'block'},
@@ -16,17 +16,17 @@ function onReady (Tag) {
     }
     
     var rows = [
-        Tag.tag({name: 'h3', contents: 'Modules'})
+        tag.tag({name: 'h3', contents: 'Modules'})
     ];
 
-    var body = Tag.tag({
+    var body = tag.tag({
         name: 'div',
         style: {margin: '10px'},
         contents: rows.concat(modules.map(mkRow))
     });
 
-    Yoink.define(body);
+    yoink.define(body);
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 

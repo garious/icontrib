@@ -29,5 +29,5 @@ for (var i = 0; i < 4; i++) {
     }
 }
 
-Yoink.define( canvas );
+yoink.define( canvas );
 

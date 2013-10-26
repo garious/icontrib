@@ -1,26 +1,26 @@
 var deps = [
-    '/Tag/Tag.js', 
-    '/Tag/Layout.js', 
+    '/yoink/tag.js', 
+    '/yoink/layout.js', 
     '/Skin/Core.js',
     '/Skin/Frame.js',
     '/Skin/Colors.js'
 ];
 
-function onReady(Tag, Layout, Core, Frame, Colors) {
+function onReady(tag, layout, core, frame, colors) {
 
-    var logo = Tag.tag({
+    var logo = tag.tag({
         name: 'a',
         attributes: {href: '/', tabindex: -1},
         style: {width: '129px', height: '70px'}, 
         contents: [
-            Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
+            core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
         ]
     });
 
-    var badLogin = Tag.tag({
+    var badLogin = tag.tag({
         name: 'span',
         attributes: {hidden: true},
-        style: {height: '20px', width: '200px', color: Colors.red},
+        style: {height: '20px', width: '200px', color: colors.red},
         contents: 'bad username or password'
     });
 
@@ -36,10 +36,10 @@ function onReady(Tag, Layout, Core, Frame, Colors) {
         formValues.confirmPassword = evt.target.value;
     }
 
-    var email = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Email', autofocus: true, onChange: onEmailChanged});
-    var password = Core.input({type: 'password', size: 18, width: 300, placeholder: 'Password', onChange: onPasswordChanged});
+    var email = core.input({type: 'text', size: 18, width: 300, placeholder: 'Email', autofocus: true, onChange: onEmailChanged});
+    var password = core.input({type: 'password', size: 18, width: 300, placeholder: 'Password', onChange: onPasswordChanged});
 
-    var confirmPassword = Core.input({type: 'password', size: 18, width: 300, placeholder: 'Confirm Password', onChange: onConfirmPasswordChanged});
+    var confirmPassword = core.input({type: 'password', size: 18, width: 300, placeholder: 'Confirm Password', onChange: onConfirmPasswordChanged});
 
     function submit(evt) {
         evt.preventDefault();
@@ -47,7 +47,7 @@ function onReady(Tag, Layout, Core, Frame, Colors) {
         if (formValues.password !== '' && (formValues.password !== formValues.confirmPassword)) {
             alert('Passwords do not match!');
         } else {
-            Frame.post('/auth/add', formValues, function(dat) {
+            frame.post('/auth/add', formValues, function(dat) {
                 var data = JSON.parse(dat);
                 if(data.Left) {
                     badLogin.hidden = false;
@@ -66,38 +66,38 @@ function onReady(Tag, Layout, Core, Frame, Colors) {
         }
     }
 
-    var widget = Layout.spoon([
-        Core.h4('Create an account'),
-        Layout.pillow(0, 15),
+    var widget = layout.spoon([
+        core.h4('Create an account'),
+        layout.pillow(0, 15),
         email,
-        Layout.pillow(0, 15),
+        layout.pillow(0, 15),
         password,
-        Layout.pillow(0, 15),
+        layout.pillow(0, 15),
         confirmPassword,
-        Layout.pillow(0, 15),
-        Core.button({text: 'Create account', onClick: submit, width: 314})
+        layout.pillow(0, 15),
+        core.button({text: 'Create account', onClick: submit, width: 314})
     ]);
 
-    var box = Core.box({
+    var box = core.box({
         width: 355,
         contents: widget,
         onKeyUp: onKeyUp
     });
 
-    var node = Tag.tag({
+    var node = tag.tag({
         name: 'div',
         style: {margin: '0px auto', width: '335px', textAlign: 'center'},
         contents: [
-            Tag.tag('br'),
+            tag.tag('br'),
             logo,
-            Tag.tag('br'),
-            Tag.tag('br'),
+            tag.tag('br'),
+            tag.tag('br'),
             box
         ]
     });
 
-    Yoink.define( Frame.webpage(node) );
+    yoink.define( frame.webpage(node) );
 }
  
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 

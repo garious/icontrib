@@ -1,9 +1,8 @@
 var deps = [
     '/donor/checkUser.json',
-    '/Tag/Interface.js', 
-    '/Tag/Tag.js', 
-    '/Tag/Layout.js', 
-    '/Tag/Observable.js', 
+    '/yoink/tag.js', 
+    '/yoink/layout.js', 
+    '/yoink/observable.js', 
     '/Skin/Frame.js',
     '/Skin/Core.js',
     '/Skin/Donor.js',
@@ -23,7 +22,7 @@ function removeItem(xs, x) {
     return xs;
 }
 
-function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart, Slider, Colors, Popular) { 
+function onReady(auth, tag, layout, observable, frame, core, donor, chart, slider, colors, popular) { 
 
     function fundRow(x, rowsObs, rows, obs, colorObs, colors, dist, inputs, colorAttrs) {
 
@@ -48,11 +47,11 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
             }
         }
 
-        var rowBorder = Observable.observe('1px solid white');
-        var deleteObs = Observable.observe('hidden');
+        var rowBorder = observable.observe('1px solid white');
+        var deleteObs = observable.observe('hidden');
 
         function onMouseOver(evt) {
-            rowBorder.set('1px solid ' + Colors.gray);
+            rowBorder.set('1px solid ' + colors.gray);
             deleteObs.set('visible');
         }
 
@@ -63,7 +62,7 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
 
         var rowStyle = {width: '100%', borderRadius: '10px', border: rowBorder, padding: '5px'};
         var rowChildren = [];
-        var row = Tag.tag({name: 'div', style: rowStyle, contents: rowChildren, handlers: {mouseover: onMouseOver, mouseout: onMouseOut}});
+        var row = tag.tag({name: 'div', style: rowStyle, contents: rowChildren, handlers: {mouseover: onMouseOver, mouseout: onMouseOut}});
 
         function onDeleteClicked(evt) {
             evt.preventDefault();
@@ -77,14 +76,14 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
             onRangeChange({target: {value: '0'}});
         }
    
-        var percentage = Observable.thunk([obs], function(n){return Math.round(n * 10) / 10 + '%';});
+        var percentage = observable.thunk([obs], function(n){return Math.round(n * 10) / 10 + '%';});
 
-        var deleteImg = Tag.tag({name: 'img', attributes: {src: 'Delete.png', alt: 'delete'}, style: {padding: '5px', visibility: deleteObs, borderWidth: '0px'}});
-        var deleteLink = Tag.tag({name: 'a', attributes: {href: '#'}, contents: [deleteImg], handlers: {click: onDeleteClicked}});
+        var deleteImg = tag.tag({name: 'img', attributes: {src: 'Delete.png', alt: 'delete'}, style: {padding: '5px', visibility: deleteObs, borderWidth: '0px'}});
+        var deleteLink = tag.tag({name: 'a', attributes: {href: '#'}, contents: [deleteImg], handlers: {click: onDeleteClicked}});
 
         var slider;
         if (navigator.userAgent.indexOf("Firefox")!=-1) {
-             slider = Slider.slider({value: obs, width: 200, height: 4, color: colorObs, marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, onChange: onRangeChange});
+             slider = slider.slider({value: obs, width: 200, height: 4, color: colorObs, marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, onChange: onRangeChange});
         } else {
              var rangeStyle = {
                  WebkitAppearance: 'none',
@@ -96,7 +95,7 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
              };
 
              // At the time of this writing, this is only expected to work in Chrome, Safari, and Opera.
-             slider = Tag.tag({
+             slider = tag.tag({
                  name: 'input',
                  attributes: {type: 'range', value: obs, min: 1, max: 99},
                  style: rangeStyle,
@@ -104,16 +103,16 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
              });
         }
 
-        var cols = Layout.hug([
-            Core.hyperlink({url: '/Charity?id=' + x.cid, text: x.name, marginTop: 6, marginRight: 10}),
+        var cols = layout.hug([
+            core.hyperlink({url: '/Charity?id=' + x.cid, text: x.name, marginTop: 6, marginRight: 10}),
             slider,
-            Layout.pillow(10, 0),
-            Core.input({type: 'text', size: 5, disabled: true, value: percentage}),
-            Layout.pillow(10, 0),
+            layout.pillow(10, 0),
+            core.input({type: 'text', size: 5, disabled: true, value: percentage}),
+            layout.pillow(10, 0),
             deleteLink
         ]);
 
-        var rightCol = Tag.tag({name: 'div', style: {cssFloat: 'right'}, contents: [cols]});
+        var rightCol = tag.tag({name: 'div', style: {cssFloat: 'right'}, contents: [cols]});
 
         rowChildren.push(rightCol);
         return row;
@@ -121,20 +120,20 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
 
     function fundContents(dist, inputs, colors) {
         var rows = [];
-        var rowsObs = Observable.observe(rows);
+        var rowsObs = observable.observe(rows);
         var colorAttrs = [];
         for (var j = 0; j < dist.length; j += 1) {
-            var colorObs = Observable.observe(colors[j % colors.length]);
+            var colorObs = observable.observe(colors[j % colors.length]);
             colorAttrs.push(colorObs);
             var row = fundRow(dist[j], rowsObs, rows, inputs[j], colorObs, colors, dist, inputs, colorAttrs);
             rows.push(row);
         }
 
-        return Layout.spoon({align: 'right'}, rowsObs);
+        return layout.spoon({align: 'right'}, rowsObs);
     }
 
     function distributionTable(dist, inputs, colors) {
-        return Layout.hug({width: 550}, [Layout.pillow(30), fundContents(dist, inputs, colors)]);
+        return layout.hug({width: 550}, [layout.pillow(30), fundContents(dist, inputs, colors)]);
     }
 
     function dashboard(as) {
@@ -151,22 +150,22 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
         for (var j = 0; j < dist.length; j += 1) {
             var x = dist[j];
             var pct = x.shares * 100 / total;
-            var obs = Observable.observe(pct);
+            var obs = observable.observe(pct);
             inputs.push(obs);
         }
 
-        var colors = Colors.dashboardColors;
-        var pie = Chart.pie({distribution: inputs, height: 220, padding: 15, colors: colors});
-        var pieTin = Tag.tag({name: 'div', style: {margin: 'auto 0px', width: '100%', textAlign: 'center'}, contents: [pie]});
+        var colors = colors.dashboardColors;
+        var pie = chart.pie({distribution: inputs, height: 220, padding: 15, colors: colors});
+        var pieTin = tag.tag({name: 'div', style: {margin: 'auto 0px', width: '100%', textAlign: 'center'}, contents: [pie]});
 
         if (dist.length > 0) {
             rows.push( pieTin );
-            rows.push( Layout.pillow(0, 20) );
+            rows.push( layout.pillow(0, 20) );
         }
 
         function saveChanges() {
             // Update the database
-            Frame.post('/donor/update', {distribution: dist}, function (dat) {
+            frame.post('/donor/update', {distribution: dist}, function (dat) {
                 var data = JSON.parse(dat);
                 if (data.Left) {
                     alert(data.Left);
@@ -183,41 +182,41 @@ function onReady(Auth, Iface, Tag, Layout, Observable, Frame, Core, Donor, Chart
 
         rows.push( distributionTable(dist, inputs, colors) );
 
-        var buttons = Layout.hug({width: 100}, [
-            Core.button({href: '#', text: 'Cancel', quiet: true, onClick: cancelChanges}),
-            Layout.pillow(10, 0),
-            Core.button({href: '#', text: 'Save Changes', loud: true, onClick: saveChanges})
+        var buttons = layout.hug({width: 100}, [
+            core.button({href: '#', text: 'Cancel', quiet: true, onClick: cancelChanges}),
+            layout.pillow(10, 0),
+            core.button({href: '#', text: 'Save Changes', loud: true, onClick: saveChanges})
         ]);
 
         rows.push( buttons );
 
-        return Layout.spoon(rows);
+        return layout.spoon(rows);
     }
 
     var dash;
-    if (Auth.Right) {
-        dash = dashboard({user: Auth.Right});
+    if (auth.Right) {
+        dash = dashboard({user: auth.Right});
     } else {
-        dash = Core.hyperlink({text: 'Please log in to modify your charitable distribution.', url: '/LogIn'});
+        dash = core.hyperlink({text: 'Please log in to modify your charitable distribution.', url: '/LogIn'});
     }
 
-    var main = Frame.frame({
-        contents: Layout.spoon([
-            Layout.hug([
-                Core.box({
+    var main = frame.frame({
+        contents: layout.spoon([
+            layout.hug([
+                core.box({
                     width: 600,
                     contents: dash
                 }),
-                Layout.pillow(20),
-                Donor.recommendedFunds({funds: Popular})
+                layout.pillow(20),
+                donor.recommendedFunds({funds: popular})
             ]),
-            Layout.pillow(20) 
+            layout.pillow(20) 
         ]),
-        auth: Auth
+        auth: auth
     });
 
-    Yoink.define(main);
+    yoink.define(main);
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
  

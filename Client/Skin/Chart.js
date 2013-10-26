@@ -1,12 +1,11 @@
 var deps = [
-    '/Tag/Interface.js',
-    '/Tag/ToDom.js',
-    '/Tag/Tag.js',
-    '/Tag/Observable.js',
+    '/yoink/interface.js',
+    '/yoink/tag.js',
+    '/yoink/observable.js',
     'Colors.js'
 ];
 
-function onReady(Iface, ToDom, Tag, Observable, Colors) {
+function onReady(iface, tag, observable, colors) {
 
 
     // Uses HTML's canvas element to generate an interactive pie chart
@@ -17,7 +16,7 @@ function onReady(Iface, ToDom, Tag, Observable, Colors) {
             toDom: function (me) {
                 var as = me.attributes;
 
-                var e = Tag.tag({
+                var e = tag.tag({
                     name: 'div',
                     style: {width: as.width + 'px', height: as.height + 'px'}
                 });
@@ -25,7 +24,7 @@ function onReady(Iface, ToDom, Tag, Observable, Colors) {
                 var div = e.toDom();
 
                 function draw() {
-                     var distSnapshot = Observable.snapshot(as.distribution);
+                     var distSnapshot = observable.snapshot(as.distribution);
                      var e = pieSnapshot({distribution: distSnapshot, width: as.width, height: as.height, padding: as.padding, colors: as.colors});
                      div.innerHTML = '';
                      div.appendChild( e.toDom() );
@@ -33,7 +32,7 @@ function onReady(Iface, ToDom, Tag, Observable, Colors) {
 
                 for (var i = 0; i < as.distribution.length; i++) {
                     var obs = as.distribution[i];
-                    if (Iface.supportsInterface(obs, Observable.observableId)) {
+                    if (iface.supportsInterface(obs, observable.observableId)) {
                         obs.subscribe(draw);
                     }
                 }
@@ -45,7 +44,7 @@ function onReady(Iface, ToDom, Tag, Observable, Colors) {
         };
     }
 
-    var defaultColors = Colors.pieColors;
+    var defaultColors = colors.pieColors;
 
     function pieSnapshot(as) {
 
@@ -106,7 +105,7 @@ function onReady(Iface, ToDom, Tag, Observable, Colors) {
             }
         }
 
-        return Tag.tag({
+        return tag.tag({
             name: 'div',
             style: {width: width + 'px', height: height + 'px', display: 'inline-block'},
             contents: [canvas]
@@ -114,12 +113,12 @@ function onReady(Iface, ToDom, Tag, Observable, Colors) {
         
     }
 
-    Yoink.define({
+    yoink.define({
         pie: pie,
         pieSnapshot: pieSnapshot
     });
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 
 

@@ -1,35 +1,33 @@
 var deps = [
     '/auth/check.json',
-    '/Tag/Interface.js',
-    '/Tag/TwoDimensional.js',
-    '/Tag/Tag.js', 
-    '/Tag/Layout.js', 
-    '/Tag/Observable.js', 
+    '/yoink/tag.js', 
+    '/yoink/layout.js', 
+    '/yoink/observable.js', 
     '/Skin/Core.js',
     '/Skin/Frame.js',
     '/Skin/Colors.js'
 ];
 
-function onReady(Auth, Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colors) {
-    if (Auth.Left) {
+function onReady(auth, tag, layout, observable, core, frame, colors) {
+    if (auth.Left) {
         window.location = '/SignUp';
         return;
     }
 
-    var logo = Tag.tag({
+    var logo = tag.tag({
         name: 'a',
         attributes: {href: '/', tabindex: -1},
         style: {width: '129px', height: '70px'},
         contents: [
-            Core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
+            core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
         ]
     });
 
-    var hidden = Observable.observe('hidden');
+    var hidden = observable.observe('hidden');
 
-    var badLogin = Tag.tag({
+    var badLogin = tag.tag({
         name: 'span',
-        style: {visibility: hidden, color: Colors.red},
+        style: {visibility: hidden, color: colors.red},
         contents: 'bad username or password'
     });
 
@@ -46,14 +44,14 @@ function onReady(Auth, Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colo
         };
     }
 
-    var orgName = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Organization name', autofocus: true, onChange: mkOnChanged('organizationName')});
-    var orgEin = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Employer Identification Number (EIN)', onChange: mkOnChanged('ein')});
-    var orgUrl = Core.input({type: 'text', size: 18, width: 300, placeholder: 'Website URL', onChange: mkOnChanged('companyWebsite')});
-    var orgPayPal = Core.input({type: 'text', size: 18, width: 300, placeholder: 'PayPal address', onChange: mkOnChanged('paymentAddress')});
+    var orgName = core.input({type: 'text', size: 18, width: 300, placeholder: 'Organization name', autofocus: true, onChange: mkOnChanged('organizationName')});
+    var orgEin = core.input({type: 'text', size: 18, width: 300, placeholder: 'Employer Identification Number (EIN)', onChange: mkOnChanged('ein')});
+    var orgUrl = core.input({type: 'text', size: 18, width: 300, placeholder: 'Website URL', onChange: mkOnChanged('companyWebsite')});
+    var orgPayPal = core.input({type: 'text', size: 18, width: 300, placeholder: 'PayPal address', onChange: mkOnChanged('paymentAddress')});
 
     function onRegister (evt) {
         evt.preventDefault();
-        Frame.post('/charity/update', formValues, function(data) {
+        frame.post('/charity/update', formValues, function(data) {
             var dataString = JSON.stringify(data);
             console.log(dataString);
         });
@@ -66,47 +64,47 @@ function onReady(Auth, Iface, TwoDim, Tag, Layout, Observable, Core, Frame, Colo
         }
     }
 
-    var widget = Layout.spoon([
-        Core.h4('Charity Registration'),
-        Layout.pillow(0, 15),
+    var widget = layout.spoon([
+        core.h4('Charity Registration'),
+        layout.pillow(0, 15),
         orgName,
-        Layout.pillow(0, 15),
+        layout.pillow(0, 15),
         orgEin,
-        Layout.pillow(0, 15),
+        layout.pillow(0, 15),
         orgUrl,
-        Layout.pillow(0, 15),
+        layout.pillow(0, 15),
         orgPayPal,
-        Layout.pillow(0, 10),
-        Layout.hug([
-            Tag.tag({name: 'input', attributes: {type: 'checkbox'}, style: {marginTop: '5px'}}),
-            Layout.pillow(5, 0),
-            Core.p('I agree to the'),
-            Layout.pillow(5, 0),
-            Core.hyperlink({text: 'Terms and Conditions', url: 'toa.html'})
+        layout.pillow(0, 10),
+        layout.hug([
+            tag.tag({name: 'input', attributes: {type: 'checkbox'}, style: {marginTop: '5px'}}),
+            layout.pillow(5, 0),
+            core.p('I agree to the'),
+            layout.pillow(5, 0),
+            core.hyperlink({text: 'Terms and Conditions', url: 'toa.html'})
         ]),
-        Layout.pillow(0, 10),
-        Core.button({text: 'Register organization', onClick: onRegister, width: 314})
+        layout.pillow(0, 10),
+        core.button({text: 'Register organization', onClick: onRegister, width: 314})
     ]);
 
-    var box = Core.box({
+    var box = core.box({
         contents: widget,
         onKeyUp: onKeyUp
     });
 
-    var node = Tag.tag({
+    var node = tag.tag({
         name: 'div',
         style: {margin: 'auto', width: '355px', textAlign: 'center'},
         contents: [
-            Tag.tag('br'),
+            tag.tag('br'),
             logo,
-            Tag.tag('br'),
-            Tag.tag('br'),
+            tag.tag('br'),
+            tag.tag('br'),
             box
         ]
     });
 
-    Yoink.define( Frame.webpage(node) );
+    yoink.define( frame.webpage(node) );
 }
  
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 

@@ -1,13 +1,13 @@
 
 var deps = [
-    '/Tag/Observable.js',
-    '/Tag/Tag.js',
-    '/Tag/Layout.js',
-    '/Tag/Shapes.js',
+    '/yoink/observable.js',
+    '/yoink/tag.js',
+    '/yoink/layout.js',
+    '/yoink/shapes.js',
     'Colors.js'
 ];
 
-function onReady(Observable, Tag, Layout, Shapes, Colors) {
+function onReady(observable, tag, layout, shapes, colors) {
 
     function line(as) {
         as = as || {};
@@ -24,7 +24,7 @@ function onReady(Observable, Tag, Layout, Shapes, Colors) {
            backgroundColor: as.color
         };
 
-        return Tag.tag({name: 'hr', style: sty, attributes: {noshade: true, size: 1}});
+        return tag.tag({name: 'hr', style: sty, attributes: {noshade: true, size: 1}});
     }
 
     // Get the X coordinate of an element, relative to the page.
@@ -95,22 +95,22 @@ function onReady(Observable, Tag, Layout, Shapes, Colors) {
         }
 
         // Create an observable 'leftWidth' that holds the value returned by calcLeftWidth any time 'val' changes.
-        var leftWidth  = Observable.thunk([val], calcLeftWidth);
-        var rightWidth = Observable.thunk([val], calcRightWidth);
+        var leftWidth  = observable.thunk([val], calcLeftWidth);
+        var rightWidth = observable.thunk([val], calcRightWidth);
 
         var lineMarginTop = as.marginTop + radius - height / 2;
 
-        var lines = Layout.hug([
-            Layout.pillow(radius, 1),
+        var lines = layout.hug([
+            layout.pillow(radius, 1),
             line({width:  leftWidth, height: height, marginTop: lineMarginTop, marginBottom: lineMarginTop, color: as.color}),
-            line({width: rightWidth, height: height, marginTop: lineMarginTop, marginBottom: lineMarginTop, color: Colors.gray}),
-            Layout.pillow(radius, 1)
+            line({width: rightWidth, height: height, marginTop: lineMarginTop, marginBottom: lineMarginTop, color: colors.gray}),
+            layout.pillow(radius, 1)
         ]);
 
-        var circle = Shapes.circle({left: leftWidth, radius: radius, color: as.color, 'top': as.marginTop + 'px'});
+        var circle = shapes.circle({left: leftWidth, radius: radius, color: as.color, 'top': as.marginTop + 'px'});
 
         var handlers = {mousedown: onMouseDown, mousemove: onMouseMove, mouseup: onMouseUp, mouseout: onMouseUp};
-        return Tag.tag({
+        return tag.tag({
             name: 'div',
             attributes: {'data-slider': true},
             style: {width: width + 'px'},
@@ -119,10 +119,10 @@ function onReady(Observable, Tag, Layout, Shapes, Colors) {
         });
     }
 
-    Yoink.define({
+    yoink.define({
         slider: slider
     });
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 

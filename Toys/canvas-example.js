@@ -21,5 +21,5 @@ ctx.fillRect(20, 120, 55, 50);
 ctx.fillStyle = "rgba(0, 0, 200, 0.5)";  
 ctx.fillRect(40, 140, 55, 50);
 
-Yoink.define(canvas);
+yoink.define(canvas);
 

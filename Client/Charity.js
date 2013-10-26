@@ -1,47 +1,47 @@
 var deps = [
     '/donor/checkUser.json',
-    '/Tag/Tag.js', 
-    '/Tag/Layout.js', 
+    '/yoink/tag.js',
+    '/yoink/layout.js',
     '/Skin/Core.js', 
     '/Skin/Frame.js',
-    '/charity/' + Yoink.params.id + '.json'
+    '/charity/' + yoink.params.id + '.json'
 ];
 
-function onReady(Auth, Tag, Layout, Core, Frame, Charity) {
+function onReady(auth, tag, layout, core, frame, charity) {
     
     function charity(as) {
         as = as || {};
         var user = as.user;
-	var box = Core.box({
-            contents: Layout.spoon([
-	        Core.h2(user.organizationName),
-                Layout.pillow(20),
-                Layout.hug([
-                    Core.image({width: 175, height: 175, borderRadius: 5, url: user.imageUrl, text: user.organizationName}),
-                    Layout.pillow(30),
-                    Layout.spoon([
-                        Tag.tag({name: 'p', style: {font: Core.defaultFont, width: '600px'}, contents: user.mission}), 
-                        Layout.pillow(20),
-                        Core.button({href: '/Me?donateTo=' + user.cid, text: 'Donate!', loud: true})
+	var box = core.box({
+            contents: layout.spoon([
+	        core.h2(user.organizationName),
+                layout.pillow(20),
+                layout.hug([
+                    core.image({width: 175, height: 175, borderRadius: 5, url: user.imageUrl, text: user.organizationName}),
+                    layout.pillow(30),
+                    layout.spoon([
+                        tag.tag({name: 'p', style: {font: core.defaultFont, width: '600px'}, contents: user.mission}), 
+                        layout.pillow(20),
+                        core.button({href: '/Me?donateTo=' + user.cid, text: 'Donate!', loud: true})
                     ])
                 ])
             ])
         });
 
-        return Layout.spoon([
+        return layout.spoon([
            box,
-           Layout.pillow(30)
+           layout.pillow(30)
         ]);
     }
 
-    var main = Frame.frame({
-        contents: charity({user: Charity}),
-        auth: Auth
+    var main = frame.frame({
+        contents: charity({user: charity}),
+        auth: auth
     });
 
-    Yoink.define(main);
+    yoink.define(main);
 
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 

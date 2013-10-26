@@ -1,30 +1,30 @@
 var deps = [
     '/donor/checkUser.json',
-    '/Tag/Tag.js', 
-    '/Tag/Layout.js', 
+    '/yoink/tag.js', 
+    '/yoink/layout.js', 
     '/Skin/Frame.js', 
     '/Skin/Core.js', 
     '/charity/popular.json', 
     '/Skin/Donor.js',
-    '/donor/' + Yoink.params.id + '.json'
+    '/donor/' + yoink.params.id + '.json'
 ];
 
-function onReady(Auth, Tag, Layout, Frame, Core, PopularCharities, Donor, User) {
+function onReady(auth, tag, layout, frame, core, popularCharities, donor, user) {
 
-    var box = Core.box({
+    var box = core.box({
         width: 600,
-        contents: Donor.profile({user: User})
+        contents: donor.profile({user: user})
     });
 
-    var body = Layout.hug([
+    var body = layout.hug([
         box,
-        Layout.pillow(20),
-        Donor.recommendedFunds({funds: PopularCharities})
+        layout.pillow(20),
+        donor.recommendedFunds({funds: popularCharities})
     ]);
 
-    Yoink.define( Frame.frame({contents: body, auth: Auth}) );
+    yoink.define( frame.frame({contents: body, auth: auth}) );
 
 }
 
-Yoink.require(deps, onReady);
+yoink.require(deps, onReady);
 
