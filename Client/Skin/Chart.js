@@ -13,9 +13,7 @@ function onReady(iface, tag, observable, colors) {
         return {
             attributes: as,
             constructor: pie,
-            toDom: function (me) {
-                var as = me.attributes;
-
+            toDom: function () {
                 var e = tag.tag({
                     name: 'div',
                     style: {width: as.width + 'px', height: as.height + 'px'}

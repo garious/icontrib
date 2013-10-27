@@ -57,16 +57,14 @@ function onReady(tag, layout, chart, colors, core) {
             total += d.shares;
         }
 
-        var colors = colors.dashboardColors;
-
         var row = tag.tag({
             name: 'div',
             style: {width: '100%'},
             contents: [
                 layout.hug([
-                    fundContents(dist, total, colors),
+                    fundContents(dist, total, colors.dashboardColors),
                     layout.pillow(20, 0),
-                    chart.pieSnapshot({distribution: dist, colors: colors, height: 200})
+                    chart.pieSnapshot({distribution: dist, colors: colors.dashboardColors, height: 200})
                 ])
             ]
         });

@@ -154,8 +154,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
             inputs.push(obs);
         }
 
-        var colors = colors.dashboardColors;
-        var pie = chart.pie({distribution: inputs, height: 220, padding: 15, colors: colors});
+        var pie = chart.pie({distribution: inputs, height: 220, padding: 15, colors: colors.dashboardColors});
         var pieTin = tag.tag({name: 'div', style: {margin: 'auto 0px', width: '100%', textAlign: 'center'}, contents: [pie]});
 
         if (dist.length > 0) {
@@ -180,7 +179,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
 	    window.location.reload(true);
         }
 
-        rows.push( distributionTable(dist, inputs, colors) );
+        rows.push( distributionTable(dist, inputs, colors.dashboardColors) );
 
         var buttons = layout.hug({width: 100}, [
             core.button({href: '#', text: 'Cancel', quiet: true, onClick: cancelChanges}),

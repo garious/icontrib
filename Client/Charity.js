@@ -7,7 +7,7 @@ var deps = [
     '/charity/' + yoink.params.id + '.json'
 ];
 
-function onReady(auth, tag, layout, core, frame, charity) {
+function onReady(auth, tag, layout, core, frame, charityData) {
     
     function charity(as) {
         as = as || {};
@@ -35,7 +35,7 @@ function onReady(auth, tag, layout, core, frame, charity) {
     }
 
     var main = frame.frame({
-        contents: charity({user: charity}),
+        contents: charity({user: charityData}),
         auth: auth
     });
 

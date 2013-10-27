@@ -16,11 +16,11 @@ function onReady(chart, observable) {
     //    95
     //]);
 
-    var chart = chart.pie({
+    var pie = chart.pie({
         distribution: dist
     });
 
-    yoink.define(chart);
+    yoink.define(pie);
 
 }
 
