@@ -28,7 +28,7 @@ func popular(w http.ResponseWriter, r *http.Request) {
 		ImageUrl string `json:"imageUrl"`
 	}
 	group := []interface{}{
-		PopularCharity{"lacc", "LACC", "yikes"},
+		PopularCharity{"lacc", "LACC", "/charity/lacc.gif"},
 	}
 	b, err := json.Marshal(group)
 	if err != nil {
