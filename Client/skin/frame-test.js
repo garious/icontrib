@@ -1,6 +1,6 @@
 var deps = [
-    'Frame.js',
-    'Core.js'
+    'frame.js',
+    'core.js'
 ];
 
 function onReady(frame, core) {

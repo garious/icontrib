@@ -4,7 +4,7 @@ var deps = [
     '/yoink/tag.js',
     '/yoink/layout.js',
     '/yoink/shapes.js',
-    'Colors.js'
+    'colors.js'
 ];
 
 function onReady(observable, tag, layout, shapes, colors) {

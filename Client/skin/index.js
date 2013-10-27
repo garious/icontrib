@@ -1,10 +1,10 @@
 var deps = [
     '/yoink/tag.js',
     '/yoink/layout.js',
-    'Core.js'
+    'core.js'
 ];
 
-var modules = ['Chart', 'Colors', 'Core', 'CoreTest', 'Donor', 'Frame', 'FrameTest', 'Slider'];
+var modules = ['chart', 'colors', 'core', 'core-test', 'donor', 'frame', 'frame-test', 'slider'];
 
 function onReady (tag, layout, core) {
 

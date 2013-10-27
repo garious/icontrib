@@ -3,12 +3,12 @@ var deps = [
     '/yoink/tag.js', 
     '/yoink/layout.js', 
     '/yoink/observable.js', 
-    '/Skin/Frame.js',
-    '/Skin/Core.js',
-    '/Skin/Donor.js',
-    '/Skin/Chart.js',
-    '/Skin/Slider.js',
-    '/Skin/Colors.js',
+    '/skin/frame.js',
+    '/skin/core.js',
+    '/skin/donor.js',
+    '/skin/chart.js',
+    '/skin/slider.js',
+    '/skin/colors.js',
     '/charity/popular.json'
 ];
 

@@ -1,5 +1,5 @@
 var deps = [
-    'Chart.js',
+    'chart.js',
     '/yoink/observable.js'
 ];
 

@@ -2,7 +2,7 @@ var deps = [
     '/yoink/interface.js',
     '/yoink/tag.js',
     '/yoink/observable.js',
-    'Colors.js'
+    'colors.js'
 ];
 
 function onReady(iface, tag, observable, colors) {

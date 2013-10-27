@@ -9,13 +9,13 @@ LINT_DEPS=$(LINT_DEPS.$(UNAME))
 
 JS_LINT_FILES:=$(wildcard *.js)
 
-ALL_JS_FILES:=$(JS_LINT_FILES) $(wildcard Skin/*.js)
+ALL_JS_FILES:=$(JS_LINT_FILES) $(wildcard skin/*.js)
 
 JS_FILES.Release=$(filter-out %Example.js,$(filter-out %Test.js,$(ALL_JS_FILES)))
 JS_FILES.Debug=$(ALL_JS_FILES)
 JS_FILES=$(JS_FILES.$(FLAVOR))
 
-FILES:=$(JS_FILES) $(wildcard *.png) favicon.ico $(wildcard *.html) $(wildcard Skin/*.gif) $(wildcard Skin/*.png)
+FILES:=$(JS_FILES) $(wildcard *.png) favicon.ico $(wildcard *.html) $(wildcard skin/*.gif) $(wildcard skin/*.png)
 
 all: $(LINT_DEPS)
 
@@ -23,8 +23,7 @@ clean:
 	rm -rf $V
 
 tree_%:
-	$(MAKE) -C ../Tag $@
-	$(MAKE) -C Skin $@
+	$(MAKE) -C skin $@
 	$(MAKE) $(patsubst tree_%,%,$@)
 
 # Add dependencies for shipped files

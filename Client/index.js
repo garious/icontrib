@@ -2,10 +2,10 @@ var deps = [
     '/donor/checkUser.json',
     '/yoink/tag.js', 
     '/yoink/layout.js', 
-    '/Skin/Frame.js', 
-    '/Skin/Core.js', 
+    '/skin/frame.js',
+    '/skin/core.js',
     '/charity/popular.json', 
-    '/Skin/Donor.js',
+    '/skin/donor.js',
     '/stats/community.json'
 ];
 

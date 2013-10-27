@@ -1,6 +1,6 @@
 var deps = [
     '/yoink/tag.js',
-    'Colors.js'
+    'colors.js'
 ];
 
 function onReady(tag, colors) {

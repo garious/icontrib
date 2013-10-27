@@ -1,9 +1,9 @@
 var deps = [
     '/yoink/tag.js', 
     '/yoink/layout.js', 
-    '/Skin/Core.js',
-    '/Skin/Frame.js',
-    '/Skin/Colors.js'
+    '/skin/core.js',
+    '/skin/frame.js',
+    '/skin/colors.js'
 ];
 
 function onReady(tag, layout, core, frame, colors) {

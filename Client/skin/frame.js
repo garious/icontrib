@@ -2,8 +2,8 @@ var deps = [
     '/yoink/tag.js', 
     '/yoink/observable.js', 
     '/yoink/Layout.js', 
-    'Core.js',
-    'Colors.js'
+    'core.js',
+    'colors.js'
 ];
 
 function post(path, params, callback) {
