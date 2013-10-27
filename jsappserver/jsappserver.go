@@ -82,7 +82,7 @@ var jsAppHtml = `<!DOCTYPE html>
           {path: '{{.Filename}}', params: {{.Params}}}
       ], function(widget) {
           if (widget.getTitle) {
-              document.title = title;
+              document.title = widget.getTitle();
           }
           var nd = widget;
           if (typeof widget === 'string') {

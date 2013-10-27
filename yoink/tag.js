@@ -99,6 +99,7 @@ function onReady(iface, observable) {
             var xs = obs.get();
             for (var i = 0; i < xs.length; i++) {
                 var x = xs[i];
+                x = typeof x === 'string' ? document.createTextNode(x) : x;
                 e.appendChild(iface.supportsInterface(x, toDomInterface) ? x.toDom() : x);
             }
         };
@@ -146,6 +147,7 @@ function onReady(iface, observable) {
 
                 for (var i = 0; i < xs.length; i++) {
                     var x = xs[i];
+                    x = typeof x === 'string' ? document.createTextNode(x) : x;
                     e.appendChild(iface.supportsInterface(x, toDomInterface) ? x.toDom() : x);
                 }
             }
