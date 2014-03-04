@@ -2,7 +2,16 @@ var deps = [
     'tag.js'
 ];
 
-var modules = ['interface', 'layout', 'layout_test', 'observable', 'shapes', 'shapes_test', 'to-dom'];
+var modules = [
+    'interface',
+    'interface_test',
+    'layout',
+    'layout_test',
+    'observable',
+    'observable_test',
+    'shapes',
+    'shapes_test'
+];
 
 function onReady (tag) {
 

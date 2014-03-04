@@ -42,7 +42,10 @@ func mkPage(w http.ResponseWriter, r *http.Request, url string) {
 		log.Fatal(err)
 	}
 
-	r.ParseForm() // Parse the parameters in the request's URI
+	if err := r.ParseForm(); err != nil { // Parse the parameters in the request's URI then
+		log.Fatal(err)
+	}
+
 	page := &Page{Filename: url, Params: r.Form, Yoink: template.JS(yoinkBytes)}
 
 	w.Header().Set("Content-Type", "text/html")
