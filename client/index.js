@@ -22,7 +22,7 @@ function onReady(auth, tag, layout, frame, core, popularCharities, donor, commun
         ]),
         layout.pillow(20),
         frame.footer([
-            core.hyperlink({url: 'Registration', text: 'Charity Registration'})
+            core.hyperlink({url: 'registration', text: 'Charity Registration'})
         ])
     ]);
 
