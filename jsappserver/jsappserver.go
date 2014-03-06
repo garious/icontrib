@@ -2,13 +2,10 @@ package jsappserver
 
 import (
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
-	"path"
-	"runtime"
 	"strings"
 )
 
@@ -36,8 +33,7 @@ func mkPage(w http.ResponseWriter, r *http.Request, url string) {
 	templ := template.New("bar")
 	parsedTempl, _ := templ.Parse(jsAppHtml)
 
-	_, filename, _, _ := runtime.Caller(0)
-	yoinkBytes, err := ioutil.ReadFile(path.Join(path.Dir(filename), "../yoink/yoink.js"))
+	yoinkBytes, err := Asset("../loader/yoink.js")
 	if err != nil {
 		log.Fatal(err)
 	}

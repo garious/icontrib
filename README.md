@@ -52,3 +52,21 @@ for your JavaScript.  For example:
     $ node yoink-adapater.js mylib_test.js
     passed!
     
+
+Contributing
+============
+
+To develop on OSX, install dependencies with Homebrew. http://brew.sh
+
+    # Install Homebrew
+    $ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+
+    # Install node
+    $ brew install node
+
+    # Install JavaScript Lint
+    $ brew install homebrew/binary/jsl
+
+    # Run the tests
+    $ make -C yoink
+
