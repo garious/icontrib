@@ -22,7 +22,7 @@ function onReady(auth, tag, layout, core, frame, charityData) {
                     layout.spoon([
                         tag.tag({name: 'p', style: {font: core.defaultFont, width: '600px'}, contents: user.mission}), 
                         layout.pillow(20),
-                        core.button({href: '/Me?donateTo=' + user.cid, text: 'Donate!', loud: true})
+                        core.button({href: '/me?donateTo=' + user.cid, text: 'Donate!', loud: true})
                     ])
                 ])
             ])
