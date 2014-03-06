@@ -18,7 +18,7 @@ func init() {
 	http.HandleFunc("/charity/popular.json", popular)
 	http.HandleFunc("/stats/community.json", community)
 	http.HandleFunc("/donor/checkUser.json", checkUser)
-	http.Handle("/static/", http.FileServer(http.Dir(path.Join(dir, "../private"))))
+	http.Handle("/static/", http.FileServer(http.Dir(path.Join(dir, "../data"))))
 	jsappserver.HandleDir("/yoink/", yoink.Dir())
 
 	jsappserver.HandleDir("/", dir)
@@ -45,7 +45,7 @@ func popular(w http.ResponseWriter, r *http.Request) {
 
 func community(w http.ResponseWriter, r *http.Request) {
         _, filename, _, _ := runtime.Caller(0)
-	userBlob, err := ioutil.ReadFile(path.Join(path.Dir(filename), "../private/static/donor/greg.json"))
+	userBlob, err := ioutil.ReadFile(path.Join(path.Dir(filename), "../data/static/donor/greg.json"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,7 +92,7 @@ func checkUser(w http.ResponseWriter, r *http.Request) {
 	type Auth struct {
 		Right UserInfo
 	}
-	userBlob, err := ioutil.ReadFile("../private/static/donor/greg.json")
+	userBlob, err := ioutil.ReadFile("../data/static/donor/greg.json")
 	if err != nil {
 		log.Fatal(err)
 	}
