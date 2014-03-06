@@ -6,7 +6,6 @@ var modules = [
     'interface',
     'interface_test',
     'layout',
-    'layout_test',
     'observable',
     'observable_test',
     'shapes',

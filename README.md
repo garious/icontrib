@@ -1,127 +1,54 @@
+The Yoink Web Development Framework
+===================================
+
+HTML is for web documents.  JavaScript is for web applications.  The Yoink framework
+lets us code exclusively in JavaScript.  The framework also provides a set of
+libraries for Reactive Programming in JavaScript.  Reactive programs scale well
+and can be tested outside the browser.  Reactive elements do not have explicit 
+event handlers.  Instead, they use the Publish-Subscribe pattern to observe other
+reactive elements.
+
 
 yoink.js
-========
+----
 
-yoink.js is a small and simple module loader for JavaScript.  The API and design
-goals are very similar to RequireJS, but Yoink cuts the fat.  The implementation
-is much smaller and simpler, and the plugin model is especially simple.
-
-Yoink modules are simple.  Here is the "Hello World" of Yoink modules:
-
-~~~javascript
-yoink.define("Hello world!");
-~~~
-
-Add Yoink, load your module, and use it to construct the DOM.
-
-~~~html
-<html>
-    <body>
-        <script type="text/javascript" src="yoink.js"></script>
-        <script type="text/javascript">
-            YOINK.require(['helloworld.js'], function(hello) {
-                document.body.appendChild(hello);
-            });
-        </script>
-    </body>
-</html>
-~~~
-
-Yoink modules may load other modules.  Modules are downloaded and interpreted in
-parallel.
+The 'yoink' directory contains client-side JavaScript libraries.  yoink.js is module
+loader.  observable.js is a general library for reactive programming in JavaScript.
+tag.js applies the reactive programming model to HTML.
 
 
-~~~javascript
-yoink.require(['helloworld.js', 'goodbye.js'], function(hello, goodbye) {
-    var e = document.createElement('div');
-    e.appendChild(hello);
-    e.appendChild(goodbye);
-    yoink.define(e);
-});
-~~~
+jsappserver
+----
 
-To download a module that tells you what modules to download, call require
-as many times as you need.  'define()' can be called after any number of
-asynchronous calls.
+JsAppServer is a Go package for building web servers that use Yoink.  When the
+user requests a URL, JsAppServer looks for a resource with the same name and a
+'.js' extension.  If it finds one, the server wraps the JavaScript with an HTML
+page that uses yoink.js to load and run that JavaScript file.  The JavaScript
+file then calls 'yoink.define()' with a DOM element to display in the HTML body.
 
-~~~javascript
-yoink.require(['a.js'], function(a) {
 
-    yoink.require(a.moreDeps, function(b, c, d) {
-        yoink.define( document.createTextNode(a.message + b.message) );
+Testing Yoink apps
+-----
+
+Instead of passing 'yoink.define()' a DOM element, you also have the option to
+pass it an object that implements a 'toDom()' method, which returns the DOM
+element to display.  This is usually preferred because it allows you to test
+the guts of your application outside the browser.  The Yoink Framework comes
+with an adapter for Node.js called 'yoink-adapter.js' and a simple assertion
+module called 'assert.js'.  With it, you can easily write server-side tests
+for your JavaScript.  For example:
+
+    $ cat mylib.js
+    yoink.define({
+       fortyTwo: function() {return 42;}
     });
 
-});
-~~~
+    $ cat mylib_test.js
+    yoink.require(['assert.js', 'mylib.js'], function(assert, mylib) {
+        assert.assertEq(mylib.fortyTwo(), 42);
+        yoink.define('passed!');
+    });
 
-Modules know where they are.  Modules are loaded with a local variable 'baseUrl'
-that tells module authors where the module is with respect to the root directory.  Module
-authors can use this value to reference external resources, such as an image file inside
-the module directory.
-
-~~~javascript
-var e = document.createElement('img');
-e.src = yoink.baseUrl + '/favicon.png'; 
-yoink.define(e);
-~~~
-
-Yoink caches modules, but sometimes you want multiple caches.  For example, jQuery
-plugins modify jQuery, so you may want a cache with just jQuery and another with
-a second copy of jQuery that plugins stomp all over.
-
-~~~javascript
-function exportJQuery(text, yoink, callback) {
-    YOINK.interpreters.js(text + '\n' + 'yoink.define( jQuery.noConflict(true) );', yoink, callback);
-}
-
-function onReady($) {
-    // jQuery UI requires jQuery.  Therefore its 'onReady' callback must return a second set 
-    // of dependencies and callback.
-
-    // jQuery UI requires that jQuery be in the global namespace when it is interpreted.
-    window.jQuery = $;
-
-    var deps = [
-        {path: 'jquery-ui-1.8.16.custom.min.js', interpreter: exportJQuery}
-    ];
-
-    yoink.require(deps, function(jQuery) { yoink.define(jQuery.noConflict(true)); });
-}
-
-// Create a separate resource loader, so that jQuery UI can whomp its personal copy of jQuery.
-YOINK.require(['/jquery/jquery-mod.js'], onReady);
-~~~
-
-
-
-Contributing
-============
-
-To develop on OSX Lion, download and build dependencies with 'homebrew'.
-
-http://mxcl.github.com/homebrew/
-
-    $ /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
-
-
-Testing
--------
-
-yoink.js is unit-tested with a few dependencies as possible.  We test on
-Chrome and Firefox via Node.js and SpiderMonkey, respectively.
-
-    $ brew install node
-    $ brew install spidermonkey
-
-    $ make test
-
-
-Distributuion
--------------
-
-Get YUI Compressor to make Release/yoink.js
-
-    $ brew install yuicompressor
-
-    $ make compress
-
+    $ node yoink-adapater.js mylib_test.js
+    passed!
+    
