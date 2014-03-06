@@ -1,9 +1,0 @@
-* make sure a payment address can only be used per user or charity but not both
-* expire cookies
-* have two cookie types, session and forever, have the session cookie be the auth token for important stuff 
-* figure out how to use authenticate/oAuth
-
-
-
-
-
