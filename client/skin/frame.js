@@ -41,12 +41,12 @@ function onReady(tag, observable, layout, core, colors) {
 
             var onLogin = function (evt) {
                 evt.preventDefault();
-                window.location = '/LogIn';
+                window.location = '/login';
             };
 
             var onSignup = function (evt) {
                 evt.preventDefault();
-                window.location = '/SignUp';
+                window.location = '/signup';
             };
 
             return layout.spoon({align: 'right'}, [

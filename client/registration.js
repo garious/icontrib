@@ -10,7 +10,7 @@ var deps = [
 
 function onReady(auth, tag, layout, observable, core, frame, colors) {
     if (auth.Left) {
-        window.location = '/SignUp';
+        window.location = '/signup';
         return;
     }
 
@@ -19,7 +19,7 @@ function onReady(auth, tag, layout, observable, core, frame, colors) {
         attributes: {href: '/', tabindex: -1},
         style: {width: '129px', height: '70px'},
         contents: [
-            core.image({url: '/Skin/logo.png', text: 'IContrib Home'})
+            core.image({url: '/skin/logo.png', text: 'IContrib Home'})
         ]
     });
 
