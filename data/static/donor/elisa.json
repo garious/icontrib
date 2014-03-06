@@ -4,7 +4,7 @@
    "lastName": "Rossi",
    "phone": "",
    "email": "",
-   "imageUrl": "/donor/elisarossi.jpg",
+   "imageUrl": "/static/donor/elisarossi.jpg",
    "centsDonated": 1000,
    "alignedDonated": 1500,
    "alignedUsers": [],

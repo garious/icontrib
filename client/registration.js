@@ -1,5 +1,5 @@
 var deps = [
-    '/auth/check.json',
+    '/donor/checkUser.json',
     '/yoink/tag.js', 
     '/yoink/layout.js', 
     '/yoink/observable.js', 

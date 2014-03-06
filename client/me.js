@@ -104,7 +104,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
         }
 
         var cols = layout.hug([
-            core.hyperlink({url: '/Charity?id=' + x.cid, text: x.name, marginTop: 6, marginRight: 10}),
+            core.hyperlink({url: '/charity?id=' + x.cid, text: x.name, marginTop: 6, marginRight: 10}),
             slider,
             layout.pillow(10, 0),
             core.input({type: 'text', size: 5, disabled: true, value: percentage}),

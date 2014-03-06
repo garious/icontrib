@@ -4,7 +4,7 @@
    "lastName": "Donor",
    "phone": "",
    "email": "",
-   "imageUrl": "/donor/anonymous.jpg",
+   "imageUrl": "/static/donor/anonymous.jpg",
    "centsDonated": 0,
    "alignedDonated": 0,
    "alignedUsers": [],

@@ -4,7 +4,7 @@
    "organizationName": "American Red Cross",
    "companyWebsite": "http://www.redcross.org/",
    "cid": "redcross",
-   "imageUrl": "/charity/redcross.jpg",
+   "imageUrl": "/static/charity/redcross.jpg",
    "mission": "The American Red Cross prevents and alleviates human suffering in the face of emergencies by mobilizing the power of volunteers and the generosity of donors.",
    "paymentAddress": "redcross@icontrib.org"
 }

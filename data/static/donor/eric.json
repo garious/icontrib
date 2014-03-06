@@ -4,7 +4,7 @@
    "lastName": "Mills",
    "phone": "",
    "email": "",
-   "imageUrl": "../images/eric.jpg",
+   "imageUrl": "/static/donor/eric.jpg",
    "centsDonated": 5500,
    "description": "I research cost-effective ways to save lives.  Align with me to help deliver mosquito nets, immunize children, and prevent the spread of HIV.",
    "alignedDonated": 6500,

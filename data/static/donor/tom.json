@@ -4,7 +4,7 @@
    "lastName": "Brown",
    "phone": "",
    "email": "",
-   "imageUrl": "/donor/tombrown.jpg",
+   "imageUrl": "/static/donor/tombrown.jpg",
    "centsDonated": 5500,
    "alignedDonated": 6500,
    "alignedUsers": [],

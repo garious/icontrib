@@ -82,7 +82,7 @@ function onReady(tag, observable, layout, core, colors) {
                 top: 80,
                 visibility: visibility,
                 menuItems: [  
-                    core.menuItem({contents: core.h6('Manage my distribution'), onSelect: '/Me'}),
+                    core.menuItem({contents: core.h6('Manage my distribution'), onSelect: '/me'}),
                     core.menuItem({contents: core.h6('Log off'),  onSelect: logoff})
                 ]
             });
@@ -167,7 +167,7 @@ function onReady(tag, observable, layout, core, colors) {
 
             thumbnail = tag.tag({
                 name: 'a',
-                attributes: {href: '/Me'},
+                attributes: {href: '/me'},
                 style: {textDecoration: 'none'},
                 contents: [thumbContents]
             });

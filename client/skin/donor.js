@@ -9,7 +9,7 @@ var deps = [
 function onReady(tag, layout, chart, colors, core) {
 
     function alignButton(user) {
-        return core.button({href: '/Me?donateTo=' + user.id, loud: true, text: 'Donate!'});
+        return core.button({href: '/me?donateTo=' + user.id, loud: true, text: 'Donate!'});
     }
 
     function isMember(xs, x) {
@@ -40,7 +40,7 @@ function onReady(tag, layout, chart, colors, core) {
                     style: {width: '55px', height: pct.height},
                     contents: [pct]
                 }),
-                core.hyperlink({url: 'Charity?id=' + x.cid, text: x.name})
+                core.hyperlink({url: 'charity?id=' + x.cid, text: x.name})
             ]);
             rows.push(cols);
         }
@@ -119,7 +119,7 @@ function onReady(tag, layout, chart, colors, core) {
                     style: {width: '50px', height: '50px'}
                 }),
                 layout.pillow(20, 0),
-                core.hyperlink({url: '/Charity?id=' + x.cid, text: x.name})
+                core.hyperlink({url: '/charity?id=' + x.cid, text: x.name})
             ]);
 
             listItems.push(e);
