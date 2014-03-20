@@ -67,29 +67,23 @@ var toDomInterface = {
 
 function onReady(iface, observable) {
 
-    // Add all items of style object 'style' to the DOM element 'e'.
-    function addStyle(e, style) {
-        for (var s in style) {
-            if (style.hasOwnProperty(s) && style[s] !== undefined) {
-                if (iface.supportsInterface(style[s], observable.observableId)) {
-                    e.style[s] = style[s].get();
-                    style[s].subscribe(function(obs) {e.style[s] = obs.get();});
-                } else {
-                    e.style[s] = style[s];
-                }
-            }
+    // Add style 's' with value 'style[s]' to the DOM element 'e'.
+    function addStyle(e, style, s) {
+        if (iface.supportsInterface(style[s], observable.observableId)) {
+            e.style[s] = style[s].get();
+            style[s].subscribe(function(obs) {e.style[s] = obs.get();});
+        } else {
+            e.style[s] = style[s];
         }
     }
 
     // Add attribute 'k' with value 'v' to the DOM element 'e'.
     function addAttribute(e, k, v) {
-        if (v !== undefined) {
-            if (iface.supportsInterface(v, observable.observableId)) {
-                e.setAttribute(k, v.get());
-                v.subscribe(function(obs) {e[k] = obs.get();});
-            } else {
-                e.setAttribute(k, v);
-            }
+        if (iface.supportsInterface(v, observable.observableId)) {
+            e.setAttribute(k, v.get());
+            v.subscribe(function(obs) {e[k] = obs.get();});
+        } else {
+            e.setAttribute(k, v);
         }
     }
 
@@ -122,15 +116,20 @@ function onReady(iface, observable) {
         var k;
         if (as) {
             for (k in as) {
-                if (as.hasOwnProperty(k) && k !== 'style') {
+                if (as.hasOwnProperty(k) && k !== 'style' && as[k] !== undefined) {
                     addAttribute(e, k, as[k]);
                 }
             }
         }
 
         // Add Style
-        if (ps.style) {
-            addStyle(e, ps.style);
+        var style = ps.style;
+        if (style) {
+            for (var s in style) {
+                if (style.hasOwnProperty(s) && style[s] !== undefined) {
+                    addStyle(e, style, s);
+                }
+            }
         }
     
         // Add child elements
