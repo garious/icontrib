@@ -38,7 +38,15 @@ var YOINK = (function () {
         js: function (text, require, callback, params) {
             // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
             var f_str = '(function (yoink) {"use strict";' + text + '})';
-            var f = eval(f_str);
+            var f;
+            if (typeof window !== 'undefined' && window.execScript) {
+              // Special handling for Internet Explorer
+              /*global tmp: true*/
+              window.execScript('tmp = ' + f_str);
+              f = tmp;
+            } else {
+              f = eval(f_str);
+            }
             f({
                 baseUrl: require.base,
                 fileUrl: require.url,
@@ -48,23 +56,6 @@ var YOINK = (function () {
             });
         }
     };
-
-    // Special handling for Internet Explorer
-    if (typeof window !== 'undefined' && window.execScript) {
-        defaultInterpreters.js = function (text, require, callback, params) {
-            var f_str = '(function (yoink) {' + text + '})';
-            /*global iesucks: true*/
-            window.execScript('iesucks = ' + f_str);
-            var f = iesucks;
-            f({
-                baseUrl: require.base,
-                fileUrl: require.url,
-                define: callback,
-                require: require,
-                params: params
-            });
-        };
-    }
 
     function clone(o1) {
         var o2 = {};
