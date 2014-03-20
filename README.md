@@ -1,5 +1,5 @@
-The Yoink Web Development Framework
-===================================
+The Yoink Web Framework
+=======================
 
 HTML is for web documents.  JavaScript is for web applications.  The Yoink framework
 lets us code exclusively in JavaScript.  The framework also provides a set of
