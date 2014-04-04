@@ -38,25 +38,20 @@ function onReady(tag, observable, layout, core, colors) {
         }
 
         if (as.auth.Left) {
+            var loginData = as.auth.Left;
 
             var onLogin = function (evt) {
                 evt.preventDefault();
-                window.location = '/login';
-            };
-
-            var onSignup = function (evt) {
-                evt.preventDefault();
-                window.location = '/signup';
+                window.location = loginData.loginUrl;
             };
 
             return layout.spoon({align: 'right'}, [
                 core.button({text: 'Log in', onClick: onLogin, quiet: true}),
-                layout.pillow(0, 5),
-                core.button({text: 'Sign up', onClick: onSignup, quiet: true}),
-                layout.pillow(0, 15)
+                layout.pillow(0, 20)
             ]);
 
         } else {
+            var user = as.auth.Right;
             var logoutButton = core.image({url: yoink.baseUrl + '/arrowdown-darkgreen.png', text: 'settings'});
 
             var tabStyle = {
@@ -72,9 +67,7 @@ function onReady(tag, observable, layout, core, colors) {
 
             var logoff = function (evt) {
                 evt.preventDefault();
-                post('/auth/logout', {}, function(data) {
-                    window.location = '/';
-                });
+                window.location = user.logoutUrl;
             };
 
             var menu = core.menu({

@@ -1,9 +1,10 @@
 package client
 
 import (
+	"appengine"
+	"appengine/user"
 	"encoding/json"
 	"github.com/garious/yoink/jsappserver"
-	//"github.com/garious/yoink/yoink"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -19,7 +20,6 @@ func init() {
 	http.HandleFunc("/stats/community.json", community)
 	http.HandleFunc("/donor/checkUser.json", checkUser)
 	//http.Handle("/static/", http.FileServer(http.Dir(path.Join(dir, "../data"))))
-	//jsappserver.HandleDir("/yoink/", yoink.Dir())
 
 	jsappserver.HandleDir("/", dir)
 }
@@ -74,6 +74,7 @@ type UserInfo struct {
 	AlignedUsers   []string       `json:"alignedUsers"`
 	Distribution   []Distribution `json:"distribution"`
 	Funds          []Fund         `json:"funds"`
+	LogoutUrl	string	      `json:"logoutUrl"`
 }
 
 type Distribution struct {
@@ -89,6 +90,28 @@ type Fund struct {
 }
 
 func checkUser(w http.ResponseWriter, r *http.Request) {
+	c := appengine.NewContext(r)
+	u := user.Current(c)
+	if u == nil {
+		type Auth struct {
+			Left struct {
+				LoginUrl  string `json:"loginUrl"`
+			}
+		}
+
+		url, _ := user.LoginURL(c, "/")
+
+		auth := Auth{}
+		auth.Left.LoginUrl = url
+
+		b, err := json.Marshal(auth)
+		if err != nil {
+			log.Fatal(err)
+		}
+		w.Write(b)
+		return
+	}
+
 	type Auth struct {
 		Right UserInfo
 	}
@@ -102,6 +125,8 @@ func checkUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	url, _ := user.LogoutURL(c, "/")
+	userInfo.LogoutUrl = url
 	b, err := json.Marshal(Auth{userInfo})
 	if err != nil {
 		log.Fatal(err)
