@@ -78,7 +78,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
    
         var percentage = observable.thunk([obs], function(n){return Math.round(n * 10) / 10 + '%';});
 
-        var deleteImg = tag.tag({name: 'img', attributes: {src: 'Delete.png', alt: 'delete'}, style: {padding: '5px', visibility: deleteObs, borderWidth: '0px'}});
+        var deleteImg = tag.tag({name: 'img', attributes: {src: 'skin/delete.png', alt: 'delete'}, style: {padding: '5px', visibility: deleteObs, borderWidth: '0px'}});
         var deleteLink = tag.tag({name: 'a', attributes: {href: '#'}, contents: [deleteImg], handlers: {click: onDeleteClicked}});
 
         var slider;
