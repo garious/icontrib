@@ -196,7 +196,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
     if (auth.Right) {
         dash = dashboard({user: auth.Right});
     } else {
-        dash = core.hyperlink({text: 'Please log in to modify your charitable distribution.', url: '/login'});
+        dash = core.hyperlink({text: 'Please log in to modify your charitable distribution.', url: auth.Left.loginUrl});
     }
 
     var main = frame.frame({

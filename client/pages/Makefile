@@ -44,6 +44,3 @@ $(SHIP_FILES):
 	@mkdir -p $(@D)
 	cp $< $@
 
-serve: icontrib.go
-	go run $<
-

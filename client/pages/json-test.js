@@ -1,7 +1,7 @@
 //
 // This is a script for viewing .json files
 //
-// Example:  http://localhost/JsonTest?url=/charity/popular.json
+// Example:  http://localhost/json-test?url=/charity/popular.json
 
 var deps = [
     yoink.params.url

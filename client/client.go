@@ -21,7 +21,7 @@ func init() {
 	http.HandleFunc("/donor/checkUser.json", checkUser)
 	//http.Handle("/static/", http.FileServer(http.Dir(path.Join(dir, "../data"))))
 
-	jsappserver.HandleDir("/", dir)
+	jsappserver.HandleDir("/", dir + "/pages")
 }
 
 func Start() {
