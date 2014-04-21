@@ -52,7 +52,7 @@ function onReady(tag, observable, layout, core, colors) {
 
         } else {
             var user = as.auth.Right;
-            var logoutButton = core.image({url: yoink.baseUrl + '/arrowdown-darkgreen.png', text: 'settings'});
+            var logoutButton = core.image({url: yoink.baseUrl + '/arrowdown.png', text: 'settings'});
 
             var tabStyle = {
                 width: '270px',

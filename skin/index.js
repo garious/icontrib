@@ -4,7 +4,7 @@ var deps = [
     'core.js'
 ];
 
-var modules = ['chart', 'colors', 'core', 'core-test', 'donor', 'frame', 'frame-test', 'slider'];
+var modules = ['chart', 'colors', 'core', 'core-example', 'donor', 'frame', 'frame-example', 'slider'];
 
 function onReady (tag, layout, core) {
 
