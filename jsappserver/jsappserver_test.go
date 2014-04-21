@@ -10,8 +10,8 @@ import (
 
 func TestGetPages(t *testing.T) {
 	getJsPage(t, "/yoink", "../yoink", "/yoink/tag_test", 200)
-	getJsPage(t, "/yoink", "../yoink", "/yoink/", 200)  // contains index.js
-	getJsPage(t, "/yoink", "../yoink", "/yoink", 200)   // contains index.js
+	getJsPage(t, "/yoink", "../yoink", "/yoink/", 200) // contains index.js
+	getJsPage(t, "/yoink", "../yoink", "/yoink", 200)  // contains index.js
 	getJsPage(t, "/yoink", "../yoink", "/bogus", 404)
 }
 
