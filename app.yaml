@@ -12,7 +12,7 @@ handlers:
   application_readable: true
 
 - url: /yoink
-  static_dir: yoink
+  static_dir: yoink/yoink
 
 - url: /.*
   script: _go_app
