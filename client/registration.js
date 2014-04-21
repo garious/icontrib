@@ -75,14 +75,6 @@ function onReady(auth, tag, layout, observable, core, frame, colors) {
         layout.pillow(0, 15),
         orgPayPal,
         layout.pillow(0, 10),
-        layout.hug([
-            tag.tag({name: 'input', attributes: {type: 'checkbox'}, style: {marginTop: '5px'}}),
-            layout.pillow(5, 0),
-            core.p('I agree to the'),
-            layout.pillow(5, 0),
-            core.hyperlink({text: 'Terms and Conditions', url: 'toa.html'})
-        ]),
-        layout.pillow(0, 10),
         core.button({text: 'Register organization', onClick: onRegister, width: 314})
     ]);
 
