@@ -10,7 +10,7 @@ var deps = [
 
 function onReady(auth, tag, layout, observable, core, frame, colors) {
     if (auth.Left) {
-        window.location = '/signup';
+        window.location = auth.Left.loginUrl;
         return;
     }
 
