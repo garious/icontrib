@@ -65,7 +65,7 @@ func serveURL(p string, w http.ResponseWriter, r *http.Request) error {
 
 func (h *JsAppServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	p := h.Root + strings.TrimPrefix(r.URL.Path, h.Prefix)
-	err := serveUrl(p, w, r)
+	err := serveURL(p, w, r)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 	}
