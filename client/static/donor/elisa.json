@@ -1,10 +1,10 @@
 {
    "owner": "elisa",
    "firstName": "Elisa",
-   "lastName": "Rossi",
+   "lastName": "Schwartz",
    "phone": "",
    "email": "",
-   "imageUrl": "/static/donor/elisarossi.jpg",
+   "imageUrl": "/static/donor/elisa.jpg",
    "centsDonated": 1000,
    "alignedDonated": 1500,
    "alignedUsers": [],
@@ -13,7 +13,7 @@
        {"name": "Underwater Society of America", "cid": "usoa", "shares": 50, "labels": ["General Fund"]}
    ],
    "funds": [
-       {"name": "General Fund", "label": "ElisaRossi-GeneralFund"}
+       {"name": "General Fund", "label": "Elisa-GeneralFund"}
    ]
 }
 

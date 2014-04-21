@@ -1,10 +1,10 @@
 {
    "owner": "tom",
    "firstName": "Tom",
-   "lastName": "Brown",
+   "lastName": "Johnson",
    "phone": "",
    "email": "",
-   "imageUrl": "/static/donor/tombrown.jpg",
+   "imageUrl": "/static/donor/tom.jpg",
    "centsDonated": 5500,
    "alignedDonated": 6500,
    "alignedUsers": [],
@@ -13,7 +13,7 @@
        {"name": "Underwater Society of America", "cid": "usoa", "shares": 9.09, "labels": ["General Fund"]}
    ],
    "funds": [
-       {"name": "General Fund", "label": "TomBrown-GeneralFund"}
+       {"name": "General Fund", "label": "Tom-GeneralFund"}
    ]
 }
 
