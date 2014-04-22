@@ -31,7 +31,7 @@ function onReady(tag, iface, observable) {
     // Concatenate elements
     function cat(as, xs, setPos) {
         var ys = xs;
-        if (iface.supportsInterface(ys, observable.observableId)) {
+        if (iface.supportsInterface(ys, observable.IObservable)) {
             xs = ys.get();
         }
         for (var i = 0; i < xs.length; i += 1) {

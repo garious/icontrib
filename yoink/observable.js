@@ -2,7 +2,7 @@
 // Observable JS
 //
 
-var observableId = {
+var IObservable = {
     get:       function() {},
     subscribe: function(f) {}
 };
@@ -135,7 +135,7 @@ function snapshot(o) {
 }
 
 yoink.define({
-    observableId: observableId,
+    IObservable: IObservable,
     observe: observe,
     thunk: thunk,
     lift: lift,
