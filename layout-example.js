@@ -10,7 +10,7 @@ var deps = [
 function onReady(tag, layout) {
 
     function testImg() {
-        return 'text';
+        return tag.tag({name: 'h3', contents: 'text'});
     }
 
     function hcatTest() {
