@@ -2,32 +2,41 @@ The Yoink Web Framework
 =======================
 
 HTML is for web documents.  JavaScript is for web applications.  The Yoink framework
-lets us code exclusively in JavaScript.  The framework also provides a set of
-libraries for Reactive Programming in JavaScript.  Reactive programs scale well
-and can be tested outside the browser.  Reactive elements do not have explicit 
-event handlers.  Instead, they use the Publish-Subscribe pattern to observe other
-reactive elements.
+lets us write all client-side code exclusively in JavaScript.  The framework also
+provides a set of libraries for Reactive Programming in JavaScript.  Reactive
+programs scale well and can be tested outside the browser.  Reactive elements do
+not have explicit event handlers.  Instead, they use the Publish-Subscribe pattern
+to observe other reactive elements.
 
 
-yoink.js
+JavaScript Module Loader
 ----
 
-The 'yoink' directory contains client-side JavaScript libraries.  yoink.js is module
-loader.  observable.js is a general library for reactive programming in JavaScript.
-tag.js applies the reactive programming model to HTML.
+yoink.js is a standalone module loader.  See loader/README.md for more details.
 
 
-jsappserver
+Client-side reactive programming library
 ----
 
-JsAppServer is a Go package for building web servers that use Yoink.  When the
-user requests a URL, JsAppServer looks for a resource with the same name and a
-'.js' extension.  If it finds one, the server wraps the JavaScript with an HTML
-page that uses yoink.js to load and run that JavaScript file.  The JavaScript
-file then calls 'yoink.define()' with a DOM element to display in the HTML body.
+The 'yoink' directory contains client-side JavaScript libraries.  observable.js
+is a general library for reactive programming in JavaScript.  tag.js applies the
+reactive programming model to HTML.  It allows the user to write dynamic content
+without having to manager event handlers directly.  When an observable value
+changes, the HTML that observes it is updated automatically.
 
 
-Testing Yoink apps
+Sever-side Go AppEngine library
+----
+
+JsAppServer is a Go package for building Go AppEngine web servers using Yoink.
+When the user requests a URL, JsAppServer looks for a resource with the same 
+name and a '.js' extension.  If it finds one, the server wraps the JavaScript
+with an HTML page that uses yoink.js to load and run that JavaScript file.  The
+JavaScript file then calls 'yoink.define()' with a DOM element to display in the
+HTML body.
+
+
+Unit-testing library for client-side JavaScript
 -----
 
 Instead of passing 'yoink.define()' a DOM element, you also have the option to
@@ -67,7 +76,9 @@ for your JavaScript.  For example:
 Contributing
 ============
 
-To develop on OSX, install dependencies with Homebrew. http://brew.sh
+Gladly accepting Pull Requests.
+
+To run the yoink tests on OSX, first install a few prereqs via Homebrew. http://brew.sh
 
 ```bash
     # Install Homebrew
