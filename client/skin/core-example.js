@@ -1,5 +1,5 @@
 var deps = [
-    'Core.js',
+    'core.js',
     '/yoink/tag.js'
 ];
 
