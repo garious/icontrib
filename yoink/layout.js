@@ -1,11 +1,11 @@
 //
-// Layout with hugging and spooning
+// A JavaScript library for 2D layout
 //
 
-// All combinators are of type "Maybe attrs -> Array a -> a"
+// hcat(['a','b','c']) === 'abc'
+// vcat(['a','b','c']) === 'a\nb\nc'
 //
-// hug(  ['a','b','c'])       === 'abc'
-// spoon(['a','b','c'])       === 'a\nb\nc'
+// To put space between elements, use the gap(nPixels) function.
 
 var deps = [
     'tag.js',
@@ -15,10 +15,10 @@ var deps = [
 
 function onReady(tag, iface, observable) {
 
-    // pillow(w, h)
+    // gap(w, h)
     //
     //     Create empty space of 'w' pixels wide and 'h' pixels tall.
-    function pillow(w, h) {
+    function gap(w, h) {
         if (h === undefined) {
             h = w;
         }
@@ -49,7 +49,7 @@ function onReady(tag, iface, observable) {
     }
 
     // Concatenate elements horizontally
-    function hug(as, xs) {
+    function hcat(as, xs) {
         if (as && as.constructor === Array) {
             xs = as;
             as = {};
@@ -73,7 +73,7 @@ function onReady(tag, iface, observable) {
     }
     
     // Concatenate elements vertically
-    function spoon(as, xs) {
+    function vcat(as, xs) {
         if (as && as.constructor === Array) {
             xs = as;
             as = {};
@@ -83,9 +83,9 @@ function onReady(tag, iface, observable) {
     }
     
     yoink.define({
-        hug:    hug,
-        spoon:  spoon,
-        pillow: pillow
+        hcat: hcat,
+        vcat: vcat,
+        gap: gap
     });
 }
 

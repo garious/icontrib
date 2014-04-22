@@ -1,5 +1,5 @@
 //
-// Layout tests with hugging and spooning
+// 2D Layout tests
 //
 
 var deps = [
@@ -13,34 +13,32 @@ function onReady(tag, layout) {
         return tag.tag({name: 'img', attributes: {src: 'logo.png'}, style: {border: '1px solid', padding: '5px', borderRadius: '5px'}});
     }
 
-    function hugTest() {
-        return layout.hug([
+    function hcatTest() {
+        return layout.hcat([
             tag.tag({name: 'span', style: {height: '20px', width: '70px'}, contents: 'hello'}), 
-            layout.pillow(10),
+            layout.gap(10),
             tag.tag({name: 'span', style: {height: '20px', width: '70px'}, contents: 'world'})
         ]);
     }
 
     function test() {
-        var separator = layout.pillow(30);
+        var separator = layout.gap(30);
 
         function label(s, e) {
-            return layout.hug([tag.tag({name: 'p', style: {width: '70px'}, contents: s}), layout.pillow(10), e]);
+            return layout.hcat([tag.tag({name: 'p', style: {width: '70px'}, contents: s}), layout.gap(10), e]);
         }
 
-        return layout.hug([
-            layout.pillow(10),
-            layout.spoon([
-                layout.pillow(10),
-                layout.spoon([
-                    label('hug',   layout.hug(  [testImg(), layout.pillow(10), testImg(), layout.pillow(10), testImg()])), separator,
-                    label('kiss',  layout.hug(  [testImg(), testImg(),         testImg()])), separator,
-                    label('spoon', layout.spoon([testImg(), layout.pillow(10), testImg(), layout.pillow(10), testImg()])), separator,
-                    label('love',  layout.spoon([testImg(), testImg(),         testImg()]))
+        return layout.hcat([
+            layout.gap(10),
+            layout.vcat([
+                layout.gap(10),
+                layout.vcat([
+                    label('hcat', layout.hcat([testImg(), layout.gap(10), testImg(), layout.gap(10), testImg()])), separator,
+                    label('vcat', layout.vcat([testImg(), layout.gap(10), testImg(), layout.gap(10), testImg()])), separator,
                 ]),
-                layout.pillow(10) 
+                layout.gap(10)
             ]),
-            layout.pillow(10)
+            layout.gap(10)
         ]);
     }
 
