@@ -30,7 +30,7 @@ function onReady(iface, tag, observable, colors) {
 
                 for (var i = 0; i < as.distribution.length; i++) {
                     var obs = as.distribution[i];
-                    if (iface.supportsInterface(obs, observable.observableId)) {
+                    if (iface.supportsInterface(obs, observable.IObservable)) {
                         obs.subscribe(draw);
                     }
                 }
