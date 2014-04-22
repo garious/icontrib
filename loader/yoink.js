@@ -31,30 +31,34 @@ var YOINK = (function () {
         debugLevel = n;
     }
 
-    var defaultInterpreters = {
-        json: function (text) {
-            return JSON.parse(text);
-        },
-        js: function (text, require, callback, params) {
-            // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-            var f_str = '(function (yoink) {"use strict";' + text + '})';
-            var f;
-            if (typeof window !== 'undefined' && window.execScript) {
-              // Special handling for Internet Explorer
-              /*global tmp: true*/
-              window.execScript('tmp = ' + f_str);
-              f = tmp;
-            } else {
-              f = eval(f_str);
-            }
-            f({
-                baseUrl: require.base,
-                fileUrl: require.url,
-                define: callback,
-                require: require,
-                params: params
-            });
+    function jsonInterpreter(text) {
+        return JSON.parse(text);
+    }
+
+    function jsInterpreter(text, require, callback, params) {
+        // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
+        var f_str = '(function (yoink) {"use strict";' + text + '})';
+        var f;
+        if (typeof window !== 'undefined' && window.execScript) {
+          // Special handling for Internet Explorer
+          /*global tmp: true*/
+          window.execScript('tmp = ' + f_str);
+          f = tmp;
+        } else {
+          f = eval(f_str);
         }
+        f({
+            baseUrl: require.base,
+            fileUrl: require.url,
+            define: callback,
+            require: require,
+            params: params
+        });
+    }
+
+    var defaultInterpreters = {
+        json: jsonInterpreter,
+        js: jsInterpreter
     };
 
     function clone(o1) {
@@ -68,14 +72,15 @@ var YOINK = (function () {
         return o2;
     }
 
-    // Forward-declare mutual recursion
-    var mkGetResources;
+    function passthrough(x) {
+        return x;
+    }
 
     function interpret(rsc, url, params, interpreter, interpreters, cache, moduleCache, callback) {
         // Look up an interpreter for the URL's file extension
         if (!interpreter) {
             var ext = url.substring(url.lastIndexOf('.') + 1, url.length).toLowerCase();
-            interpreter = interpreters[ext] || function (x) { return x; };
+            interpreter = interpreters[ext] || passthrough;
         }
 
         // Interpret the resource
@@ -95,11 +100,12 @@ var YOINK = (function () {
     // Download a text file asynchronously
     function getFile(path, callback) {
         var req = new XMLHttpRequest();
-        req.onreadystatechange = function () {
+        function onReadyStateChanged() {
             if (req.readyState === 4) {
                 callback(req.responseText, req.status || 200);
             }
-        };
+        }
+        req.onreadystatechange = onReadyStateChanged;
         req.open('GET', path, true);
         req.send();
     }
@@ -117,7 +123,7 @@ var YOINK = (function () {
             var rsc = u.onError(httpCode);
             callback(rsc);
         } else {
-            throw httpCode;
+            throw str;
         }
     }
 
@@ -147,15 +153,23 @@ var YOINK = (function () {
             plan(rsc);
         }
 
+        function onFile(str, httpCode) {
+            interpretFile(interpreters, cache, moduleCache, url, str, httpCode, callback);
+        }
+
         var rsc = cache[p];
+
+        function action(rsc) {
+            plan(rsc);
+            onInterpreted(rsc);
+        }
+
         if (rsc === undefined) {
             // Is anyone else already downloading this file?
             var plan = plans[p];
             if (plan === undefined) {
                 // Create a plan for what we will do with this module
-                plans[p] = function (rsc) {
-                    onInterpreted(rsc);
-                };
+                plans[p] = onInterpreted;
 
                 if (moduleCache[p]) {
                     // Is this in our module cache?
@@ -164,16 +178,11 @@ var YOINK = (function () {
                     }
                     evaluateModule(moduleCache[p], p, url.params, cache, moduleCache, interpreters, callback);
                 } else {
-                    getFile(p, function (str, httpCode) {
-                        interpretFile(interpreters, cache, moduleCache, url, str, httpCode, callback);
-                    });
+                    getFile(p, onFile);
                 }
             } else {
                 // Add ourselves to the plan.  The plan is effectively a FIFO queue of actions.
-                plans[p] = function (rsc) {
-                    plan(rsc);
-                    onInterpreted(rsc);
-                };
+                plans[p] = action;
             }
         } else {
             onInterpreted(rsc);  // Skip downloading
@@ -193,7 +202,7 @@ var YOINK = (function () {
         return {path: p, params: ps, interpreter: f, onError: url.onError};
     }
 
-    mkGetResources = function (base, cache, moduleCache, interpreters) {
+    function mkGetResources(base, cache, moduleCache, interpreters) {
 
         function getResources(urls, callback) {
             var len = urls.length; // How many things we need to interpret
@@ -223,7 +232,7 @@ var YOINK = (function () {
         }
 
         return getResources;
-    };
+    }
 
     // Resource Loader constructor
     function resourceLoader(base, cache, moduleCache, interpreters) {
