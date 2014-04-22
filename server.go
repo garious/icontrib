@@ -6,22 +6,16 @@ import (
 	"encoding/json"
 	"github.com/garious/yoink/jsappserver"
 	"io/ioutil"
-	"log"
 	"net/http"
-	"path"
-	"runtime"
 )
 
 func init() {
-        _, filename, _, _ := runtime.Caller(0)
-	dir := path.Dir(filename)
-
 	http.HandleFunc("/charity/popular.json", popular)
 	http.HandleFunc("/stats/community.json", community)
 	http.HandleFunc("/donor/checkUser.json", checkUser)
-	//http.Handle("/static/", http.FileServer(http.Dir(path.Join(dir, "../data"))))
 
-	jsappserver.HandleDir("/", dir + "/client/pages")
+	jsappserver.HandleDir("/skin/", "client/skin")
+	jsappserver.HandleDir("/", "client/pages")
 }
 
 func Start() {
@@ -38,26 +32,29 @@ func popular(w http.ResponseWriter, r *http.Request) {
 	}
 	b, err := json.Marshal(group)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	w.Write(b)
 }
 
 func community(w http.ResponseWriter, r *http.Request) {
-        _, filename, _, _ := runtime.Caller(0)
-	userBlob, err := ioutil.ReadFile(path.Join(path.Dir(filename), "static/donor/greg.json"))
+	userBlob, err := ioutil.ReadFile("static/donor/greg.json")
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	var userInfo UserInfo
 
 	err = json.Unmarshal(userBlob, &userInfo)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	b, err := json.Marshal(userInfo)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	w.Write(b)
 }
@@ -106,7 +103,8 @@ func checkUser(w http.ResponseWriter, r *http.Request) {
 
 		b, err := json.Marshal(auth)
 		if err != nil {
-			log.Fatal(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		w.Write(b)
 		return
@@ -117,19 +115,22 @@ func checkUser(w http.ResponseWriter, r *http.Request) {
 	}
 	userBlob, err := ioutil.ReadFile("static/donor/greg.json")
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	var userInfo UserInfo
 
 	err = json.Unmarshal(userBlob, &userInfo)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	url, _ := user.LogoutURL(c, "/")
 	userInfo.LogoutUrl = url
 	b, err := json.Marshal(Auth{userInfo})
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	w.Write(b)
 }
