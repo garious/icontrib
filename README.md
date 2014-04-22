@@ -38,26 +38,38 @@ with an adapter for Node.js called 'yoink-adapter.js' and a simple assertion
 module called 'assert.js'.  With it, you can easily write server-side tests
 for your JavaScript.  For example:
 
-    $ cat mylib.js
+```bash
+   $ cat mylib.js
+```
+
+```javascript
     yoink.define({
        fortyTwo: function() {return 42;}
     });
+```
 
+```bash
     $ cat mylib_test.js
+```
+
+```javascript
     yoink.require(['assert.js', 'mylib.js'], function(assert, mylib) {
         assert.assertEq(mylib.fortyTwo(), 42);
         yoink.define('passed!');
     });
+```
 
+```bash
     $ node yoink-adapater.js mylib_test.js
     passed!
-    
+```    
 
 Contributing
 ============
 
 To develop on OSX, install dependencies with Homebrew. http://brew.sh
 
+```bash
     # Install Homebrew
     $ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 
@@ -69,4 +81,4 @@ To develop on OSX, install dependencies with Homebrew. http://brew.sh
 
     # Run the tests
     $ make -C yoink
-
+```
