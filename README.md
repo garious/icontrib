@@ -80,5 +80,6 @@ To develop on OSX, install dependencies with Homebrew. http://brew.sh
     $ brew install homebrew/binary/jsl
 
     # Run the tests
-    $ make -C yoink
+    $ cd yoink
+    $ go test
 ```
