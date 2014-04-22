@@ -69,7 +69,7 @@ function onReady(iface, observable) {
 
     // Add style 's' with value 'style[s]' to the DOM element 'e'.
     function addStyle(e, style, s) {
-        if (iface.supportsInterface(style[s], observable.observableId)) {
+        if (iface.supportsInterface(style[s], observable.IObservable)) {
             e.style[s] = style[s].get();
             style[s].subscribe(function(obs) {e.style[s] = obs.get();});
         } else {
@@ -79,7 +79,7 @@ function onReady(iface, observable) {
 
     // Add attribute 'k' with value 'v' to the DOM element 'e'.
     function addAttribute(e, k, v) {
-        if (iface.supportsInterface(v, observable.observableId)) {
+        if (iface.supportsInterface(v, observable.IObservable)) {
             e.setAttribute(k, v.get());
             v.subscribe(function(obs) {e[k] = obs.get();});
         } else {
@@ -138,7 +138,7 @@ function onReady(iface, observable) {
             if (typeof xs === 'string') {
                 e.appendChild(document.createTextNode(xs));
             } else {
-                if (iface.supportsInterface(xs, observable.observableId)) {
+                if (iface.supportsInterface(xs, observable.IObservable)) {
                     var xsObs = xs;
                     xs = xsObs.get();
                     xsObs.subscribe(mkSetChildren(e));
