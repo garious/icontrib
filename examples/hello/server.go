@@ -1,15 +1,7 @@
-package main
+package example
 
-import (
-	"github.com/garious/yoink/jsappserver"
-	"github.com/garious/yoink/yoink"
-	"log"
-	"net/http"
-)
+import "github.com/garious/yoink/jsappserver"
 
-func main() {
-	jsappserver.HandleDir("/yoink/", yoink.Dir())
+func init() {
 	jsappserver.HandleDir("/", ".")
-
-	log.Fatal(http.ListenAndServe(":8080", nil))
 }
