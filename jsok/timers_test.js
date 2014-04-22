@@ -1,5 +1,5 @@
 var deps = [
-    'assert.js'
+    '../yoink/assert.js'
 ];
 
 function onReady(assert) {
@@ -24,5 +24,5 @@ function onReady(assert) {
     setTimeout(f2, 0);
 }
 
-YOINK.require(deps, onReady);
+yoink.require(deps, onReady);
 
