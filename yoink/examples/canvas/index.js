@@ -1,5 +1,5 @@
 var deps = [
-    '/yoink/tag.js',
+    '/yoink/tag.js'
 ];
 
 var modules = ['canvas-example', 'canvas-pie-example'];
