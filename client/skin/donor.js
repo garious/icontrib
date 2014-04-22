@@ -22,19 +22,19 @@ function onReady(tag, layout, chart, colors, core) {
     }
 
     function fundContents(xs, total, colors) {
-        var rows = [layout.pillow(0, 15)];
+        var rows = [layout.gap(0, 15)];
 
         for (var j = 0; j < xs.length; j++) {
             var x = xs[j];
             var pct = core.h6(Math.round(1000 * x.shares / total) / 10 + '%');
 
 
-            var cols = layout.hug([
+            var cols = layout.hcat([
                 tag.tag({
                     name: 'div',
                     style: {width: '18px', height: '18px', backgroundColor: colors[j % colors.length]}
                 }),
-                layout.pillow(15, 0),
+                layout.gap(15, 0),
                 tag.tag({
                     name: 'div',
                     style: {width: '55px', height: pct.height},
@@ -44,7 +44,7 @@ function onReady(tag, layout, chart, colors, core) {
             ]);
             rows.push(cols);
         }
-        return layout.spoon(rows);
+        return layout.vcat(rows);
     }
 
     function distributionTable(dist) {
@@ -61,9 +61,9 @@ function onReady(tag, layout, chart, colors, core) {
             name: 'div',
             style: {width: '100%'},
             contents: [
-                layout.hug([
+                layout.hcat([
                     fundContents(dist, total, colors.dashboardColors),
-                    layout.pillow(20, 0),
+                    layout.gap(20, 0),
                     chart.pieSnapshot({distribution: dist, colors: colors.dashboardColors, height: 200})
                 ])
             ]
@@ -76,13 +76,13 @@ function onReady(tag, layout, chart, colors, core) {
         as = as || {};
         var user = as.user || {};
         var name = user.firstName + ' ' + user.lastName;
-        var userInfo = layout.hug([
-            layout.pillow(25, 0), 
+        var userInfo = layout.hcat([
+            layout.gap(25, 0), 
             core.h3(name)
         ]);
 
-        return layout.spoon([
-            layout.hug([
+        return layout.vcat([
+            layout.hcat([
                 tag.tag({
                     name: 'img',
                     style: {width: '90px', height: '90px'},
@@ -90,7 +90,7 @@ function onReady(tag, layout, chart, colors, core) {
                 }),
 	        userInfo
             ]),
-            layout.pillow(0, 10),
+            layout.gap(0, 10),
             distributionTable(user.distribution)
         ]);
     }
@@ -108,17 +108,17 @@ function onReady(tag, layout, chart, colors, core) {
 
         for (var i = 0; i < as.funds.length; i += 1) {
             var x = as.funds[i];
-            listItems.push( layout.pillow(0, 10) );
+            listItems.push( layout.gap(0, 10) );
             listItems.push( core.hr({width: width - 4, marginLeft: -15}) );
-            listItems.push( layout.pillow(0, 10) );
+            listItems.push( layout.gap(0, 10) );
 
-            var e = layout.hug([
+            var e = layout.hcat([
                 tag.tag({
                     name: 'img',
                     attributes: {src: x.imageUrl},
                     style: {width: '50px', height: '50px'}
                 }),
-                layout.pillow(20, 0),
+                layout.gap(20, 0),
                 core.hyperlink({url: '/charity?id=' + x.cid, text: x.name})
             ]);
 
@@ -127,7 +127,7 @@ function onReady(tag, layout, chart, colors, core) {
 
         return core.box({
             width: width,
-            contents: layout.spoon(listItems)
+            contents: layout.vcat(listItems)
         });
     }
 

@@ -20,7 +20,7 @@ function onReady (tag, layout, core) {
         name: 'div',
         style: {margin: '10px'},
         contents: [
-            layout.spoon(rows.concat(modules.map(mkRow)))
+            layout.vcat(rows.concat(modules.map(mkRow)))
 
         ]
     });

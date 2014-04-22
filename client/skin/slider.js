@@ -100,11 +100,11 @@ function onReady(observable, tag, layout, shapes, colors) {
 
         var lineMarginTop = as.marginTop + radius - height / 2;
 
-        var lines = layout.hug([
-            layout.pillow(radius, 1),
+        var lines = layout.hcat([
+            layout.gap(radius, 1),
             line({width:  leftWidth, height: height, marginTop: lineMarginTop, marginBottom: lineMarginTop, color: as.color}),
             line({width: rightWidth, height: height, marginTop: lineMarginTop, marginBottom: lineMarginTop, color: colors.gray}),
-            layout.pillow(radius, 1)
+            layout.gap(radius, 1)
         ]);
 
         var circle = shapes.circle({left: leftWidth, radius: radius, color: as.color, 'top': as.marginTop + 'px'});

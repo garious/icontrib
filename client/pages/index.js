@@ -11,16 +11,16 @@ var deps = [
 
 function onReady(auth, tag, layout, frame, core, popularCharities, donor, community) {
 
-    var body = layout.spoon([
-        layout.hug([
+    var body = layout.vcat([
+        layout.hcat([
             core.box({
                 width: 600,
                 contents: donor.profile({user: community})
             }),
-            layout.pillow(20),
+            layout.gap(20),
             donor.recommendedFunds({funds: popularCharities})
         ]),
-        layout.pillow(20),
+        layout.gap(20),
         frame.footer([
             core.hyperlink({url: 'registration', text: 'Charity Registration'})
         ])

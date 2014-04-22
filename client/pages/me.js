@@ -103,12 +103,12 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
              });
         }
 
-        var cols = layout.hug([
+        var cols = layout.hcat([
             core.hyperlink({url: '/charity?id=' + x.cid, text: x.name, marginTop: 6, marginRight: 10}),
             slider,
-            layout.pillow(10, 0),
+            layout.gap(10, 0),
             core.input({type: 'text', size: 5, disabled: true, value: percentage}),
-            layout.pillow(10, 0),
+            layout.gap(10, 0),
             deleteLink
         ]);
 
@@ -129,11 +129,11 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
             rows.push(row);
         }
 
-        return layout.spoon({align: 'right'}, rowsObs);
+        return layout.vcat({align: 'right'}, rowsObs);
     }
 
     function distributionTable(dist, inputs, colors) {
-        return layout.hug({width: 550}, [layout.pillow(30), fundContents(dist, inputs, colors)]);
+        return layout.hcat({width: 550}, [layout.gap(30), fundContents(dist, inputs, colors)]);
     }
 
     function dashboard(as) {
@@ -159,7 +159,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
 
         if (dist.length > 0) {
             rows.push( pieTin );
-            rows.push( layout.pillow(0, 20) );
+            rows.push( layout.gap(0, 20) );
         }
 
         function saveChanges() {
@@ -181,15 +181,15 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
 
         rows.push( distributionTable(dist, inputs, colors.dashboardColors) );
 
-        var buttons = layout.hug({width: 100}, [
+        var buttons = layout.hcat({width: 100}, [
             core.button({href: '#', text: 'Cancel', quiet: true, onClick: cancelChanges}),
-            layout.pillow(10, 0),
+            layout.gap(10, 0),
             core.button({href: '#', text: 'Save Changes', loud: true, onClick: saveChanges})
         ]);
 
         rows.push( buttons );
 
-        return layout.spoon(rows);
+        return layout.vcat(rows);
     }
 
     var dash;
@@ -200,16 +200,16 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
     }
 
     var main = frame.frame({
-        contents: layout.spoon([
-            layout.hug([
+        contents: layout.vcat([
+            layout.hcat([
                 core.box({
                     width: 600,
                     contents: dash
                 }),
-                layout.pillow(20),
+                layout.gap(20),
                 donor.recommendedFunds({funds: popular})
             ]),
-            layout.pillow(20) 
+            layout.gap(20) 
         ]),
         auth: auth
     });

@@ -16,9 +16,9 @@ function onReady(auth, tag, layout, frame, core, popularCharities, donor, user) 
         contents: donor.profile({user: user})
     });
 
-    var body = layout.hug([
+    var body = layout.hcat([
         box,
-        layout.pillow(20),
+        layout.gap(20),
         donor.recommendedFunds({funds: popularCharities})
     ]);
 

@@ -64,17 +64,17 @@ function onReady(auth, tag, layout, observable, core, frame, colors) {
         }
     }
 
-    var widget = layout.spoon([
+    var widget = layout.vcat([
         core.h4('Charity Registration'),
-        layout.pillow(0, 15),
+        layout.gap(0, 15),
         orgName,
-        layout.pillow(0, 15),
+        layout.gap(0, 15),
         orgEin,
-        layout.pillow(0, 15),
+        layout.gap(0, 15),
         orgUrl,
-        layout.pillow(0, 15),
+        layout.gap(0, 15),
         orgPayPal,
-        layout.pillow(0, 10),
+        layout.gap(0, 10),
         core.button({text: 'Register organization', onClick: onRegister, width: 314})
     ]);
 

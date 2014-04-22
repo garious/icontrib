@@ -45,9 +45,9 @@ function onReady(tag, observable, layout, core, colors) {
                 window.location = loginData.loginUrl;
             };
 
-            return layout.spoon({align: 'right'}, [
+            return layout.vcat({align: 'right'}, [
                 core.button({text: 'Log in', onClick: onLogin, quiet: true}),
-                layout.pillow(0, 20)
+                layout.gap(0, 20)
             ]);
 
         } else {
@@ -116,7 +116,7 @@ function onReady(tag, observable, layout, core, colors) {
         return tag.tag({
             name: 'div',
             contents: [
-                layout.pillow(0, 20),
+                layout.gap(0, 20),
                 logo,
                 loginWidget(as),
                 core.hr({width: 960, height: 4, color: colors.green})
@@ -145,12 +145,12 @@ function onReady(tag, observable, layout, core, colors) {
         if (as.auth.Right) {
             var user = as.auth.Right;
             var userName = user.firstName && user.lastName ? (user.firstName + ' ' + user.lastName) : user.email;
-            var img  = user.imageUrl ? core.image({width: 50, height: 50, url: user.imageUrl, text: userName}) : layout.pillow(1, 50);
-            var thumbContents = layout.hug([
+            var img  = user.imageUrl ? core.image({width: 50, height: 50, url: user.imageUrl, text: userName}) : layout.gap(1, 50);
+            var thumbContents = layout.hcat([
                 img,
-                layout.pillow(20, 0),
-                layout.spoon([
-                    layout.pillow(0, 10),
+                layout.gap(20, 0),
+                layout.vcat([
+                    layout.gap(0, 10),
                     core.h3({
                         color: colors.greenText,
                         text: userName
@@ -173,9 +173,9 @@ function onReady(tag, observable, layout, core, colors) {
             name: 'div',
             style: {margin: 'auto', width: '960px'},
             contents: [
-                layout.spoon([
+                layout.vcat([
                     navbar, 
-                    layout.pillow(50), 
+                    layout.gap(50), 
                     body
                 ])
             ]

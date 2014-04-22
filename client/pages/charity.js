@@ -13,24 +13,24 @@ function onReady(auth, tag, layout, core, frame, charityData) {
         as = as || {};
         var user = as.user;
 	var box = core.box({
-            contents: layout.spoon([
+            contents: layout.vcat([
 	        core.h2(user.organizationName),
-                layout.pillow(20),
-                layout.hug([
+                layout.gap(20),
+                layout.hcat([
                     core.image({width: 175, height: 175, borderRadius: 5, url: user.imageUrl, text: user.organizationName}),
-                    layout.pillow(30),
-                    layout.spoon([
+                    layout.gap(30),
+                    layout.vcat([
                         tag.tag({name: 'p', style: {font: core.defaultFont, width: '600px'}, contents: user.mission}), 
-                        layout.pillow(20),
+                        layout.gap(20),
                         core.button({href: '/me?donateTo=' + user.cid, text: 'Donate!', loud: true})
                     ])
                 ])
             ])
         });
 
-        return layout.spoon([
+        return layout.vcat([
            box,
-           layout.pillow(30)
+           layout.gap(30)
         ]);
     }
 
