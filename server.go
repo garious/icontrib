@@ -4,7 +4,7 @@ import (
 	"appengine"
 	"appengine/user"
 	"encoding/json"
-	"github.com/garious/yoink/jsappserver"
+	"github.com/garious/yoink-server/jsappserver"
 	"io/ioutil"
 	"net/http"
 )
