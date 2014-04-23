@@ -4,7 +4,7 @@
 
 var  deps = [
     'shapes.js',
-    '../../stdlib/assert.js'
+    '/yoink/assert.js'
 ];
 
 function onReady (shapes, Assert) {
