@@ -3,8 +3,8 @@
 //
 
 var deps = [
-    'tag.js',
-    'layout.js'
+    'yoink/tag.js',
+    'yoink/layout.js'
 ];
 
 function onReady(tag, layout) {
