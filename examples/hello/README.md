@@ -1,6 +1,6 @@
-This is the Hello World for the Yoink framework using the Go AppEngine.  To run the server:
+This is the Hello World for the Yoink framework using Go.  To run the server:
 
-    $ goapp serve
+    $ go run server.go
 
 Point your browser to http://localhost:8080
 
