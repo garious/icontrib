@@ -198,7 +198,7 @@ var YOINK = (function () {
         }
 
         // Normalize the path
-        p = p.replace(/[^\/]+[\/]\.\.[\/]/g, '');  // Remove redundant '%s/..' items.
+        p = p.replace(/[^.\/]+[\/]\.\.[\/]/g, '');  // Remove redundant '%s/..' items.
         return {path: p, params: ps, interpreter: f, onError: url.onError};
     }
 

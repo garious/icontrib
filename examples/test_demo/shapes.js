@@ -3,7 +3,7 @@
 //
 
 var deps = [
-    'tag.js'
+    '../../stdlib/tag.js'
 ];
 
 function onReady(tag) {

@@ -7,9 +7,7 @@ var modules = [
     'interface_test',
     'layout',
     'observable',
-    'observable_test',
-    'shapes',
-    'shapes_test'
+    'observable_test'
 ];
 
 function onReady (tag) {

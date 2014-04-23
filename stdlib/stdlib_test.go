@@ -1,4 +1,4 @@
-package yoink
+package stdlib
 
 import (
 	"github.com/garious/yoink/jsok"
