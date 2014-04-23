@@ -1,7 +1,6 @@
-package yoink
+package jsok
 
 import (
-	"github.com/garious/yoink-server/jsok"
 	"path/filepath"
 	"testing"
 	"log"
@@ -25,7 +24,7 @@ func TestTests(t *testing.T) {
 func handleJsLint(path string, info os.FileInfo, err error) error {
 	if filepath.Ext(path) == ".js" {
 		log.Printf("Linting: %v", path)
-		return jsok.JsLint(path)
+		return JsLint(path)
 	}
 	return nil
 }
@@ -37,7 +36,7 @@ func handleJsExec(path string, info os.FileInfo, err error) error {
 	}
 	if matched {
 		log.Printf("Testing: %v", path)
-		return jsok.JsExec(path)
+		return JsExec(path)
 	}
 	return nil
 }
