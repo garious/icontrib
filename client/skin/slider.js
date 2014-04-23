@@ -3,7 +3,7 @@ var deps = [
     '/yoink/observable.js',
     '/yoink/tag.js',
     '/yoink/layout.js',
-    '/yoink/shapes.js',
+    'shapes.js',
     'colors.js'
 ];
 
