@@ -18,9 +18,6 @@ func init() {
 	jsappserver.HandleDir("/", "client/pages")
 }
 
-func Start() {
-}
-
 func popular(w http.ResponseWriter, r *http.Request) {
 	type PopularCharity struct {
 		Cid      string `json:"cid"`
@@ -45,7 +42,6 @@ func community(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var userInfo UserInfo
-
 	err = json.Unmarshal(userBlob, &userInfo)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -71,7 +67,7 @@ type UserInfo struct {
 	AlignedUsers   []string       `json:"alignedUsers"`
 	Distribution   []Distribution `json:"distribution"`
 	Funds          []Fund         `json:"funds"`
-	LogoutUrl	string	      `json:"logoutUrl"`
+	LogoutUrl      string         `json:"logoutUrl"`
 }
 
 type Distribution struct {
@@ -92,7 +88,7 @@ func checkUser(w http.ResponseWriter, r *http.Request) {
 	if u == nil {
 		type Auth struct {
 			Left struct {
-				LoginUrl  string `json:"loginUrl"`
+				LoginUrl string `json:"loginUrl"`
 			}
 		}
 
@@ -113,13 +109,14 @@ func checkUser(w http.ResponseWriter, r *http.Request) {
 	type Auth struct {
 		Right UserInfo
 	}
+
 	userBlob, err := ioutil.ReadFile("static/donor/greg.json")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	var userInfo UserInfo
 
+	var userInfo UserInfo
 	err = json.Unmarshal(userBlob, &userInfo)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
