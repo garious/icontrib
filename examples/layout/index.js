@@ -3,14 +3,14 @@
 //
 
 var deps = [
-    'tag.js',
-    'layout.js'
+    'yoink/tag.js',
+    'yoink/layout.js'
 ];
 
 function onReady(tag, layout) {
 
     function testImg() {
-        return tag.tag({name: 'h3', contents: 'text'});
+        return tag.tag({name: 'img', attributes: {src: 'logo.png'}, style: {border: '1px solid', padding: '5px', borderRadius: '5px'}});
     }
 
     function hcatTest() {

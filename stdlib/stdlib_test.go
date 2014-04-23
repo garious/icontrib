@@ -1,7 +1,7 @@
-package yoink
+package stdlib
 
 import (
-	"github.com/garious/yoink-server/jsok"
+	"github.com/garious/yoink/jsok"
 	"path/filepath"
 	"testing"
 	"log"

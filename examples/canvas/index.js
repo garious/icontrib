@@ -1,16 +1,8 @@
 var deps = [
-    'tag.js'
+    '/yoink/tag.js',
 ];
 
-var modules = [
-    'interface',
-    'interface_test',
-    'layout',
-    'observable',
-    'observable_test',
-    'shapes',
-    'shapes_test'
-];
+var modules = ['canvas-example', 'canvas-pie-example'];
 
 function onReady (tag) {
 
