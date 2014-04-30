@@ -3,7 +3,7 @@
    "firstName": "Tom",
    "lastName": "Johnson",
    "phone": "",
-   "email": "",
+   "email": "tom@icontrib.org",
    "imageUrl": "/static/donor/tom.jpg",
    "centsDonated": 5500,
    "alignedDonated": 6500,

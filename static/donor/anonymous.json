@@ -3,7 +3,7 @@
    "firstName": "New",
    "lastName": "Donor",
    "phone": "",
-   "email": "",
+   "email": "anonymous@icontrib.org",
    "imageUrl": "/static/donor/anonymous.jpg",
    "centsDonated": 0,
    "alignedDonated": 0,
