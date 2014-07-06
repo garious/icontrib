@@ -142,14 +142,14 @@ var YOINK = (function () {
     }
 
     function getResource(interpreters, cache, moduleCache, url, onInterpreted) {
-        var p = url.path;
+        var id = url.path;
 
         // A new callback that executes the plan created later in this function.
         function callback(rsc) {
-            cache[p] = rsc; // Cache the result
+            cache[id] = rsc; // Cache the result
             // Execute the plan
-            var plan = plans[p];
-            delete plans[p];
+            var plan = plans[id];
+            delete plans[id];
             plan(rsc);
         }
 
@@ -157,7 +157,7 @@ var YOINK = (function () {
             interpretFile(interpreters, cache, moduleCache, url, str, httpCode, callback);
         }
 
-        var rsc = cache[p];
+        var rsc = cache[id];
 
         function action(rsc) {
             plan(rsc);
@@ -166,23 +166,23 @@ var YOINK = (function () {
 
         if (rsc === undefined) {
             // Is anyone else already downloading this file?
-            var plan = plans[p];
+            var plan = plans[id];
             if (plan === undefined) {
                 // Create a plan for what we will do with this module
-                plans[p] = onInterpreted;
+                plans[id] = onInterpreted;
 
-                if (moduleCache[p]) {
+                if (moduleCache[id]) {
                     // Is this in our module cache?
                     if (debugLevel > 0) {
-                        console.log("yoink: executing preloaded module '" + p + "'");
+                        console.log("yoink: executing preloaded module '" + id + "'");
                     }
-                    evaluateModule(moduleCache[p], p, url.params, cache, moduleCache, interpreters, callback);
+                    evaluateModule(moduleCache[id], id, url.params, cache, moduleCache, interpreters, callback);
                 } else {
-                    getFile(p, onFile);
+                    getFile(id, onFile);
                 }
             } else {
                 // Add ourselves to the plan.  The plan is effectively a FIFO queue of actions.
-                plans[p] = action;
+                plans[id] = action;
             }
         } else {
             onInterpreted(rsc);  // Skip downloading
