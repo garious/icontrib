@@ -176,7 +176,7 @@ var YOINK = (function () {
                     if (debugLevel > 0) {
                         console.log("yoink: executing preloaded module '" + id + "'");
                     }
-                    evaluateModule(moduleCache[id], id, url.params, cache, moduleCache, interpreters, callback);
+                    evaluateModule(moduleCache[id], url.path, url.params, cache, moduleCache, interpreters, callback);
                 } else {
                     getFile(id, onFile);
                 }
