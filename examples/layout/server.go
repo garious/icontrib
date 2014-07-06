@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	jsappserver.HandleDir("/yoink/", "../../stdlib")
+	jsappserver.HandleDir("/stdlib/", "../../stdlib")
 	jsappserver.HandleDir("/", ".")
 
 	log.Fatal(http.ListenAndServe(":8080", nil))

@@ -8,13 +8,14 @@ and can be tested outside the browser.  Reactive elements do not have explicit
 event handlers.  Instead, they use the Publish-Subscribe pattern to observe other
 reactive elements.
 
-
-yoink.js
+examples
 ----
 
-The 'yoink' directory contains client-side JavaScript libraries.  yoink.js is module
-loader.  observable.js is a general library for reactive programming in JavaScript.
-tag.js applies the reactive programming model to HTML.
+Each subdirectory of the 'examples' directory contains a standalone webserver
+in 'server.go' and client code in its 'index.js'.  'hello' is a minimal webpage
+using Yoink.  'canvas' introduces the fundamental 'stdlib' library 'tag.js'.
+Finally, the 'layout' example shows off 'layout.js' and how a more typical Yoink
+webpage is composed.
 
 
 jsappserver
@@ -27,8 +28,11 @@ page that uses yoink.js to load and run that JavaScript file.  The JavaScript
 file then calls 'yoink.define()' with a DOM element to display in the HTML body.
 
 
-Testing Yoink apps
------
+jsok
+----
+
+The 'jsok' directory contains a Go library that allows you to easily unit-test
+Yoink modules.
 
 Instead of passing 'yoink.define()' a DOM element, you also have the option to
 pass it an object that implements a 'toDom()' method, which returns the DOM
@@ -64,8 +68,23 @@ for your JavaScript.  For example:
     passed!
 ```    
 
-Contributing
-============
+
+loader
+----
+
+The 'loader' directory contains a minimal asynchronous module loader.
+
+
+stdlib
+----
+
+The 'stdlib' directory contains client-side JavaScript libraries.  observable.js is
+a general library for reactive programming in JavaScript.  tag.js applies the
+reactive programming model to HTML.
+
+
+Running the stdlib tests
+------------
 
 To develop on OSX, install dependencies with Homebrew. http://brew.sh
 
@@ -80,6 +99,6 @@ To develop on OSX, install dependencies with Homebrew. http://brew.sh
     $ brew install homebrew/binary/jsl
 
     # Run the tests
-    $ cd yoink
+    $ cd stdlib
     $ go test
 ```
