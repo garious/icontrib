@@ -141,8 +141,26 @@ var YOINK = (function () {
         });
     }
 
+    function serializeParams(o) {
+        var xs = [];
+        for(var k in o) {
+            if (o.hasOwnProperty(k)) {
+                xs.push(k + '=' + encodeURIComponent(o[k]));
+            }
+        }
+        return xs.join('&');
+    }
+
     function getResource(interpreters, cache, moduleCache, url, onInterpreted) {
         var id = url.path;
+
+        // Add URL parameters to resource ID
+        if (url.params) {
+            var ps = serializeParams(url.params);
+            if (ps) {
+                 id += '?' + ps;
+            }
+        }
 
         // A new callback that executes the plan created later in this function.
         function callback(rsc) {
