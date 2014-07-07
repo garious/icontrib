@@ -1,6 +1,6 @@
 var deps = [
     'chart.js',
-    '/yoink/observable.js'
+    '/stdlib/observable.js'
 ];
 
 function onReady(chart, observable) {

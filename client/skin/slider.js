@@ -1,8 +1,8 @@
 
 var deps = [
-    '/yoink/observable.js',
-    '/yoink/tag.js',
-    '/yoink/layout.js',
+    '/stdlib/observable.js',
+    '/stdlib/tag.js',
+    '/stdlib/layout.js',
     'shapes.js',
     'colors.js'
 ];

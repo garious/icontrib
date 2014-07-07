@@ -3,7 +3,7 @@
 //
 
 var deps = [
-    '/yoink/tag.js'
+    '/stdlib/tag.js'
 ];
 
 function onReady(tag) {

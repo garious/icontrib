@@ -1,8 +1,8 @@
 var deps = [
     '/donor/checkUser.json',
-    '/yoink/tag.js', 
-    '/yoink/layout.js', 
-    '/yoink/observable.js', 
+    '/stdlib/tag.js',
+    '/stdlib/layout.js',
+    '/stdlib/observable.js',
     '/skin/frame.js',
     '/skin/core.js',
     '/skin/donor.js',
@@ -22,7 +22,7 @@ function removeItem(xs, x) {
     return xs;
 }
 
-function onReady(auth, tag, layout, observable, frame, core, donor, chart, slider, colors, popular) { 
+function onReady(auth, tag, layout, observable, frame, core, donor, chart, slider, colors, popular) {
 
     function fundRow(x, rowsObs, rows, obs, colorObs, colors, dist, inputs, colorAttrs) {
 
@@ -75,7 +75,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
             rowsObs.set(rows);
             onRangeChange({target: {value: '0'}});
         }
-   
+
         var percentage = observable.thunk([obs], function(n){return Math.round(n * 10) / 10 + '%';});
 
         var deleteImg = tag.tag({name: 'img', attributes: {src: 'skin/delete.png', alt: 'delete'}, style: {padding: '5px', visibility: deleteObs, borderWidth: '0px'}});
@@ -209,7 +209,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
                 layout.gap(20),
                 donor.recommendedFunds({funds: popular})
             ]),
-            layout.gap(20) 
+            layout.gap(20)
         ]),
         auth: auth
     });
@@ -218,4 +218,4 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
 }
 
 yoink.require(deps, onReady);
- 
+

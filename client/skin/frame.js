@@ -1,7 +1,7 @@
 var deps = [
-    '/yoink/tag.js', 
-    '/yoink/observable.js', 
-    '/yoink/layout.js', 
+    '/stdlib/tag.js',
+    '/stdlib/observable.js',
+    '/stdlib/layout.js',
     'core.js',
     'colors.js'
 ];
@@ -25,7 +25,7 @@ function post(path, params, callback) {
 function onReady(tag, observable, layout, core, colors) {
 
     function loginWidget(as) {
- 
+
         // Control the visibility of the the menu
         var visibility = observable.observe('hidden');
 
@@ -74,7 +74,7 @@ function onReady(tag, observable, layout, core, colors) {
                 width: 280,
                 top: 80,
                 visibility: visibility,
-                menuItems: [  
+                menuItems: [
                     core.menuItem({contents: core.h6('Manage my distribution'), onSelect: '/me'}),
                     core.menuItem({contents: core.h6('Log off'),  onSelect: logoff})
                 ]
@@ -174,8 +174,8 @@ function onReady(tag, observable, layout, core, colors) {
             style: {margin: 'auto', width: '960px'},
             contents: [
                 layout.vcat([
-                    navbar, 
-                    layout.gap(50), 
+                    navbar,
+                    layout.gap(50),
                     body
                 ])
             ]
@@ -202,7 +202,7 @@ function onReady(tag, observable, layout, core, colors) {
                 core.hr(),
                 tag.tag({name: 'div', style: {padding: '20px'}, contents: xs})
             ]
-        }); 
+        });
     }
 
     yoink.define({

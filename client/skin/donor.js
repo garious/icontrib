@@ -1,6 +1,6 @@
 var deps = [
-    '/yoink/tag.js',
-    '/yoink/layout.js',
+    '/stdlib/tag.js',
+    '/stdlib/layout.js',
     '/skin/chart.js',
     '/skin/colors.js',
     '/skin/core.js'

@@ -1,7 +1,7 @@
 var deps = [
     '/donor/checkUser.json',
-    '/yoink/tag.js',
-    '/yoink/layout.js',
+    '/stdlib/tag.js',
+    '/stdlib/layout.js',
     '/skin/core.js',
     '/skin/frame.js',
     '/static/charity/' + yoink.params.id + '.json'

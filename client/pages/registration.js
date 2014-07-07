@@ -1,8 +1,8 @@
 var deps = [
     '/donor/checkUser.json',
-    '/yoink/tag.js', 
-    '/yoink/layout.js', 
-    '/yoink/observable.js', 
+    '/stdlib/tag.js',
+    '/stdlib/layout.js',
+    '/stdlib/observable.js',
     '/skin/core.js',
     '/skin/frame.js',
     '/skin/colors.js'

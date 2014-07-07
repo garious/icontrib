@@ -1,6 +1,6 @@
 var deps = [
     'core.js',
-    '/yoink/tag.js'
+    '/stdlib/tag.js'
 ];
 
 function onReady(core, tag) {
