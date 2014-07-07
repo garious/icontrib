@@ -141,6 +141,7 @@ var YOINK = (function () {
         });
     }
 
+<<<<<<< HEAD
     function getResource(interpreters, cache, moduleCache, url, onInterpreted) {
         var p = url.path;
 
@@ -150,6 +151,35 @@ var YOINK = (function () {
             // Execute the plan
             var plan = plans[p];
             delete plans[p];
+=======
+    function serializeParams(o) {
+        var xs = [];
+        for(var k in o) {
+            if (o.hasOwnProperty(k)) {
+                xs.push(k + '=' + encodeURIComponent(o[k]));
+            }
+        }
+        return xs.join('&');
+    }
+
+    function getResource(interpreters, cache, moduleCache, url, onInterpreted) {
+        var id = url.path;
+
+        // Add URL parameters to resource ID
+        if (url.params) {
+            var ps = serializeParams(url.params);
+            if (ps) {
+                 id += '?' + ps;
+            }
+        }
+
+        // A new callback that executes the plan created later in this function.
+        function callback(rsc) {
+            cache[id] = rsc; // Cache the result
+            // Execute the plan
+            var plan = plans[id];
+            delete plans[id];
+>>>>>>> a495f0f21ca6197768888ab29c03138c60b06d94
             plan(rsc);
         }
 
@@ -157,7 +187,11 @@ var YOINK = (function () {
             interpretFile(interpreters, cache, moduleCache, url, str, httpCode, callback);
         }
 
+<<<<<<< HEAD
         var rsc = cache[p];
+=======
+        var rsc = cache[id];
+>>>>>>> a495f0f21ca6197768888ab29c03138c60b06d94
 
         function action(rsc) {
             plan(rsc);
@@ -166,6 +200,7 @@ var YOINK = (function () {
 
         if (rsc === undefined) {
             // Is anyone else already downloading this file?
+<<<<<<< HEAD
             var plan = plans[p];
             if (plan === undefined) {
                 // Create a plan for what we will do with this module
@@ -183,6 +218,25 @@ var YOINK = (function () {
             } else {
                 // Add ourselves to the plan.  The plan is effectively a FIFO queue of actions.
                 plans[p] = action;
+=======
+            var plan = plans[id];
+            if (plan === undefined) {
+                // Create a plan for what we will do with this module
+                plans[id] = onInterpreted;
+
+                if (moduleCache[id]) {
+                    // Is this in our module cache?
+                    if (debugLevel > 0) {
+                        console.log("yoink: executing preloaded module '" + id + "'");
+                    }
+                    evaluateModule(moduleCache[id], url.path, url.params, cache, moduleCache, interpreters, callback);
+                } else {
+                    getFile(id, onFile);
+                }
+            } else {
+                // Add ourselves to the plan.  The plan is effectively a FIFO queue of actions.
+                plans[id] = action;
+>>>>>>> a495f0f21ca6197768888ab29c03138c60b06d94
             }
         } else {
             onInterpreted(rsc);  // Skip downloading

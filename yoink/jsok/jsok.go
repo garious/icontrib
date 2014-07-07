@@ -22,7 +22,7 @@ func JsExec(p string) error {
         _, filename, _, _ := runtime.Caller(0)
         thisDir := path.Dir(filename)
 
-	out, err := exec.Command("node", filepath.Join(thisDir, "yoink-adapter.js"), p).Output()
+	out, err := exec.Command("node", filepath.Join(thisDir, "yoink-adapter.js"), p).CombinedOutput()
 	if err != nil {
 		return errors.New(string(out))
 	}

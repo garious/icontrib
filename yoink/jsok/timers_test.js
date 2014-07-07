@@ -1,5 +1,5 @@
 var deps = [
-    '../yoink/assert.js'
+    '../stdlib/assert.js'
 ];
 
 function onReady(assert) {
