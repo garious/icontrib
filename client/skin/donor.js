@@ -22,7 +22,7 @@ function onReady(tag, layout, chart, colors, core) {
     }
 
     function fundContents(xs, total, colors) {
-        var rows = [layout.gap(0, 15)];
+        var rows = [layout.gap(15)];
 
         for (var j = 0; j < xs.length; j++) {
             var x = xs[j];
@@ -34,7 +34,7 @@ function onReady(tag, layout, chart, colors, core) {
                     name: 'div',
                     style: {width: '18px', height: '18px', backgroundColor: colors[j % colors.length]}
                 }),
-                layout.gap(15, 0),
+                layout.gap(15),
                 tag.tag({
                     name: 'div',
                     style: {width: '55px', height: pct.height},
@@ -63,7 +63,7 @@ function onReady(tag, layout, chart, colors, core) {
             contents: [
                 layout.hcat([
                     fundContents(dist, total, colors.dashboardColors),
-                    layout.gap(20, 0),
+                    layout.gap(20),
                     chart.pieSnapshot({distribution: dist, colors: colors.dashboardColors, height: 200})
                 ])
             ]
@@ -77,7 +77,7 @@ function onReady(tag, layout, chart, colors, core) {
         var user = as.user || {};
         var name = user.firstName + ' ' + user.lastName;
         var userInfo = layout.hcat([
-            layout.gap(25, 0), 
+            layout.gap(25),
             core.h3(name)
         ]);
 
@@ -90,7 +90,7 @@ function onReady(tag, layout, chart, colors, core) {
                 }),
 	        userInfo
             ]),
-            layout.gap(0, 10),
+            layout.gap(10),
             distributionTable(user.distribution)
         ]);
     }
@@ -108,9 +108,9 @@ function onReady(tag, layout, chart, colors, core) {
 
         for (var i = 0; i < as.funds.length; i += 1) {
             var x = as.funds[i];
-            listItems.push( layout.gap(0, 10) );
+            listItems.push( layout.gap(10) );
             listItems.push( core.hr({width: width - 4, marginLeft: -15}) );
-            listItems.push( layout.gap(0, 10) );
+            listItems.push( layout.gap(10) );
 
             var e = layout.hcat([
                 tag.tag({
@@ -118,7 +118,7 @@ function onReady(tag, layout, chart, colors, core) {
                     attributes: {src: x.imageUrl},
                     style: {width: '50px', height: '50px'}
                 }),
-                layout.gap(20, 0),
+                layout.gap(20),
                 core.hyperlink({url: '/charity?id=' + x.cid, text: x.name})
             ]);
 

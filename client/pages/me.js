@@ -106,9 +106,9 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
         var cols = layout.hcat([
             core.hyperlink({url: '/charity?id=' + x.cid, text: x.name, marginTop: 6, marginRight: 10}),
             slider,
-            layout.gap(10, 0),
+            layout.gap(10),
             core.input({type: 'text', size: 5, disabled: true, value: percentage}),
-            layout.gap(10, 0),
+            layout.gap(10),
             deleteLink
         ]);
 
@@ -159,7 +159,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
 
         if (dist.length > 0) {
             rows.push( pieTin );
-            rows.push( layout.gap(0, 20) );
+            rows.push( layout.gap(20) );
         }
 
         function saveChanges() {
@@ -183,7 +183,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
 
         var buttons = layout.hcat({width: 100}, [
             core.button({href: '#', text: 'Cancel', quiet: true, onClick: cancelChanges}),
-            layout.gap(10, 0),
+            layout.gap(10),
             core.button({href: '#', text: 'Save Changes', loud: true, onClick: saveChanges})
         ]);
 

@@ -66,15 +66,15 @@ function onReady(auth, tag, layout, observable, core, frame, colors) {
 
     var widget = layout.vcat([
         core.h4('Charity Registration'),
-        layout.gap(0, 15),
+        layout.gap(15),
         orgName,
-        layout.gap(0, 15),
+        layout.gap(15),
         orgEin,
-        layout.gap(0, 15),
+        layout.gap(15),
         orgUrl,
-        layout.gap(0, 15),
+        layout.gap(15),
         orgPayPal,
-        layout.gap(0, 10),
+        layout.gap(10),
         core.button({text: 'Register organization', onClick: onRegister, width: 314})
     ]);
 
