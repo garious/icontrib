@@ -17,15 +17,6 @@ function onReady(layout, assert) {
     // gap
     //
 
-    // First parameter is width, second in length
-    eq(gap(1,2).style, {width: '1px', height: '2px'});
-
-    // If either dimension is 0, it is promoted to 1.
-    eq(gap(0,2).style, {width: '1px', height: '2px'});
-    eq(gap(2,0).style, {width: '2px', height: '1px'});
-
-    // If the second dimension is missing, the first is used for both
-    // height and width.
     eq(gap(2).style,   {width: '2px', height: '2px'});
 
 

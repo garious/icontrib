@@ -15,17 +15,11 @@ var deps = [
 
 function onReady(tag, iface, observable) {
 
-    // gap(w, h)
+    // gap(n)
     //
-    //     Create empty space of 'w' pixels wide and 'h' pixels tall.
-    function gap(w, h) {
-        if (h === undefined) {
-            h = w;
-        }
-        // Chrome won't render an object that is 0 pixels high or wide
-        h = h || 1;
-        w = w || 1;
-        return tag.tag({name: 'div', style: {width: w + 'px', height: h + 'px'}});
+    //     Create empty space of 'n' pixels wide and 'n' pixels tall.
+    function gap(n) {
+        return tag.tag({name: 'div', style: {width: n + 'px', height: n + 'px'}});
     }
     
     // Concatenate elements
