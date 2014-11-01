@@ -1,6 +1,7 @@
-package jsok
+package main
 
 import (
+	"github.com/garious/yoink/jsok"
 	"log"
 	"os"
 	"path/filepath"
@@ -24,7 +25,7 @@ func TestTests(t *testing.T) {
 func handleJsLint(path string, info os.FileInfo, err error) error {
 	if filepath.Ext(path) == ".js" {
 		log.Printf("Linting: %v", path)
-		return JsLint(path)
+		return jsok.JsLint(path)
 	}
 	return nil
 }
@@ -36,7 +37,11 @@ func handleJsExec(path string, info os.FileInfo, err error) error {
 	}
 	if matched {
 		log.Printf("Testing: %v", path)
-		return JsExec(path)
+
+		modMap := make(map[string]string)
+		modMap["/stdlib"] = "../../stdlib"
+
+		return jsok.JsExecWithModuleMap(path, modMap)
 	}
 	return nil
 }

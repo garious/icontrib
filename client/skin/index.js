@@ -1,12 +1,12 @@
 var deps = [
-    '/stdlib/tag.js',
+    '/stdlib/dom.js',
     '/stdlib/layout.js',
     'core.js'
 ];
 
 var modules = ['chart', 'colors', 'core', 'core-example', 'donor', 'frame', 'frame-example', 'slider'];
 
-function onReady (tag, layout, core) {
+function onReady (dom, layout, core) {
 
     function mkRow (nm) {
         return core.hyperlink({text: nm, url: nm});
@@ -16,7 +16,7 @@ function onReady (tag, layout, core) {
         core.h3('Modules')
     ];
 
-    var body = tag.tag({
+    var body = dom.element({
         name: 'div',
         style: {margin: '10px'},
         contents: [
@@ -25,8 +25,8 @@ function onReady (tag, layout, core) {
         ]
     });
 
-    yoink.define(body);
+    define(body);
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

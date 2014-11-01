@@ -1,6 +1,6 @@
 var deps = [
     '/donor/checkUser.json',
-    '/stdlib/tag.js',
+    '/stdlib/dom.js',
     '/stdlib/layout.js',
     '/stdlib/observable.js',
     '/skin/frame.js',
@@ -22,7 +22,7 @@ function removeItem(xs, x) {
     return xs;
 }
 
-function onReady(auth, tag, layout, observable, frame, core, donor, chart, slider, colors, popular) {
+function onReady(auth, dom, layout, observable, frame, core, donor, chart, slider, colors, popular) {
 
     function fundRow(x, rowsObs, rows, obs, colorObs, colors, dist, inputs, colorAttrs) {
 
@@ -62,7 +62,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
 
         var rowStyle = {width: '100%', borderRadius: '10px', border: rowBorder, padding: '5px'};
         var rowChildren = [];
-        var row = tag.tag({name: 'div', style: rowStyle, contents: rowChildren, handlers: {mouseover: onMouseOver, mouseout: onMouseOut}});
+        var row = dom.element({name: 'div', style: rowStyle, contents: rowChildren, handlers: {mouseover: onMouseOver, mouseout: onMouseOut}});
 
         function onDeleteClicked(evt) {
             evt.preventDefault();
@@ -78,8 +78,8 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
 
         var percentage = observable.thunk([obs], function(n){return Math.round(n * 10) / 10 + '%';});
 
-        var deleteImg = tag.tag({name: 'img', attributes: {src: 'skin/delete.png', alt: 'delete'}, style: {padding: '5px', visibility: deleteObs, borderWidth: '0px'}});
-        var deleteLink = tag.tag({name: 'a', attributes: {href: '#'}, contents: [deleteImg], handlers: {click: onDeleteClicked}});
+        var deleteImg = dom.element({name: 'img', attributes: {src: 'skin/delete.png', alt: 'delete'}, style: {padding: '5px', visibility: deleteObs, borderWidth: '0px'}});
+        var deleteLink = dom.element({name: 'a', attributes: {href: '#'}, contents: [deleteImg], handlers: {click: onDeleteClicked}});
 
         var slider;
         if (navigator.userAgent.indexOf("Firefox")!=-1) {
@@ -95,7 +95,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
              };
 
              // At the time of this writing, this is only expected to work in Chrome, Safari, and Opera.
-             slider = tag.tag({
+             slider = dom.element({
                  name: 'input',
                  attributes: {type: 'range', value: obs, min: 1, max: 99},
                  style: rangeStyle,
@@ -112,7 +112,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
             deleteLink
         ]);
 
-        var rightCol = tag.tag({name: 'div', style: {cssFloat: 'right'}, contents: [cols]});
+        var rightCol = dom.element({name: 'div', style: {cssFloat: 'right'}, contents: [cols]});
 
         rowChildren.push(rightCol);
         return row;
@@ -155,7 +155,7 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
         }
 
         var pie = chart.pie({distribution: inputs, height: 220, padding: 15, colors: colors.dashboardColors});
-        var pieTin = tag.tag({name: 'div', style: {margin: 'auto 0px', width: '100%', textAlign: 'center'}, contents: [pie]});
+        var pieTin = dom.element({name: 'div', style: {margin: 'auto 0px', width: '100%', textAlign: 'center'}, contents: [pie]});
 
         if (dist.length > 0) {
             rows.push( pieTin );
@@ -214,8 +214,8 @@ function onReady(auth, tag, layout, observable, frame, core, donor, chart, slide
         auth: auth
     });
 
-    yoink.define(main);
+    define(main);
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

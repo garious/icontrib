@@ -8,80 +8,78 @@
 // To put space between elements, use the gap(nPixels) function.
 
 var deps = [
-    'tag.js',
-    'interface.js',
+    'dom.js',
     'observable.js'
 ];
 
-function onReady(tag, iface, observable) {
+function onReady(dom, observable) {
 
     // gap(n)
     //
     //     Create empty space of 'n' pixels wide and 'n' pixels tall.
     function gap(n) {
-        return tag.tag({name: 'div', style: {width: n + 'px', height: n + 'px'}});
+        return dom.element({name: 'div', style: {width: n + 'px', height: n + 'px'}});
     }
     
     // Concatenate elements
-    function cat(as, xs, setPos) {
+    function cat(as, xs, pos) {
         var ys = xs;
-        if (iface.supportsInterface(ys, observable.IObservable)) {
+        var zs = [];
+        if (ys instanceof observable.Observable) {
             xs = ys.get();
         }
         for (var i = 0; i < xs.length; i += 1) {
-            setPos(xs[i]);
+            zs[i] = setPosition(xs[i], pos);
         }
-        return tag.tag({name: 'div', contents: ys});
+        return dom.element({name: 'div', contents: zs});
     }
-    
-    // Set the horizontal position of a 2D element
-    function setHPos(x) {
-        x.setPosition({
-            cssFloat: 'left',
-            clear: 'none'
-        });
+
+    function clone(o1) {
+        function Clone() {}
+        Clone.prototype = o1;
+        var o2 = new Clone();
+        for (var k in o1) {
+            if (o1.hasOwnProperty(k)) {
+                o2[k] = o1[k];
+            }
+        }
+        return o2;
+    }
+
+    function setPosition(e1, pos) {
+        var e2 = clone(e1);
+        e2.style = e2.style ? dom.mixin(e2.style, pos) : pos;
+        return e2;
     }
 
     // Concatenate elements horizontally
+    var hPos = {cssFloat: 'left', clear: 'none'};
     function hcat(as, xs) {
         if (as && as.constructor === Array) {
             xs = as;
             as = {};
         }
-        return cat(as, xs, setHPos);
-    }
-    
-    // Set the vertical position of a 2D element
-    function setVPos(x) {
-        x.setPosition({
-            cssFloat: 'left',
-            clear: 'both'
-        });
-    }
-
-    function setVPosRight(x) {
-        x.setPosition({
-            cssFloat: 'right',
-            clear: 'both'
-        });
+        return cat(as, xs, hPos);
     }
     
     // Concatenate elements vertically
+    var vPos = {cssFloat: 'left', clear: 'both'};
+    var vPosRight = {cssFloat: 'right', clear: 'both'};
     function vcat(as, xs) {
         if (as && as.constructor === Array) {
             xs = as;
             as = {};
         }
-        var setPos = as.align === 'right' ? setVPosRight : setVPos;
-        return cat(as, xs, setPos);
+        var pos = as.align === 'right' ? vPosRight : vPos;
+        return cat(as, xs, pos);
     }
     
-    yoink.define({
+    define({
         hcat: hcat,
         vcat: vcat,
         gap: gap
     });
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

@@ -7,7 +7,7 @@ var  deps = [
     '/stdlib/assert.js'
 ];
 
-function onReady (shapes, Assert) {
+function onReady (shapes, assert) {
 
     var expected = {
         name: 'div',
@@ -24,11 +24,11 @@ function onReady (shapes, Assert) {
 
     var actual = shapes.circle({radius: 50, color: 'red'});
 
-    Assert.assertEq(actual.name, expected.name);
-    Assert.assertEq(actual.style, expected.style);
+    assert.assertEq(actual.name, expected.name);
+    assert.assertEq(actual.style, expected.style);
 
-    yoink.define(actual);
+    define(actual);
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
     

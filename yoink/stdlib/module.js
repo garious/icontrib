@@ -1,11 +1,11 @@
 //
-// Experiment: a module constructor for modules.  This object implements the ToDom interface
+// Experiment: a module constructor for modules.  This object implements the ToDom method.
 //
 
 function module(o1) {
     var o2 = {
         constructor: module,
-        toDom: function (me) {
+        render: function (me) {
             var funcs = [];
             var constants = [];
             for (var k in me) {
@@ -75,7 +75,7 @@ function addConstants(div, constants) {
     }
 }
 
-yoink.define({
+define({
     module: module
 });
 

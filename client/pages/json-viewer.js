@@ -15,8 +15,8 @@ function onReady(Data) {
     var s = JSON.stringify(Data, null, 4);
     console.log(s);
 
-    yoink.define('check your javascript console');
+    define('check your javascript console');
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

@@ -1,6 +1,5 @@
 var deps = [
     '/donor/checkUser.json',
-    '/stdlib/tag.js',
     '/stdlib/layout.js',
     '/skin/frame.js',
     '/skin/core.js',
@@ -9,7 +8,7 @@ var deps = [
     '/static/donor/' + yoink.params.id + '.json'
 ];
 
-function onReady(auth, tag, layout, frame, core, popularCharities, donor, user) {
+function onReady(auth, layout, frame, core, popularCharities, donor, user) {
 
     var box = core.box({
         width: 600,
@@ -22,9 +21,9 @@ function onReady(auth, tag, layout, frame, core, popularCharities, donor, user) 
         donor.recommendedFunds({funds: popularCharities})
     ]);
 
-    yoink.define( frame.frame({contents: body, auth: auth}) );
+    define( frame.frame({contents: body, auth: auth}) );
 
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

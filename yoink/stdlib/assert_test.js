@@ -39,8 +39,8 @@ function onReady(assert) {
     neq({},     {a: 1});
 
 
-    yoink.define('passed!');
+    define('passed!');
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

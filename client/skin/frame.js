@@ -1,5 +1,5 @@
 var deps = [
-    '/stdlib/tag.js',
+    '/stdlib/dom.js',
     '/stdlib/observable.js',
     '/stdlib/layout.js',
     'core.js',
@@ -22,7 +22,7 @@ function post(path, params, callback) {
     req.send(body);
 }
 
-function onReady(tag, observable, layout, core, colors) {
+function onReady(dom, observable, layout, core, colors) {
 
     function loginWidget(as) {
 
@@ -82,7 +82,7 @@ function onReady(tag, observable, layout, core, colors) {
 
             var tabContents = [
                 as.thumbnail,
-                tag.tag({
+                dom.element({
                     name: 'div',
                     style: {
                         cssFloat: 'right',
@@ -92,9 +92,9 @@ function onReady(tag, observable, layout, core, colors) {
                 })
             ];
 
-            var tab = tag.tag({name: 'div', style: tabStyle, contents: tabContents});
+            var tab = dom.element({name: 'div', style: tabStyle, contents: tabContents});
 
-            return tag.tag({
+            return dom.element({
                 name: 'div',
                 style: {position: 'relative'},
                 contents: [tab, menu],
@@ -104,7 +104,7 @@ function onReady(tag, observable, layout, core, colors) {
     }
 
     function nav(as) {
-        var logo = tag.tag({
+        var logo = dom.element({
             name: 'a',
             attributes: {href: '/'},
             style: {position: 'absolute'},
@@ -113,7 +113,7 @@ function onReady(tag, observable, layout, core, colors) {
             ]
         });
 
-        return tag.tag({
+        return dom.element({
             name: 'div',
             contents: [
                 layout.gap(20),
@@ -130,8 +130,8 @@ function onReady(tag, observable, layout, core, colors) {
     function webpage(domable) {
         return {
             constructor: webpage,
-            toDom: function (me) {
-                return domable.toDom ? domable.toDom() : domable;
+            render: function (me) {
+                return domable.render ? domable.render() : domable;
             },
             getTitle: function (me) {
                 return 'IContrib.org';
@@ -158,7 +158,7 @@ function onReady(tag, observable, layout, core, colors) {
                 ])
             ]);
 
-            thumbnail = tag.tag({
+            thumbnail = dom.element({
                 name: 'a',
                 attributes: {href: '/me'},
                 style: {textDecoration: 'none'},
@@ -167,9 +167,9 @@ function onReady(tag, observable, layout, core, colors) {
         }
 
         var navbar = nav({thumbnail: thumbnail, auth: as.auth});
-        var body = tag.tag({name: 'div', contents: [as.contents]});
+        var body = dom.element({name: 'div', contents: [as.contents]});
 
-        var node = tag.tag({
+        var node = dom.element({
             name: 'div',
             style: {margin: 'auto', width: '960px'},
             contents: [
@@ -190,7 +190,7 @@ function onReady(tag, observable, layout, core, colors) {
             as = {};
         }
 
-        return tag.tag({
+        return dom.element({
             name: 'div',
             attributes: as,
             style: {
@@ -200,12 +200,12 @@ function onReady(tag, observable, layout, core, colors) {
             },
             contents: [
                 core.hr(),
-                tag.tag({name: 'div', style: {padding: '20px'}, contents: xs})
+                dom.element({name: 'div', style: {padding: '20px'}, contents: xs})
             ]
         });
     }
 
-    yoink.define({
+    define({
         nav: nav,
         frame: frame,
         footer: footer,
@@ -215,5 +215,5 @@ function onReady(tag, observable, layout, core, colors) {
 
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

@@ -1,12 +1,12 @@
 var deps = [
-    '/stdlib/tag.js',
+    '/stdlib/dom.js',
     '/stdlib/layout.js',
     '/skin/chart.js',
     '/skin/colors.js',
     '/skin/core.js'
 ];
 
-function onReady(tag, layout, chart, colors, core) {
+function onReady(dom, layout, chart, colors, core) {
 
     function alignButton(user) {
         return core.button({href: '/me?donateTo=' + user.id, loud: true, text: 'Donate!'});
@@ -30,12 +30,12 @@ function onReady(tag, layout, chart, colors, core) {
 
 
             var cols = layout.hcat([
-                tag.tag({
+                dom.element({
                     name: 'div',
                     style: {width: '18px', height: '18px', backgroundColor: colors[j % colors.length]}
                 }),
                 layout.gap(15),
-                tag.tag({
+                dom.element({
                     name: 'div',
                     style: {width: '55px', height: pct.height},
                     contents: [pct]
@@ -57,7 +57,7 @@ function onReady(tag, layout, chart, colors, core) {
             total += d.shares;
         }
 
-        var row = tag.tag({
+        var row = dom.element({
             name: 'div',
             style: {width: '100%'},
             contents: [
@@ -83,7 +83,7 @@ function onReady(tag, layout, chart, colors, core) {
 
         return layout.vcat([
             layout.hcat([
-                tag.tag({
+                dom.element({
                     name: 'img',
                     style: {width: '90px', height: '90px'},
                     attributes: {src: user.imageUrl, alt: name}
@@ -113,7 +113,7 @@ function onReady(tag, layout, chart, colors, core) {
             listItems.push( layout.gap(10) );
 
             var e = layout.hcat([
-                tag.tag({
+                dom.element({
                     name: 'img',
                     attributes: {src: x.imageUrl},
                     style: {width: '50px', height: '50px'}
@@ -131,12 +131,12 @@ function onReady(tag, layout, chart, colors, core) {
         });
     }
 
-    yoink.define({
+    define({
         profile: profile,
         recommendedFunds: recommendedFunds,
         alignButton: alignButton
     });
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

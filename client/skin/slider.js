@@ -1,13 +1,13 @@
 
 var deps = [
     '/stdlib/observable.js',
-    '/stdlib/tag.js',
+    '/stdlib/dom.js',
     '/stdlib/layout.js',
     'shapes.js',
     'colors.js'
 ];
 
-function onReady(observable, tag, layout, shapes, colors) {
+function onReady(observable, dom, layout, shapes, colors) {
 
     function line(as) {
         as = as || {};
@@ -24,7 +24,7 @@ function onReady(observable, tag, layout, shapes, colors) {
            backgroundColor: as.color
         };
 
-        return tag.tag({name: 'hr', style: sty, attributes: {noshade: true, size: 1}});
+        return dom.element({name: 'hr', style: sty, attributes: {noshade: true, size: 1}});
     }
 
     // Get the X coordinate of an element, relative to the page.
@@ -110,7 +110,7 @@ function onReady(observable, tag, layout, shapes, colors) {
         var circle = shapes.circle({left: leftWidth, radius: radius, color: as.color, 'top': as.marginTop + 'px'});
 
         var handlers = {mousedown: onMouseDown, mousemove: onMouseMove, mouseup: onMouseUp, mouseout: onMouseUp};
-        return tag.tag({
+        return dom.element({
             name: 'div',
             attributes: {'data-slider': true},
             style: {width: width + 'px'},
@@ -119,10 +119,10 @@ function onReady(observable, tag, layout, shapes, colors) {
         });
     }
 
-    yoink.define({
+    define({
         slider: slider
     });
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

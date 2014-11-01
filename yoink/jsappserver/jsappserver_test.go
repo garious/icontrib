@@ -9,13 +9,21 @@ import (
 )
 
 func TestGetPages(t *testing.T) {
-	getJsPage(t, "/stdlib", "../stdlib", "/stdlib/tag_test", 200)
+	getJsPage(t, "/stdlib", "../stdlib", "/stdlib/dom_test", 200)
 	getJsPage(t, "/stdlib", "../stdlib", "/stdlib/", 200) // contains index.js
 	getJsPage(t, "/stdlib", "../stdlib", "/stdlib", 200)  // contains index.js
 	getJsPage(t, "/stdlib", "../stdlib", "/bogus", 404)
+
+	// When the user requests "test" and both
+        // "test" and "test.js" exist, return "test".
+	s := getJsPage(t, "/x", "./testdata", "/x/test", 200)
+	if s != "It worked\n" {
+		print(s)
+		t.Fail();
+	}
 }
 
-func getJsPage(t *testing.T, patt, dir, url string, code int) {
+func getJsPage(t *testing.T, patt, dir, url string, code int) string {
 	ts := httptest.NewServer(NewJsAppServer(patt, dir))
 	defer ts.Close()
 
@@ -26,9 +34,10 @@ func getJsPage(t *testing.T, patt, dir, url string, code int) {
 	if res.StatusCode != code {
 		log.Fatal(res.Status)
 	}
-	_, err = ioutil.ReadAll(res.Body)
+	by, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
+	return string(by)
 }

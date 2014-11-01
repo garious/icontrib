@@ -1,9 +1,9 @@
 var deps = [
-    '/stdlib/tag.js',
+    '/stdlib/dom.js',
     'colors.js'
 ];
 
-function onReady(tag, colors) {
+function onReady(dom, colors) {
 
     var defaultFont = "/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif";
     var defaultFontSize = 15;
@@ -25,9 +25,9 @@ function onReady(tag, colors) {
             mouseout:  function(evt) { evt.target.style.textDecoration = 'none'; }
         };
 
-        return tag.tag({
+        return dom.element({
             name: 'a',
-            style: as.style ? tag.mixin(sty, as.style) : sty,
+            style: as.style ? dom.mixin(sty, as.style) : sty,
             attributes: {href: as.url},
             contents: [as.text],
             handlers: handlers
@@ -42,9 +42,9 @@ function onReady(tag, colors) {
             borderRadius: as.borderRadius && as.borderRadius + 'px'
         };
 
-        return tag.tag({
+        return dom.element({
             name: 'img',
-            style: as.style ? tag.mixin(sty, as.style) : sty,
+            style: as.style ? dom.mixin(sty, as.style) : sty,
             attributes: {src: as.url, alt: as.text},
             handlers: {click: as.onClick}
         });
@@ -80,10 +80,10 @@ function onReady(tag, colors) {
 
         var handlers = {keyup: as.onKeyUp, change: as.onChange};
 
-        return tag.tag({
+        return dom.element({
             name: 'input',
             attributes: attrs,
-            style: as.style ? tag.mixin(sty, as.style) : sty,
+            style: as.style ? dom.mixin(sty, as.style) : sty,
             handlers: handlers
         });
     }
@@ -109,10 +109,10 @@ function onReady(tag, colors) {
             borderRadius: '2px'
         };
 
-        return tag.tag({
+        return dom.element({
             name: 'a',
             attributes: {href: as.href || '#'},
-            style: as.style ? tag.mixin(sty, as.style) : sty,
+            style: as.style ? dom.mixin(sty, as.style) : sty,
             contents: as.text,
             handlers: handlers
         });
@@ -134,9 +134,9 @@ function onReady(tag, colors) {
             padding: padding + 'px'
         };
 
-        return tag.tag({
+        return dom.element({
             name: 'div',
-            style: as.style ? tag.mixin(sty, as.style) : sty,
+            style: as.style ? dom.mixin(sty, as.style) : sty,
             contents: [e],
             handlers: {keyup: as.onKeyUp}
         });
@@ -168,9 +168,9 @@ function onReady(tag, colors) {
             zIndex: 1
         };
 
-        return tag.tag({
+        return dom.element({
             name: 'div',
-            style: as.style ? tag.mixin(sty, as.style) : sty,
+            style: as.style ? dom.mixin(sty, as.style) : sty,
             contents: listItems
         });
     }
@@ -189,13 +189,13 @@ function onReady(tag, colors) {
             padding: '10px'
         };
 
-        var div = tag.tag({
+        var div = dom.element({
             name: 'div',
-            style: as.style ? tag.mixin(sty, as.style) : sty,
+            style: as.style ? dom.mixin(sty, as.style) : sty,
             contents: [as.contents],
             handlers: {click: onSelect}
         });
-        return tag.tag({name: 'a', attributes: {href: '#'}, style: {textDecoration: 'none'}, contents: [div]});
+        return dom.element({name: 'a', attributes: {href: '#'}, style: {textDecoration: 'none'}, contents: [div]});
     }
 
     // Create the style attribute for HTML header elements
@@ -228,9 +228,9 @@ function onReady(tag, colors) {
                 sty.color = as.color !== undefined ? as.color : sty.color;
             }
 
-            return tag.tag({
+            return dom.element({
                 name: 'h' + n,
-                style: as.style ? tag.mixin(sty, as.style) : sty,
+                style: as.style ? dom.mixin(sty, as.style) : sty,
                 contents: s
             });
         }
@@ -239,7 +239,7 @@ function onReady(tag, colors) {
     }
 
     function label(s) {
-        return tag.tag({name: 'label', style: {font: font}, contents: s});
+        return dom.element({name: 'label', style: {font: font}, contents: s});
     }
 
     function p(as) {
@@ -249,9 +249,9 @@ function onReady(tag, colors) {
 
         var sty = {font: font, margin: '0px', width: as.width && as.width + 'px'};
 
-        return tag.tag({
+        return dom.element({
             name: 'p',
-            style: as.style ? tag.mixin(sty, as.style) : sty,
+            style: as.style ? dom.mixin(sty, as.style) : sty,
             contents: as.text
         });
     }
@@ -272,14 +272,14 @@ function onReady(tag, colors) {
             clear: 'both'     // Required by Firefox and Opera
         };
 
-        return tag.tag({
+        return dom.element({
             name: 'hr',
-            style: as.style ? tag.mixin(sty, as.style) : sty,
+            style: as.style ? dom.mixin(sty, as.style) : sty,
             attributes: {noshade: true, size: 1}
         });
     }
 
-    yoink.define({
+    define({
          hyperlink: hyperlink,
          image: image,
          input: input,
@@ -300,5 +300,5 @@ function onReady(tag, colors) {
     });
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

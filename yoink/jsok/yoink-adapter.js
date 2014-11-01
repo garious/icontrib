@@ -3,7 +3,6 @@
 (function () {
     "use strict";
 
-    var path = require('path');
     var optparse = require('./opt-parse');
     
     var switches = [
@@ -35,7 +34,7 @@
                             // Look for a matching key, and if so, replace it with its value in the URL
                             for (var p in modspec) {
                                 var u = url.replace(p, modspec[p]);
-                                if (path.existsSync(u)) {
+                                if (fs.existsSync(u)) {
                                     url = u;
                                     break;
                                 }

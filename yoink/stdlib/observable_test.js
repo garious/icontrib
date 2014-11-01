@@ -8,10 +8,10 @@ var  deps = [
 ];
 
 function onReady (observable, assert) {
-    
+
     // Observable values without objects.
-    var x = observable.observe(5);
-    var y = observable.observe(6);
+    var x = observable.publisher(5);
+    var y = observable.publisher(6);
 
     assert.assertEq(x.get(), 5);
     assert.assertEq(y.get(), 6);
@@ -20,9 +20,10 @@ function onReady (observable, assert) {
     assert.assertEq(x.get(), 3);
 
 
-    // Test thunk
+    // Test subscriber
     var rawAdd = function(a,b) {return a + b;};
-    var comp = observable.thunk([x, y], rawAdd);
+    var comp = observable.subscriber([x, y], rawAdd);
+    assert.assertEq(comp.set, undefined);
     assert.assertEq( comp.get(), 9 );
 
     x.set(5);
@@ -52,8 +53,14 @@ function onReady (observable, assert) {
     // Call get() to update the computation tree
     assert.assertEq( comp.get(), 11 );
 
-    yoink.define('passed!');
+    // Verify observables are instances of Observable
+    assert.assertEq(x instanceof observable.Observable, true);
+
+    // Verify subscribers are instances of Observable
+    assert.assertEq(comp instanceof observable.Observable, true);
+
+    define('passed!');
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
     

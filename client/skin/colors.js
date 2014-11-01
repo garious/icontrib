@@ -6,7 +6,7 @@ var smallestHeader = 15;
 var green = '#a7d322';
 var lightGreen = '#d0e5a2';
 
-yoink.define({
+define({
     pieColors: [
         '#9bc638', // Green
         '#ebf4d7', // Very light green

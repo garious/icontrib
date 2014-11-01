@@ -1,1 +1,1 @@
-yoink.define("Hello World!");
+define("Hello World!");

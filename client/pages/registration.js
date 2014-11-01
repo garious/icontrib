@@ -1,6 +1,6 @@
 var deps = [
     '/donor/checkUser.json',
-    '/stdlib/tag.js',
+    '/stdlib/dom.js',
     '/stdlib/layout.js',
     '/stdlib/observable.js',
     '/skin/core.js',
@@ -8,13 +8,13 @@ var deps = [
     '/skin/colors.js'
 ];
 
-function onReady(auth, tag, layout, observable, core, frame, colors) {
+function onReady(auth, dom, layout, observable, core, frame, colors) {
     if (auth.Left) {
         window.location = auth.Left.loginUrl;
         return;
     }
 
-    var logo = tag.tag({
+    var logo = dom.element({
         name: 'a',
         attributes: {href: '/', tabindex: -1},
         style: {width: '129px', height: '70px'},
@@ -25,7 +25,7 @@ function onReady(auth, tag, layout, observable, core, frame, colors) {
 
     var hidden = observable.observe('hidden');
 
-    var badLogin = tag.tag({
+    var badLogin = dom.element({
         name: 'span',
         style: {visibility: hidden, color: colors.red},
         contents: 'bad username or password'
@@ -83,20 +83,20 @@ function onReady(auth, tag, layout, observable, core, frame, colors) {
         onKeyUp: onKeyUp
     });
 
-    var node = tag.tag({
+    var node = dom.element({
         name: 'div',
         style: {margin: 'auto', width: '355px', textAlign: 'center'},
         contents: [
-            tag.tag('br'),
+            dom.element('br'),
             logo,
-            tag.tag('br'),
-            tag.tag('br'),
+            dom.element('br'),
+            dom.element('br'),
             box
         ]
     });
 
-    yoink.define( frame.webpage(node) );
+    define( frame.webpage(node) );
 }
  
-yoink.require(deps, onReady);
+require(deps, onReady);
 

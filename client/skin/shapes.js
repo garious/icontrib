@@ -3,15 +3,15 @@
 //
 
 var deps = [
-    '/stdlib/tag.js'
+    '/stdlib/dom.js'
 ];
 
-function onReady(tag) {
+function onReady(dom) {
 
     // Draw a circle using CSS
     function circle(as) {
         var r = as.radius;
-        return tag.tag({
+        return dom.element({
             name: 'div',
             style: {
                 left: as.left,
@@ -29,11 +29,11 @@ function onReady(tag) {
         });
     }
     
-    yoink.define({
+    define({
         circle: circle
     });
 
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

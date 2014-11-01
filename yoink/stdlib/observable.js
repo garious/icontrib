@@ -2,89 +2,59 @@
 // Observable JS
 //
 
-var IObservable = {
-    get:       function() {},
-    subscribe: function(f) {}
+// Publishers and Subscribers share the Observable
+// interface, which includes a get() and subscribe()
+// function.
+function Observable() {
+}
+
+Observable.prototype.subscribe = function(f) {
+    if (!this.subscribers) {
+        this.subscribers = [f];
+    } else {
+        this.subscribers.push(f);
+    }
+    return this;
 };
 
 // Observable values
-function observe(v) {
-    var me = {
-        value: v,
-        constructor: observe
-    };
+Publisher.prototype = new Observable();
+Publisher.prototype.constructor = Publisher;
 
-    me.set = function(v) {
-        me.value = v;
-        if (me.subscribers) {
-            me.subscribers.forEach(function(f) {
-                f(me);
-            });
-        }
-        return me;
-    };
-
-    me.get = function() {
-        return me.value;
-    };
-
-    me.subscribe = function(f) {
-        if (!me.subscribers) {
-            me.subscribers = [f];
-        } else {
-            me.subscribers.push(f);
-        }
-        return me;
-    };
-
-    return me;
+function Publisher(v) {
+    this.value = v;
 }
 
-// Observable computations.  thunk() takes a list of observables
+Publisher.prototype.set = function(v) {
+    this.value = v;
+    if (this.subscribers) {
+        var me = this;
+        this.subscribers.forEach(function(f) {
+            f(me);
+        });
+    }
+    return this;
+};
+
+Publisher.prototype.get = function() {
+    return this.value;
+};
+
+
+// Observable computations.  subscriber() takes a list of observables
 // and a callback function and returns an observable.  Any time
 // a value is requested AND an input has changed, the given callback
 // is executed, and its return value is returned.
-function thunk(xs, f) {
-    var me = {
-        valid: false,
-        f: f,
-        publishers: xs,
-        constructor: thunk
-    };
+Subscriber.prototype = new Observable();
+Subscriber.prototype.constructor = Subscriber;
+function Subscriber(args, f) {
+    this.valid = false;
+    this.f = f;
+    this.args = args;
 
-    me.get = function() {
-       if (me.valid) {
-         return me.value;
-       } else {
-         var vals = me.publishers.map(function(o){
-             return o.get && o.subscribe ? o.get() : o;
-         });
-
-         var oldValue = me.value;
-         me.value = me.f.apply(null, vals);
-         me.valid = true;
-
-         if (me.value !== oldValue && me.subscribers) {
-             me.subscribers.forEach(function(f) {
-                 f(me);
-             });
-         }
-
-         return me.value;
-       }
-    };
-
-    me.subscribe = function(f) {
-        if (!me.subscribers) {
-            me.subscribers = [f];
-        } else {
-            me.subscribers.push(f);
-        }
-        return me;
-    };
-
-    xs.forEach(function(o) {
-        if (o.get && o.subscribe) {
+    var me = this;  // Avoid 'this' ambiguity.
+    args.forEach(function(o) {
+        if (o instanceof Observable) {
             o.subscribe(function (val, obs) {
                 if (me.valid) {
                     me.valid = false;
@@ -97,15 +67,40 @@ function thunk(xs, f) {
             });
         }
     });
+}
 
-    return me;
+Subscriber.prototype.get = function() {
+   if (this.valid) {
+     return this.value;
+   } else {
+     var vals = this.args.map(function(o){
+         return o instanceof Observable ? o.get() : o;
+     });
+
+     var oldValue = this.value;
+     this.value = this.f.apply(null, vals);
+     this.valid = true;
+
+     if (this.value !== oldValue && this.subscribers) {
+         var me = this;
+         this.subscribers.forEach(function(f) {
+             f(me);
+         });
+     }
+
+     return this.value;
+   }
+};
+
+function subscriber(args, f) {
+    return new Subscriber(args, f);
 }
 
 // Handy function to lift a raw function into the observable realm
 function lift(f) {
     return function() {
        var args = Array.prototype.slice.call(arguments);
-       return thunk(args, f);
+       return subscriber(args, f);
     };
 }
 
@@ -134,11 +129,21 @@ function snapshot(o) {
     }
 }
 
-yoink.define({
-    IObservable: IObservable,
-    observe: observe,
-    thunk: thunk,
+function publisher(v) {
+    return new Publisher(v);
+}
+
+define({
+    Observable: Observable,
+    Publisher: Publisher,
+    publisher: publisher,
+    Subscriber: Subscriber,
+    subscriber: subscriber,
     lift: lift,
-    snapshot: snapshot
+    snapshot: snapshot,
+
+    // deprecated aliases
+    observe: publisher,
+    thunk: subscriber
 });
 

@@ -1,40 +1,21 @@
 //
-// Copyright (c) 2011-2012 Greg Fitzgerald, IContrib.org
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this 
-// software and associated documentation files (the "Software"), to deal in the Software
-// without restriction, including without limitation the rights to use, copy, modify, 
-// merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
-// persons to whom the Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all copies or 
-// substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-// INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
-// PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
-// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
-// DEALINGS IN THE SOFTWARE.
-//
-//
 // Module name:
 //
-//     Tag
+//     dom
 //
 // Description:
 //
-//     Tag is a JavaScript module for creating HTML elements.
-//     The module exposes two object constructors, 'createElement' and 'tag'.
+//     'dom' is a JavaScript module for creating HTML elements.
+//     The module exposes two object constructors, 'createElement' and 'element'.
 //     The functions accept the same arguments, an HTML tag name, an attributes
 //     object, an array of subelements, and an eventHandlers object.  The
-//     difference is that 'tag' postpones the creation of an underlying DOM
+//     difference is that 'element' postpones the creation of an underlying DOM
 //     element, whereas 'createElement' creates and returns the DOM element.
 //
-//     createElement(x) === tag(x).toDom()
+//     createElement(x) === element(x).render()
 //
 //     By postponing the creation of the DOM, we can unit test modules
-//     that return tag objects without requiring a browser or a browser
+//     that return element objects without requiring a browser or a browser
 //     simulator such as JsDom or Zombie.  A bare-bones JavaScript interpreter
 //     such as Node.js will suffice.
 //
@@ -42,12 +23,12 @@
 //
 //     A: Instead of setting the attribute directly, express the dependency with
 //        an Observable variable.  Your event handler should set the observable
-//        variable and your tag should be constructed using the observable.  The
-//        Tag library will detect the observable attribute and update the DOM
+//        variable and your element should be constructed using the observable.  The
+//        dom library will detect the observable attribute and update the DOM
 //        element any time its value changes.
 //
 //
-//     Q: Why doesn't tag() automatically create observables for every tag 
+//     Q: Why doesn't element() automatically create observables for every element
 //        attribute.
 //
 //     A: If your application is mostly static content, creating the extra
@@ -57,19 +38,14 @@
 
 
 var deps = [
-    'interface.js',
     'observable.js'
 ];
 
-var toDomInterface = {
-    toDom: function() {}
-};
-
-function onReady(iface, observable) {
+function onReady(observable) {
 
     // Add style 's' with value 'style[s]' to the DOM element 'e'.
     function addStyle(e, style, s) {
-        if (iface.supportsInterface(style[s], observable.IObservable)) {
+        if (style[s] instanceof observable.Observable) {
             e.style[s] = style[s].get();
             style[s].subscribe(function(obs) {e.style[s] = obs.get();});
         } else {
@@ -79,9 +55,12 @@ function onReady(iface, observable) {
 
     // Add attribute 'k' with value 'v' to the DOM element 'e'.
     function addAttribute(e, k, v) {
-        if (iface.supportsInterface(v, observable.IObservable)) {
+        if (v instanceof observable.Observable) {
             e.setAttribute(k, v.get());
             v.subscribe(function(obs) {e[k] = obs.get();});
+            if (v.set) {
+                 e.addEventListener('change', function(evt) {v.set(evt.target[k]);});
+            }
         } else {
             e.setAttribute(k, v);
         }
@@ -94,13 +73,13 @@ function onReady(iface, observable) {
             for (var i = 0; i < xs.length; i++) {
                 var x = xs[i];
                 x = typeof x === 'string' ? document.createTextNode(x) : x;
-                e.appendChild(iface.supportsInterface(x, toDomInterface) ? x.toDom() : x);
+                e.appendChild(typeof x.render === 'function' ? x.render() : x);
             }
         };
     }
 
 
-    // Create a DOM element with tag name 'nm', attributes object 'as', style object 'sty', 
+    // Create a DOM element with tag name 'nm', attributes object 'as', style object 'sty',
     // an array of subelements 'xs', and an object of event handlers 'es'.
     function createElement(ps) {
 
@@ -131,14 +110,14 @@ function onReady(iface, observable) {
                 }
             }
         }
-    
+
         // Add child elements
         var xs = ps.contents;
         if (xs) {
             if (typeof xs === 'string') {
                 e.appendChild(document.createTextNode(xs));
             } else {
-                if (iface.supportsInterface(xs, observable.IObservable)) {
+                if (xs instanceof observable.Observable) {
                     var xsObs = xs;
                     xs = xsObs.get();
                     xsObs.subscribe(mkSetChildren(e));
@@ -147,11 +126,11 @@ function onReady(iface, observable) {
                 for (var i = 0; i < xs.length; i++) {
                     var x = xs[i];
                     x = typeof x === 'string' ? document.createTextNode(x) : x;
-                    e.appendChild(iface.supportsInterface(x, toDomInterface) ? x.toDom() : x);
+                    e.appendChild(typeof x.render === 'function' ? x.render() : x);
                 }
             }
         }
-    
+
         // Add event handlers
         var es = ps.handlers;
         if (typeof es === 'object') {
@@ -165,15 +144,22 @@ function onReady(iface, observable) {
         return e;
     }
 
-    // Overwrite 'obj' with defined keys in 'newObj'
-    function mixin(obj, newObj) {
-        for (var k in newObj) {
-            if (newObj.hasOwnProperty(k) && newObj[k] !== undefined) {
-                obj[k] = newObj[k];
+    // Return the union of 'o1' and 'o2'.  When both contain the
+    // same key, the value in 'o2' takes precedence.
+    function mixin(o1, o2) {
+        var o3 = {};
+        var k;
+        for (k in o1) {
+            if (o1.hasOwnProperty(k)) {
+                o3[k] = o1[k];
             }
         }
-
-        return obj;
+        for (k in o2) {
+            if (o2.hasOwnProperty(k) && o2[k] !== undefined) {
+                o3[k] = o2[k];
+            }
+        }
+        return o3;
     }
 
     // left-fold style objects
@@ -183,54 +169,39 @@ function onReady(iface, observable) {
     }
 
     //
-    // tag({name, attributes, style, contents, handlers})
+    // element({name, attributes, style, contents, handlers})
     //
-    function tag(as) {
+    function Element(as) {
 
         if (typeof as === 'string') {
             as = {name: as};
         }
 
-        var me = {
-            constructor: tag,
-            name:        as.name
-        };
+        this.name = as.name;
 
-        me.toDom = function() {
-           return createElement(me);
-        };
-
-        me.setPosition = function (pos) {
-            if (!me.attributes) {
-                me.attributes = {};
-            }
-
-            if (!me.style) {
-                me.style = {};
-            }
-
-            mixin(me.style, pos);
-
-            return me;
-        };
-
-        if (as.attributes !== undefined) { me.attributes = as.attributes; }
-        if (as.style      !== undefined) { me.style      = as.style; }
-        if (as.contents   !== undefined) { me.contents   = as.contents; }
-        if (as.handlers   !== undefined) { me.handlers   = as.handlers; }
-
-        return me;
+        if (as.attributes !== undefined) { this.attributes = as.attributes; }
+        if (as.style      !== undefined) { this.style      = as.style; }
+        if (as.contents   !== undefined) { this.contents   = as.contents; }
+        if (as.handlers   !== undefined) { this.handlers   = as.handlers; }
     }
 
-    yoink.define({
+    Element.prototype.render = function() {
+         return createElement(this);
+    };
+
+    function element(as) {
+        return new Element(as);
+    }
+
+    define({
         createElement: createElement,
         mixin:         mixin,
         cascadeStyles: cascadeStyles,
-        tag:           tag
+        Element:       Element,
+        element:       element
     });
-    
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 
 

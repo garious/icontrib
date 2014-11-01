@@ -9,7 +9,7 @@ is much smaller and simpler, and the plugin model is especially simple.
 Yoink modules are simple.  Here is the "Hello World" of Yoink modules:
 
 ~~~javascript
-yoink.define("Hello world!");
+define("Hello world!");
 ~~~
 
 Add Yoink, load your module, and use it to construct the DOM.
@@ -32,11 +32,11 @@ parallel.
 
 
 ~~~javascript
-yoink.require(['helloworld.js', 'goodbye.js'], function(hello, goodbye) {
+require(['helloworld.js', 'goodbye.js'], function(hello, goodbye) {
     var e = document.createElement('div');
     e.appendChild(hello);
     e.appendChild(goodbye);
-    yoink.define(e);
+    define(e);
 });
 ~~~
 
@@ -45,10 +45,10 @@ as many times as you need.  'define()' can be called after any number of
 asynchronous calls.
 
 ~~~javascript
-yoink.require(['a.js'], function(a) {
+require(['a.js'], function(a) {
 
-    yoink.require(a.moreDeps, function(b, c, d) {
-        yoink.define( document.createTextNode(a.message + b.message) );
+    require(a.moreDeps, function(b, c, d) {
+        define( document.createTextNode(a.message + b.message) );
     });
 
 });
@@ -62,7 +62,7 @@ the module directory.
 ~~~javascript
 var e = document.createElement('img');
 e.src = yoink.baseUrl + '/favicon.png'; 
-yoink.define(e);
+define(e);
 ~~~
 
 Yoink caches modules, but sometimes you want multiple caches.  For example, jQuery
@@ -71,7 +71,7 @@ a second copy of jQuery that plugins stomp all over.
 
 ~~~javascript
 function exportJQuery(text, yoink, callback) {
-    YOINK.interpreters.js(text + '\n' + 'yoink.define( jQuery.noConflict(true) );', yoink, callback);
+    YOINK.interpreters.js(text + '\n' + 'define( jQuery.noConflict(true) );', yoink, callback);
 }
 
 function onReady($) {
@@ -85,7 +85,7 @@ function onReady($) {
         {path: 'jquery-ui-1.8.16.custom.min.js', interpreter: exportJQuery}
     ];
 
-    yoink.require(deps, function(jQuery) { yoink.define(jQuery.noConflict(true)); });
+    require(deps, function(jQuery) { define(jQuery.noConflict(true)); });
 }
 
 // Create a separate resource loader, so that jQuery UI can whomp its personal copy of jQuery.

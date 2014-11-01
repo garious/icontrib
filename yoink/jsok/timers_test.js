@@ -14,7 +14,7 @@ function onReady(assert) {
     // Queue the test
     function f2() {
         assert.assertEq(isSet, true);
-        yoink.define("passed!");
+        define("passed!");
     }
 
     // A timer that is already expired is not run synchronously, but scheduled to execute immediately.
@@ -24,5 +24,5 @@ function onReady(assert) {
     setTimeout(f2, 0);
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

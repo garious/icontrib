@@ -20,9 +20,9 @@ function onReady(chart, observable) {
         distribution: dist
     });
 
-    yoink.define(pie);
+    define(pie);
 
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

@@ -1,14 +1,14 @@
 var deps = [
     '/donor/checkUser.json',
-    '/stdlib/tag.js',
+    '/stdlib/dom.js',
     '/stdlib/layout.js',
     '/skin/core.js',
     '/skin/frame.js',
     '/static/charity/' + yoink.params.id + '.json'
 ];
 
-function onReady(auth, tag, layout, core, frame, charityData) {
-    
+function onReady(auth, dom, layout, core, frame, charityData) {
+
     function charity(as) {
         as = as || {};
         var user = as.user;
@@ -20,7 +20,7 @@ function onReady(auth, tag, layout, core, frame, charityData) {
                     core.image({width: 175, height: 175, borderRadius: 5, url: user.imageUrl, text: user.organizationName}),
                     layout.gap(30),
                     layout.vcat([
-                        tag.tag({name: 'p', style: {font: core.defaultFont, width: '600px'}, contents: user.mission}), 
+                        dom.element({name: 'p', style: {font: core.defaultFont, width: '600px'}, contents: user.mission}),
                         layout.gap(20),
                         core.button({href: '/me?donateTo=' + user.cid, text: 'Donate!', loud: true})
                     ])
@@ -39,9 +39,9 @@ function onReady(auth, tag, layout, core, frame, charityData) {
         auth: auth
     });
 
-    yoink.define(main);
+    define(main);
 
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 

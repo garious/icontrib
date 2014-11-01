@@ -1,11 +1,10 @@
 var deps = [
-    '/stdlib/interface.js',
-    '/stdlib/tag.js',
+    '/stdlib/dom.js',
     '/stdlib/observable.js',
     'colors.js'
 ];
 
-function onReady(iface, tag, observable, colors) {
+function onReady(dom, observable, colors) {
 
 
     // Uses HTML's canvas element to generate an interactive pie chart
@@ -13,24 +12,24 @@ function onReady(iface, tag, observable, colors) {
         return {
             attributes: as,
             constructor: pie,
-            toDom: function () {
-                var e = tag.tag({
+            render: function () {
+                var e = dom.element({
                     name: 'div',
                     style: {width: as.width + 'px', height: as.height + 'px'}
                 });
 
-                var div = e.toDom();
+                var div = e.render();
 
                 function draw() {
                      var distSnapshot = observable.snapshot(as.distribution);
                      var e = pieSnapshot({distribution: distSnapshot, width: as.width, height: as.height, padding: as.padding, colors: as.colors});
                      div.innerHTML = '';
-                     div.appendChild( e.toDom() );
+                     div.appendChild( e.render() );
                 }
 
                 for (var i = 0; i < as.distribution.length; i++) {
                     var obs = as.distribution[i];
-                    if (iface.supportsInterface(obs, observable.IObservable)) {
+		    if (obs instanceof observable.Observable) {
                         obs.subscribe(draw);
                     }
                 }
@@ -103,7 +102,7 @@ function onReady(iface, tag, observable, colors) {
             }
         }
 
-        return tag.tag({
+        return dom.element({
             name: 'div',
             style: {width: width + 'px', height: height + 'px', display: 'inline-block'},
             contents: [canvas]
@@ -111,12 +110,12 @@ function onReady(iface, tag, observable, colors) {
         
     }
 
-    yoink.define({
+    define({
         pie: pie,
         pieSnapshot: pieSnapshot
     });
 }
 
-yoink.require(deps, onReady);
+require(deps, onReady);
 
 

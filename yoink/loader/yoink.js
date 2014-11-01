@@ -1,24 +1,4 @@
 //
-// Copyright (c) 2011-2014 Greg Fitzgerald, IContrib.org
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this 
-// software and associated documentation files (the "Software"), to deal in the Software
-// without restriction, including without limitation the rights to use, copy, modify, 
-// merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
-// persons to whom the Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all copies or 
-// substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-// INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
-// PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
-// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
-// DEALINGS IN THE SOFTWARE.
-//
-
-//
 // yoink, a simple resource loader.  XMLHttpRequest is the only dependency.
 //
 
@@ -37,7 +17,7 @@ var YOINK = (function () {
 
     function jsInterpreter(text, require, callback, params) {
         // Note: Chrome/v8 requires the outer parentheses.  Firefox/spidermonkey does fine without.
-        var f_str = '(function (yoink) {"use strict";' + text + '})';
+        var f_str = '(function (yoink, require, define) {"use strict";' + text + '})';
         var f;
         if (typeof window !== 'undefined' && window.execScript) {
           // Special handling for Internet Explorer
@@ -53,7 +33,7 @@ var YOINK = (function () {
             define: callback,
             require: require,
             params: params
-        });
+        }, require, callback);
     }
 
     var defaultInterpreters = {
@@ -141,17 +121,6 @@ var YOINK = (function () {
         });
     }
 
-<<<<<<< HEAD
-    function getResource(interpreters, cache, moduleCache, url, onInterpreted) {
-        var p = url.path;
-
-        // A new callback that executes the plan created later in this function.
-        function callback(rsc) {
-            cache[p] = rsc; // Cache the result
-            // Execute the plan
-            var plan = plans[p];
-            delete plans[p];
-=======
     function serializeParams(o) {
         var xs = [];
         for(var k in o) {
@@ -179,7 +148,6 @@ var YOINK = (function () {
             // Execute the plan
             var plan = plans[id];
             delete plans[id];
->>>>>>> a495f0f21ca6197768888ab29c03138c60b06d94
             plan(rsc);
         }
 
@@ -187,11 +155,7 @@ var YOINK = (function () {
             interpretFile(interpreters, cache, moduleCache, url, str, httpCode, callback);
         }
 
-<<<<<<< HEAD
-        var rsc = cache[p];
-=======
         var rsc = cache[id];
->>>>>>> a495f0f21ca6197768888ab29c03138c60b06d94
 
         function action(rsc) {
             plan(rsc);
@@ -200,25 +164,6 @@ var YOINK = (function () {
 
         if (rsc === undefined) {
             // Is anyone else already downloading this file?
-<<<<<<< HEAD
-            var plan = plans[p];
-            if (plan === undefined) {
-                // Create a plan for what we will do with this module
-                plans[p] = onInterpreted;
-
-                if (moduleCache[p]) {
-                    // Is this in our module cache?
-                    if (debugLevel > 0) {
-                        console.log("yoink: executing preloaded module '" + p + "'");
-                    }
-                    evaluateModule(moduleCache[p], p, url.params, cache, moduleCache, interpreters, callback);
-                } else {
-                    getFile(p, onFile);
-                }
-            } else {
-                // Add ourselves to the plan.  The plan is effectively a FIFO queue of actions.
-                plans[p] = action;
-=======
             var plan = plans[id];
             if (plan === undefined) {
                 // Create a plan for what we will do with this module
@@ -236,7 +181,6 @@ var YOINK = (function () {
             } else {
                 // Add ourselves to the plan.  The plan is effectively a FIFO queue of actions.
                 plans[id] = action;
->>>>>>> a495f0f21ca6197768888ab29c03138c60b06d94
             }
         } else {
             onInterpreted(rsc);  // Skip downloading
@@ -254,6 +198,19 @@ var YOINK = (function () {
         // Normalize the path
         p = p.replace(/[^.\/]+[\/]\.\.[\/]/g, '');  // Remove redundant '%s/..' items.
         return {path: p, params: ps, interpreter: f, onError: url.onError};
+    }
+
+    function parseQueryString(query) {
+        var pl = /\+/g;
+        function decode(s) {
+            return decodeURIComponent(s.replace(pl, " "));
+        }
+        var match;
+        var search = /([^&=]+)=?([^&]*)/g;
+        var urlParams = {};
+        while (match = search.exec(query))
+            urlParams[decode(match[1])] = decode(match[2]);
+        return urlParams;
     }
 
     function mkGetResources(base, cache, moduleCache, interpreters) {
@@ -303,6 +260,7 @@ var YOINK = (function () {
     }
 
     return {
+        parseQueryString: parseQueryString,
         setDebugLevel: setDebugLevel,
         require: require,
         resourceLoader: resourceLoader,
