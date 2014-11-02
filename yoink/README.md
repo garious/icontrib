@@ -58,7 +58,7 @@ for your JavaScript.  For example:
 
 ```javascript
     require(['assert.js', 'mylib.js'], function(assert, mylib) {
-        assert.assertEq(mylib.fortyTwo(), 42);
+        assert.eq(mylib.fortyTwo(), 42);
         define('passed!');
     });
 ```

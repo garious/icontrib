@@ -9,7 +9,7 @@ var deps = [
 ];
 
 function onReady(layout, assert, dom) {
-    var eq = assert.assertEq;
+    var eq = assert.eq;
     var gap = layout.gap;
     var hcat = layout.hcat;
     var vcat = layout.vcat;

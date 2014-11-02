@@ -34,20 +34,8 @@ function onReady(dom, observable) {
         return dom.element({name: 'div', contents: zs});
     }
 
-    function clone(o1) {
-        function Clone() {}
-        Clone.prototype = o1;
-        var o2 = new Clone();
-        for (var k in o1) {
-            if (o1.hasOwnProperty(k)) {
-                o2[k] = o1[k];
-            }
-        }
-        return o2;
-    }
-
     function setPosition(e1, pos) {
-        var e2 = clone(e1);
+        var e2 = dom.clone(e1);
         e2.style = e2.style ? dom.mixin(e2.style, pos) : pos;
         return e2;
     }

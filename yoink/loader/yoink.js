@@ -41,15 +41,10 @@ var YOINK = (function () {
         js: jsInterpreter
     };
 
-    function clone(o1) {
-        var o2 = {};
-        var k;
-        for (k in o1) {
-            if (o1.hasOwnProperty(k)) {
-                o2[k] = o1[k];
-            }
-        }
-        return o2;
+    function Clone() {}
+    function clone(o) {
+        Clone.prototype = o;
+        return new Clone();
     }
 
     function passthrough(x) {

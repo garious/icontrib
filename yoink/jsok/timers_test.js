@@ -5,7 +5,7 @@ var deps = [
 function onReady(assert) {
     var isSet = false;
 
-    assert.assertEq(isSet, false);
+    assert.eq(isSet, false);
 
     function f1() {
         isSet = true;
@@ -13,7 +13,7 @@ function onReady(assert) {
     
     // Queue the test
     function f2() {
-        assert.assertEq(isSet, true);
+        assert.eq(isSet, true);
         define("passed!");
     }
 

@@ -24,8 +24,8 @@ function onReady (shapes, assert) {
 
     var actual = shapes.circle({radius: 50, color: 'red'});
 
-    assert.assertEq(actual.name, expected.name);
-    assert.assertEq(actual.style, expected.style);
+    assert.eq(actual.name, expected.name);
+    assert.eq(actual.style, expected.style);
 
     define(actual);
 }

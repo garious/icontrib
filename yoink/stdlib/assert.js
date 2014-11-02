@@ -1,12 +1,12 @@
 // Throw an exception and error message if two arguments are not equal
-function assertEq(actual, expected) {
+function eq(actual, expected) {
    if (actual === expected) {
        return;
    } else if (typeof actual === 'object') {
        var k;
        for (k in expected) {
            if (expected.hasOwnProperty(k) && k !== 'constructor') {
-                assertEq(actual[k], expected[k]);
+                eq(actual[k], expected[k]);
            }
        }
        for (k in actual) {
@@ -23,6 +23,6 @@ function assertEq(actual, expected) {
 }
 
 define({
-    assertEq: assertEq
+    eq: eq
 });
 

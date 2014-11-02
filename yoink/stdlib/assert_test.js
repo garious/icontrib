@@ -8,7 +8,7 @@ var deps = [
 
 function onReady(assert) {
 
-    var eq = assert.assertEq;
+    var eq = assert.eq;
     function neq(a, b) {
         try {
             eq(a, b);

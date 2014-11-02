@@ -144,6 +144,13 @@ function onReady(observable) {
         return e;
     }
 
+    // Return a clone of the input object using prototype inheritance.
+    function Clone() {}
+    function clone(o) {
+        Clone.prototype = o;
+        return new Clone();
+    }
+
     // Return the union of 'o1' and 'o2'.  When both contain the
     // same key, the value in 'o2' takes precedence.
     function mixin(o1, o2) {
@@ -195,6 +202,7 @@ function onReady(observable) {
 
     define({
         createElement: createElement,
+        clone:         clone,
         mixin:         mixin,
         cascadeStyles: cascadeStyles,
         Element:       Element,
