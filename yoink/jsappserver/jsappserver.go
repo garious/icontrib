@@ -1,3 +1,5 @@
+//go:generate go-bindata -ignore=.*.md -ignore=.*_test.js -o=loader.go -pkg=$GOPACKAGE -prefix=../loader/ ../loader/
+
 package jsappserver
 
 import (
@@ -32,7 +34,7 @@ func mkPage(w http.ResponseWriter) error {
 	templ := template.New("bar")
 	parsedTempl, _ := templ.Parse(jsAppHtml)
 
-	yoinkBytes, err := Asset("../loader/yoink.js")
+	yoinkBytes, err := Asset("yoink.js")
 	if err != nil {
 		return err
 	}
@@ -47,7 +49,7 @@ func serveURL(p string, w http.ResponseWriter, r *http.Request) error {
 	if exists(p) {
 		http.ServeFile(w, r, p)
 		return nil
-	} else if exists(p + "index.js") || exists(p + ".js") {
+	} else if exists(p+"index.js") || exists(p+".js") {
 		return mkPage(w)
 	} else {
 		http.NotFound(w, r)
@@ -93,6 +95,11 @@ var jsAppHtml = `<!DOCTYPE html>
                   nd = document.createTextNode(widget);
               } else if (typeof widget.render === 'function')  {
                   nd = widget.render();
+                  if (typeof nd.get == 'function') {
+                      var obs = nd;
+                      setInterval(function(){obs.get();}, 30);
+                      nd = obs.get();
+                  }
               }
               document.body.appendChild(nd);
           });

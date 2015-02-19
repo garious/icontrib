@@ -55,7 +55,7 @@ function Subscriber(args, f) {
     var me = this;  // Avoid 'this' ambiguity.
     args.forEach(function(o) {
         if (o instanceof Observable) {
-            o.subscribe(function (val, obs) {
+            o.subscribe(function (obs) {
                 if (me.valid) {
                     me.valid = false;
                     if (me.subscribers) {

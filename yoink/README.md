@@ -4,7 +4,7 @@ The Yoink Web Framework
 HTML is for web documents.  JavaScript is for web applications.  The Yoink framework
 lets us code exclusively in JavaScript.  The framework also provides a set of
 libraries for Reactive Programming in JavaScript.  Reactive programs scale well
-and can be tested outside the browser.  Reactive elements do not have explicit 
+and can be tested outside the browser.  Reactive elements do not have explicit
 event handlers.  Instead, they use the Publish-Subscribe pattern to observe other
 reactive elements.
 
@@ -12,10 +12,12 @@ examples
 ----
 
 Each subdirectory of the 'examples' directory contains a standalone webserver
-in 'server.go' and client code in its 'index.js'.  'hello' is a minimal webpage
-using Yoink.  'canvas' introduces the fundamental 'stdlib' library 'dom.js'.
-Finally, the 'layout' example shows off 'layout.js' and how a more typical Yoink
-webpage is composed.
+in 'server.go' and client code in its 'index.js'.  [hello](examples/hello/)
+is a minimal webpage using Yoink.  [canvas](examples/canvas/) introduces
+the 'dom.js', used to create DOM elements.  [react](examples/react/) shows
+how to test dynamic content with 'observable.js' and 'assert.js'.  Finally, the
+[layout](examples/layout/) example demonstrates how to use 'layout.js'
+to create new widgets of your own.
 
 
 jsappserver
@@ -66,13 +68,13 @@ for your JavaScript.  For example:
 ```bash
     $ node yoink-adapater.js mylib_test.js
     passed!
-```    
+```
 
 
 loader
 ----
 
-The 'loader' directory contains a minimal asynchronous module loader.
+The 'loader' directory contains a minimal asynchronous module loader.  [Read more...](loader/)
 
 
 stdlib
