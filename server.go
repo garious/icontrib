@@ -6,13 +6,18 @@ import (
 	"appengine/user"
 	"encoding/json"
 	"errors"
+	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/garious/yoink/jsappserver"
+	"github.com/garious/yoink/stdlib"
 	"io/ioutil"
 	"net/http"
 	"sort"
 )
 
 func init() {
+	fs := &assetfs.AssetFS{Asset: stdlib.Asset, AssetDir: stdlib.AssetDir}
+	http.Handle("/stdlib/", http.StripPrefix("/stdlib/", http.FileServer(fs)))
+
 	http.HandleFunc("/charity/popular.json", popular)
 	http.HandleFunc("/stats/community.json", community)
 	http.HandleFunc("/donor/checkUser.json", checkUser)

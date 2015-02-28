@@ -8,8 +8,5 @@ handlers:
   static_dir: static
   application_readable: true
 
-- url: /stdlib
-  static_dir: yoink/stdlib
-
 - url: /.*
   script: _go_app
