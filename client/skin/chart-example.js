@@ -1,28 +1,18 @@
-var deps = [
-    'chart.js',
-    '/stdlib/observable.js'
+var chart = require('./chart');
+var observable = require('poochie/observable');
+
+var dist = [
+    observable.observe(5),
+    observable.observe(95)
 ];
 
-function onReady(chart, observable) {
+// TODO: support this variation instead
+//var dist = observable.observe([
+//    5,
+//    95
+//]);
 
-    var dist = [
-        observable.observe(5),
-        observable.observe(95)
-    ];
-
-    // TODO: support this variation instead
-    //var dist = observable.observe([
-    //    5,
-    //    95
-    //]);
-
-    var pie = chart.pie({
-        distribution: dist
-    });
-
-    define(pie);
-
-}
-
-require(deps, onReady);
+module.exports = chart.pie({
+    distribution: dist
+});
 

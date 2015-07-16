@@ -1,16 +1,6 @@
-var deps = [
-    'frame.js',
-    'core.js'
-];
+var frame = require('./frame');
+var core = require('./core');
 
-function onReady(frame, core) {
-
-    var node = frame.footer({style: {backgroundColor: '#EEE'}}, [
-        core.hyperlink({url: '#', text: 'blah'})
-    ]);
-
-    define(node);
-}
-
-require(deps, onReady);
-
+module.exports = frame.footer({style: {backgroundColor: '#EEE'}}, [
+    core.hyperlink({url: '#', text: 'blah'})
+]);

@@ -3,20 +3,17 @@
 //
 // Example:  http://localhost/json-test?url=/charity/popular.json
 
-var deps = [
-    yoink.params.url
-];
+var request = require('browser-request');
 
-function onReady(Data) {
+request(yoink.params.url, function (err, data) {
     // Print to console
-    console.log(Data);
+    console.log(data);
 
-    // Pretty-print to console
-    var s = JSON.stringify(Data, null, 4);
-    console.log(s);
+    if (!err) {
+        // Pretty-print to console
+        var s = JSON.stringify(data, null, 4);
+        console.log(s);
+    }
+})
 
-    define('check your javascript console');
-}
-
-require(deps, onReady);
-
+module.exports = 'check your javascript console';

@@ -6,7 +6,7 @@ var smallestHeader = 15;
 var green = '#a7d322';
 var lightGreen = '#d0e5a2';
 
-define({
+module.exports = {
     pieColors: [
         '#9bc638', // Green
         '#ebf4d7', // Very light green
@@ -63,5 +63,5 @@ define({
     h4Size:         4 + smallestHeader,
     h5Size:         2 + smallestHeader,
     h6Size:             smallestHeader
-});
+};
 

@@ -1,33 +1,26 @@
-var deps = [
-    '/donor/checkUser.json',
-    '/stdlib/layout.js',
-    '/skin/frame.js',
-    '/skin/core.js',
-    '/charity/popular.json',
-    '/skin/donor.js',
-    '/stats/community.json'
-];
+var layout = require('poochie/layout');
+var frame = require('../skin/frame');
+var core = require('../skin/core');
+var donor = require('../skin/donor');
+var dydata = require('../skin/dydata');
 
-function onReady(auth, layout, frame, core, popularCharities, donor, community) {
+var auth = dydata.jsonPublisher('/donor/checkUser.json', {});
+var popularCharities = dydata.jsonPublisher('/charity/popular.json', []);
+var community = dydata.jsonPublisher('/stats/community.json', {});
 
-    var body = layout.vcat([
-        layout.hcat([
-            core.box({
-                width: 600,
-                contents: donor.profile({user: community})
-            }),
-            layout.gap(20),
-            donor.recommendedFunds({funds: popularCharities})
-        ]),
+var body = layout.vcat([
+    layout.hcat([
+        core.box({
+            width: 600,
+            contents: donor.profile({user: community})
+        }),
         layout.gap(20),
-        frame.footer([
-            core.hyperlink({url: 'registration', text: 'Charity Registration'})
-        ])
-    ]);
+        donor.recommendedFunds({funds: popularCharities})
+    ]),
+    layout.gap(20),
+    frame.footer([
+        core.hyperlink({url: 'registration', text: 'Charity Registration'})
+    ])
+]);
 
-    define( frame.frame({contents: body, auth: auth}) );
-
-}
-
-require(deps, onReady);
-
+module.exports = frame.frame({contents: body, auth: auth});

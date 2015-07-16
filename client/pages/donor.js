@@ -1,29 +1,22 @@
-var deps = [
-    '/donor/checkUser.json',
-    '/stdlib/layout.js',
-    '/skin/frame.js',
-    '/skin/core.js',
-    '/charity/popular.json',
-    '/skin/donor.js',
-    '/static/donor/' + yoink.params.id + '.json'
-];
+var layout = require('poochie/layout');
+var frame = require('../skin/frame');
+var core = require('../skin/core');
+var donor = require('../skin/donor');
+var dydata = require('../skin/dydata');
 
-function onReady(auth, layout, frame, core, popularCharities, donor, user) {
+var auth = dydata.jsonPublisher('/donor/checkUser.json', {});
+var popularCharities = dydata.jsonPublisher('/charity/popular.json', []);
+var user = dydata.jsonPublisher('/static/donor/' + yoink.params.id + '.json', {});
 
-    var box = core.box({
-        width: 600,
-        contents: donor.profile({user: user})
-    });
+var box = core.box({
+    width: 600,
+    contents: donor.profile({user: user})
+});
 
-    var body = layout.hcat([
-        box,
-        layout.gap(20),
-        donor.recommendedFunds({funds: popularCharities})
-    ]);
+var body = layout.hcat([
+    box,
+    layout.gap(20),
+    donor.recommendedFunds({funds: popularCharities})
+]);
 
-    define( frame.frame({contents: body, auth: auth}) );
-
-}
-
-require(deps, onReady);
-
+module.exports = frame.frame({contents: body, auth: auth});
